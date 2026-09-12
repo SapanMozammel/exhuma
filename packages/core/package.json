@@ -1,0 +1,91 @@
+{
+	"name": "@exhuma/core",
+	"version": "0.1.0",
+	"description": "Exhuma Core — Unified developer suite for tactile cards, responsive layout engines, and routing architecture",
+	"license": "MIT",
+	"keywords": [
+		"react",
+		"exhuma",
+		"cards",
+		"layouts",
+		"router",
+		"masonry",
+		"stacking-cards",
+		"developer-tools"
+	],
+	"main": "./dist/index.cjs",
+	"module": "./dist/index.mjs",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"import": {
+				"types": "./dist/index.d.mts",
+				"default": "./dist/index.mjs"
+			},
+			"require": {
+				"types": "./dist/index.d.ts",
+				"default": "./dist/index.cjs"
+			}
+		},
+		"./cards": {
+			"import": {
+				"types": "./dist/cards.d.mts",
+				"default": "./dist/cards.mjs"
+			},
+			"require": {
+				"types": "./dist/cards.d.ts",
+				"default": "./dist/cards.cjs"
+			}
+		},
+		"./layouts": {
+			"import": {
+				"types": "./dist/layouts.d.mts",
+				"default": "./dist/layouts.mjs"
+			},
+			"require": {
+				"types": "./dist/layouts.d.ts",
+				"default": "./dist/layouts.cjs"
+			}
+		},
+		"./router": {
+			"import": {
+				"types": "./dist/router.d.mts",
+				"default": "./dist/router.mjs"
+			},
+			"require": {
+				"types": "./dist/router.d.ts",
+				"default": "./dist/router.cjs"
+			}
+		}
+	},
+	"files": [
+		"dist",
+		"README.md"
+	],
+	"publishConfig": {
+		"access": "public"
+	},
+	"sideEffects": false,
+	"scripts": {
+		"build": "tsup",
+		"dev": "tsup --watch",
+		"type:check": "tsc --noEmit"
+	},
+	"dependencies": {
+		"@exhuma/cards": "workspace:*",
+		"@exhuma/layouts": "workspace:*",
+		"@exhuma/router": "workspace:*"
+	},
+	"peerDependencies": {
+		"react": ">=18.0.0",
+		"react-dom": ">=18.0.0"
+	},
+	"devDependencies": {
+		"@types/react": "^19.0.0",
+		"@types/react-dom": "^19.0.0",
+		"react": "^19.0.0",
+		"react-dom": "^19.0.0",
+		"tsup": "^8.5.1",
+		"typescript": "^5.7.0"
+	}
+}

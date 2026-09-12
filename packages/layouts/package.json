@@ -1,0 +1,58 @@
+{
+	"name": "@exhuma/layouts",
+	"version": "0.1.0",
+	"description": "Zero-dependency CSS masonry, dynamic height balancing, and responsive AutoGrids for React",
+	"license": "MIT",
+	"keywords": [
+		"react",
+		"layout",
+		"masonry",
+		"grid",
+		"auto-grid",
+		"css-masonry",
+		"responsive"
+	],
+	"main": "./dist/index.cjs",
+	"module": "./dist/index.mjs",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"import": {
+				"types": "./dist/index.d.mts",
+				"default": "./dist/index.mjs"
+			},
+			"require": {
+				"types": "./dist/index.d.ts",
+				"default": "./dist/index.cjs"
+			}
+		}
+	},
+	"files": [
+		"dist",
+		"README.md"
+	],
+	"publishConfig": {
+		"access": "public"
+	},
+	"sideEffects": false,
+	"scripts": {
+		"build": "tsup",
+		"dev": "tsup --watch",
+		"type:check": "tsc --noEmit"
+	},
+	"peerDependencies": {
+		"react": ">=18.0.0",
+		"react-dom": ">=18.0.0"
+	},
+	"dependencies": {
+		"macy": "^2.5.1"
+	},
+	"devDependencies": {
+		"@types/react": "^19.0.0",
+		"@types/react-dom": "^19.0.0",
+		"react": "^19.0.0",
+		"react-dom": "^19.0.0",
+		"tsup": "^8.5.1",
+		"typescript": "^5.7.0"
+	}
+}

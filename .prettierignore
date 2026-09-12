@@ -1,0 +1,8 @@
+node_modules
+dist
+.next
+.turbo
+out
+coverage
+pnpm-lock.yaml
+*.log

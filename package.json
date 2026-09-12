@@ -1,0 +1,41 @@
+{
+	"name": "exhuma",
+	"private": true,
+	"version": "0.1.0",
+	"type": "module",
+	"description": "Exhuma — Unified developer monorepo for tactile interactions, layout engines, and routing architecture",
+	"workspaces": [
+		"packages/*",
+		"apps/*"
+	],
+	"scripts": {
+		"build:libs": "pnpm --filter './packages/**' build",
+		"build": "pnpm run build:libs && pnpm --filter showcase build",
+		"dev": "pnpm run build:libs && pnpm --filter showcase dev",
+		"test": "pnpm -r test",
+		"test:watch": "pnpm -r test:watch",
+		"test:coverage": "pnpm -r test:coverage",
+		"lint": "eslint packages/*/src",
+		"lint:fix": "eslint --fix packages/*/src",
+		"format": "prettier --write \"packages/**/*.{ts,tsx,json,md}\" \"apps/**/*.{ts,tsx,json,md}\" \"*.{json,md,yaml,js,mjs}\"",
+		"format:all": "pnpm run format && pnpm run lint:fix",
+		"type:check": "pnpm -r exec tsc --noEmit",
+		"sync": "node .formatter/sync.js"
+	},
+	"devDependencies": {
+		"@types/node": "^22.0.0",
+		"@types/react": "^19.0.0",
+		"@types/react-dom": "^19.0.0",
+		"@typescript-eslint/eslint-plugin": "^8.0.0",
+		"@typescript-eslint/parser": "^8.0.0",
+		"eslint": "^9.0.0",
+		"eslint-config-prettier": "^9.1.0",
+		"eslint-plugin-prettier": "^5.2.0",
+		"eslint-plugin-react": "^7.37.0",
+		"eslint-plugin-react-hooks": "^5.1.0",
+		"prettier": "^3.4.0",
+		"tsup": "^8.5.1",
+		"turbo": "^2.4.4",
+		"typescript": "^5.7.0"
+	}
+}
