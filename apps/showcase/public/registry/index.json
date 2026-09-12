@@ -1,0 +1,241 @@
+{
+  "$schema": "https://exhuma.dev/schema/registry-index.json",
+  "version": "1.0.0",
+  "generatedAt": "2026-09-12T19:19:35.236Z",
+  "components": [
+    {
+      "name": "Stacking Cards",
+      "slug": "stacking-cards",
+      "category": "cards",
+      "description": "Layered 3D sticky stack cards with progressive scroll depth scale decay and CSS sticky positioning.",
+      "version": "1.0.0",
+      "props": [
+        {
+          "name": "cardGap",
+          "label": "Card Gap (px)",
+          "type": "number",
+          "defaultValue": 24,
+          "min": 8,
+          "max": 64,
+          "step": 4,
+          "description": "Vertical distance in pixels between each stacked card in the viewport."
+        },
+        {
+          "name": "scaleDecay",
+          "label": "Scale Decay",
+          "type": "number",
+          "defaultValue": 0.04,
+          "min": 0.01,
+          "max": 0.1,
+          "step": 0.01,
+          "description": "Amount by which earlier cards scale down as later cards slide over them."
+        },
+        {
+          "name": "cardCount",
+          "label": "Card Count",
+          "type": "number",
+          "defaultValue": 4,
+          "min": 2,
+          "max": 6,
+          "step": 1,
+          "description": "Number of demo cards rendered in the preview stack."
+        }
+      ],
+      "flavors": [
+        "react",
+        "nextjs",
+        "vue",
+        "svelte",
+        "angular",
+        "solid",
+        "astro",
+        "blade",
+        "vanilla",
+        "wordpress",
+        "webcomponent",
+        "react-native",
+        "flutter"
+      ]
+    },
+    {
+      "name": "Horizontal Scroller",
+      "slug": "horizontal-scroller",
+      "category": "cards",
+      "description": "Smooth wheel-to-horizontal translation rail with touch swipe inertia and keyboard arrow navigation.",
+      "version": "1.0.0",
+      "props": [
+        {
+          "name": "itemGap",
+          "label": "Item Gap (px)",
+          "type": "number",
+          "defaultValue": 20,
+          "min": 8,
+          "max": 48,
+          "step": 4,
+          "description": "Gap between horizontal items."
+        },
+        {
+          "name": "showFadeEdges",
+          "label": "Fade Edges",
+          "type": "boolean",
+          "defaultValue": true,
+          "description": "Show subtle gradient mask at horizontal overflow boundaries."
+        }
+      ],
+      "flavors": [
+        "react",
+        "nextjs",
+        "vue",
+        "svelte",
+        "angular",
+        "solid",
+        "astro",
+        "blade",
+        "vanilla",
+        "wordpress",
+        "webcomponent",
+        "react-native",
+        "flutter"
+      ]
+    },
+    {
+      "name": "CSS Masonry",
+      "slug": "css-masonry",
+      "category": "layouts",
+      "description": "Pure CSS multi-column responsive masonry layout with zero external JavaScript runtime overhead.",
+      "version": "1.0.0",
+      "props": [
+        {
+          "name": "columns",
+          "label": "Desktop Columns",
+          "type": "number",
+          "defaultValue": 3,
+          "min": 1,
+          "max": 6,
+          "step": 1,
+          "description": "Number of columns on desktop viewports."
+        },
+        {
+          "name": "gap",
+          "label": "Column Gap (px)",
+          "type": "number",
+          "defaultValue": 16,
+          "min": 8,
+          "max": 48,
+          "step": 4,
+          "description": "Gap between masonry columns and items."
+        }
+      ],
+      "flavors": [
+        "react",
+        "nextjs",
+        "vue",
+        "svelte",
+        "angular",
+        "solid",
+        "astro",
+        "blade",
+        "vanilla",
+        "wordpress",
+        "webcomponent",
+        "react-native",
+        "flutter"
+      ]
+    },
+    {
+      "name": "Auto Grid",
+      "slug": "auto-grid",
+      "category": "layouts",
+      "description": "Responsive CSS Grid with auto-fit / auto-fill minmax repeat tracks with zero media queries.",
+      "version": "1.0.0",
+      "props": [
+        {
+          "name": "minItemWidth",
+          "label": "Min Width (px)",
+          "type": "number",
+          "defaultValue": 280,
+          "min": 150,
+          "max": 450,
+          "step": 10,
+          "description": "Minimum width of each grid column before wrapping to the next line."
+        },
+        {
+          "name": "gap",
+          "label": "Grid Gap (px)",
+          "type": "number",
+          "defaultValue": 24,
+          "min": 8,
+          "max": 48,
+          "step": 4,
+          "description": "Gap between grid items."
+        }
+      ],
+      "flavors": [
+        "react",
+        "nextjs",
+        "vue",
+        "svelte",
+        "angular",
+        "solid",
+        "astro",
+        "blade",
+        "vanilla",
+        "wordpress",
+        "webcomponent",
+        "react-native",
+        "flutter"
+      ]
+    },
+    {
+      "name": "Tilt Card",
+      "slug": "tilt-card",
+      "category": "cards",
+      "description": "Interactive 3D mouse-tracking card tilt with dynamic glare effect and smooth spring reset.",
+      "version": "1.0.0",
+      "props": [
+        {
+          "name": "maxTilt",
+          "label": "Max Tilt (deg)",
+          "type": "number",
+          "defaultValue": 15,
+          "min": 5,
+          "max": 35,
+          "step": 1,
+          "description": "Maximum tilt rotation in degrees."
+        },
+        {
+          "name": "perspective",
+          "label": "Perspective (px)",
+          "type": "number",
+          "defaultValue": 1000,
+          "min": 500,
+          "max": 2000,
+          "step": 100,
+          "description": "3D perspective depth in pixels."
+        },
+        {
+          "name": "glare",
+          "label": "Enable Glare",
+          "type": "boolean",
+          "defaultValue": true,
+          "description": "Dynamic glare reflection tracking mouse position."
+        }
+      ],
+      "flavors": [
+        "react",
+        "nextjs",
+        "vue",
+        "svelte",
+        "angular",
+        "solid",
+        "astro",
+        "blade",
+        "vanilla",
+        "wordpress",
+        "webcomponent",
+        "react-native",
+        "flutter"
+      ]
+    }
+  ]
+}

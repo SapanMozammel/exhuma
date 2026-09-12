@@ -1,5 +1,5 @@
 {
-	"name": "exhuma",
+	"name": "exhuma-monorepo",
 	"private": true,
 	"version": "0.1.0",
 	"type": "module",
@@ -14,8 +14,9 @@
 		"arch:check": "node --import tsx tooling/architecture/check-architecture.ts",
 		"docs:check": "node --import tsx tooling/docs/check-links.ts",
 		"scaffold:component": "node --import tsx tooling/scaffold/scaffold-component.ts",
+		"build:registry": "node --import tsx tooling/registry/build-registry.ts",
 		"build:libs": "pnpm --filter './packages/**' build",
-		"build": "pnpm run build:libs && pnpm --filter showcase build",
+		"build": "pnpm run build:registry && pnpm run build:libs && pnpm --filter showcase build",
 		"dev": "pnpm run build:libs && pnpm --filter showcase dev",
 		"test": "vitest run",
 		"test:watch": "vitest",

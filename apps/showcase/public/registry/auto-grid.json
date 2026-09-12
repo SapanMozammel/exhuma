@@ -1,0 +1,135 @@
+{
+  "name": "Auto Grid",
+  "slug": "auto-grid",
+  "category": "layouts",
+  "description": "Responsive CSS Grid with auto-fit / auto-fill minmax repeat tracks with zero media queries.",
+  "version": "1.0.0",
+  "props": [
+    {
+      "name": "minItemWidth",
+      "label": "Min Width (px)",
+      "type": "number",
+      "defaultValue": 280,
+      "min": 150,
+      "max": 450,
+      "step": 10,
+      "description": "Minimum width of each grid column before wrapping to the next line."
+    },
+    {
+      "name": "gap",
+      "label": "Grid Gap (px)",
+      "type": "number",
+      "defaultValue": 24,
+      "min": 8,
+      "max": 48,
+      "step": 4,
+      "description": "Gap between grid items."
+    }
+  ],
+  "flavors": {
+    "react": [
+      {
+        "filename": "AutoGrid.tsx",
+        "language": "tsx",
+        "description": "React/Next.js Auto Grid component.",
+        "code": "import React from 'react';\n\nexport interface AutoGridProps extends React.HTMLAttributes<HTMLDivElement> {\n  minItemWidth?: number;\n  gap?: number;\n  children: React.ReactNode;\n}\n\nexport function AutoGrid({\n  minItemWidth = 280,\n  gap = 24,\n  className = '',\n  children,\n  ...props\n}: AutoGridProps) {\n  return (\n    <div\n      className={`grid w-full ${className}`}\n      style={{\n        gridTemplateColumns: `repeat(auto-fit, minmax(${minItemWidth}px, 1fr))`,\n        gap: `${gap}px`,\n      }}\n      {...props}\n    >\n      {children}\n    </div>\n  );\n}"
+      }
+    ],
+    "nextjs": [
+      {
+        "filename": "AutoGrid.tsx",
+        "language": "tsx",
+        "description": "React/Next.js Auto Grid component.",
+        "code": "import React from 'react';\n\nexport interface AutoGridProps extends React.HTMLAttributes<HTMLDivElement> {\n  minItemWidth?: number;\n  gap?: number;\n  children: React.ReactNode;\n}\n\nexport function AutoGrid({\n  minItemWidth = 280,\n  gap = 24,\n  className = '',\n  children,\n  ...props\n}: AutoGridProps) {\n  return (\n    <div\n      className={`grid w-full ${className}`}\n      style={{\n        gridTemplateColumns: `repeat(auto-fit, minmax(${minItemWidth}px, 1fr))`,\n        gap: `${gap}px`,\n      }}\n      {...props}\n    >\n      {children}\n    </div>\n  );\n}"
+      }
+    ],
+    "vue": [
+      {
+        "filename": "AutoGrid.vue",
+        "language": "vue",
+        "description": "Vue 3 Auto Grid component.",
+        "code": "<script setup lang=\"ts\">\nconst props = withDefaults(\n  defineProps<{\n    minItemWidth?: number;\n    gap?: number;\n  }>(),\n  {\n    minItemWidth: 280,\n    gap: 24,\n  }\n);\n</script>\n\n<template>\n  <div\n    class=\"grid w-full\"\n    :style=\"{\n      gridTemplateColumns: `repeat(auto-fit, minmax(${minItemWidth}px, 1fr))`,\n      gap: `${gap}px`,\n    }\"\n  >\n    <slot />\n  </div>\n</template>"
+      }
+    ],
+    "svelte": [
+      {
+        "filename": "AutoGrid.svelte",
+        "language": "svelte",
+        "description": "Svelte 5 Runes Auto Grid layout component.",
+        "code": "<script lang=\"ts\">\n  let {\n    minItemWidth = 280,\n    gap = 24,\n    class: className = '',\n    children,\n  }: {\n    minItemWidth?: number;\n    gap?: number;\n    class?: string;\n    children?: import('svelte').Snippet;\n  } = $props();\n</script>\n\n<div\n  class=\"grid w-full {className}\"\n  style=\"grid-template-columns: repeat(auto-fit, minmax(min({minItemWidth}px, 100%), 1fr)); gap: {gap}px;\"\n>\n  {@render children?.()}\n</div>"
+      }
+    ],
+    "angular": [
+      {
+        "filename": "auto-grid.component.ts",
+        "language": "typescript",
+        "description": "Angular 18+ Standalone Auto Grid layout component.",
+        "code": "import { Component, input, computed } from '@angular/core';\nimport { CommonModule } from '@angular/common';\n\n@Component({\n  selector: 'exhuma-auto-grid',\n  standalone: true,\n  imports: [CommonModule],\n  template: `\n    <div\n      [class]=\"'grid w-full ' + customClass()\"\n      [style.gridTemplateColumns]=\"gridTemplate()\"\n      [style.gap]=\"gap() + 'px'\"\n    >\n      <ng-content></ng-content>\n    </div>\n  `,\n})\nexport class ExhumaAutoGridComponent {\n  readonly minItemWidth = input<number>(280);\n  readonly gap = input<number>(24);\n  readonly customClass = input<string>('');\n\n  readonly gridTemplate = computed(() => {\n    return `repeat(auto-fit, minmax(min(${this.minItemWidth()}px, 100%), 1fr))`;\n  });\n}"
+      }
+    ],
+    "solid": [
+      {
+        "filename": "AutoGrid.tsx",
+        "language": "tsx",
+        "description": "SolidJS Auto Grid component with dynamic repeat minmax tracks.",
+        "code": "import { Component, JSX, mergeProps } from 'solid-js';\n\nexport interface AutoGridProps {\n  minItemWidth?: number;\n  gap?: number;\n  class?: string;\n  children?: JSX.Element;\n}\n\nexport const AutoGrid: Component<AutoGridProps> = (rawProps) => {\n  const props = mergeProps(\n    {\n      minItemWidth: 280,\n      gap: 24,\n      class: '',\n    },\n    rawProps\n  );\n\n  return (\n    <div\n      class={`grid w-full ${props.class}`}\n      style={{\n        'grid-template-columns': `repeat(auto-fit, minmax(min(${props.minItemWidth}px, 100%), 1fr))`,\n        gap: `${props.gap}px`,\n      }}\n    >\n      {props.children}\n    </div>\n  );\n};"
+      }
+    ],
+    "astro": [
+      {
+        "filename": "AutoGrid.astro",
+        "language": "astro",
+        "description": "Astro Auto Grid component.",
+        "code": "---\ninterface Props {\n  minItemWidth?: number;\n  gap?: number;\n  class?: string;\n}\n\nconst { minItemWidth = 280, gap = 24, class: className = '' } = Astro.props;\n---\n\n<div\n  class:list={['grid w-full', className]}\n  style={`grid-template-columns: repeat(auto-fit, minmax(${minItemWidth}px, 1fr)); gap: ${gap}px;`}\n>\n  <slot />\n</div>"
+      }
+    ],
+    "blade": [
+      {
+        "filename": "auto-grid.blade.php",
+        "language": "php",
+        "description": "Laravel Blade Auto Grid component.",
+        "code": "@props([\n    'minItemWidth' => 280,\n    'gap' => 24,\n])\n\n<div \n    {{ $attributes->merge(['class' => 'grid w-full']) }}\n    style=\"grid-template-columns: repeat(auto-fit, minmax({{ $minItemWidth }}px, 1fr)); gap: {{ $gap }}px;\"\n>\n    {{ $slot }}\n</div>"
+      }
+    ],
+    "vanilla": [
+      {
+        "filename": "auto-grid.css",
+        "language": "css",
+        "description": "Pure CSS Auto Grid with minmax repeat.",
+        "code": "@layer exhuma {\n  .exhuma-auto-grid {\n    display: grid;\n    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));\n    gap: 24px;\n    width: 100%;\n  }\n}"
+      }
+    ],
+    "wordpress": [
+      {
+        "filename": "block.json",
+        "language": "json",
+        "description": "WordPress Block API v3 for Auto Grid.",
+        "code": "{\n  \"$schema\": \"https://schemas.wp.org/trunk/block.json\",\n  \"apiVersion\": 3,\n  \"name\": \"exhuma/auto-grid\",\n  \"version\": \"1.0.0\",\n  \"title\": \"Exhuma Auto Grid\",\n  \"category\": \"layout\",\n  \"icon\": \"grid-view\",\n  \"attributes\": {\n    \"minItemWidth\": { \"type\": \"number\", \"default\": 280 },\n    \"gap\": { \"type\": \"number\", \"default\": 24 }\n  }\n}"
+      }
+    ],
+    "webcomponent": [
+      {
+        "filename": "exhuma-auto-grid.js",
+        "language": "javascript",
+        "description": "Web Component: <exhuma-auto-grid min-width=\"280\" gap=\"24\">.",
+        "code": "class ExhumaAutoGridElement extends HTMLElement {\n  connectedCallback() {\n    const minW = this.getAttribute('min-width') || 280;\n    const gap = this.getAttribute('gap') || 24;\n    this.style.display = 'grid';\n    this.style.gridTemplateColumns = `repeat(auto-fit, minmax(${minW}px, 1fr))`;\n    this.style.gap = `${gap}px`;\n  }\n}\nif (!customElements.get('exhuma-auto-grid')) {\n  customElements.define('exhuma-auto-grid', ExhumaAutoGridElement);\n}"
+      }
+    ],
+    "react-native": [
+      {
+        "filename": "AutoGrid.native.tsx",
+        "language": "tsx",
+        "description": "React Native / Expo Auto Grid responsive wrap layout for iOS and Android.",
+        "code": "import React from 'react';\nimport { View, StyleSheet, Dimensions } from 'react-native';\n\nexport interface AutoGridProps {\n  minItemWidth?: number;\n  gap?: number;\n  children?: React.ReactNode;\n}\n\nexport const AutoGrid: React.FC<AutoGridProps> = ({\n  minItemWidth = 280,\n  gap = 24,\n  children,\n}) => {\n  const screenWidth = Dimensions.get('window').width - 32;\n  const numColumns = Math.max(1, Math.floor(screenWidth / minItemWidth));\n  const itemWidth = (screenWidth - (numColumns - 1) * gap) / numColumns;\n\n  return (\n    <View style={[styles.container, { gap }]}>\n      {React.Children.map(children, (child) => (\n        <View style={{ width: itemWidth }}>{child}</View>\n      ))}\n    </View>\n  );\n};\n\nconst styles = StyleSheet.create({\n  container: {\n    flexDirection: 'row',\n    flexWrap: 'wrap',\n    width: '100%',\n    paddingHorizontal: 16,\n  },\n});"
+      }
+    ],
+    "flutter": [
+      {
+        "filename": "auto_grid.dart",
+        "language": "dart",
+        "description": "Flutter dynamic extent grid layout widget for iOS, Android, and Desktop.",
+        "code": "import 'package:flutter/material.dart';\n\nclass ExhumaAutoGrid extends StatelessWidget {\n  final List<Widget> children;\n  final double minItemWidth;\n  final double gap;\n\n  const ExhumaAutoGrid({\n    super.key,\n    required this.children,\n    this.minItemWidth = 280.0,\n    this.gap = 24.0,\n  });\n\n  @override\n  Widget build(BuildContext context) {\n    return LayoutBuilder(\n      builder: (context, constraints) {\n        return Wrap(\n          spacing: gap,\n          runSpacing: gap,\n          children: children.map((child) {\n            return ConstrainedBox(\n              constraints: BoxConstraints(\n                minWidth: minItemWidth,\n                maxWidth: constraints.maxWidth,\n              ),\n              child: child,\n            );\n          }).toList(),\n        );\n      },\n    );\n  }\n}"
+      }
+    ]
+  }
+}

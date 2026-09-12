@@ -1,0 +1,544 @@
+{
+  "stacking-cards": {
+    "react": [
+      {
+        "filename": "StackingCards.tsx",
+        "language": "tsx",
+        "description": "Idiomatic React 18/19 component with forwardRef and typed props.",
+        "code": "'use client';\n\nimport React, { forwardRef } from 'react';\n\nexport interface StackingCardsItem {\n  id: string;\n  title: string;\n  description: string;\n  badge?: string;\n  bg?: string;\n}\n\nexport interface StackingCardsProps extends React.HTMLAttributes<HTMLDivElement> {\n  items: StackingCardsItem[];\n  cardGap?: number;\n  scaleDecay?: number;\n}\n\nexport const StackingCards = forwardRef<HTMLDivElement, StackingCardsProps>(\n  ({ items, cardGap = 24, scaleDecay = 0.04, className = '', style, ...props }, ref) => {\n    return (\n      <div\n        ref={ref}\n        className={`relative w-full max-w-4xl mx-auto py-12 ${className}`}\n        style={style}\n        {...props}\n      >\n        {items.map((item, index) => {\n          const depthScale = 1 - (items.length - 1 - index) * scaleDecay;\n          return (\n            <div\n              key={item.id}\n              className=\"sticky rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-8 shadow-2xl transition-transform duration-300 mb-8\"\n              style={{\n                top: `calc(10vh + ${index * cardGap}px)`,\n                transform: `scale(${depthScale})`,\n                transformOrigin: 'top center',\n              }}\n            >\n              {item.badge && (\n                <span className=\"inline-block px-3 py-1 text-xs font-semibold uppercase tracking-wider rounded-full bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300 mb-4\">\n                  {item.badge}\n                </span>\n              )}\n              <h3 className=\"text-2xl font-bold tracking-tight text-slate-900 dark:text-white mb-2\">\n                {item.title}\n              </h3>\n              <p className=\"text-slate-600 dark:text-slate-400 text-base leading-relaxed\">\n                {item.description}\n              </p>\n            </div>\n          );\n        })}\n      </div>\n    );\n  }\n);\n\nStackingCards.displayName = 'StackingCards';"
+      }
+    ],
+    "nextjs": [
+      {
+        "filename": "stacking-cards.tsx",
+        "language": "tsx",
+        "description": "Next.js 15 App Router component with client boundary.",
+        "code": "'use client';\n\nimport React from 'react';\n\nconst DEMO_ITEMS = [\n  { id: '1', title: 'Tactile Architecture', description: 'Zero-latency feedback loop with hardware-accelerated 3D transforms.', badge: 'Core' },\n  { id: '2', title: 'Universal Registry', description: 'Write once, deploy seamlessly across React, Next.js, Vue, Astro, and Blade.', badge: 'Ecosystem' },\n  { id: '3', title: 'Enterprise Compliance', description: 'Rigorous memory teardown with zero detached listeners or leaks.', badge: 'Reliability' },\n  { id: '4', title: 'Production Velocity', description: 'Ready-to-copy code blocks tested against real compiler suites.', badge: 'Speed' },\n];\n\nexport default function StackingCardsDemo() {\n  const cardGap = 24;\n  const scaleDecay = 0.04;\n\n  return (\n    <section className=\"relative w-full max-w-4xl mx-auto py-16 px-4\">\n      {DEMO_ITEMS.map((item, index) => (\n        <div\n          key={item.id}\n          className=\"sticky rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md p-8 shadow-xl mb-8\"\n          style={{\n            top: `calc(10vh + ${index * cardGap}px)`,\n            transform: `scale(${1 - (DEMO_ITEMS.length - 1 - index) * scaleDecay})`,\n            transformOrigin: 'top center',\n          }}\n        >\n          <span className=\"text-xs font-semibold px-2.5 py-1 rounded-md bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400\">\n            {item.badge}\n          </span>\n          <h3 className=\"text-2xl font-bold text-slate-900 dark:text-white mt-3 mb-2\">{item.title}</h3>\n          <p className=\"text-slate-600 dark:text-slate-400\">{item.description}</p>\n        </div>\n      ))}\n    </section>\n  );\n}"
+      }
+    ],
+    "vue": [
+      {
+        "filename": "StackingCards.vue",
+        "language": "vue",
+        "description": "Vue 3 Single-File Component with script setup and TypeScript.",
+        "code": "<script setup lang=\"ts\">\ninterface StackingItem {\n  id: string;\n  title: string;\n  description: string;\n  badge?: string;\n}\n\nconst props = withDefaults(\n  defineProps<{\n    items?: StackingItem[];\n    cardGap?: number;\n    scaleDecay?: number;\n  }>(),\n  {\n    cardGap: 24,\n    scaleDecay: 0.04,\n    items: () => [\n      { id: '1', title: 'Tactile Performance', description: 'Silky smooth sticky scroll with hardware acceleration.', badge: 'Core' },\n      { id: '2', title: 'Zero Leakage', description: 'Zero memory leaks, clean teardowns, perfectly scoped styles.', badge: 'Safety' },\n      { id: '3', title: 'Multi-Framework', description: 'Pure Vue 3 Composition API with full TypeScript props.', badge: 'Ecosystem' },\n    ],\n  }\n);\n</script>\n\n<template>\n  <div class=\"relative w-full max-w-4xl mx-auto py-12 px-4\">\n    <div\n      v-for=\"(item, index) in items\"\n      :key=\"item.id\"\n      class=\"sticky rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-8 shadow-xl mb-8 transition-transform duration-300\"\n      :style=\"{\n        top: `calc(10vh + ${index * cardGap}px)`,\n        transform: `scale(${1 - (items.length - 1 - index) * scaleDecay})`,\n        transformOrigin: 'top center',\n      }\"\n    >\n      <span v-if=\"item.badge\" class=\"inline-block text-xs font-semibold px-2.5 py-1 rounded bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 mb-3\">\n        {{ item.badge }}\n      </span>\n      <h3 class=\"text-2xl font-bold text-slate-900 dark:text-white mb-2\">{{ item.title }}</h3>\n      <p class=\"text-slate-600 dark:text-slate-400\">{{ item.description }}</p>\n    </div>\n  </div>\n</template>"
+      }
+    ],
+    "svelte": [
+      {
+        "filename": "StackingCards.svelte",
+        "language": "svelte",
+        "description": "Svelte 5 Runes ($props, $derived) component with reactive scale calculations.",
+        "code": "<script lang=\"ts\">\n  interface StackingCardsItem {\n    id: string;\n    title: string;\n    description: string;\n    badge?: string;\n    bg?: string;\n  }\n\n  let {\n    cardGap = 24,\n    scaleDecay = 0.04,\n    class: className = '',\n    items = [],\n  }: {\n    cardGap?: number;\n    scaleDecay?: number;\n    class?: string;\n    items?: StackingCardsItem[];\n  } = $props();\n\n  const fallbackItems: StackingCardsItem[] = [\n    {\n      id: '1',\n      title: 'Architectural Sovereignty',\n      description: 'Zero runtime dependencies. Pure CSS sticky layout engine.',\n      badge: 'Core Engine',\n      bg: '#18181b',\n    },\n    {\n      id: '2',\n      title: 'Universal Portability',\n      description: 'Compiles across 13 frontend ecosystems with zero friction.',\n      badge: 'Cross Platform',\n      bg: '#27272a',\n    },\n    {\n      id: '3',\n      title: 'Zero Memory Leaks',\n      description: 'Strict lifecycle teardown and disposal hooks across all targets.',\n      badge: 'Performance',\n      bg: '#09090b',\n    },\n  ];\n\n  const displayItems = $derived(items.length > 0 ? items : fallbackItems);\n</script>\n\n<div class=\"relative w-full max-w-2xl mx-auto py-12 px-4 {className}\">\n  {#each displayItems as item, index (item.id)}\n    {@const scale = 1 - (displayItems.length - 1 - index) * scaleDecay}\n    <div\n      class=\"sticky w-full rounded-2xl border border-white/10 p-8 shadow-2xl backdrop-blur-md transition-all duration-300\"\n      style=\"top: calc(10vh + {index * cardGap}px); transform: scale({scale}); transform-origin: top center; background: {item.bg || '#18181b'};\"\n    >\n      <div class=\"flex items-center justify-between mb-4\">\n        {#if item.badge}\n          <span class=\"text-xs uppercase tracking-wider px-3 py-1 rounded-full bg-white/10 text-white/80 font-mono\">\n            {item.badge}\n          </span>\n        {/if}\n        <span class=\"text-xs font-mono text-zinc-500\">0{index + 1}</span>\n      </div>\n      <h3 class=\"text-2xl font-bold text-white mb-2\">{item.title}</h3>\n      <p class=\"text-zinc-400 text-sm leading-relaxed\">{item.description}</p>\n    </div>\n  {/each}\n</div>"
+      }
+    ],
+    "angular": [
+      {
+        "filename": "stacking-cards.component.ts",
+        "language": "typescript",
+        "description": "Angular 18+ Standalone component with Signals (input, computed).",
+        "code": "import { Component, input, computed } from '@angular/core';\nimport { CommonModule } from '@angular/common';\n\nexport interface StackingCardsItem {\n  id: string;\n  title: string;\n  description: string;\n  badge?: string;\n  bg?: string;\n}\n\n@Component({\n  selector: 'exhuma-stacking-cards',\n  standalone: true,\n  imports: [CommonModule],\n  template: `\n    <div [class]=\"'relative w-full max-w-2xl mx-auto py-12 px-4 ' + customClass()\">\n      @for (item of displayItems(); track item.id; let i = $index) {\n        <div\n          class=\"sticky w-full rounded-2xl border border-white/10 p-8 shadow-2xl backdrop-blur-md transition-all duration-300\"\n          [style.top]=\"'calc(10vh + ' + (i * cardGap()) + 'px)'\"\n          [style.transform]=\"'scale(' + getScale(i) + ')'\"\n          [style.transform-origin]=\"'top center'\"\n          [style.background]=\"item.bg || '#18181b'\"\n        >\n          <div class=\"flex items-center justify-between mb-4\">\n            @if (item.badge) {\n              <span class=\"text-xs uppercase tracking-wider px-3 py-1 rounded-full bg-white/10 text-white/80 font-mono\">\n                {{ item.badge }}\n              </span>\n            }\n            <span class=\"text-xs font-mono text-zinc-500\">0{{ i + 1 }}</span>\n          </div>\n          <h3 class=\"text-2xl font-bold text-white mb-2\">{{ item.title }}</h3>\n          <p class=\"text-zinc-400 text-sm leading-relaxed\">{{ item.description }}</p>\n        </div>\n      }\n    </div>\n  `,\n})\nexport class ExhumaStackingCardsComponent {\n  readonly cardGap = input<number>(24);\n  readonly scaleDecay = input<number>(0.04);\n  readonly customClass = input<string>('');\n  readonly items = input<StackingCardsItem[]>([]);\n\n  readonly defaultItems: StackingCardsItem[] = [\n    {\n      id: '1',\n      title: 'Architectural Sovereignty',\n      description: 'Zero runtime dependencies. Pure CSS sticky layout engine.',\n      badge: 'Core Engine',\n      bg: '#18181b',\n    },\n    {\n      id: '2',\n      title: 'Universal Portability',\n      description: 'Compiles across 13 frontend ecosystems with zero friction.',\n      badge: 'Cross Platform',\n      bg: '#27272a',\n    },\n    {\n      id: '3',\n      title: 'Zero Memory Leaks',\n      description: 'Strict lifecycle teardown and disposal hooks across all targets.',\n      badge: 'Performance',\n      bg: '#09090b',\n    },\n  ];\n\n  readonly displayItems = computed(() => {\n    const list = this.items();\n    return list && list.length > 0 ? list : this.defaultItems;\n  });\n\n  getScale(index: number): number {\n    return 1 - (this.displayItems().length - 1 - index) * this.scaleDecay();\n  }\n}"
+      }
+    ],
+    "solid": [
+      {
+        "filename": "StackingCards.tsx",
+        "language": "tsx",
+        "description": "SolidJS component with fine-grained reactive primitives.",
+        "code": "import { Component, For, mergeProps } from 'solid-js';\n\nexport interface StackingCardsItem {\n  id: string;\n  title: string;\n  description: string;\n  badge?: string;\n  bg?: string;\n}\n\nexport interface StackingCardsProps {\n  items?: StackingCardsItem[];\n  cardGap?: number;\n  scaleDecay?: number;\n  class?: string;\n}\n\nconst defaultItems: StackingCardsItem[] = [\n  {\n    id: '1',\n    title: 'Architectural Sovereignty',\n    description: 'Zero runtime dependencies. Pure CSS sticky layout engine.',\n    badge: 'Core Engine',\n    bg: '#18181b',\n  },\n  {\n    id: '2',\n    title: 'Universal Portability',\n    description: 'Compiles across 13 frontend ecosystems with zero friction.',\n    badge: 'Cross Platform',\n    bg: '#27272a',\n  },\n  {\n    id: '3',\n    title: 'Zero Memory Leaks',\n    description: 'Strict lifecycle teardown and disposal hooks across all targets.',\n    badge: 'Performance',\n    bg: '#09090b',\n  },\n];\n\nexport const StackingCards: Component<StackingCardsProps> = (rawProps) => {\n  const props = mergeProps(\n    {\n      cardGap: 24,\n      scaleDecay: 0.04,\n      items: defaultItems,\n      class: '',\n    },\n    rawProps\n  );\n\n  return (\n    <div class={`relative w-full max-w-2xl mx-auto py-12 px-4 ${props.class}`}>\n      <For each={props.items}>\n        {(item, index) => {\n          const scale = 1 - (props.items.length - 1 - index()) * props.scaleDecay;\n          return (\n            <div\n              class=\"sticky w-full rounded-2xl border border-white/10 p-8 shadow-2xl backdrop-blur-md transition-all duration-300\"\n              style={{\n                top: `calc(10vh + ${index() * props.cardGap}px)`,\n                transform: `scale(${scale})`,\n                'transform-origin': 'top center',\n                background: item.bg || '#18181b',\n              }}\n            >\n              <div class=\"flex items-center justify-between mb-4\">\n                {item.badge && (\n                  <span class=\"text-xs uppercase tracking-wider px-3 py-1 rounded-full bg-white/10 text-white/80 font-mono\">\n                    {item.badge}\n                  </span>\n                )}\n                <span class=\"text-xs font-mono text-zinc-500\">0{index() + 1}</span>\n              </div>\n              <h3 class=\"text-2xl font-bold text-white mb-2\">{item.title}</h3>\n              <p class=\"text-zinc-400 text-sm leading-relaxed\">{item.description}</p>\n            </div>\n          );\n        }}\n      </For>\n    </div>\n  );\n};"
+      }
+    ],
+    "astro": [
+      {
+        "filename": "StackingCards.astro",
+        "language": "astro",
+        "description": "Native Astro component with zero-JS client overhead by default.",
+        "code": "---\ninterface Item {\n  id: string;\n  title: string;\n  description: string;\n  badge?: string;\n}\n\ninterface Props {\n  items?: Item[];\n  cardGap?: number;\n  scaleDecay?: number;\n  class?: string;\n}\n\nconst {\n  cardGap = 24,\n  scaleDecay = 0.04,\n  class: className = '',\n  items = [\n    { id: '1', title: 'Astro Zero-JS', description: 'Renders pure HTML and CSS transforms with zero client JavaScript runtime.', badge: 'Speed' },\n    { id: '2', title: 'Content Collections Ready', description: 'Pass markdown collections or CMS data straight into props.', badge: 'Docs' },\n    { id: '3', title: 'Responsive Stacking', description: 'CSS sticky positioning handles dynamic viewports effortlessly.', badge: 'Layout' },\n  ],\n} = Astro.props;\n---\n\n<div class:list={['relative w-full max-w-4xl mx-auto py-12 px-4', className]}>\n  {items.map((item, index) => {\n    const scale = 1 - (items.length - 1 - index) * scaleDecay;\n    return (\n      <div\n        class=\"sticky rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-8 shadow-xl mb-8\"\n        style={`top: calc(10vh + ${index * cardGap}px); transform: scale(${scale}); transform-origin: top center;`}\n      >\n        {item.badge && (\n          <span class=\"inline-block text-xs font-semibold px-2.5 py-1 rounded bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 mb-3\">\n            {item.badge}\n          </span>\n        )}\n        <h3 class=\"text-2xl font-bold text-slate-900 dark:text-white mb-2\">{item.title}</h3>\n        <p class=\"text-slate-600 dark:text-slate-400\">{item.description}</p>\n      </div>\n    );\n  })}\n</div>"
+      }
+    ],
+    "blade": [
+      {
+        "filename": "stacking-cards.blade.php",
+        "language": "php",
+        "description": "Laravel Blade anonymous component (resources/views/components/exhuma/stacking-cards.blade.php).",
+        "code": "@props([\n    'items' => [\n        ['id' => '1', 'title' => 'TALL Stack Ready', 'description' => 'Drop directly into Laravel with Tailwind CSS and Alpine.js.', 'badge' => 'Laravel'],\n        ['id' => '2', 'title' => 'Blade Component', 'description' => 'Pass collections, Eloquent models, or array items seamlessly.', 'badge' => 'Fullstack'],\n        ['id' => '3', 'title' => 'Dynamic Calculation', 'description' => 'Zero external JavaScript bundle required for sticky scaling.', 'badge' => 'Blade'],\n    ],\n    'cardGap' => 24,\n    'scaleDecay' => 0.04,\n])\n\n<div {{ $attributes->merge(['class' => 'relative w-full max-w-4xl mx-auto py-12 px-4']) }}>\n    @foreach($items as $index => $item)\n        @php\n            $scale = 1 - (count($items) - 1 - $index) * $scaleDecay;\n            $top = \"calc(10vh + \" . ($index * $cardGap) . \"px)\";\n        @endphp\n        <div \n            class=\"sticky rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-8 shadow-xl mb-8 transition-transform duration-300\"\n            style=\"top: {{ $top }}; transform: scale({{ $scale }}); transform-origin: top center;\"\n        >\n            @if(!empty($item['badge']))\n                <span class=\"inline-block text-xs font-semibold px-2.5 py-1 rounded bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 mb-3\">\n                    {{ $item['badge'] }}\n                </span>\n            @endif\n            <h3 class=\"text-2xl font-bold text-slate-900 dark:text-white mb-2\">{{ $item['title'] }}</h3>\n            <p class=\"text-slate-600 dark:text-slate-400\">{{ $item['description'] }}</p>\n        </div>\n    @endforeach\n</div>"
+      }
+    ],
+    "vanilla": [
+      {
+        "filename": "exhuma-stacking-cards.js",
+        "language": "javascript",
+        "description": "Zero-dependency autonomous ES6 class with strict destroy() memory cleanup.",
+        "code": "/**\n * Exhuma Stacking Cards — Pure Vanilla JS\n * Zero external dependencies. Strict lifecycle: init(), update(), destroy().\n */\nexport class ExhumaStackingCards {\n  constructor(element, options = {}) {\n    this.container = typeof element === 'string' ? document.querySelector(element) : element;\n    if (!this.container) throw new Error('[Exhuma] Target element not found');\n\n    this.options = Object.assign(\n      {\n        cardGap: 24,\n        scaleDecay: 0.04,\n      },\n      options\n    );\n\n    this._listeners = [];\n    this.init();\n  }\n\n  init() {\n    this.cards = Array.from(this.container.querySelectorAll('.exhuma-card'));\n    this.applyStyles();\n  }\n\n  applyStyles() {\n    const total = this.cards.length;\n    this.cards.forEach((card, index) => {\n      const scale = 1 - (total - 1 - index) * this.options.scaleDecay;\n      card.style.position = 'sticky';\n      card.style.top = `calc(10vh + ${index * this.options.cardGap}px)`;\n      card.style.transform = `scale(${scale})`;\n      card.style.transformOrigin = 'top center';\n      card.style.transition = 'transform 0.2s cubic-bezier(0.16, 1, 0.3, 1)';\n    });\n  }\n\n  update(newOptions = {}) {\n    this.options = Object.assign(this.options, newOptions);\n    this.applyStyles();\n  }\n\n  destroy() {\n    this.cards.forEach((card) => {\n      card.style.position = '';\n      card.style.top = '';\n      card.style.transform = '';\n      card.style.transformOrigin = '';\n      card.style.transition = '';\n    });\n    this._listeners.forEach(({ target, event, handler }) => target.removeEventListener(event, handler));\n    this._listeners = [];\n  }\n}\n\n// Auto-bootstrap when data-exhuma=\"stacking-cards\" is present\nif (typeof window !== 'undefined') {\n  document.addEventListener('DOMContentLoaded', () => {\n    document.querySelectorAll('[data-exhuma=\"stacking-cards\"]').forEach((el) => {\n      new ExhumaStackingCards(el);\n    });\n  });\n}"
+      },
+      {
+        "filename": "exhuma-stacking-cards.css",
+        "language": "css",
+        "description": "Scoped CSS with @layer isolation to prevent theme pollution.",
+        "code": "@layer exhuma {\n  .exhuma-stacking-container {\n    position: relative;\n    width: 100%;\n    max-width: 56rem;\n    margin: 0 auto;\n    padding: 3rem 1rem;\n  }\n\n  .exhuma-card {\n    background: var(--exhuma-card-bg, #ffffff);\n    border: 1px solid var(--exhuma-border, #e2e8f0);\n    border-radius: 1rem;\n    padding: 2rem;\n    margin-bottom: 2rem;\n    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);\n  }\n\n  @media (prefers-color-scheme: dark) {\n    .exhuma-card {\n      background: var(--exhuma-card-bg-dark, #0f172a);\n      border-color: var(--exhuma-border-dark, #1e293b);\n      color: #f8fafc;\n    }\n  }\n}"
+      }
+    ],
+    "wordpress": [
+      {
+        "filename": "block.json",
+        "language": "json",
+        "description": "WordPress Block API v3 metadata specification.",
+        "code": "{\n  \"$schema\": \"https://schemas.wp.org/trunk/block.json\",\n  \"apiVersion\": 3,\n  \"name\": \"exhuma/stacking-cards\",\n  \"version\": \"1.0.0\",\n  \"title\": \"Exhuma Stacking Cards\",\n  \"category\": \"design\",\n  \"icon\": \"slides\",\n  \"description\": \"Progressive sticky stacking cards with depth scale decay.\",\n  \"attributes\": {\n    \"cardGap\": { \"type\": \"number\", \"default\": 24 },\n    \"scaleDecay\": { \"type\": \"number\", \"default\": 0.04 }\n  },\n  \"editorScript\": \"file:./index.js\",\n  \"style\": \"file:./style.css\"\n}"
+      },
+      {
+        "filename": "functions.php",
+        "language": "php",
+        "description": "PHP enqueue helper for classic themes or page builders.",
+        "code": "<?php\n/**\n * Enqueue Exhuma Stacking Cards assets in WordPress\n */\nfunction exhuma_enqueue_stacking_cards() {\n    wp_enqueue_style('exhuma-stacking-cards', get_template_directory_uri() . '/css/exhuma-stacking-cards.css', array(), '1.0.0');\n    wp_enqueue_script('exhuma-stacking-cards', get_template_directory_uri() . '/js/exhuma-stacking-cards.js', array(), '1.0.0', true);\n}\nadd_action('wp_enqueue_scripts', 'exhuma_enqueue_stacking_cards');"
+      }
+    ],
+    "webcomponent": [
+      {
+        "filename": "exhuma-stacking-cards.js",
+        "language": "javascript",
+        "description": "Autonomous Custom Element v1 (<exhuma-stacking-cards>).",
+        "code": "/**\n * Universal Custom Element: <exhuma-stacking-cards>\n * Framework-agnostic: works natively in Svelte, Angular, Vue, or static HTML.\n */\nclass ExhumaStackingCardsElement extends HTMLElement {\n  static get observedAttributes() {\n    return ['card-gap', 'scale-decay'];\n  }\n\n  connectedCallback() {\n    this.render();\n  }\n\n  attributeChangedCallback() {\n    this.render();\n  }\n\n  render() {\n    const cardGap = parseFloat(this.getAttribute('card-gap')) || 24;\n    const scaleDecay = parseFloat(this.getAttribute('scale-decay')) || 0.04;\n    const cards = Array.from(this.querySelectorAll('.exhuma-card'));\n\n    cards.forEach((card, index) => {\n      const scale = 1 - (cards.length - 1 - index) * scaleDecay;\n      card.style.position = 'sticky';\n      card.style.top = `calc(10vh + ${index * cardGap}px)`;\n      card.style.transform = `scale(${scale})`;\n      card.style.transformOrigin = 'top center';\n    });\n  }\n}\n\nif (!customElements.get('exhuma-stacking-cards')) {\n  customElements.define('exhuma-stacking-cards', ExhumaStackingCardsElement);\n}"
+      }
+    ],
+    "react-native": [
+      {
+        "filename": "StackingCards.native.tsx",
+        "language": "tsx",
+        "description": "React Native / Expo component for iOS and Android with StyleSheet / NativeWind compatibility.",
+        "code": "import React from 'react';\nimport { View, Text, ScrollView, StyleSheet } from 'react-native';\n\nexport interface StackingCardsItem {\n  id: string;\n  title: string;\n  description: string;\n  badge?: string;\n  bg?: string;\n}\n\nexport interface StackingCardsProps {\n  items?: StackingCardsItem[];\n  cardGap?: number;\n}\n\nconst defaultItems: StackingCardsItem[] = [\n  {\n    id: '1',\n    title: 'Architectural Sovereignty',\n    description: 'Zero runtime dependencies. Pure native layout engine.',\n    badge: 'Core Engine',\n    bg: '#18181b',\n  },\n  {\n    id: '2',\n    title: 'Universal Portability',\n    description: 'Compiles across 13 frontend ecosystems with zero friction.',\n    badge: 'Cross Platform',\n    bg: '#27272a',\n  },\n  {\n    id: '3',\n    title: 'Zero Memory Leaks',\n    description: 'Strict lifecycle teardown and disposal hooks across all targets.',\n    badge: 'Performance',\n    bg: '#09090b',\n  },\n];\n\nexport const StackingCards: React.FC<StackingCardsProps> = ({\n  items = defaultItems,\n  cardGap = 24,\n}) => {\n  return (\n    <ScrollView contentContainerStyle={styles.container}>\n      {items.map((item, index) => (\n        <View\n          key={item.id}\n          style={[\n            styles.card,\n            {\n              backgroundColor: item.bg || '#18181b',\n              marginTop: index === 0 ? 0 : -cardGap,\n            },\n          ]}\n        >\n          <View style={styles.header}>\n            {item.badge ? (\n              <View style={styles.badge}>\n                <Text style={styles.badgeText}>{item.badge}</Text>\n              </View>\n            ) : null}\n            <Text style={styles.indexText}>0{index + 1}</Text>\n          </View>\n          <Text style={styles.title}>{item.title}</Text>\n          <Text style={styles.description}>{item.description}</Text>\n        </View>\n      ))}\n    </ScrollView>\n  );\n};\n\nconst styles = StyleSheet.create({\n  container: {\n    paddingVertical: 24,\n    paddingHorizontal: 16,\n    alignItems: 'center',\n  },\n  card: {\n    width: '100%',\n    maxWidth: 600,\n    borderRadius: 16,\n    borderWidth: 1,\n    borderColor: 'rgba(255,255,255,0.1)',\n    padding: 24,\n    shadowColor: '#000',\n    shadowOffset: { width: 0, height: 8 },\n    shadowOpacity: 0.3,\n    shadowRadius: 12,\n    elevation: 8,\n  },\n  header: {\n    flexDirection: 'row',\n    justifyContent: 'space-between',\n    alignItems: 'center',\n    marginBottom: 16,\n  },\n  badge: {\n    paddingHorizontal: 12,\n    paddingVertical: 4,\n    borderRadius: 999,\n    backgroundColor: 'rgba(255,255,255,0.1)',\n  },\n  badgeText: {\n    fontSize: 10,\n    fontWeight: '600',\n    color: 'rgba(255,255,255,0.8)',\n    textTransform: 'uppercase',\n  },\n  indexText: {\n    fontSize: 12,\n    color: '#71717a',\n    fontFamily: 'Courier',\n  },\n  title: {\n    fontSize: 20,\n    fontWeight: 'bold',\n    color: '#ffffff',\n    marginBottom: 8,\n  },\n  description: {\n    fontSize: 14,\n    color: '#a1a1aa',\n    lineHeight: 20,\n  },\n});"
+      }
+    ],
+    "flutter": [
+      {
+        "filename": "stacking_cards.dart",
+        "language": "dart",
+        "description": "Idiomatic Flutter widget for iOS, Android, and Desktop with scale transform.",
+        "code": "import 'package:flutter/material.dart';\n\nclass StackingCardItem {\n  final String id;\n  final String title;\n  final String description;\n  final String? badge;\n  final Color? bg;\n\n  const StackingCardItem({\n    required this.id,\n    required this.title,\n    required this.description,\n    this.badge,\n    this.bg,\n  });\n}\n\nclass ExhumaStackingCards extends StatelessWidget {\n  final List<StackingCardItem>? items;\n  final double cardGap;\n  final double scaleDecay;\n\n  const ExhumaStackingCards({\n    super.key,\n    this.items,\n    this.cardGap = 24.0,\n    this.scaleDecay = 0.04,\n  });\n\n  static const List<StackingCardItem> _defaultItems = [\n    StackingCardItem(\n      id: '1',\n      title: 'Architectural Sovereignty',\n      description: 'Zero runtime dependencies. Pure layout engine.',\n      badge: 'Core Engine',\n      bg: Color(0xFF18181B),\n    ),\n    StackingCardItem(\n      id: '2',\n      title: 'Universal Portability',\n      description: 'Compiles across 13 frontend ecosystems with zero friction.',\n      badge: 'Cross Platform',\n      bg: Color(0xFF27272A),\n    ),\n    StackingCardItem(\n      id: '3',\n      title: 'Zero Memory Leaks',\n      description: 'Strict lifecycle teardown and disposal hooks across all targets.',\n      badge: 'Performance',\n      bg: Color(0xFF09090B),\n    ),\n  ];\n\n  @override\n  Widget build(BuildContext context) {\n    final displayItems = (items != null && items!.isNotEmpty) ? items! : _defaultItems;\n\n    return ListView.builder(\n      shrinkWrap: true,\n      physics: const ClampingScrollPhysics(),\n      padding: const EdgeInsets.symmetric(vertical: 24.0, horizontal: 16.0),\n      itemCount: displayItems.length,\n      itemBuilder: (context, index) {\n        final item = displayItems[index];\n        final scale = 1.0 - (displayItems.length - 1 - index) * scaleDecay;\n\n        return Transform.scale(\n          scale: scale.clamp(0.7, 1.0),\n          alignment: Alignment.topCenter,\n          child: Container(\n            margin: EdgeInsets.only(bottom: cardGap),\n            padding: const EdgeInsets.all(24.0),\n            decoration: BoxDecoration(\n              color: item.bg ?? const Color(0xFF18181B),\n              borderRadius: BorderRadius.circular(16.0),\n              border: Border.all(color: Colors.white.withOpacity(0.1)),\n              boxShadow: [\n                BoxShadow(\n                  color: Colors.black.withOpacity(0.4),\n                  blurRadius: 16.0,\n                  offset: const Offset(0, 8),\n                ),\n              ],\n            ),\n            child: Column(\n              crossAxisAlignment: CrossAxisAlignment.start,\n              children: [\n                Row(\n                  mainAxisAlignment: MainAxisAlignment.spaceBetween,\n                  children: [\n                    if (item.badge != null)\n                      Container(\n                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),\n                        decoration: BoxDecoration(\n                          color: Colors.white.withOpacity(0.1),\n                          borderRadius: BorderRadius.circular(20),\n                        ),\n                        child: Text(\n                          item.badge!,\n                          style: const TextStyle(\n                            color: Colors.white70,\n                            fontSize: 10,\n                            fontWeight: FontWeight.bold,\n                          ),\n                        ),\n                      ),\n                    Text(\n                      '0${index + 1}',\n                      style: const TextStyle(color: Colors.grey, fontSize: 12),\n                    ),\n                  ],\n                ),\n                const SizedBox(height: 16),\n                Text(\n                  item.title,\n                  style: const TextStyle(\n                    color: Colors.white,\n                    fontSize: 20,\n                    fontWeight: FontWeight.bold,\n                  ),\n                ),\n                const SizedBox(height: 8),\n                Text(\n                  item.description,\n                  style: const TextStyle(color: Colors.white60, fontSize: 14),\n                ),\n              ],\n            ),\n          ),\n        );\n      },\n    );\n  }\n}"
+      }
+    ]
+  },
+  "horizontal-scroller": {
+    "react": [
+      {
+        "filename": "HorizontalScroller.tsx",
+        "language": "tsx",
+        "description": "React/Next.js horizontal scroller with wheel-to-scroll support.",
+        "code": "'use client';\n\nimport React, { useRef, useEffect } from 'react';\n\nexport interface HorizontalScrollerProps extends React.HTMLAttributes<HTMLDivElement> {\n  itemGap?: number;\n  showFadeEdges?: boolean;\n  children: React.ReactNode;\n}\n\nexport function HorizontalScroller({\n  itemGap = 20,\n  showFadeEdges = true,\n  className = '',\n  children,\n  ...props\n}: HorizontalScrollerProps) {\n  const containerRef = useRef<HTMLDivElement>(null);\n\n  useEffect(() => {\n    const el = containerRef.current;\n    if (!el) return;\n\n    const onWheel = (e: WheelEvent) => {\n      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {\n        e.preventDefault();\n        el.scrollLeft += e.deltaY;\n      }\n    };\n\n    el.addEventListener('wheel', onWheel, { passive: false });\n    return () => el.removeEventListener('wheel', onWheel);\n  }, []);\n\n  return (\n    <div className={`relative w-full overflow-hidden ${className}`} {...props}>\n      <div\n        ref={containerRef}\n        className=\"flex overflow-x-auto scrollbar-none scroll-smooth py-6 px-4\"\n        style={{ gap: `${itemGap}px` }}\n      >\n        {children}\n      </div>\n    </div>\n  );\n}"
+      }
+    ],
+    "nextjs": [
+      {
+        "filename": "HorizontalScroller.tsx",
+        "language": "tsx",
+        "description": "React/Next.js horizontal scroller with wheel-to-scroll support.",
+        "code": "'use client';\n\nimport React, { useRef, useEffect } from 'react';\n\nexport interface HorizontalScrollerProps extends React.HTMLAttributes<HTMLDivElement> {\n  itemGap?: number;\n  showFadeEdges?: boolean;\n  children: React.ReactNode;\n}\n\nexport function HorizontalScroller({\n  itemGap = 20,\n  showFadeEdges = true,\n  className = '',\n  children,\n  ...props\n}: HorizontalScrollerProps) {\n  const containerRef = useRef<HTMLDivElement>(null);\n\n  useEffect(() => {\n    const el = containerRef.current;\n    if (!el) return;\n\n    const onWheel = (e: WheelEvent) => {\n      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {\n        e.preventDefault();\n        el.scrollLeft += e.deltaY;\n      }\n    };\n\n    el.addEventListener('wheel', onWheel, { passive: false });\n    return () => el.removeEventListener('wheel', onWheel);\n  }, []);\n\n  return (\n    <div className={`relative w-full overflow-hidden ${className}`} {...props}>\n      <div\n        ref={containerRef}\n        className=\"flex overflow-x-auto scrollbar-none scroll-smooth py-6 px-4\"\n        style={{ gap: `${itemGap}px` }}\n      >\n        {children}\n      </div>\n    </div>\n  );\n}"
+      }
+    ],
+    "vue": [
+      {
+        "filename": "HorizontalScroller.vue",
+        "language": "vue",
+        "description": "Vue 3 horizontal scroller with wheel event listener.",
+        "code": "<script setup lang=\"ts\">\nimport { ref, onMounted, onUnmounted } from 'vue';\n\nconst props = withDefaults(\n  defineProps<{\n    itemGap?: number;\n  }>(),\n  {\n    itemGap: 20,\n  }\n);\n\nconst container = ref<HTMLElement | null>(null);\n\nconst onWheel = (e: WheelEvent) => {\n  if (!container.value) return;\n  if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {\n    e.preventDefault();\n    container.value.scrollLeft += e.deltaY;\n  }\n};\n\nonMounted(() => {\n  container.value?.addEventListener('wheel', onWheel, { passive: false });\n});\n\nonUnmounted(() => {\n  container.value?.removeEventListener('wheel', onWheel);\n});\n</script>\n\n<template>\n  <div class=\"relative w-full overflow-hidden\">\n    <div\n      ref=\"container\"\n      class=\"flex overflow-x-auto scroll-smooth py-6 px-4\"\n      :style=\"{ gap: `${itemGap}px` }\"\n    >\n      <slot />\n    </div>\n  </div>\n</template>"
+      }
+    ],
+    "svelte": [
+      {
+        "filename": "HorizontalScroller.svelte",
+        "language": "svelte",
+        "description": "Svelte 5 Runes horizontal scroller with wheel-to-horizontal translation.",
+        "code": "<script lang=\"ts\">\n  import { onMount } from 'svelte';\n\n  let {\n    itemGap = 20,\n    showFadeEdges = true,\n    class: className = '',\n    children,\n  }: {\n    itemGap?: number;\n    showFadeEdges?: boolean;\n    class?: string;\n    children?: import('svelte').Snippet;\n  } = $props();\n\n  let scrollerRef: HTMLDivElement;\n\n  onMount(() => {\n    const el = scrollerRef;\n    if (!el) return;\n\n    const handleWheel = (e: WheelEvent) => {\n      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {\n        e.preventDefault();\n        el.scrollLeft += e.deltaY;\n      }\n    };\n\n    el.addEventListener('wheel', handleWheel, { passive: false });\n    return () => {\n      el.removeEventListener('wheel', handleWheel);\n    };\n  });\n</script>\n\n<div class=\"relative w-full overflow-hidden {className}\">\n  {#if showFadeEdges}\n    <div class=\"pointer-events-none absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-zinc-950 to-transparent z-10\"></div>\n    <div class=\"pointer-events-none absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-zinc-950 to-transparent z-10\"></div>\n  {/if}\n  <div\n    bind:this={scrollerRef}\n    class=\"flex w-full overflow-x-auto scrollbar-none py-4 scroll-smooth\"\n    style=\"gap: {itemGap}px;\"\n  >\n    {@render children?.()}\n  </div>\n</div>"
+      }
+    ],
+    "angular": [
+      {
+        "filename": "horizontal-scroller.component.ts",
+        "language": "typescript",
+        "description": "Angular 18+ Standalone horizontal scroller with wheel momentum.",
+        "code": "import { Component, input, ElementRef, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';\nimport { CommonModule } from '@angular/common';\n\n@Component({\n  selector: 'exhuma-horizontal-scroller',\n  standalone: true,\n  imports: [CommonModule],\n  template: `\n    <div [class]=\"'relative w-full overflow-hidden ' + customClass()\">\n      @if (showFadeEdges()) {\n        <div class=\"pointer-events-none absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-zinc-950 to-transparent z-10\"></div>\n        <div class=\"pointer-events-none absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-zinc-950 to-transparent z-10\"></div>\n      }\n      <div\n        #scroller\n        class=\"flex w-full overflow-x-auto scrollbar-none py-4 scroll-smooth\"\n        [style.gap]=\"itemGap() + 'px'\"\n      >\n        <ng-content></ng-content>\n      </div>\n    </div>\n  `,\n})\nexport class ExhumaHorizontalScrollerComponent implements AfterViewInit, OnDestroy {\n  readonly itemGap = input<number>(20);\n  readonly showFadeEdges = input<boolean>(true);\n  readonly customClass = input<string>('');\n\n  @ViewChild('scroller') scrollerRef!: ElementRef<HTMLDivElement>;\n\n  private wheelHandler = (e: WheelEvent) => {\n    if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {\n      e.preventDefault();\n      this.scrollerRef.nativeElement.scrollLeft += e.deltaY;\n    }\n  };\n\n  ngAfterViewInit() {\n    this.scrollerRef.nativeElement.addEventListener('wheel', this.wheelHandler, { passive: false });\n  }\n\n  ngOnDestroy() {\n    this.scrollerRef?.nativeElement?.removeEventListener('wheel', this.wheelHandler);\n  }\n}"
+      }
+    ],
+    "solid": [
+      {
+        "filename": "HorizontalScroller.tsx",
+        "language": "tsx",
+        "description": "SolidJS horizontal scroller with wheel-to-horizontal translation.",
+        "code": "import { Component, JSX, mergeProps, onMount, onCleanup } from 'solid-js';\n\nexport interface HorizontalScrollerProps {\n  itemGap?: number;\n  showFadeEdges?: boolean;\n  class?: string;\n  children?: JSX.Element;\n}\n\nexport const HorizontalScroller: Component<HorizontalScrollerProps> = (rawProps) => {\n  const props = mergeProps(\n    {\n      itemGap: 20,\n      showFadeEdges: true,\n      class: '',\n    },\n    rawProps\n  );\n\n  let containerRef: HTMLDivElement | undefined;\n\n  onMount(() => {\n    const el = containerRef;\n    if (!el) return;\n\n    const handleWheel = (e: WheelEvent) => {\n      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {\n        e.preventDefault();\n        el.scrollLeft += e.deltaY;\n      }\n    };\n\n    el.addEventListener('wheel', handleWheel, { passive: false });\n    onCleanup(() => el.removeEventListener('wheel', handleWheel));\n  });\n\n  return (\n    <div class={`relative w-full overflow-hidden ${props.class}`}>\n      {props.showFadeEdges && (\n        <>\n          <div class=\"pointer-events-none absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-zinc-950 to-transparent z-10\" />\n          <div class=\"pointer-events-none absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-zinc-950 to-transparent z-10\" />\n        </>\n      )}\n      <div\n        ref={containerRef}\n        class=\"flex w-full overflow-x-auto scrollbar-none py-4 scroll-smooth\"\n        style={{ gap: `${props.itemGap}px` }}\n      >\n        {props.children}\n      </div>\n    </div>\n  );\n};"
+      }
+    ],
+    "astro": [
+      {
+        "filename": "HorizontalScroller.astro",
+        "language": "astro",
+        "description": "Astro component with zero-JS native horizontal scrolling.",
+        "code": "---\ninterface Props {\n  itemGap?: number;\n  class?: string;\n}\n\nconst { itemGap = 20, class: className = '' } = Astro.props;\n---\n\n<div class:list={['relative w-full overflow-hidden', className]}>\n  <div\n    class=\"flex overflow-x-auto scroll-smooth py-6 px-4 snap-x snap-mandatory\"\n    style={`gap: ${itemGap}px;`}\n  >\n    <slot />\n  </div>\n</div>"
+      }
+    ],
+    "blade": [
+      {
+        "filename": "horizontal-scroller.blade.php",
+        "language": "php",
+        "description": "Laravel Blade component with Alpine.js wheel binding.",
+        "code": "@props([\n    'itemGap' => 20,\n])\n\n<div {{ $attributes->merge(['class' => 'relative w-full overflow-hidden']) }}>\n    <div \n        x-data\n        @wheel.prevent=\"$el.scrollLeft += $event.deltaY\"\n        class=\"flex overflow-x-auto scroll-smooth py-6 px-4\"\n        style=\"gap: {{ $itemGap }}px;\"\n    >\n        {{ $slot }}\n    </div>\n</div>"
+      }
+    ],
+    "vanilla": [
+      {
+        "filename": "exhuma-scroller.js",
+        "language": "javascript",
+        "description": "Autonomous Vanilla JS class with destroy() cleanup.",
+        "code": "export class ExhumaHorizontalScroller {\n  constructor(element, options = {}) {\n    this.container = typeof element === 'string' ? document.querySelector(element) : element;\n    if (!this.container) throw new Error('[Exhuma] Scroller container not found');\n\n    this.options = Object.assign({ itemGap: 20 }, options);\n    this._onWheel = this.handleWheel.bind(this);\n    this.init();\n  }\n\n  init() {\n    this.container.style.display = 'flex';\n    this.container.style.overflowX = 'auto';\n    this.container.style.gap = `${this.options.itemGap}px`;\n    this.container.addEventListener('wheel', this._onWheel, { passive: false });\n  }\n\n  handleWheel(e) {\n    if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {\n      e.preventDefault();\n      this.container.scrollLeft += e.deltaY;\n    }\n  }\n\n  destroy() {\n    this.container.removeEventListener('wheel', this._onWheel);\n  }\n}"
+      }
+    ],
+    "wordpress": [
+      {
+        "filename": "block.json",
+        "language": "json",
+        "description": "WordPress Block API v3 definition for Horizontal Scroller.",
+        "code": "{\n  \"$schema\": \"https://schemas.wp.org/trunk/block.json\",\n  \"apiVersion\": 3,\n  \"name\": \"exhuma/horizontal-scroller\",\n  \"version\": \"1.0.0\",\n  \"title\": \"Exhuma Horizontal Scroller\",\n  \"category\": \"layout\",\n  \"icon\": \"ellipsis\",\n  \"description\": \"Smooth horizontal scrolling card rail.\",\n  \"attributes\": {\n    \"itemGap\": { \"type\": \"number\", \"default\": 20 }\n  }\n}"
+      }
+    ],
+    "webcomponent": [
+      {
+        "filename": "exhuma-horizontal-scroller.js",
+        "language": "javascript",
+        "description": "Custom Element (<exhuma-horizontal-scroller>).",
+        "code": "class ExhumaHorizontalScrollerElement extends HTMLElement {\n  connectedCallback() {\n    this.style.display = 'block';\n    this.style.overflowX = 'auto';\n    this.addEventListener('wheel', (e) => {\n      if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {\n        e.preventDefault();\n        this.scrollLeft += e.deltaY;\n      }\n    }, { passive: false });\n  }\n}\nif (!customElements.get('exhuma-horizontal-scroller')) {\n  customElements.define('exhuma-horizontal-scroller', ExhumaHorizontalScrollerElement);\n}"
+      }
+    ],
+    "react-native": [
+      {
+        "filename": "HorizontalScroller.native.tsx",
+        "language": "tsx",
+        "description": "React Native / Expo horizontal scroller for iOS and Android.",
+        "code": "import React from 'react';\nimport { ScrollView, StyleSheet } from 'react-native';\n\nexport interface HorizontalScrollerProps {\n  itemGap?: number;\n  children?: React.ReactNode;\n}\n\nexport const HorizontalScroller: React.FC<HorizontalScrollerProps> = ({\n  itemGap = 20,\n  children,\n}) => {\n  return (\n    <ScrollView\n      horizontal\n      showsHorizontalScrollIndicator={false}\n      contentContainerStyle={[styles.container, { gap: itemGap }]}\n    >\n      {children}\n    </ScrollView>\n  );\n};\n\nconst styles = StyleSheet.create({\n  container: {\n    paddingHorizontal: 16,\n    paddingVertical: 12,\n    alignItems: 'center',\n  },\n});"
+      }
+    ],
+    "flutter": [
+      {
+        "filename": "horizontal_scroller.dart",
+        "language": "dart",
+        "description": "Flutter horizontal scroll rail widget for iOS, Android, and Desktop.",
+        "code": "import 'package:flutter/material.dart';\n\nclass ExhumaHorizontalScroller extends StatelessWidget {\n  final List<Widget> children;\n  final double itemGap;\n\n  const ExhumaHorizontalScroller({\n    super.key,\n    required this.children,\n    this.itemGap = 20.0,\n  });\n\n  @override\n  Widget build(BuildContext context) {\n    return SingleChildScrollView(\n      scrollDirection: Axis.horizontal,\n      physics: const BouncingScrollPhysics(),\n      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),\n      child: Row(\n        mainAxisSize: MainAxisSize.min,\n        children: [\n          for (int i = 0; i < children.length; i++) ...[\n            children[i],\n            if (i < children.length - 1) SizedBox(width: itemGap),\n          ],\n        ],\n      ),\n    );\n  }\n}"
+      }
+    ]
+  },
+  "css-masonry": {
+    "react": [
+      {
+        "filename": "CssMasonry.tsx",
+        "language": "tsx",
+        "description": "Pure CSS masonry component for React & Next.js.",
+        "code": "import React from 'react';\n\nexport interface CssMasonryProps extends React.HTMLAttributes<HTMLDivElement> {\n  columns?: number;\n  gap?: number;\n  children: React.ReactNode;\n}\n\nexport function CssMasonry({\n  columns = 3,\n  gap = 16,\n  className = '',\n  children,\n  ...props\n}: CssMasonryProps) {\n  return (\n    <div\n      className={`w-full ${className}`}\n      style={{\n        columnCount: columns,\n        columnGap: `${gap}px`,\n      }}\n      {...props}\n    >\n      {React.Children.map(children, (child) => (\n        <div style={{ breakInside: 'avoid', marginBottom: `${gap}px` }}>\n          {child}\n        </div>\n      ))}\n    </div>\n  );\n}"
+      }
+    ],
+    "nextjs": [
+      {
+        "filename": "CssMasonry.tsx",
+        "language": "tsx",
+        "description": "Pure CSS masonry component for React & Next.js.",
+        "code": "import React from 'react';\n\nexport interface CssMasonryProps extends React.HTMLAttributes<HTMLDivElement> {\n  columns?: number;\n  gap?: number;\n  children: React.ReactNode;\n}\n\nexport function CssMasonry({\n  columns = 3,\n  gap = 16,\n  className = '',\n  children,\n  ...props\n}: CssMasonryProps) {\n  return (\n    <div\n      className={`w-full ${className}`}\n      style={{\n        columnCount: columns,\n        columnGap: `${gap}px`,\n      }}\n      {...props}\n    >\n      {React.Children.map(children, (child) => (\n        <div style={{ breakInside: 'avoid', marginBottom: `${gap}px` }}>\n          {child}\n        </div>\n      ))}\n    </div>\n  );\n}"
+      }
+    ],
+    "vue": [
+      {
+        "filename": "CssMasonry.vue",
+        "language": "vue",
+        "description": "Vue 3 pure CSS masonry component.",
+        "code": "<script setup lang=\"ts\">\nconst props = withDefaults(\n  defineProps<{\n    columns?: number;\n    gap?: number;\n  }>(),\n  {\n    columns: 3,\n    gap: 16,\n  }\n);\n</script>\n\n<template>\n  <div\n    class=\"w-full\"\n    :style=\"{\n      columnCount: columns,\n      columnGap: `${gap}px`,\n    }\"\n  >\n    <div\n      v-for=\"(slotItem, index) in $slots.default ? $slots.default() : []\"\n      :key=\"index\"\n      :style=\"{ breakInside: 'avoid', marginBottom: `${gap}px` }\"\n    >\n      <component :is=\"slotItem\" />\n    </div>\n  </div>\n</template>"
+      }
+    ],
+    "svelte": [
+      {
+        "filename": "CssMasonry.svelte",
+        "language": "svelte",
+        "description": "Svelte 5 Runes CSS Masonry layout component.",
+        "code": "<script lang=\"ts\">\n  let {\n    columns = 3,\n    gap = 16,\n    class: className = '',\n    children,\n  }: {\n    columns?: number;\n    gap?: number;\n    class?: string;\n    children?: import('svelte').Snippet;\n  } = $props();\n</script>\n\n<div\n  class=\"w-full [column-fill:_balance] {className}\"\n  style=\"column-count: {columns}; column-gap: {gap}px;\"\n>\n  {@render children?.()}\n</div>"
+      }
+    ],
+    "angular": [
+      {
+        "filename": "css-masonry.component.ts",
+        "language": "typescript",
+        "description": "Angular 18+ Standalone CSS Masonry component.",
+        "code": "import { Component, input } from '@angular/core';\nimport { CommonModule } from '@angular/common';\n\n@Component({\n  selector: 'exhuma-css-masonry',\n  standalone: true,\n  imports: [CommonModule],\n  template: `\n    <div\n      [class]=\"'w-full [column-fill:_balance] ' + customClass()\"\n      [style.columnCount]=\"columns()\"\n      [style.columnGap]=\"gap() + 'px'\"\n    >\n      <ng-content></ng-content>\n    </div>\n  `,\n})\nexport class ExhumaCssMasonryComponent {\n  readonly columns = input<number>(3);\n  readonly gap = input<number>(16);\n  readonly customClass = input<string>('');\n}"
+      }
+    ],
+    "solid": [
+      {
+        "filename": "CssMasonry.tsx",
+        "language": "tsx",
+        "description": "SolidJS CSS Masonry component.",
+        "code": "import { Component, JSX, mergeProps } from 'solid-js';\n\nexport interface CssMasonryProps {\n  columns?: number;\n  gap?: number;\n  class?: string;\n  children?: JSX.Element;\n}\n\nexport const CssMasonry: Component<CssMasonryProps> = (rawProps) => {\n  const props = mergeProps(\n    {\n      columns: 3,\n      gap: 16,\n      class: '',\n    },\n    rawProps\n  );\n\n  return (\n    <div\n      class={`w-full [column-fill:_balance] ${props.class}`}\n      style={{\n        'column-count': props.columns,\n        'column-gap': `${props.gap}px`,\n      }}\n    >\n      {props.children}\n    </div>\n  );\n};"
+      }
+    ],
+    "astro": [
+      {
+        "filename": "CssMasonry.astro",
+        "language": "astro",
+        "description": "Astro pure CSS zero-JS masonry component.",
+        "code": "---\ninterface Props {\n  columns?: number;\n  gap?: number;\n  class?: string;\n}\n\nconst { columns = 3, gap = 16, class: className = '' } = Astro.props;\n---\n\n<div\n  class:list={['w-full', className]}\n  style={`column-count: ${columns}; column-gap: ${gap}px;`}\n>\n  <slot />\n</div>\n\n<style>\n  div > :global(*) {\n    break-inside: avoid;\n    margin-bottom: var(--masonry-gap, 16px);\n  }\n</style>"
+      }
+    ],
+    "blade": [
+      {
+        "filename": "css-masonry.blade.php",
+        "language": "php",
+        "description": "Laravel Blade masonry component.",
+        "code": "@props([\n    'columns' => 3,\n    'gap' => 16,\n])\n\n<div \n    {{ $attributes->merge(['class' => 'w-full']) }}\n    style=\"column-count: {{ $columns }}; column-gap: {{ $gap }}px;\"\n>\n    {{ $slot }}\n</div>"
+      }
+    ],
+    "vanilla": [
+      {
+        "filename": "css-masonry.css",
+        "language": "css",
+        "description": "Pure CSS Masonry with responsive viewport breakpoints.",
+        "code": "@layer exhuma {\n  .exhuma-masonry {\n    column-count: 1;\n    column-gap: 16px;\n    width: 100%;\n  }\n\n  @media (min-width: 640px) {\n    .exhuma-masonry {\n      column-count: 2;\n    }\n  }\n\n  @media (min-width: 1024px) {\n    .exhuma-masonry {\n      column-count: 3;\n    }\n  }\n\n  .exhuma-masonry-item {\n    break-inside: avoid;\n    margin-bottom: 16px;\n  }\n}"
+      }
+    ],
+    "wordpress": [
+      {
+        "filename": "block.json",
+        "language": "json",
+        "description": "WordPress Block API v3 for CSS Masonry.",
+        "code": "{\n  \"$schema\": \"https://schemas.wp.org/trunk/block.json\",\n  \"apiVersion\": 3,\n  \"name\": \"exhuma/css-masonry\",\n  \"version\": \"1.0.0\",\n  \"title\": \"Exhuma CSS Masonry\",\n  \"category\": \"layout\",\n  \"icon\": \"grid-view\",\n  \"attributes\": {\n    \"columns\": { \"type\": \"number\", \"default\": 3 },\n    \"gap\": { \"type\": \"number\", \"default\": 16 }\n  }\n}"
+      }
+    ],
+    "webcomponent": [
+      {
+        "filename": "exhuma-masonry.js",
+        "language": "javascript",
+        "description": "Web Component: <exhuma-masonry columns=\"3\" gap=\"16\">.",
+        "code": "class ExhumaMasonryElement extends HTMLElement {\n  connectedCallback() {\n    const cols = this.getAttribute('columns') || 3;\n    const gap = this.getAttribute('gap') || 16;\n    this.style.display = 'block';\n    this.style.columnCount = cols;\n    this.style.columnGap = `${gap}px`;\n  }\n}\nif (!customElements.get('exhuma-masonry')) {\n  customElements.define('exhuma-masonry', ExhumaMasonryElement);\n}"
+      }
+    ],
+    "react-native": [
+      {
+        "filename": "CssMasonry.native.tsx",
+        "language": "tsx",
+        "description": "React Native / Expo Masonry column layout for iOS and Android.",
+        "code": "import React from 'react';\nimport { View, StyleSheet } from 'react-native';\n\nexport interface CssMasonryProps {\n  columns?: number;\n  gap?: number;\n  children?: React.ReactNode[];\n}\n\nexport const CssMasonry: React.FC<CssMasonryProps> = ({\n  columns = 3,\n  gap = 16,\n  children = [],\n}) => {\n  const columnBuckets: React.ReactNode[][] = Array.from({ length: columns }, () => []);\n\n  React.Children.forEach(children, (child, index) => {\n    if (child) {\n      columnBuckets[index % columns].push(child);\n    }\n  });\n\n  return (\n    <View style={[styles.container, { gap }]}>\n      {columnBuckets.map((bucket, colIndex) => (\n        <View key={colIndex} style={[styles.column, { gap }]}>\n          {bucket.map((item, itemIndex) => (\n            <View key={itemIndex}>{item}</View>\n          ))}\n        </View>\n      ))}\n    </View>\n  );\n};\n\nconst styles = StyleSheet.create({\n  container: {\n    flexDirection: 'row',\n    width: '100%',\n  },\n  column: {\n    flex: 1,\n  },\n});"
+      }
+    ],
+    "flutter": [
+      {
+        "filename": "css_masonry.dart",
+        "language": "dart",
+        "description": "Flutter Masonry column layout widget for iOS, Android, and Desktop.",
+        "code": "import 'package:flutter/material.dart';\n\nclass ExhumaCssMasonry extends StatelessWidget {\n  final List<Widget> children;\n  final int columns;\n  final double gap;\n\n  const ExhumaCssMasonry({\n    super.key,\n    required this.children,\n    this.columns = 3,\n    this.gap = 16.0,\n  });\n\n  @override\n  Widget build(BuildContext context) {\n    final List<List<Widget>> buckets = List.generate(columns, (_) => []);\n\n    for (int i = 0; i < children.length; i++) {\n      buckets[i % columns].add(\n        Padding(\n          padding: EdgeInsets.only(bottom: gap),\n          child: children[i],\n        ),\n      );\n    }\n\n    return Row(\n      crossAxisAlignment: CrossAxisAlignment.start,\n      children: [\n        for (int i = 0; i < columns; i++) ...[\n          Expanded(\n            child: Column(\n              crossAxisAlignment: CrossAxisAlignment.stretch,\n              children: buckets[i],\n            ),\n          ),\n          if (i < columns - 1) SizedBox(width: gap),\n        ],\n      ],\n    );\n  }\n}"
+      }
+    ]
+  },
+  "auto-grid": {
+    "react": [
+      {
+        "filename": "AutoGrid.tsx",
+        "language": "tsx",
+        "description": "React/Next.js Auto Grid component.",
+        "code": "import React from 'react';\n\nexport interface AutoGridProps extends React.HTMLAttributes<HTMLDivElement> {\n  minItemWidth?: number;\n  gap?: number;\n  children: React.ReactNode;\n}\n\nexport function AutoGrid({\n  minItemWidth = 280,\n  gap = 24,\n  className = '',\n  children,\n  ...props\n}: AutoGridProps) {\n  return (\n    <div\n      className={`grid w-full ${className}`}\n      style={{\n        gridTemplateColumns: `repeat(auto-fit, minmax(${minItemWidth}px, 1fr))`,\n        gap: `${gap}px`,\n      }}\n      {...props}\n    >\n      {children}\n    </div>\n  );\n}"
+      }
+    ],
+    "nextjs": [
+      {
+        "filename": "AutoGrid.tsx",
+        "language": "tsx",
+        "description": "React/Next.js Auto Grid component.",
+        "code": "import React from 'react';\n\nexport interface AutoGridProps extends React.HTMLAttributes<HTMLDivElement> {\n  minItemWidth?: number;\n  gap?: number;\n  children: React.ReactNode;\n}\n\nexport function AutoGrid({\n  minItemWidth = 280,\n  gap = 24,\n  className = '',\n  children,\n  ...props\n}: AutoGridProps) {\n  return (\n    <div\n      className={`grid w-full ${className}`}\n      style={{\n        gridTemplateColumns: `repeat(auto-fit, minmax(${minItemWidth}px, 1fr))`,\n        gap: `${gap}px`,\n      }}\n      {...props}\n    >\n      {children}\n    </div>\n  );\n}"
+      }
+    ],
+    "vue": [
+      {
+        "filename": "AutoGrid.vue",
+        "language": "vue",
+        "description": "Vue 3 Auto Grid component.",
+        "code": "<script setup lang=\"ts\">\nconst props = withDefaults(\n  defineProps<{\n    minItemWidth?: number;\n    gap?: number;\n  }>(),\n  {\n    minItemWidth: 280,\n    gap: 24,\n  }\n);\n</script>\n\n<template>\n  <div\n    class=\"grid w-full\"\n    :style=\"{\n      gridTemplateColumns: `repeat(auto-fit, minmax(${minItemWidth}px, 1fr))`,\n      gap: `${gap}px`,\n    }\"\n  >\n    <slot />\n  </div>\n</template>"
+      }
+    ],
+    "svelte": [
+      {
+        "filename": "AutoGrid.svelte",
+        "language": "svelte",
+        "description": "Svelte 5 Runes Auto Grid layout component.",
+        "code": "<script lang=\"ts\">\n  let {\n    minItemWidth = 280,\n    gap = 24,\n    class: className = '',\n    children,\n  }: {\n    minItemWidth?: number;\n    gap?: number;\n    class?: string;\n    children?: import('svelte').Snippet;\n  } = $props();\n</script>\n\n<div\n  class=\"grid w-full {className}\"\n  style=\"grid-template-columns: repeat(auto-fit, minmax(min({minItemWidth}px, 100%), 1fr)); gap: {gap}px;\"\n>\n  {@render children?.()}\n</div>"
+      }
+    ],
+    "angular": [
+      {
+        "filename": "auto-grid.component.ts",
+        "language": "typescript",
+        "description": "Angular 18+ Standalone Auto Grid layout component.",
+        "code": "import { Component, input, computed } from '@angular/core';\nimport { CommonModule } from '@angular/common';\n\n@Component({\n  selector: 'exhuma-auto-grid',\n  standalone: true,\n  imports: [CommonModule],\n  template: `\n    <div\n      [class]=\"'grid w-full ' + customClass()\"\n      [style.gridTemplateColumns]=\"gridTemplate()\"\n      [style.gap]=\"gap() + 'px'\"\n    >\n      <ng-content></ng-content>\n    </div>\n  `,\n})\nexport class ExhumaAutoGridComponent {\n  readonly minItemWidth = input<number>(280);\n  readonly gap = input<number>(24);\n  readonly customClass = input<string>('');\n\n  readonly gridTemplate = computed(() => {\n    return `repeat(auto-fit, minmax(min(${this.minItemWidth()}px, 100%), 1fr))`;\n  });\n}"
+      }
+    ],
+    "solid": [
+      {
+        "filename": "AutoGrid.tsx",
+        "language": "tsx",
+        "description": "SolidJS Auto Grid component with dynamic repeat minmax tracks.",
+        "code": "import { Component, JSX, mergeProps } from 'solid-js';\n\nexport interface AutoGridProps {\n  minItemWidth?: number;\n  gap?: number;\n  class?: string;\n  children?: JSX.Element;\n}\n\nexport const AutoGrid: Component<AutoGridProps> = (rawProps) => {\n  const props = mergeProps(\n    {\n      minItemWidth: 280,\n      gap: 24,\n      class: '',\n    },\n    rawProps\n  );\n\n  return (\n    <div\n      class={`grid w-full ${props.class}`}\n      style={{\n        'grid-template-columns': `repeat(auto-fit, minmax(min(${props.minItemWidth}px, 100%), 1fr))`,\n        gap: `${props.gap}px`,\n      }}\n    >\n      {props.children}\n    </div>\n  );\n};"
+      }
+    ],
+    "astro": [
+      {
+        "filename": "AutoGrid.astro",
+        "language": "astro",
+        "description": "Astro Auto Grid component.",
+        "code": "---\ninterface Props {\n  minItemWidth?: number;\n  gap?: number;\n  class?: string;\n}\n\nconst { minItemWidth = 280, gap = 24, class: className = '' } = Astro.props;\n---\n\n<div\n  class:list={['grid w-full', className]}\n  style={`grid-template-columns: repeat(auto-fit, minmax(${minItemWidth}px, 1fr)); gap: ${gap}px;`}\n>\n  <slot />\n</div>"
+      }
+    ],
+    "blade": [
+      {
+        "filename": "auto-grid.blade.php",
+        "language": "php",
+        "description": "Laravel Blade Auto Grid component.",
+        "code": "@props([\n    'minItemWidth' => 280,\n    'gap' => 24,\n])\n\n<div \n    {{ $attributes->merge(['class' => 'grid w-full']) }}\n    style=\"grid-template-columns: repeat(auto-fit, minmax({{ $minItemWidth }}px, 1fr)); gap: {{ $gap }}px;\"\n>\n    {{ $slot }}\n</div>"
+      }
+    ],
+    "vanilla": [
+      {
+        "filename": "auto-grid.css",
+        "language": "css",
+        "description": "Pure CSS Auto Grid with minmax repeat.",
+        "code": "@layer exhuma {\n  .exhuma-auto-grid {\n    display: grid;\n    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));\n    gap: 24px;\n    width: 100%;\n  }\n}"
+      }
+    ],
+    "wordpress": [
+      {
+        "filename": "block.json",
+        "language": "json",
+        "description": "WordPress Block API v3 for Auto Grid.",
+        "code": "{\n  \"$schema\": \"https://schemas.wp.org/trunk/block.json\",\n  \"apiVersion\": 3,\n  \"name\": \"exhuma/auto-grid\",\n  \"version\": \"1.0.0\",\n  \"title\": \"Exhuma Auto Grid\",\n  \"category\": \"layout\",\n  \"icon\": \"grid-view\",\n  \"attributes\": {\n    \"minItemWidth\": { \"type\": \"number\", \"default\": 280 },\n    \"gap\": { \"type\": \"number\", \"default\": 24 }\n  }\n}"
+      }
+    ],
+    "webcomponent": [
+      {
+        "filename": "exhuma-auto-grid.js",
+        "language": "javascript",
+        "description": "Web Component: <exhuma-auto-grid min-width=\"280\" gap=\"24\">.",
+        "code": "class ExhumaAutoGridElement extends HTMLElement {\n  connectedCallback() {\n    const minW = this.getAttribute('min-width') || 280;\n    const gap = this.getAttribute('gap') || 24;\n    this.style.display = 'grid';\n    this.style.gridTemplateColumns = `repeat(auto-fit, minmax(${minW}px, 1fr))`;\n    this.style.gap = `${gap}px`;\n  }\n}\nif (!customElements.get('exhuma-auto-grid')) {\n  customElements.define('exhuma-auto-grid', ExhumaAutoGridElement);\n}"
+      }
+    ],
+    "react-native": [
+      {
+        "filename": "AutoGrid.native.tsx",
+        "language": "tsx",
+        "description": "React Native / Expo Auto Grid responsive wrap layout for iOS and Android.",
+        "code": "import React from 'react';\nimport { View, StyleSheet, Dimensions } from 'react-native';\n\nexport interface AutoGridProps {\n  minItemWidth?: number;\n  gap?: number;\n  children?: React.ReactNode;\n}\n\nexport const AutoGrid: React.FC<AutoGridProps> = ({\n  minItemWidth = 280,\n  gap = 24,\n  children,\n}) => {\n  const screenWidth = Dimensions.get('window').width - 32;\n  const numColumns = Math.max(1, Math.floor(screenWidth / minItemWidth));\n  const itemWidth = (screenWidth - (numColumns - 1) * gap) / numColumns;\n\n  return (\n    <View style={[styles.container, { gap }]}>\n      {React.Children.map(children, (child) => (\n        <View style={{ width: itemWidth }}>{child}</View>\n      ))}\n    </View>\n  );\n};\n\nconst styles = StyleSheet.create({\n  container: {\n    flexDirection: 'row',\n    flexWrap: 'wrap',\n    width: '100%',\n    paddingHorizontal: 16,\n  },\n});"
+      }
+    ],
+    "flutter": [
+      {
+        "filename": "auto_grid.dart",
+        "language": "dart",
+        "description": "Flutter dynamic extent grid layout widget for iOS, Android, and Desktop.",
+        "code": "import 'package:flutter/material.dart';\n\nclass ExhumaAutoGrid extends StatelessWidget {\n  final List<Widget> children;\n  final double minItemWidth;\n  final double gap;\n\n  const ExhumaAutoGrid({\n    super.key,\n    required this.children,\n    this.minItemWidth = 280.0,\n    this.gap = 24.0,\n  });\n\n  @override\n  Widget build(BuildContext context) {\n    return LayoutBuilder(\n      builder: (context, constraints) {\n        return Wrap(\n          spacing: gap,\n          runSpacing: gap,\n          children: children.map((child) {\n            return ConstrainedBox(\n              constraints: BoxConstraints(\n                minWidth: minItemWidth,\n                maxWidth: constraints.maxWidth,\n              ),\n              child: child,\n            );\n          }).toList(),\n        );\n      },\n    );\n  }\n}"
+      }
+    ]
+  },
+  "tilt-card": {
+    "react": [
+      {
+        "filename": "TiltCard.tsx",
+        "language": "tsx",
+        "description": "Interactive 3D Tilt Card with mouse tracking and spring return.",
+        "code": "'use client';\n\nimport React, { useRef, useState } from 'react';\n\nexport interface TiltCardProps extends React.HTMLAttributes<HTMLDivElement> {\n  maxTilt?: number;\n  perspective?: number;\n  glare?: boolean;\n  children: React.ReactNode;\n}\n\nexport function TiltCard({\n  maxTilt = 15,\n  perspective = 1000,\n  glare = true,\n  className = '',\n  children,\n  ...props\n}: TiltCardProps) {\n  const cardRef = useRef<HTMLDivElement>(null);\n  const [transform, setTransform] = useState('');\n  const [glareOpacity, setGlareOpacity] = useState(0);\n  const [glarePos, setGlarePos] = useState({ x: 50, y: 50 });\n\n  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {\n    if (!cardRef.current) return;\n    const rect = cardRef.current.getBoundingClientRect();\n    const x = e.clientX - rect.left;\n    const y = e.clientY - rect.top;\n\n    const rotX = ((y / rect.height) - 0.5) * -maxTilt;\n    const rotY = ((x / rect.width) - 0.5) * maxTilt;\n\n    setTransform(`perspective(${perspective}px) rotateX(${rotX.toFixed(2)}deg) rotateY(${rotY.toFixed(2)}deg) scale3d(1.02, 1.02, 1.02)`);\n    setGlareOpacity(0.3);\n    setGlarePos({ x: (x / rect.width) * 100, y: (y / rect.height) * 100 });\n  };\n\n  const handleMouseLeave = () => {\n    setTransform(`perspective(${perspective}px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`);\n    setGlareOpacity(0);\n  };\n\n  return (\n    <div\n      ref={cardRef}\n      onMouseMove={handleMouseMove}\n      onMouseLeave={handleMouseLeave}\n      className={`relative overflow-hidden rounded-2xl transition-transform duration-200 ease-out will-change-transform ${className}`}\n      style={{ transform }}\n      {...props}\n    >\n      {children}\n      {glare && (\n        <div\n          className=\"pointer-events-none absolute inset-0 transition-opacity duration-300\"\n          style={{\n            opacity: glareOpacity,\n            background: `radial-gradient(circle at ${glarePos.x}% ${glarePos.y}%, rgba(255,255,255,0.8), transparent 60%)`,\n          }}\n        />\n      )}\n    </div>\n  );\n}"
+      }
+    ],
+    "nextjs": [
+      {
+        "filename": "TiltCard.tsx",
+        "language": "tsx",
+        "description": "Interactive 3D Tilt Card with mouse tracking and spring return.",
+        "code": "'use client';\n\nimport React, { useRef, useState } from 'react';\n\nexport interface TiltCardProps extends React.HTMLAttributes<HTMLDivElement> {\n  maxTilt?: number;\n  perspective?: number;\n  glare?: boolean;\n  children: React.ReactNode;\n}\n\nexport function TiltCard({\n  maxTilt = 15,\n  perspective = 1000,\n  glare = true,\n  className = '',\n  children,\n  ...props\n}: TiltCardProps) {\n  const cardRef = useRef<HTMLDivElement>(null);\n  const [transform, setTransform] = useState('');\n  const [glareOpacity, setGlareOpacity] = useState(0);\n  const [glarePos, setGlarePos] = useState({ x: 50, y: 50 });\n\n  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {\n    if (!cardRef.current) return;\n    const rect = cardRef.current.getBoundingClientRect();\n    const x = e.clientX - rect.left;\n    const y = e.clientY - rect.top;\n\n    const rotX = ((y / rect.height) - 0.5) * -maxTilt;\n    const rotY = ((x / rect.width) - 0.5) * maxTilt;\n\n    setTransform(`perspective(${perspective}px) rotateX(${rotX.toFixed(2)}deg) rotateY(${rotY.toFixed(2)}deg) scale3d(1.02, 1.02, 1.02)`);\n    setGlareOpacity(0.3);\n    setGlarePos({ x: (x / rect.width) * 100, y: (y / rect.height) * 100 });\n  };\n\n  const handleMouseLeave = () => {\n    setTransform(`perspective(${perspective}px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`);\n    setGlareOpacity(0);\n  };\n\n  return (\n    <div\n      ref={cardRef}\n      onMouseMove={handleMouseMove}\n      onMouseLeave={handleMouseLeave}\n      className={`relative overflow-hidden rounded-2xl transition-transform duration-200 ease-out will-change-transform ${className}`}\n      style={{ transform }}\n      {...props}\n    >\n      {children}\n      {glare && (\n        <div\n          className=\"pointer-events-none absolute inset-0 transition-opacity duration-300\"\n          style={{\n            opacity: glareOpacity,\n            background: `radial-gradient(circle at ${glarePos.x}% ${glarePos.y}%, rgba(255,255,255,0.8), transparent 60%)`,\n          }}\n        />\n      )}\n    </div>\n  );\n}"
+      }
+    ],
+    "vue": [
+      {
+        "filename": "TiltCard.vue",
+        "language": "vue",
+        "description": "Vue 3 3D Tilt Card with reactive mouse tracking.",
+        "code": "<script setup lang=\"ts\">\nimport { ref } from 'vue';\n\nconst props = withDefaults(\n  defineProps<{\n    maxTilt?: number;\n    perspective?: number;\n  }>(),\n  {\n    maxTilt: 15,\n    perspective: 1000,\n  }\n);\n\nconst card = ref<HTMLElement | null>(null);\nconst transform = ref('');\n\nconst onMouseMove = (e: MouseEvent) => {\n  if (!card.value) return;\n  const rect = card.value.getBoundingClientRect();\n  const rotX = ((e.clientY - rect.top) / rect.height - 0.5) * -props.maxTilt;\n  const rotY = ((e.clientX - rect.left) / rect.width - 0.5) * props.maxTilt;\n  transform.value = `perspective(${props.perspective}px) rotateX(${rotX.toFixed(2)}deg) rotateY(${rotY.toFixed(2)}deg)`;\n};\n\nconst onMouseLeave = () => {\n  transform.value = `perspective(${props.perspective}px) rotateX(0deg) rotateY(0deg)`;\n};\n</script>\n\n<template>\n  <div\n    ref=\"card\"\n    @mousemove=\"onMouseMove\"\n    @mouseleave=\"onMouseLeave\"\n    class=\"relative overflow-hidden rounded-2xl transition-transform duration-150 ease-out\"\n    :style=\"{ transform }\"\n  >\n    <slot />\n  </div>\n</template>"
+      }
+    ],
+    "svelte": [
+      {
+        "filename": "TiltCard.svelte",
+        "language": "svelte",
+        "description": "Svelte 5 Runes 3D Tilt Card with pointer tracking.",
+        "code": "<script lang=\"ts\">\n  let {\n    maxTilt = 15,\n    perspective = 1000,\n    class: className = '',\n    children,\n  }: {\n    maxTilt?: number;\n    perspective?: number;\n    class?: string;\n    children?: import('svelte').Snippet;\n  } = $props();\n\n  let transformStyle = $state('');\n\n  function handleMouseMove(e: MouseEvent & { currentTarget: EventTarget & HTMLDivElement }) {\n    const rect = e.currentTarget.getBoundingClientRect();\n    const rotX = ((e.clientY - rect.top) / rect.height - 0.5) * -maxTilt;\n    const rotY = ((e.clientX - rect.left) / rect.width - 0.5) * maxTilt;\n    transformStyle = `perspective(${perspective}px) rotateX(${rotX.toFixed(2)}deg) rotateY(${rotY.toFixed(2)}deg)`;\n  }\n\n  function handleMouseLeave() {\n    transformStyle = `perspective(${perspective}px) rotateX(0deg) rotateY(0deg)`;\n  }\n</script>\n\n<div\n  role=\"region\"\n  aria-label=\"Interactive 3D card\"\n  class=\"relative overflow-hidden rounded-2xl transition-transform duration-150 ease-out {className}\"\n  style=\"transform: {transformStyle};\"\n  onmousemove={handleMouseMove}\n  onmouseleave={handleMouseLeave}\n>\n  {@render children?.()}\n</div>"
+      }
+    ],
+    "angular": [
+      {
+        "filename": "tilt-card.component.ts",
+        "language": "typescript",
+        "description": "Angular 18+ Standalone 3D Tilt Card component.",
+        "code": "import { Component, input, HostListener, signal } from '@angular/core';\nimport { CommonModule } from '@angular/common';\n\n@Component({\n  selector: 'exhuma-tilt-card',\n  standalone: true,\n  imports: [CommonModule],\n  template: `\n    <div\n      [class]=\"'relative overflow-hidden rounded-2xl transition-transform duration-150 ease-out ' + customClass()\"\n      [style.transform]=\"transformStyle()\"\n    >\n      <ng-content></ng-content>\n    </div>\n  `,\n})\nexport class ExhumaTiltCardComponent {\n  readonly maxTilt = input<number>(15);\n  readonly perspective = input<number>(1000);\n  readonly customClass = input<string>('');\n\n  readonly transformStyle = signal<string>('');\n\n  @HostListener('mousemove', ['$event'])\n  onMouseMove(e: MouseEvent) {\n    const target = e.currentTarget as HTMLElement;\n    const rect = target.getBoundingClientRect();\n    const rotX = ((e.clientY - rect.top) / rect.height - 0.5) * -this.maxTilt();\n    const rotY = ((e.clientX - rect.left) / rect.width - 0.5) * this.maxTilt();\n    this.transformStyle.set(`perspective(${this.perspective()}px) rotateX(${rotX.toFixed(2)}deg) rotateY(${rotY.toFixed(2)}deg)`);\n  }\n\n  @HostListener('mouseleave')\n  onMouseLeave() {\n    this.transformStyle.set(`perspective(${this.perspective()}px) rotateX(0deg) rotateY(0deg)`);\n  }\n}"
+      }
+    ],
+    "solid": [
+      {
+        "filename": "TiltCard.tsx",
+        "language": "tsx",
+        "description": "SolidJS 3D Tilt Card component with fine-grained reactivity.",
+        "code": "import { Component, JSX, mergeProps, createSignal } from 'solid-js';\n\nexport interface TiltCardProps {\n  maxTilt?: number;\n  perspective?: number;\n  class?: string;\n  children?: JSX.Element;\n}\n\nexport const TiltCard: Component<TiltCardProps> = (rawProps) => {\n  const props = mergeProps(\n    {\n      maxTilt: 15,\n      perspective: 1000,\n      class: '',\n    },\n    rawProps\n  );\n\n  const [transform, setTransform] = createSignal('');\n\n  const handleMouseMove = (e: MouseEvent & { currentTarget: HTMLDivElement }) => {\n    const rect = e.currentTarget.getBoundingClientRect();\n    const rotX = ((e.clientY - rect.top) / rect.height - 0.5) * -props.maxTilt;\n    const rotY = ((e.clientX - rect.left) / rect.width - 0.5) * props.maxTilt;\n    setTransform(`perspective(${props.perspective}px) rotateX(${rotX.toFixed(2)}deg) rotateY(${rotY.toFixed(2)}deg)`);\n  };\n\n  const handleMouseLeave = () => {\n    setTransform(`perspective(${props.perspective}px) rotateX(0deg) rotateY(0deg)`);\n  };\n\n  return (\n    <div\n      class={`relative overflow-hidden rounded-2xl transition-transform duration-150 ease-out ${props.class}`}\n      style={{ transform: transform() }}\n      onMouseMove={handleMouseMove}\n      onMouseLeave={handleMouseLeave}\n    >\n      {props.children}\n    </div>\n  );\n};"
+      }
+    ],
+    "astro": [
+      {
+        "filename": "TiltCard.astro",
+        "language": "astro",
+        "description": "Astro 3D Tilt Card with micro client script.",
+        "code": "---\ninterface Props {\n  maxTilt?: number;\n  perspective?: number;\n  class?: string;\n}\n\nconst { maxTilt = 15, perspective = 1000, class: className = '' } = Astro.props;\n---\n\n<div\n  data-exhuma-tilt\n  data-max-tilt={maxTilt}\n  data-perspective={perspective}\n  class:list={['relative overflow-hidden rounded-2xl transition-transform duration-150 ease-out', className]}\n>\n  <slot />\n</div>\n\n<script>\n  document.querySelectorAll('[data-exhuma-tilt]').forEach((card) => {\n    const el = card as HTMLElement;\n    const max = parseFloat(el.dataset.maxTilt || '15');\n    const p = parseFloat(el.dataset.perspective || '1000');\n\n    el.addEventListener('mousemove', (e) => {\n      const rect = el.getBoundingClientRect();\n      const rotX = ((e.clientY - rect.top) / rect.height - 0.5) * -max;\n      const rotY = ((e.clientX - rect.left) / rect.width - 0.5) * max;\n      el.style.transform = `perspective(${p}px) rotateX(${rotX.toFixed(2)}deg) rotateY(${rotY.toFixed(2)}deg)`;\n    });\n\n    el.addEventListener('mouseleave', () => {\n      el.style.transform = `perspective(${p}px) rotateX(0deg) rotateY(0deg)`;\n    });\n  });\n</script>"
+      }
+    ],
+    "blade": [
+      {
+        "filename": "tilt-card.blade.php",
+        "language": "php",
+        "description": "Laravel Blade 3D Tilt Card with Alpine.js.",
+        "code": "@props([\n    'maxTilt' => 15,\n    'perspective' => 1000,\n])\n\n<div \n    x-data=\"{\n        transform: '',\n        onMove(e) {\n            let rect = $el.getBoundingClientRect();\n            let rotX = ((e.clientY - rect.top) / rect.height - 0.5) * -{{ $maxTilt }};\n            let rotY = ((e.clientX - rect.left) / rect.width - 0.5) * {{ $maxTilt }};\n            this.transform = 'perspective({{ $perspective }}px) rotateX(' + rotX.toFixed(2) + 'deg) rotateY(' + rotY.toFixed(2) + 'deg)';\n        },\n        onLeave() {\n            this.transform = 'perspective({{ $perspective }}px) rotateX(0deg) rotateY(0deg)';\n        }\n    }\"\n    @mousemove=\"onMove($event)\"\n    @mouseleave=\"onLeave()\"\n    :style=\"'transform: ' + transform\"\n    {{ $attributes->merge(['class' => 'relative overflow-hidden rounded-2xl transition-transform duration-150 ease-out']) }}\n>\n    {{ $slot }}\n</div>"
+      }
+    ],
+    "vanilla": [
+      {
+        "filename": "exhuma-tilt.js",
+        "language": "javascript",
+        "description": "Autonomous Vanilla JS 3D Tilt with destroy() cleanup.",
+        "code": "export class ExhumaTiltCard {\n  constructor(element, options = {}) {\n    this.element = typeof element === 'string' ? document.querySelector(element) : element;\n    if (!this.element) throw new Error('[Exhuma] Tilt card element not found');\n\n    this.options = Object.assign({ maxTilt: 15, perspective: 1000 }, options);\n    this._onMove = this.handleMove.bind(this);\n    this._onLeave = this.handleLeave.bind(this);\n    this.init();\n  }\n\n  init() {\n    this.element.style.willChange = 'transform';\n    this.element.addEventListener('mousemove', this._onMove);\n    this.element.addEventListener('mouseleave', this._onLeave);\n  }\n\n  handleMove(e) {\n    const rect = this.element.getBoundingClientRect();\n    const rotX = ((e.clientY - rect.top) / rect.height - 0.5) * -this.options.maxTilt;\n    const rotY = ((e.clientX - rect.left) / rect.width - 0.5) * this.options.maxTilt;\n    this.element.style.transform = `perspective(${this.options.perspective}px) rotateX(${rotX.toFixed(2)}deg) rotateY(${rotY.toFixed(2)}deg)`;\n  }\n\n  handleLeave() {\n    this.element.style.transform = `perspective(${this.options.perspective}px) rotateX(0deg) rotateY(0deg)`;\n  }\n\n  destroy() {\n    this.element.removeEventListener('mousemove', this._onMove);\n    this.element.removeEventListener('mouseleave', this._onLeave);\n    this.element.style.transform = '';\n  }\n}"
+      }
+    ],
+    "wordpress": [
+      {
+        "filename": "block.json",
+        "language": "json",
+        "description": "WordPress Block API v3 for 3D Tilt Card.",
+        "code": "{\n  \"$schema\": \"https://schemas.wp.org/trunk/block.json\",\n  \"apiVersion\": 3,\n  \"name\": \"exhuma/tilt-card\",\n  \"version\": \"1.0.0\",\n  \"title\": \"Exhuma Tilt Card\",\n  \"category\": \"design\",\n  \"icon\": \"image-flip-horizontal\",\n  \"attributes\": {\n    \"maxTilt\": { \"type\": \"number\", \"default\": 15 },\n    \"perspective\": { \"type\": \"number\", \"default\": 1000 }\n  }\n}"
+      }
+    ],
+    "webcomponent": [
+      {
+        "filename": "exhuma-tilt-card.js",
+        "language": "javascript",
+        "description": "Web Component: <exhuma-tilt-card max-tilt=\"15\">.",
+        "code": "class ExhumaTiltCardElement extends HTMLElement {\n  connectedCallback() {\n    const max = parseFloat(this.getAttribute('max-tilt') || '15');\n    const p = parseFloat(this.getAttribute('perspective') || '1000');\n\n    this.style.display = 'block';\n    this.style.transition = 'transform 0.15s ease-out';\n\n    this.addEventListener('mousemove', (e) => {\n      const rect = this.getBoundingClientRect();\n      const rotX = ((e.clientY - rect.top) / rect.height - 0.5) * -max;\n      const rotY = ((e.clientX - rect.left) / rect.width - 0.5) * max;\n      this.style.transform = `perspective(${p}px) rotateX(${rotX.toFixed(2)}deg) rotateY(${rotY.toFixed(2)}deg)`;\n    });\n\n    this.addEventListener('mouseleave', () => {\n      this.style.transform = `perspective(${p}px) rotateX(0deg) rotateY(0deg)`;\n    });\n  }\n}\nif (!customElements.get('exhuma-tilt-card')) {\n  customElements.define('exhuma-tilt-card', ExhumaTiltCardElement);\n}"
+      }
+    ],
+    "react-native": [
+      {
+        "filename": "TiltCard.native.tsx",
+        "language": "tsx",
+        "description": "React Native / Expo 3D Tilt Card with touch interaction for iOS and Android.",
+        "code": "import React, { useRef, useState } from 'react';\nimport { View, StyleSheet, PanResponder, Animated } from 'react-native';\n\nexport interface TiltCardProps {\n  maxTilt?: number;\n  children?: React.ReactNode;\n}\n\nexport const TiltCard: React.FC<TiltCardProps> = ({\n  maxTilt = 15,\n  children,\n}) => {\n  const [tiltX, setTiltX] = useState(0);\n  const [tiltY, setTiltY] = useState(0);\n\n  const panResponder = useRef(\n    PanResponder.create({\n      onStartShouldSetPanResponder: () => true,\n      onPanResponderMove: (_, gestureState) => {\n        const dx = Math.min(Math.max(gestureState.dx / 10, -maxTilt), maxTilt);\n        const dy = Math.min(Math.max(gestureState.dy / 10, -maxTilt), maxTilt);\n        setTiltX(-dy);\n        setTiltY(dx);\n      },\n      onPanResponderRelease: () => {\n        setTiltX(0);\n        setTiltY(0);\n      },\n    })\n  ).current;\n\n  return (\n    <View\n      {...panResponder.panHandlers}\n      style={[\n        styles.card,\n        {\n          transform: [\n            { perspective: 1000 },\n            { rotateX: `${tiltX}deg` },\n            { rotateY: `${tiltY}deg` },\n          ],\n        },\n      ]}\n    >\n      {children}\n    </View>\n  );\n};\n\nconst styles = StyleSheet.create({\n  card: {\n    borderRadius: 16,\n    overflow: 'hidden',\n  },\n});"
+      }
+    ],
+    "flutter": [
+      {
+        "filename": "tilt_card.dart",
+        "language": "dart",
+        "description": "Flutter 3D interactive Tilt Card widget for iOS, Android, and Desktop.",
+        "code": "import 'package:flutter/material.dart';\n\nclass ExhumaTiltCard extends StatefulWidget {\n  final Widget child;\n  final double maxTilt;\n  final double perspective;\n\n  const ExhumaTiltCard({\n    super.key,\n    required this.child,\n    this.maxTilt = 15.0,\n    this.perspective = 0.001,\n  });\n\n  @override\n  State<ExhumaTiltCard> createState() => _ExhumaTiltCardState();\n}\n\nclass _ExhumaTiltCardState extends State<ExhumaTiltCard> {\n  double _rotX = 0.0;\n  double _rotY = 0.0;\n\n  @override\n  Widget build(BuildContext context) {\n    return MouseRegion(\n      onHover: (event) {\n        final size = context.size;\n        if (size == null) return;\n\n        final localPos = event.localPosition;\n        final xNorm = (localPos.dx / size.width - 0.5);\n        final yNorm = (localPos.dy / size.height - 0.5);\n\n        setState(() {\n          _rotX = -yNorm * (widget.maxTilt * 3.14159 / 180);\n          _rotY = xNorm * (widget.maxTilt * 3.14159 / 180);\n        });\n      },\n      onExit: (_) {\n        setState(() {\n          _rotX = 0.0;\n          _rotY = 0.0;\n        });\n      },\n      child: Transform(\n        transform: Matrix4.identity()\n          ..setEntry(3, 2, widget.perspective)\n          ..rotateX(_rotX)\n          ..rotateY(_rotY),\n        alignment: FractionalOffset.center,\n        child: ClipRRect(\n          borderRadius: BorderRadius.circular(16.0),\n          child: widget.child,\n        ),\n      ),\n    );\n  }\n}"
+      }
+    ]
+  }
+}
