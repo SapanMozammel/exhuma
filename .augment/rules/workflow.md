@@ -1,3 +1,7 @@
+---
+type: always_apply
+---
+
 # Workflow discovery
 
 Read `AGENTS.md`, `.ai/manifest.json`, its project profile and current task, then

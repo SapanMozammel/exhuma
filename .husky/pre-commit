@@ -1,0 +1,18 @@
+#!/bin/sh
+# Auterix Pre-Commit AI Guardrail Hook
+# Stops AI agents from committing unverified code or drifted context.
+
+echo "🛡️  Auterix: Checking context invariants and verification gates..."
+
+if [ -f ".ai/tools/check.mjs" ]; then
+    node .ai/tools/check.mjs --root "$(pwd)"
+    STATUS=$?
+    if [ $STATUS -ne 0 ]; then
+        echo "❌ Auterix Check Failed: AI-generated code drifted or broke project context rules."
+        echo "Please resolve the verification errors above before committing."
+        exit 1
+    fi
+fi
+
+echo "✅ Auterix: Verification passed. Committing clean code."
+exit 0

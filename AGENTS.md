@@ -1,17 +1,12 @@
-# Universal Agent Instruction Protocol
+# Project agent instructions
 
-This repository is **Exhuma**, a modern multi-package React monorepo unifying tactile cards, layout engines, and routing architecture.
+Read `.ai/manifest.json`, its project profile and current task, then
+`.ai/core/start.md`. Inspect affected and sibling code before editing.
+Project-specific architecture and commands belong in `.ai/project.json` and
+linked project documents. Read only the relevant workflow, role and template.
 
----
-
-## Core Invariants
-
-1. **Deterministic Build Pipeline**: Package builds must be runnable via `pnpm run build:libs` without side effects or uncommitted artifacts.
-2. **Framework Compatibility**: Packages are built for React 18 and React 19. All DOM access must handle SSR gracefully (`typeof window !== 'undefined'`) and clean up observers and event listeners on unmount.
-3. **Multi-tier Context Loading**:
-   - Package-level tasks modify files exclusively within `packages/<name>/`.
-   - Showcase tasks modify files within `apps/showcase/`.
-   - Never run global install commands (`npm -g` or `pip -g`). Always use `pnpm` workspaces.
-4. **Verification Gate**: Before marking any refactoring or feature complete:
-   - `pnpm run type:check` must pass with zero diagnostic errors.
-   - `pnpm run build:libs` must successfully compile ESM and CJS bundles into `dist/`.
+Follow platform constraints, explicit user instructions, nearest AGENTS.md, the
+current task and accepted decisions, then canonical workflow guidance. Vendor
+adapters provide discovery only. Preserve unrelated changes. Do not commit, push,
+publish, deploy or mutate external systems without explicit authorization.
+Record progress, verification, risks and a handoff in the current task.

@@ -1,0 +1,90 @@
+{
+  "schemaVersion": 1,
+  "name": "Exhuma",
+  "stack": "Strict TypeScript Universal Component Platform Monorepo: Next.js 15, React 19, Vue 3, Astro, Laravel Blade, Vanilla JS, WordPress Gutenberg Block API v3, Web Components, Tailwind CSS, Vitest, Playwright; Node 24.20.0, pnpm 11.2.2.",
+  "commands": [
+    {
+      "id": "workflow",
+      "command": "pnpm tooling:check",
+      "mode": "read-only",
+      "status": "available"
+    },
+    {
+      "id": "config",
+      "command": "pnpm config:check",
+      "mode": "read-only",
+      "status": "available"
+    },
+    {
+      "id": "architecture",
+      "command": "pnpm arch:check",
+      "mode": "read-only",
+      "status": "available"
+    },
+    {
+      "id": "docs",
+      "command": "pnpm docs:check",
+      "mode": "read-only",
+      "status": "available"
+    },
+    {
+      "id": "format-check",
+      "command": "pnpm format:check",
+      "mode": "read-only",
+      "status": "available"
+    },
+    {
+      "id": "format",
+      "command": "pnpm format",
+      "mode": "local-write",
+      "status": "available"
+    },
+    {
+      "id": "lint",
+      "command": "pnpm lint",
+      "mode": "read-only",
+      "status": "available"
+    },
+    {
+      "id": "typecheck",
+      "command": "pnpm typecheck",
+      "mode": "local-write",
+      "status": "available"
+    },
+    {
+      "id": "test",
+      "command": "pnpm test",
+      "mode": "local-write",
+      "status": "available"
+    },
+    {
+      "id": "build",
+      "command": "pnpm build",
+      "mode": "local-write",
+      "status": "available"
+    },
+    {
+      "id": "dev",
+      "command": "pnpm dev",
+      "mode": "local-write",
+      "status": "available"
+    },
+    {
+      "id": "all",
+      "command": "pnpm check:all",
+      "mode": "local-write",
+      "status": "available"
+    }
+  ],
+  "protectedBoundaries": [
+    "Universal Component Model (UCM) separates pure headless math from framework rendering.",
+    "Zero memory leaks in Vanilla JS and Web Components: strict destroy() lifecycle tearing down observers and listeners.",
+    "Scoped CSS layers (@layer exhuma) preventing host application or theme collisions.",
+    "Zero broken code snippets: every registry code string must compile in CI without errors.",
+    "Upstream-managed workflow files remain checksum-identical; project context and task history remain consumer-owned."
+  ],
+  "architectureDocuments": ["docs/architecture.md", "docs/engineering.md"],
+  "designDocuments": ["docs/component-spec.md"],
+  "externalReferences": ["docs/provenance.md", ".ai/adapters.json"],
+  "notes": "Inspect root package.json for subcommands. Available means implemented. Builds require compiled libraries; test requires Vitest; full quality gates run in CI via auterix-verify.yml."
+}

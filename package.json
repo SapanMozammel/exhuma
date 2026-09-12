@@ -9,17 +9,25 @@
 		"apps/*"
 	],
 	"scripts": {
+		"tooling:check": "node .ai/tools/check.mjs",
+		"config:check": "node --import tsx tooling/config/check-config.ts",
+		"arch:check": "node --import tsx tooling/architecture/check-architecture.ts",
+		"docs:check": "node --import tsx tooling/docs/check-links.ts",
+		"scaffold:component": "node --import tsx tooling/scaffold/scaffold-component.ts",
 		"build:libs": "pnpm --filter './packages/**' build",
 		"build": "pnpm run build:libs && pnpm --filter showcase build",
 		"dev": "pnpm run build:libs && pnpm --filter showcase dev",
-		"test": "pnpm -r test",
-		"test:watch": "pnpm -r test:watch",
+		"test": "vitest run",
+		"test:watch": "vitest",
 		"test:coverage": "pnpm -r test:coverage",
 		"lint": "eslint packages/*/src",
 		"lint:fix": "eslint --fix packages/*/src",
 		"format": "prettier --write \"packages/**/*.{ts,tsx,json,md}\" \"apps/**/*.{ts,tsx,json,md}\" \"*.{json,md,yaml,js,mjs}\"",
+		"format:check": "prettier --check \"packages/**/*.{ts,tsx,json,md}\" \"apps/**/*.{ts,tsx,json,md}\" \"*.{json,md,yaml,js,mjs}\"",
 		"format:all": "pnpm run format && pnpm run lint:fix",
+		"typecheck": "pnpm run type:check",
 		"type:check": "pnpm -r exec tsc --noEmit",
+		"check:all": "pnpm tooling:check && pnpm config:check && pnpm arch:check && pnpm docs:check && pnpm typecheck",
 		"sync": "node .formatter/sync.js"
 	},
 	"devDependencies": {
@@ -35,7 +43,9 @@
 		"eslint-plugin-react-hooks": "^5.1.0",
 		"prettier": "^3.4.0",
 		"tsup": "^8.5.1",
+		"tsx": "^4.19.2",
 		"turbo": "^2.4.4",
-		"typescript": "^5.7.0"
+		"typescript": "^5.7.0",
+		"vitest": "^5.0.0"
 	}
 }

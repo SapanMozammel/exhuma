@@ -1,3 +1,8 @@
+---
+description: Discover the canonical project workflow
+alwaysApply: true
+---
+
 # Workflow discovery
 
 Read `AGENTS.md`, `.ai/manifest.json`, its project profile and current task, then
