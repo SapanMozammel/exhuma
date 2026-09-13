@@ -1,0 +1,89 @@
+@utility container {
+	@apply mx-auto max-w-full px-4 sm:px-6 md:max-w-[85%] 2xl:max-w-[90rem];
+}
+
+@utility container-fluid {
+	@apply mx-auto max-w-full px-4 sm:px-6 md:px-10;
+}
+
+@utility section-separator {
+	@apply absolute inset-x-3 inset-y-0 -z-10 md:inset-x-10;
+}
+
+// ── Background & Texture Utilities ──────────────────────────────
+@utility bg-dot-grid {
+	background-image: radial-gradient(circle, var(--dot-grid-color) 1px, transparent 1px);
+	background-size: 24px 24px;
+}
+
+@utility bg-dot-grid-dense {
+	background-image: radial-gradient(circle, var(--dot-grid-color) 1px, transparent 1px);
+	background-size: 16px 16px;
+}
+
+// ── Keycap Utility ──────────────────────────────────────────────
+@utility kbd {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border: 1px solid var(--keycap-border);
+	background-color: var(--keycap-bg);
+	color: var(--keycap-text);
+	border-radius: 0.25rem;
+	font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+	font-size: 0.75rem;
+	line-height: 1rem;
+	padding: 0.125rem 0.375rem;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.06);
+}
+
+// ── Typography Utilities (from sapan.dev pattern) ───────────────
+@utility text-heading-xlarge {
+	@apply text-3xl font-extrabold tracking-tight sm:text-4xl lg:text-5xl;
+}
+
+@utility text-heading-large {
+	@apply text-2xl font-bold tracking-tight sm:text-3xl lg:text-4xl;
+}
+
+@utility text-heading-medium {
+	@apply text-xl font-bold tracking-tight sm:text-2xl lg:text-3xl;
+}
+
+@utility text-heading-small {
+	@apply text-base font-semibold tracking-tight sm:text-lg;
+}
+
+@utility text-heading-xsmall {
+	@apply text-xs font-bold uppercase tracking-wider;
+}
+
+// ── Custom Scrollbar ───────────────────────────────────────────
+::-webkit-scrollbar {
+	width: 6px;
+	height: 6px;
+}
+::-webkit-scrollbar-track {
+	background: transparent;
+}
+::-webkit-scrollbar-thumb {
+	background: var(--keycap-border);
+	border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+	background: var(--muted-foreground);
+}
+
+// ── Shiki Dual-Theme Rules ─────────────────────────────────────
+.shiki {
+	background-color: transparent !important;
+}
+
+html.dark .shiki,
+html.dark .shiki span {
+	color: var(--shiki-dark) !important;
+	font-style: var(--shiki-dark-font-style) !important;
+	font-weight: var(--shiki-dark-font-weight) !important;
+	text-decoration: var(--shiki-dark-text-decoration) !important;
+}
+

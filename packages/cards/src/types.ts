@@ -59,3 +59,31 @@ export interface StackingCardItemProps {
 	className?: string;
 	style?: CSSProperties;
 }
+
+export interface TiltCardProps extends React.HTMLAttributes<HTMLDivElement> {
+	children: ReactNode;
+	/**
+	 * Maximum tilt angle in degrees.
+	 * Default: 15
+	 */
+	maxTilt?: number;
+	/**
+	 * 3D perspective depth in pixels.
+	 * Default: 1000
+	 */
+	perspective?: number;
+	/**
+	 * Enable dynamic specular glare reflection.
+	 * Default: true
+	 */
+	glare?: boolean;
+	/**
+	 * Additional CSS class for card container
+	 */
+	className?: string;
+	/**
+	 * Inline styling overrides
+	 */
+	style?: CSSProperties;
+}
+

@@ -1,25 +1,24 @@
 import React, { Suspense } from 'react';
-import { StudioWorkbench } from '../../components/StudioWorkbench';
-import { DocsSidebar } from '../../components/DocsSidebar';
+import { StudioWorkbench } from '@/components/showcase/StudioWorkbench';
 
 export const metadata = {
-  title: 'Studio Workbench — Exhuma',
-  description: 'Visual prop customizer and real-time multi-ecosystem code synthesizer for Exhuma components.',
+	title: 'Studio Workbench — Exhuma',
+	description:
+		'Xcode and Figma-grade visual parameter IDE and real-time multi-ecosystem code synchronizer across 13 frontend frameworks.',
 };
 
 export default function StudioPage() {
-  return (
-    <div className="min-h-screen bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex flex-col md:flex-row gap-8">
-          <DocsSidebar />
-          <main className="flex-1 min-w-0">
-            <Suspense fallback={<div className="p-8 text-center text-slate-500">Loading Studio...</div>}>
-              <StudioWorkbench />
-            </Suspense>
-          </main>
-        </div>
-      </div>
-    </div>
-  );
+	return (
+		<div className="container-fluid py-8 min-h-[calc(100vh-8rem)]">
+			<Suspense
+				fallback={
+					<div className="flex h-96 items-center justify-center text-sm font-mono text-muted-foreground">
+						Initializing Studio Workbench...
+					</div>
+				}
+			>
+				<StudioWorkbench />
+			</Suspense>
+		</div>
+	);
 }

@@ -1,7 +1,10 @@
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
-import { ALL_COMPONENTS } from '../../apps/showcase/src/registry';
-import { EcosystemFlavor, EcosystemFlavorSchema } from '../../apps/showcase/src/registry/schema';
+import {
+	ALL_COMPONENTS,
+	EcosystemFlavor,
+	EcosystemFlavorSchema,
+} from '@exhuma/registry';
 
 const FLAVORS: EcosystemFlavor[] = EcosystemFlavorSchema.options;
 

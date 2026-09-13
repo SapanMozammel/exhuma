@@ -9,13 +9,32 @@ const ECOSYSTEMS = [
   { title: 'React (Vite)', value: 'react' },
   { title: 'Vue.js 3 / Nuxt', value: 'vue' },
   { title: 'Svelte 5 / SvelteKit', value: 'svelte' },
-  { title: 'Angular 18+ (Signals)', value: 'angular' },
+  { title: 'Angular 18+ Standalone', value: 'angular' },
   { title: 'SolidJS', value: 'solid' },
   { title: 'Astro', value: 'astro' },
   { title: 'Laravel Blade', value: 'blade' },
+  { title: 'Vanilla JS & Scoped CSS', value: 'vanilla' },
+  { title: 'WordPress Gutenberg Block', value: 'wordpress' },
+  { title: 'Universal Web Component', value: 'webcomponent' },
   { title: 'React Native / Expo', value: 'react-native' },
   { title: 'Flutter (Dart)', value: 'flutter' },
 ];
+
+const DEFAULT_PATHS: Record<string, string> = {
+  react: 'components/ui',
+  nextjs: 'components/ui',
+  vue: 'components',
+  svelte: 'src/lib/components',
+  angular: 'src/app/components',
+  solid: 'src/components',
+  astro: 'src/components',
+  blade: 'resources/views/components',
+  vanilla: 'src/components',
+  wordpress: 'src/blocks',
+  webcomponent: 'src/components',
+  'react-native': 'components',
+  flutter: 'lib/widgets',
+};
 
 async function run(): Promise<void> {
   console.log(pc.bold(pc.cyan('\n  ▲ create-exhuma — Universal Project Starter Wizard\n')));
@@ -73,7 +92,7 @@ async function run(): Promise<void> {
   const config = {
     $schema: 'https://exhuma.dev/schema.json',
     flavor: ecosystem,
-    path: ecosystem === 'flutter' ? 'lib/widgets' : 'components/ui',
+    path: DEFAULT_PATHS[ecosystem] || 'components/ui',
     typescript: true,
     tailwind: true,
   };

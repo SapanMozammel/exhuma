@@ -39,6 +39,7 @@
     "type:check": "tsc --noEmit"
   },
   "dependencies": {
+    "@exhuma/registry": "workspace:*",
     "commander": "^13.1.0",
     "ora": "^8.2.0",
     "picocolors": "^1.1.1",
