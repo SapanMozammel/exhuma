@@ -1,0 +1,14 @@
+@use 'tailwindcss';
+@use './themes.scss';
+@use './utilities.scss';
+@use './animations.scss';
+
+* {
+	border-color: hsl(var(--border));
+}
+
+body {
+	background-color: hsl(var(--background));
+	color: hsl(var(--foreground));
+	min-height: 100vh;
+}
