@@ -7,6 +7,7 @@ import {
   IconCpu as Cpu,
   IconStack2 as Layers,
 } from '@tabler/icons-react';
+import { ExhumaLogo } from '@/components/brand/ExhumaLogo';
 import { ALL_COMPONENTS, ECOSYSTEM_LABELS, EcosystemFlavor } from '@/registry';
 
 export function GlobalFooter() {
@@ -19,11 +20,11 @@ export function GlobalFooter() {
 				<div className="grid grid-cols-2 md:grid-cols-5 gap-8">
 					{/* Col 1: Brand & Purpose */}
 					<div className="col-span-2 md:col-span-1 space-y-3">
-						<div className="flex items-center gap-2">
-							<div className="flex h-6 w-6 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-xs">
-								<Sparkles className="h-3.5 w-3.5" />
+						<div className="flex items-center gap-2.5">
+							<div className="flex h-6 w-6 items-center justify-center rounded-md border border-border bg-card text-foreground shadow-xs">
+								<ExhumaLogo size={14} />
 							</div>
-							<span className="font-extrabold tracking-tight text-foreground text-sm">
+							<span className="font-bold tracking-tight text-foreground text-sm font-sans">
 								Exhuma
 							</span>
 						</div>

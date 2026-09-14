@@ -13,6 +13,7 @@ import {
   IconArrowRight as ArrowRight,
   IconExternalLink as ExternalLink,
 } from '@tabler/icons-react';
+import { ExhumaLogo } from '@/components/brand/ExhumaLogo';
 import { ThemeSwitcher } from './ThemeSwitcher';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
@@ -58,14 +59,14 @@ export function GlobalHeader() {
 					{/* Brand Mark */}
 					<div className="flex items-center gap-6">
 						<Link href="/" className="flex items-center gap-2.5 group">
-							<div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-sm transition-transform group-hover:scale-105">
-								<Sparkles className="h-4 w-4" />
+							<div className="flex h-7 w-7 items-center justify-center rounded-lg border border-border bg-card text-foreground shadow-xs transition-colors group-hover:border-foreground/30">
+								<ExhumaLogo size={16} />
 							</div>
 							<div className="flex items-center gap-2">
-								<span className="font-black tracking-tight text-foreground text-base">
+								<span className="font-bold tracking-tight text-foreground text-sm font-sans">
 									Exhuma
 								</span>
-								<Badge variant="ecosystem" className="hidden sm:inline-flex py-0 px-1.5 text-[10px]">
+								<Badge variant="ecosystem" className="hidden sm:inline-flex py-0 px-1.5 text-[10px] font-mono">
 									v0.1.1
 								</Badge>
 							</div>
