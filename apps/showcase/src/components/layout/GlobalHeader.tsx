@@ -4,15 +4,15 @@ import * as React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
-	Search,
-	Terminal,
-	Sparkles,
-	Layers,
-	Sliders,
-	BookOpen,
-	ArrowRight,
-	ExternalLink,
-} from 'lucide-react';
+  IconSearch as Search,
+  IconTerminal2 as Terminal,
+  IconSparkles as Sparkles,
+  IconStack2 as Layers,
+  IconAdjustments as Sliders,
+  IconBook2 as BookOpen,
+  IconArrowRight as ArrowRight,
+  IconExternalLink as ExternalLink,
+} from '@tabler/icons-react';
 import { ThemeSwitcher } from './ThemeSwitcher';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
@@ -40,7 +40,7 @@ export function GlobalHeader() {
 	return (
 		<div className="sticky top-0 z-40 w-full">
 			{/* Top Announcement Banner (shadcn / Vercel style) */}
-			<div className="border-b border-border bg-muted/40 py-1.5 px-4 text-center text-[11px] font-medium transition-colors">
+			<div className="border-b border-border bg-muted py-1.5 px-4 text-center text-[11px] font-medium transition-colors">
 				<Link
 					href="/docs/ecosystems"
 					className="inline-flex items-center gap-1.5 text-muted-foreground hover:text-foreground transition-colors group"

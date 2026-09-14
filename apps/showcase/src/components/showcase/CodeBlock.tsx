@@ -1,7 +1,11 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Check, Copy, Terminal } from 'lucide-react';
+import {
+  IconCheck as Check,
+  IconCopy as Copy,
+  IconTerminal2 as Terminal,
+} from '@tabler/icons-react';
 import { cn } from '@/lib/utils';
 
 interface CodeBlockProps {

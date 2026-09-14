@@ -1,6 +1,13 @@
 import React from 'react';
 import Link from 'next/link';
-import { Sparkles, Palette, Sun, Moon, Laptop, ArrowRight } from 'lucide-react';
+import {
+  IconSparkles as Sparkles,
+  IconPalette as Palette,
+  IconSun as Sun,
+  IconMoon as Moon,
+  IconDeviceLaptop as Laptop,
+  IconArrowRight as ArrowRight,
+} from '@tabler/icons-react';
 import { CodeBlock } from '@/components/showcase/CodeBlock';
 import { Callout } from '@/components/layout/Callout';
 import { DocsToc } from '@/components/layout/DocsToc';

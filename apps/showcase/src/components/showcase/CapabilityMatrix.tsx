@@ -1,5 +1,11 @@
 import * as React from 'react';
-import { Check, ShieldCheck, FileCode, Layers, Cpu } from 'lucide-react';
+import {
+  IconCheck as Check,
+  IconShieldCheck as ShieldCheck,
+  IconFileCode as FileCode,
+  IconStack2 as Layers,
+  IconCpu as Cpu,
+} from '@tabler/icons-react';
 import { Badge } from '@/components/ui/badge';
 
 interface EcosystemCapability {

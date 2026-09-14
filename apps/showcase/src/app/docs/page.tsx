@@ -1,6 +1,12 @@
 import React from 'react';
 import Link from 'next/link';
-import { ArrowRight, Sparkles, ShieldCheck, Terminal, Layers } from 'lucide-react';
+import {
+  IconArrowRight as ArrowRight,
+  IconSparkles as Sparkles,
+  IconShieldCheck as ShieldCheck,
+  IconTerminal2 as Terminal,
+  IconStack2 as Layers,
+} from '@tabler/icons-react';
 import { CodeBlock } from '@/components/showcase/CodeBlock';
 import { Callout } from '@/components/layout/Callout';
 import { DocsToc } from '@/components/layout/DocsToc';

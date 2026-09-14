@@ -2,7 +2,12 @@
 
 import * as React from 'react';
 import { useTheme } from 'next-themes';
-import { Sun, Moon, Monitor, Loader2 } from 'lucide-react';
+import {
+  IconSun as Sun,
+  IconMoon as Moon,
+  IconDeviceDesktop as Monitor,
+  IconLoader2 as Loader2,
+} from '@tabler/icons-react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';

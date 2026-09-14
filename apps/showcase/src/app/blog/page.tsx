@@ -1,6 +1,13 @@
 import React from 'react';
 import Link from 'next/link';
-import { Sparkles, Calendar, Clock, ArrowRight, BookOpen, Layers } from 'lucide-react';
+import {
+  IconSparkles as Sparkles,
+  IconCalendar as Calendar,
+  IconClock as Clock,
+  IconArrowRight as ArrowRight,
+  IconBook2 as BookOpen,
+  IconStack2 as Layers,
+} from '@tabler/icons-react';
 import { BLOG_POSTS } from '@/lib/blog-data';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';

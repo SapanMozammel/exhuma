@@ -1,6 +1,12 @@
 import * as React from 'react';
 import Link from 'next/link';
-import { Sparkles, Terminal, ShieldCheck, Cpu, Layers } from 'lucide-react';
+import {
+  IconSparkles as Sparkles,
+  IconTerminal2 as Terminal,
+  IconShieldCheck as ShieldCheck,
+  IconCpu as Cpu,
+  IconStack2 as Layers,
+} from '@tabler/icons-react';
 import { ALL_COMPONENTS, ECOSYSTEM_LABELS, EcosystemFlavor } from '@/registry';
 
 export function GlobalFooter() {

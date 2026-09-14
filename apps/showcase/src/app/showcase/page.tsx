@@ -3,16 +3,16 @@
 import * as React from 'react';
 import Link from 'next/link';
 import {
-	Sparkles,
-	Sliders,
-	ExternalLink,
-	Eye,
-	Layers,
-	Cpu,
-	Code2,
-	Check,
-	Copy,
-} from 'lucide-react';
+  IconSparkles as Sparkles,
+  IconAdjustments as Sliders,
+  IconExternalLink as ExternalLink,
+  IconEye as Eye,
+  IconStack2 as Layers,
+  IconCpu as Cpu,
+  IconCode as Code2,
+  IconCheck as Check,
+  IconCopy as Copy,
+} from '@tabler/icons-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';

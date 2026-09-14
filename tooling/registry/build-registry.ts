@@ -32,6 +32,7 @@ export function buildRegistry(rootDir: string = process.cwd()): void {
       description: comp.description,
       version: comp.version,
       props: comp.props,
+      dependencies: comp.dependencies,
       flavors: FLAVORS,
     })),
   };
@@ -55,6 +56,7 @@ export function buildRegistry(rootDir: string = process.cwd()): void {
       description: comp.description,
       version: comp.version,
       props: comp.props,
+      dependencies: comp.dependencies,
       flavors: {} as Record<EcosystemFlavor, any[]>,
     };
 

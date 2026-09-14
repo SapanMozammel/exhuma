@@ -61,10 +61,16 @@ export interface UniversalComponent {
   id: string;
   name: string;
   slug: string;
-  category: 'cards' | 'layouts' | 'navigation';
+  category: 'cards' | 'layouts' | 'navigation' | 'primitives';
   description: string;
   version: string;
   props: PropDescriptor[];
   defaultProps: Record<string, unknown>;
-  generateCode: (flavor: EcosystemFlavor, props: Record<string, unknown>) => ComponentFilePayload[];
+  dependencies?: Partial<Record<EcosystemFlavor, string[]>>;
+  devDependencies?: Partial<Record<EcosystemFlavor, string[]>>;
+  generateCode: (
+    flavor: EcosystemFlavor,
+    props: Record<string, unknown>,
+    options?: { eject?: boolean }
+  ) => ComponentFilePayload[];
 }

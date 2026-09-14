@@ -20,7 +20,10 @@ export default function RootLayout({
 }) {
 	return (
 		<html lang="en" suppressHydrationWarning>
-			<body className="min-h-screen bg-background text-foreground antialiased selection:bg-primary/10 selection:text-primary">
+			<body
+				suppressHydrationWarning
+				className="min-h-screen bg-background text-foreground antialiased selection:bg-primary/10 selection:text-primary"
+			>
 				<Providers>
 					<div className="relative flex min-h-screen flex-col">
 						<GlobalHeader />

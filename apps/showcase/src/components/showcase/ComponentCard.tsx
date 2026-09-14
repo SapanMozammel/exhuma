@@ -2,7 +2,12 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { Copy, Check, ArrowUpRight, Terminal } from 'lucide-react';
+import {
+  IconCopy as Copy,
+  IconCheck as Check,
+  IconArrowUpRight as ArrowUpRight,
+  IconTerminal2 as Terminal,
+} from '@tabler/icons-react';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 

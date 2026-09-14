@@ -1,15 +1,15 @@
 import React from 'react';
 import Link from 'next/link';
 import {
-	Sliders,
-	Layers,
-	Terminal,
-	ArrowRight,
-	Sparkles,
-	BookOpen,
-	ShieldCheck,
-	Zap,
-} from 'lucide-react';
+  IconAdjustments as Sliders,
+  IconStack2 as Layers,
+  IconTerminal2 as Terminal,
+  IconArrowRight as ArrowRight,
+  IconSparkles as Sparkles,
+  IconBook2 as BookOpen,
+  IconShieldCheck as ShieldCheck,
+  IconBolt as Zap,
+} from '@tabler/icons-react';
 import { ALL_COMPONENTS } from '@/registry';
 import { PackageManagerTabs } from '@/components/showcase/PackageManagerTabs';
 import { LandingWorkbench } from '@/components/showcase/LandingWorkbench';
@@ -153,7 +153,7 @@ export default function HomePage() {
 							Canonical Components
 						</h2>
 						<p className="text-xs sm:text-sm text-muted-foreground mt-1">
-							All 5 core components implemented across 13 target ecosystems.
+							All 23 components engineered under the Exhuma Kinetic Methodology across 13 target ecosystems.
 						</p>
 					</div>
 

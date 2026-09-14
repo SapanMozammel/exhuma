@@ -1,6 +1,11 @@
 import React from 'react';
 import Link from 'next/link';
-import { ArrowRight, Terminal, ShieldCheck, Zap } from 'lucide-react';
+import {
+  IconArrowRight as ArrowRight,
+  IconTerminal2 as Terminal,
+  IconShieldCheck as ShieldCheck,
+  IconBolt as Zap,
+} from '@tabler/icons-react';
 import { CodeBlock } from '@/components/showcase/CodeBlock';
 import { Callout } from '@/components/layout/Callout';
 import { DocsToc } from '@/components/layout/DocsToc';

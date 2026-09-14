@@ -2,13 +2,13 @@ import React from 'react';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import {
-	Calendar,
-	Clock,
-	ArrowLeft,
-	ArrowRight,
-	Share2,
-	Sparkles,
-} from 'lucide-react';
+  IconCalendar as Calendar,
+  IconClock as Clock,
+  IconArrowLeft as ArrowLeft,
+  IconArrowRight as ArrowRight,
+  IconShare as Share2,
+  IconSparkles as Sparkles,
+} from '@tabler/icons-react';
 import { BLOG_POSTS, getBlogPostBySlug } from '@/lib/blog-data';
 import { CodeBlock } from '@/components/showcase/CodeBlock';
 import { Callout } from '@/components/layout/Callout';

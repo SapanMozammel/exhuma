@@ -2,7 +2,9 @@
 
 import * as React from 'react';
 import { cn } from '@/lib/utils';
-import { AlignLeft } from 'lucide-react';
+import {
+  IconAlignLeft as AlignLeft,
+} from '@tabler/icons-react';
 
 interface TocItem {
 	id: string;

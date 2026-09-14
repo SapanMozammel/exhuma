@@ -5,15 +5,16 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ALL_COMPONENTS } from '@/registry';
 import {
-	Search,
-	BookOpen,
-	Terminal,
-	Cpu,
-	Palette,
-	ShieldCheck,
-	Layers,
-	ChevronRight,
-} from 'lucide-react';
+  IconSearch as Search,
+  IconBook2 as BookOpen,
+  IconTerminal2 as Terminal,
+  IconCpu as Cpu,
+  IconPalette as Palette,
+  IconShieldCheck as ShieldCheck,
+  IconStack2 as Layers,
+  IconChevronRight as ChevronRight,
+  IconActivity as Activity,
+} from '@tabler/icons-react';
 import { cn } from '@/lib/utils';
 import { Badge } from '@/components/ui/badge';
 
@@ -29,6 +30,7 @@ export function DocsSidebar() {
 	];
 
 	const architectureLinks = [
+		{ href: '/docs/methodology', label: 'Kinetic Methodology & Big-Ω', icon: Activity },
 		{ href: '/docs/ecosystems', label: '13 Ecosystem Contracts', icon: Cpu },
 		{ href: '/docs/lifecycle', label: 'Lifecycle & Memory Safety', icon: ShieldCheck },
 	];
@@ -142,7 +144,7 @@ export function DocsSidebar() {
 					>
 						<span>All Components</span>
 						<Badge variant="outline" className="text-[9px] py-0 px-1">
-							5
+							{ALL_COMPONENTS.length}
 						</Badge>
 					</Link>
 					{filteredComponents.map((comp) => {

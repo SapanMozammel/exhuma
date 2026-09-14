@@ -2,17 +2,17 @@
 
 import * as React from 'react';
 import {
-	Eye,
-	Code2,
-	Sliders,
-	Check,
-	Copy,
-	Terminal,
-	Layers,
-	Cpu,
-	Sparkles,
-	ArrowRight,
-} from 'lucide-react';
+  IconEye as Eye,
+  IconCode as Code2,
+  IconAdjustments as Sliders,
+  IconCheck as Check,
+  IconCopy as Copy,
+  IconTerminal2 as Terminal,
+  IconStack2 as Layers,
+  IconCpu as Cpu,
+  IconSparkles as Sparkles,
+  IconArrowRight as ArrowRight,
+} from '@tabler/icons-react';
 import { CodeBlock } from './CodeBlock';
 import { EcosystemPills } from './EcosystemPills';
 import {
@@ -23,6 +23,8 @@ import {
 } from '@/registry';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
+import { StackingCards, HorizontalScroller, TiltCard } from '@exhuma/cards';
+import { CssMasonry, AutoGrid } from '@exhuma/layouts';
 
 export function LandingWorkbench() {
 	const [activeComponentSlug, setActiveComponentSlug] =
@@ -39,6 +41,9 @@ export function LandingWorkbench() {
 	const [scrollGap, setScrollGap] = React.useState(16);
 	const [masonryCols, setMasonryCols] = React.useState(3);
 	const [gridMin, setGridMin] = React.useState(200);
+
+	const stackingScrollRef = React.useRef<HTMLDivElement>(null);
+	const horizontalScrollRef = React.useRef<HTMLDivElement>(null);
 
 	const activeComponent =
 		COMPONENT_REGISTRY[activeComponentSlug] || ALL_COMPONENTS[0];
@@ -210,25 +215,12 @@ export function LandingWorkbench() {
 					<div className="w-full flex flex-col items-center gap-8">
 						{/* Active Component Live Sandbox */}
 						{activeComponentSlug === 'tilt-card' && (
-							<div
-								onMouseMove={handleMouseMoveTilt}
-								onMouseLeave={handleMouseLeaveTilt}
-								style={{
-									transform: tiltTransform,
-									transition: 'transform 120ms cubic-bezier(0.03, 0.98, 0.52, 0.99)',
-									transformStyle: 'preserve-3d',
-								}}
-								className="relative w-full max-w-md rounded-2xl border border-border bg-card p-8 shadow-2xl cursor-pointer overflow-hidden transition-colors"
+							<TiltCard
+								maxTilt={tiltMax}
+								glare={glare}
+								perspective={1000}
+								className="w-full max-w-md bg-card p-8 border border-border shadow-2xl cursor-pointer"
 							>
-								{glare && (
-									<div
-										className="pointer-events-none absolute inset-0 transition-opacity duration-200"
-										style={{
-											opacity: glareCoord.opacity,
-											background: `radial-gradient(circle at ${glareCoord.x}% ${glareCoord.y}%, rgba(255,255,255,0.45) 0%, transparent 60%)`,
-										}}
-									/>
-								)}
 								<div className="flex items-center justify-between mb-4">
 									<span className="kbd text-[10px] text-primary font-bold">
 										INTERACTIVE 3D
@@ -247,21 +239,29 @@ export function LandingWorkbench() {
 									<span>Perspective: 1000px</span>
 									<span className="text-emerald-500 font-bold">Hardware Accelerated</span>
 								</div>
-							</div>
+							</TiltCard>
 						)}
 
 						{activeComponentSlug === 'stacking-cards' && (
-							<div className="w-full max-w-lg space-y-4">
-								{Array.from({ length: 3 }).map((_, idx) => {
-									const scale = 1 - (3 - 1 - idx) * 0.05;
-									return (
+							<div
+								ref={stackingScrollRef}
+								className="w-full max-w-lg h-[460px] overflow-y-auto rounded-2xl border border-border bg-background/50 p-6 no-scrollbar relative shadow-inner"
+							>
+								<div className="text-[11px] font-mono text-muted-foreground text-center mb-6 flex items-center justify-center gap-2">
+									<span className="kbd text-[10px]">SCROLL DOWN INSIDE STAGE</span>
+									<span>↓</span>
+								</div>
+								<StackingCards
+									topStart={20}
+									topIncrement={stackOffset}
+									minScale={0.92}
+									scaleThreshold={100}
+									scrollContainerRef={stackingScrollRef}
+								>
+									{Array.from({ length: 4 }).map((_, idx) => (
 										<div
 											key={idx}
-											className="sticky rounded-2xl border border-border bg-card/95 backdrop-blur-md p-6 shadow-xl transition-all"
-											style={{
-												top: `calc(10% + ${idx * stackOffset}px)`,
-												transform: `scale(${scale})`,
-											}}
+											className="rounded-2xl border border-border bg-card/95 backdrop-blur-md p-6 shadow-xl"
 										>
 											<div className="flex items-center justify-between text-xs font-mono text-muted-foreground mb-2">
 												<span className="kbd text-[10px]">LAYER 0{idx + 1}</span>
@@ -271,17 +271,30 @@ export function LandingWorkbench() {
 												Sticky Stacking Card
 											</h4>
 											<p className="text-xs text-muted-foreground mt-1">
-												Scroll to test stacking scale decay.
+												Scroll to observe progressive scale decay and reverse exit scaling.
 											</p>
 										</div>
-									);
-								})}
+									))}
+								</StackingCards>
+								<div className="h-[260px] flex items-center justify-center text-xs font-mono text-muted-foreground">
+									Terminal scroll reached
+								</div>
 							</div>
 						)}
 
 						{activeComponentSlug === 'horizontal-scroller' && (
-							<div className="w-full overflow-x-auto py-4 no-scrollbar">
-								<div className="flex items-center" style={{ gap: `${scrollGap}px` }}>
+							<div
+								ref={horizontalScrollRef}
+								className="w-full h-[460px] overflow-y-auto rounded-2xl border border-border bg-background/50 relative no-scrollbar shadow-inner"
+							>
+								<div className="sticky top-4 z-20 text-[11px] font-mono text-muted-foreground text-center mb-2 flex items-center justify-center gap-2 pointer-events-none">
+									<span className="kbd text-[10px] bg-card/90 shadow">VERTICAL SCROLL → HORIZONTAL RAIL</span>
+									<span>↓</span>
+								</div>
+								<HorizontalScroller
+									speed={0.85}
+									scrollContainerRef={horizontalScrollRef}
+								>
 									{Array.from({ length: 6 }).map((_, idx) => (
 										<div
 											key={idx}
@@ -292,21 +305,19 @@ export function LandingWorkbench() {
 												Momentum Rail
 											</h4>
 											<p className="text-xs text-muted-foreground mt-1">
-												Scroll snap alignment.
+												Horizontal translation mapped to scroll progress.
 											</p>
 										</div>
 									))}
-								</div>
+								</HorizontalScroller>
 							</div>
 						)}
 
 						{activeComponentSlug === 'css-masonry' && (
-							<div
+							<CssMasonry
+								columns={masonryCols}
+								gap={16}
 								className="w-full"
-								style={{
-									columnCount: masonryCols,
-									columnGap: '16px',
-								}}
 							>
 								{[100, 160, 120, 180, 140, 200].map((h, idx) => (
 									<div
@@ -319,16 +330,14 @@ export function LandingWorkbench() {
 										<div className="text-[10px] text-muted-foreground">{h}px</div>
 									</div>
 								))}
-							</div>
+							</CssMasonry>
 						)}
 
 						{activeComponentSlug === 'auto-grid' && (
-							<div
-								className="w-full grid"
-								style={{
-									gridTemplateColumns: `repeat(auto-fit, minmax(${gridMin}px, 1fr))`,
-									gap: '16px',
-								}}
+							<AutoGrid
+								minItemWidth={gridMin}
+								gap={16}
+								className="w-full"
 							>
 								{Array.from({ length: 6 }).map((_, idx) => (
 									<div
@@ -340,7 +349,7 @@ export function LandingWorkbench() {
 										<div className="text-xs text-muted-foreground mt-1">MinMax responsive</div>
 									</div>
 								))}
-							</div>
+							</AutoGrid>
 						)}
 
 						{/* Live Interactive Parameter Sliders */}

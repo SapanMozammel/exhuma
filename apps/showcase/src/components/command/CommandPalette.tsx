@@ -3,18 +3,18 @@
 import * as React from 'react';
 import { useRouter } from 'next/navigation';
 import {
-	Search,
-	Layers,
-	BookOpen,
-	Cpu,
-	Sliders,
-	Copy,
-	Check,
-	ArrowRight,
-	ExternalLink,
-	Command,
-	Sparkles,
-} from 'lucide-react';
+  IconSearch as Search,
+  IconStack2 as Layers,
+  IconBook2 as BookOpen,
+  IconCpu as Cpu,
+  IconAdjustments as Sliders,
+  IconCopy as Copy,
+  IconCheck as Check,
+  IconArrowRight as ArrowRight,
+  IconExternalLink as ExternalLink,
+  IconCommand as Command,
+  IconSparkles as Sparkles,
+} from '@tabler/icons-react';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { ALL_COMPONENTS, ECOSYSTEM_LABELS, EcosystemFlavor } from '@/registry';
 import { BLOG_POSTS } from '@/lib/blog-data';

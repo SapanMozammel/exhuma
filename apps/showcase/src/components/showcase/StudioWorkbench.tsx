@@ -17,26 +17,60 @@ import { CodeBlock } from './CodeBlock';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
-	Sliders,
-	Sparkles,
-	RefreshCw,
-	Layers,
-	Copy,
-	Check,
-	Laptop,
-	Tablet,
-	Smartphone,
-	Monitor,
-	ZoomIn,
-	ZoomOut,
-	Download,
-	Search,
-	ChevronRight,
-	Grid,
-	Maximize2,
-	Terminal,
-} from 'lucide-react';
+  IconAdjustments as Sliders,
+  IconSparkles as Sparkles,
+  IconRefresh as RefreshCw,
+  IconStack2 as Layers,
+  IconCopy as Copy,
+  IconCheck as Check,
+  IconDeviceLaptop as Laptop,
+  IconDeviceTablet as Tablet,
+  IconDeviceMobile as Smartphone,
+  IconDeviceDesktop as Monitor,
+  IconZoomIn as ZoomIn,
+  IconZoomOut as ZoomOut,
+  IconDownload as Download,
+  IconSearch as Search,
+  IconChevronRight as ChevronRight,
+  IconLayoutGrid as Grid,
+  IconMaximize as Maximize2,
+  IconTerminal2 as Terminal,
+  IconCpu as Cpu,
+} from '@tabler/icons-react';
 import { cn } from '@/lib/utils';
+import {
+	StackingCards,
+	HorizontalScroller,
+	TiltCard,
+	SpotlightCard,
+	BorderBeam,
+	CardSwipeStack,
+	ComparisonSlider,
+	ExpandableCard,
+} from '@exhuma/cards';
+import {
+	CssMasonry,
+	AutoGrid,
+	InfiniteMarquee,
+	BentoGrid,
+	BentoCard,
+	BentoHeader,
+	BentoContent,
+	DiamondGrid,
+	ScrollTimeline,
+	StickyParallaxScroll,
+	ParallaxLayer,
+	InteractiveGridPattern,
+} from '@exhuma/layouts';
+import {
+	MorphingTabs,
+	Accordion,
+	AnimatedSphere,
+	FloatingDock,
+	NumberTicker,
+	MagneticButton,
+	CursorTooltip,
+} from '@exhuma/core';
 
 // Presets per component
 const COMPONENT_PRESETS: Record<string, Record<string, Record<string, unknown>>> = {
@@ -55,17 +89,106 @@ const COMPONENT_PRESETS: Record<string, Record<string, Record<string, unknown>>>
 		Default: { maxTilt: 20, glare: true, maxGlare: 0.35, scale: 1.05, speed: 400 },
 		'Subtle Glare': { maxTilt: 10, glare: true, maxGlare: 0.15, scale: 1.02, speed: 600 },
 		'Aggressive 3D': { maxTilt: 35, glare: true, maxGlare: 0.5, scale: 1.1, speed: 300 },
-		'Flat Kinetic': { maxTilt: 25, glare: false, maxGlare: 0, scale: 1.06, speed: 400 },
 	},
 	'css-masonry': {
-		Default: { columns: 3, gap: 16, balanceThreshold: 40 },
-		Dense: { columns: 4, gap: 8, balanceThreshold: 20 },
-		Spacious: { columns: 2, gap: 24, balanceThreshold: 50 },
+		Default: { columns: 3, gap: 16 },
+		Dense: { columns: 4, gap: 12 },
+		Spacious: { columns: 2, gap: 24 },
 	},
 	'auto-grid': {
-		Default: { minItemWidth: 240, gap: 16, autoFit: true },
-		'Wide Cards': { minItemWidth: 320, gap: 24, autoFit: true },
-		'Compact Grid': { minItemWidth: 180, gap: 12, autoFit: false },
+		Default: { minItemWidth: 220, gap: 16 },
+		Compact: { minItemWidth: 160, gap: 12 },
+		Cards: { minItemWidth: 280, gap: 24 },
+	},
+	'spotlight-card': {
+		Default: { radius: 350, opacity: 0.8 },
+		Subtle: { radius: 250, opacity: 0.5 },
+		Broad: { radius: 500, opacity: 0.9 },
+	},
+	'morphing-tabs': {
+		Default: { springStiffness: 26 },
+		Snappy: { springStiffness: 40 },
+		Gentle: { springStiffness: 16 },
+	},
+	'accordion': {
+		Default: { mode: 'single', duration: 300 },
+		Multiple: { mode: 'multiple', duration: 300 },
+		Fast: { mode: 'single', duration: 200 },
+	},
+	'infinite-marquee': {
+		Default: { speed: 40, pauseOnHover: true },
+		Fast: { speed: 80, pauseOnHover: true },
+		Gentle: { speed: 20, pauseOnHover: false },
+	},
+	'bento-grid': {
+		Default: { cols: 3, gap: '1.5rem' },
+		Dense: { cols: 4, gap: '1rem' },
+		Spacious: { cols: 3, gap: '2rem' },
+	},
+	'diamond-grid': {
+		Default: { gap: '0.75vw' },
+		Tight: { gap: '0.5vw' },
+		Spacious: { gap: '1.2vw' },
+	},
+	'scroll-timeline': {
+		Default: { curveWidth: 24, curveHeight: 40 },
+		Wider: { curveWidth: 36, curveHeight: 50 },
+		Subtle: { curveWidth: 16, curveHeight: 30 },
+	},
+	'sticky-parallax': {
+		Default: { trackHeight: '250vh' },
+		Short: { trackHeight: '180vh' },
+		Deep: { trackHeight: '350vh' },
+	},
+	'border-beam': {
+		Default: { size: 200, duration: 8, borderWidth: 2 },
+		Fast: { size: 200, duration: 4, borderWidth: 2 },
+		Subtle: { size: 300, duration: 12, borderWidth: 1.5 },
+	},
+	'animated-sphere': {
+		Default: { radius: 100, rotationSpeedX: 0.008, rotationSpeedY: 0.012, asciiMode: false },
+		ASCII: { radius: 100, rotationSpeedX: 0.008, rotationSpeedY: 0.012, asciiMode: true },
+		Rapid: { radius: 100, rotationSpeedX: 0.02, rotationSpeedY: 0.03, asciiMode: false },
+	},
+	'floating-dock': {
+		Default: { maxDistance: 140, baseWidth: 44, magnifiedWidth: 72 },
+		Compact: { maxDistance: 100, baseWidth: 36, magnifiedWidth: 56 },
+		Dramatic: { maxDistance: 180, baseWidth: 44, magnifiedWidth: 88 },
+	},
+	'interactive-grid': {
+		Default: { width: 32, height: 32 },
+		Dense: { width: 20, height: 20 },
+		Spacious: { width: 48, height: 48 },
+	},
+	'number-ticker': {
+		Default: { value: 1000, decimalPlaces: 0 },
+		Precision: { value: 98.65, decimalPlaces: 2 },
+		Large: { value: 1000000, decimalPlaces: 0 },
+	},
+	'magnetic-button': {
+		Default: { strength: 0.35, radius: 120, springDamping: 18 },
+		Strong: { strength: 0.6, radius: 160, springDamping: 22 },
+		Subtle: { strength: 0.2, radius: 80, springDamping: 14 },
+	},
+	'card-swipe-stack': {
+		Default: { thresholdDistance: 120, maxRotation: 20, scaleStep: 0.05 },
+		Snappy: { thresholdDistance: 90, maxRotation: 25, scaleStep: 0.06 },
+		Stiff: { thresholdDistance: 160, maxRotation: 15, scaleStep: 0.04 },
+	},
+	'comparison-slider': {
+		Default: { defaultPosition: 0.5, step: 0.05 },
+		SplitQuarter: { defaultPosition: 0.25, step: 0.05 },
+		SplitThreeQuarters: { defaultPosition: 0.75, step: 0.05 },
+	},
+	'expandable-card': {
+		Default: { duration: 360 },
+		Fast: { duration: 240 },
+		Cinematic: { duration: 480 },
+	},
+	'cursor-tooltip': {
+		Default: { springDamping: 22 },
+		Elastic: { springDamping: 14 },
+		Instant: { springDamping: 35 },
 	},
 };
 
@@ -95,6 +218,9 @@ export function StudioWorkbench({
 	const [zoomScale, setZoomScale] = useState<number>(100);
 	const [copiedCli, setCopiedCli] = useState(false);
 	const [canvasGrid, setCanvasGrid] = useState<'dots' | 'dense' | 'clean'>('dots');
+
+	const studioStackingRef = React.useRef<HTMLDivElement>(null);
+	const studioHorizontalRef = React.useRef<HTMLDivElement>(null);
 
 	// Presets
 	const presets = COMPONENT_PRESETS[selectedSlug] || {};
@@ -185,27 +311,38 @@ export function StudioWorkbench({
 	// Render interactive canvas preview according to selected component
 	const renderCanvasPreview = () => {
 		if (selectedSlug === 'stacking-cards') {
+			const topIncrement = Number(propValues.topIncrement ?? propValues.stackOffset ?? 24);
+			const topStart = Number(propValues.topStart ?? 20);
+			const minScale = Number(propValues.minScale ?? 0.92);
+			const count = Number(propValues.cardCount ?? 4);
+
 			return (
-				<div className="w-full max-w-xl mx-auto py-8 px-4">
-					{Array.from({ length: 4 }).map((_, idx) => {
-						const cardGap = Number(propValues.stackOffset ?? 24);
-						const scaleStep = Number(propValues.scaleStep ?? 0.04);
-						const scale = 1 - (4 - 1 - idx) * scaleStep;
-						return (
+				<div
+					ref={studioStackingRef}
+					className="w-full max-w-xl mx-auto h-[500px] overflow-y-auto rounded-2xl border border-border bg-background/50 p-6 no-scrollbar relative shadow-inner"
+				>
+					<div className="text-[11px] font-mono text-muted-foreground text-center mb-6 flex items-center justify-center gap-2">
+						<span className="kbd text-[10px]">SCROLL DOWN TO TEST DYNAMIC SCALE</span>
+						<span>↓</span>
+					</div>
+					<StackingCards
+						topStart={topStart}
+						topIncrement={topIncrement}
+						minScale={minScale}
+						scaleThreshold={100}
+						scrollContainerRef={studioStackingRef}
+					>
+						{Array.from({ length: count }).map((_, idx) => (
 							<div
 								key={idx}
-								className="sticky rounded-2xl border border-border bg-card/95 backdrop-blur-md p-6 shadow-xl mb-6 transition-all duration-300"
-								style={{
-									top: `calc(10% + ${idx * cardGap}px)`,
-									transform: `scale(${scale})`,
-								}}
+								className="rounded-2xl border border-border bg-card/95 backdrop-blur-md p-6 shadow-xl"
 							>
 								<div className="flex items-center justify-between text-xs font-mono text-muted-foreground mb-3">
 									<span className="kbd text-[10px] uppercase font-bold text-primary">
 										STACK LAYER 0{idx + 1}
 									</span>
 									<span className="text-emerald-500 font-semibold text-[11px]">
-										Hardware Accelerated
+										Dynamic Physics
 									</span>
 								</div>
 								<h4 className="text-xl font-bold tracking-tight text-foreground">
@@ -215,42 +352,56 @@ export function StudioWorkbench({
 									Card stacks with dynamic mathematical scale decay. Zero layout thrashing or parent scroll locking.
 								</p>
 								<div className="mt-6 pt-4 border-t border-border flex items-center justify-between text-xs font-mono text-muted-foreground">
-									<span>Offset: {cardGap}px</span>
-									<span>Scale: {(scale * 100).toFixed(0)}%</span>
+									<span>Offset: {topIncrement}px</span>
+									<span>Layer: #{idx + 1}</span>
 								</div>
 							</div>
-						);
-					})}
+						))}
+					</StackingCards>
+					<div className="h-[280px] flex items-center justify-center text-xs font-mono text-muted-foreground">
+						Terminal scroll reached — reverse scaling applied
+					</div>
 				</div>
 			);
 		}
 
 		if (selectedSlug === 'horizontal-scroller') {
+			const speed = Number(propValues.speed ?? propValues.scrollSpeed ?? 0.85);
+			const gap = Number(propValues.itemGap ?? propValues.gap ?? 16);
+			const itemWidth = Number(propValues.itemWidth ?? 280);
+
 			return (
-				<div className="w-full overflow-x-auto py-8 px-4 no-scrollbar">
-					<div
-						className="flex items-center"
-						style={{ gap: `${Number(propValues.gap ?? 16)}px` }}
+				<div
+					ref={studioHorizontalRef}
+					className="w-full h-[500px] overflow-y-auto rounded-2xl border border-border bg-background/50 relative no-scrollbar shadow-inner"
+				>
+					<div className="sticky top-4 z-20 text-[11px] font-mono text-muted-foreground text-center mb-2 flex items-center justify-center gap-2 pointer-events-none">
+						<span className="kbd text-[10px] bg-card/90 shadow">VERTICAL SCROLL → HORIZONTAL RAIL</span>
+						<span>↓</span>
+					</div>
+					<HorizontalScroller
+						speed={speed}
+						scrollContainerRef={studioHorizontalRef}
 					>
 						{Array.from({ length: 6 }).map((_, idx) => (
 							<div
 								key={idx}
 								className="shrink-0 rounded-2xl border border-border bg-card p-6 shadow-lg transition-all hover:border-primary/50"
-								style={{ width: `${Number(propValues.itemWidth ?? 280)}px` }}
+								style={{ width: `${itemWidth}px` }}
 							>
 								<div className="flex items-center justify-between text-xs font-mono text-muted-foreground mb-2">
 									<span className="kbd text-[10px] text-primary">RAIL ITEM #{idx + 1}</span>
-									<span className="text-[10px]">Snap Track</span>
+									<span className="text-[10px]">Momentum Rail</span>
 								</div>
 								<h4 className="text-base font-bold text-foreground mt-1">
 									Momentum Scroller
 								</h4>
 								<p className="text-xs text-muted-foreground mt-1 leading-relaxed">
-									Touch and pointer momentum scroll with CSS scroll-snap alignment.
+									Dynamic translation mapped to scroll progress via GPU-decoupled CSS variable.
 								</p>
 							</div>
 						))}
-					</div>
+					</HorizontalScroller>
 				</div>
 			);
 		}
@@ -258,7 +409,12 @@ export function StudioWorkbench({
 		if (selectedSlug === 'tilt-card') {
 			return (
 				<div className="flex items-center justify-center p-8">
-					<div className="w-full max-w-md rounded-2xl border border-border bg-card p-8 shadow-2xl transition-all duration-300 hover:scale-105 hover:shadow-primary/10">
+					<TiltCard
+						maxTilt={Number(propValues.maxTilt ?? 15)}
+						perspective={Number(propValues.perspective ?? 1000)}
+						glare={Boolean(propValues.glare ?? true)}
+						className="w-full max-w-md bg-card p-8 border border-border shadow-2xl cursor-pointer"
+					>
 						<div className="flex items-center justify-between mb-4">
 							<span className="kbd text-[10px] text-primary font-bold">3D PERSPECTIVE</span>
 							<span className="text-xs font-mono text-muted-foreground">
@@ -269,25 +425,23 @@ export function StudioWorkbench({
 							Tactile 3D Tilt Card
 						</h4>
 						<p className="text-xs text-muted-foreground mt-2 leading-relaxed">
-							Perspective: {Number(propValues.perspective ?? 1000)}px | Glare Reflection: {Boolean(propValues.glare ?? true) ? 'Active' : 'Disabled'}
+							Perspective: {Number(propValues.perspective ?? 1000)}px | Glare: {Boolean(propValues.glare ?? true) ? 'Active' : 'Disabled'}
 						</p>
 						<div className="mt-6 pt-4 border-t border-border flex items-center justify-between text-xs font-mono text-muted-foreground">
 							<span>Physics: Spring Math</span>
 							<span className="text-emerald-500 font-semibold">60 FPS Native</span>
 						</div>
-					</div>
+					</TiltCard>
 				</div>
 			);
 		}
 
 		if (selectedSlug === 'css-masonry') {
 			return (
-				<div
+				<CssMasonry
+					columns={Number(propValues.columns ?? 3)}
+					gap={Number(propValues.gap ?? 16)}
 					className="w-full p-6"
-					style={{
-						columnCount: Number(propValues.columns ?? 3),
-						columnGap: `${Number(propValues.gap ?? 16)}px`,
-					}}
 				>
 					{[140, 200, 160, 240, 180, 260].map((h, idx) => (
 						<div
@@ -303,31 +457,456 @@ export function StudioWorkbench({
 							<div className="text-xs text-muted-foreground mt-1">CSS-First Flow</div>
 						</div>
 					))}
+				</CssMasonry>
+			);
+		}
+
+		if (selectedSlug === 'auto-grid') {
+			return (
+				<AutoGrid
+					minItemWidth={Number(propValues.minItemWidth ?? 200)}
+					gap={Number(propValues.gap ?? 16)}
+					className="w-full p-6"
+				>
+					{Array.from({ length: 6 }).map((_, idx) => (
+						<div
+							key={idx}
+							className="rounded-2xl border border-border bg-card p-5 shadow-sm transition-all hover:border-input"
+						>
+							<span className="kbd text-[10px] text-primary">GRID #{idx + 1}</span>
+							<div className="text-sm font-bold text-foreground mt-2">Auto Responsive</div>
+							<div className="text-xs text-muted-foreground mt-1">MinMax Width Flow</div>
+						</div>
+					))}
+				</AutoGrid>
+			);
+		}
+
+		if (selectedSlug === 'spotlight-card') {
+			const radius = Number(propValues.radius ?? 350);
+			const opacity = Number(propValues.opacity ?? 0.8);
+			const color = String(propValues.color ?? 'rgba(99, 102, 241, 0.25)');
+			const borderColor = String(propValues.borderColor ?? 'rgba(99, 102, 241, 0.5)');
+
+			return (
+				<div className="w-full max-w-md mx-auto p-4">
+					<SpotlightCard
+						radius={radius}
+						color={color}
+						opacity={opacity}
+						borderColor={borderColor}
+						className="p-8 shadow-2xl"
+					>
+						<div className="flex flex-col gap-3">
+							<span className="kbd text-[10px] text-primary">STUDIO PREVIEW</span>
+							<h4 className="text-xl font-bold tracking-tight text-foreground">Spotlight Card</h4>
+							<p className="text-xs text-muted-foreground leading-relaxed">
+								Interactive pointer tracking with sub-pixel radial border mask. Radius: {radius}px.
+							</p>
+							<div className="mt-4 pt-3 border-t border-border/50 flex items-center justify-between text-xs font-mono text-muted-foreground">
+								<span>Glow: {Math.round(opacity * 100)}%</span>
+								<span className="text-emerald-500 font-semibold">120Hz rAF</span>
+							</div>
+						</div>
+					</SpotlightCard>
 				</div>
 			);
 		}
 
-		// auto-grid
-		return (
-			<div
-				className="w-full p-6 grid"
-				style={{
-					gridTemplateColumns: `repeat(auto-fit, minmax(${Number(propValues.minItemWidth ?? 200)}px, 1fr))`,
-					gap: `${Number(propValues.gap ?? 16)}px`,
-				}}
-			>
-				{Array.from({ length: 6 }).map((_, idx) => (
-					<div
-						key={idx}
-						className="rounded-2xl border border-border bg-card p-5 shadow-sm transition-all hover:border-input"
-					>
-						<span className="kbd text-[10px] text-primary">GRID #{idx + 1}</span>
-						<div className="text-sm font-bold text-foreground mt-2">Auto Responsive</div>
-						<div className="text-xs text-muted-foreground mt-1">MinMax Width Flow</div>
+		if (selectedSlug === 'morphing-tabs') {
+			return (
+				<div className="w-full max-w-md mx-auto p-4">
+					<MorphingTabs.Root defaultValue="dashboard">
+						<MorphingTabs.List className="w-full justify-between">
+							<MorphingTabs.Indicator />
+							<MorphingTabs.Trigger value="dashboard" className="flex-1">Dashboard</MorphingTabs.Trigger>
+							<MorphingTabs.Trigger value="analytics" className="flex-1">Analytics</MorphingTabs.Trigger>
+							<MorphingTabs.Trigger value="settings" className="flex-1">Settings</MorphingTabs.Trigger>
+						</MorphingTabs.List>
+						<MorphingTabs.Content value="dashboard" className="rounded-xl border border-border bg-card p-6 shadow-sm text-sm">
+							<div className="font-bold text-foreground mb-1">Dashboard Metric Stream</div>
+							<div className="text-muted-foreground text-xs">Real-time dynamic system state with zero-jank pill transitions.</div>
+						</MorphingTabs.Content>
+						<MorphingTabs.Content value="analytics" className="rounded-xl border border-border bg-card p-6 shadow-sm text-sm">
+							<div className="font-bold text-foreground mb-1">Kinetic Analytics Engine</div>
+							<div className="text-muted-foreground text-xs">Hardware accelerated measurements and analytical spring ODE.</div>
+						</MorphingTabs.Content>
+						<MorphingTabs.Content value="settings" className="rounded-xl border border-border bg-card p-6 shadow-sm text-sm">
+							<div className="font-bold text-foreground mb-1">Global Configuration</div>
+							<div className="text-muted-foreground text-xs">WAI-ARIA roving keyboard navigation enabled.</div>
+						</MorphingTabs.Content>
+					</MorphingTabs.Root>
+				</div>
+			);
+		}
+
+		if (selectedSlug === 'accordion') {
+			const mode = (propValues.mode === 'multiple' ? 'multiple' : 'single') as 'single' | 'multiple';
+
+			return (
+				<div className="w-full max-w-md mx-auto p-4">
+					<Accordion.Root mode={mode} defaultValue="s-1">
+						<Accordion.Item value="s-1">
+							<Accordion.Trigger>
+								<span>Dynamic Height Interpolation</span>
+								<Accordion.Icon />
+							</Accordion.Trigger>
+							<Accordion.Content>
+								Using modern CSS Grid (0fr to 1fr) with zero layout reflows and zero-dependency morphing icon.
+							</Accordion.Content>
+						</Accordion.Item>
+						<Accordion.Item value="s-2">
+							<Accordion.Trigger>
+								<span>WAI-ARIA Accessibility Standards</span>
+								<Accordion.Icon />
+							</Accordion.Trigger>
+							<Accordion.Content>
+								Full roving arrow keys, aria-expanded, aria-controls, and single/multiple expansion mode.
+							</Accordion.Content>
+						</Accordion.Item>
+					</Accordion.Root>
+				</div>
+			);
+		}
+
+		if (selectedSlug === 'infinite-marquee') {
+			const speed = Number(propValues.speed ?? 40);
+			const pauseOnHover = Boolean(propValues.pauseOnHover ?? true);
+
+			return (
+				<div className="w-full max-w-2xl mx-auto py-8">
+					<InfiniteMarquee speed={speed} pauseOnHover={pauseOnHover} gap="1.5rem">
+						{[
+							'120Hz ProMotion',
+							'Zero External Animation Deps',
+							'Pure rAF Translation',
+							'Modulo Wrapping',
+							'13 Ecosystems',
+						].map((item, idx) => (
+							<div
+								key={idx}
+								className="flex items-center gap-2 rounded-2xl border border-border bg-card/80 px-6 py-4 text-xs font-semibold backdrop-blur-md shadow-xs"
+							>
+								<span className="h-2 w-2 rounded-full bg-primary" />
+								<span className="text-foreground">{item}</span>
+							</div>
+						))}
+					</InfiniteMarquee>
+				</div>
+			);
+		}
+
+		if (selectedSlug === 'bento-grid') {
+			const cols = Number(propValues.cols ?? 3);
+			return (
+				<div className="w-full max-w-2xl mx-auto p-4">
+					<BentoGrid cols={cols} gap="1rem">
+						<BentoCard colSpan={2}>
+							<BentoHeader>
+								<span className="kbd text-[10px] text-primary">ANALYTICAL KINETICS</span>
+								<h4 className="text-base font-bold text-foreground">Continuous Math Engine</h4>
+							</BentoHeader>
+							<BentoContent>
+								Hardware-accelerated CSS custom properties driven directly by rAF loops.
+							</BentoContent>
+						</BentoCard>
+						<BentoCard colSpan={1}>
+							<BentoHeader>
+								<span className="kbd text-[10px] text-emerald-500">BIG-OMEGA</span>
+								<h4 className="text-base font-bold text-foreground">Ω(120Hz)</h4>
+							</BentoHeader>
+							<BentoContent>
+								Guaranteed lower-bound execution.
+							</BentoContent>
+						</BentoCard>
+					</BentoGrid>
+				</div>
+			);
+		}
+
+		if (selectedSlug === 'diamond-grid') {
+			return (
+				<div className="w-full max-w-xl mx-auto p-4">
+					<DiamondGrid gap="0.75vw">
+						{Array.from({ length: 16 }).map((_, idx) => (
+							<div
+								key={idx}
+								className="aspect-square w-12 sm:w-16 rounded-2xl border border-border bg-card/80 backdrop-blur-md flex flex-col items-center justify-center p-2 text-center shadow-md hover:border-primary transition-all duration-300 hover:scale-105"
+							>
+								<span className="text-[10px] font-mono font-bold text-primary">#{idx + 1}</span>
+							</div>
+						))}
+					</DiamondGrid>
+				</div>
+			);
+		}
+
+		if (selectedSlug === 'scroll-timeline') {
+			return (
+				<div className="w-full max-w-md mx-auto h-[460px] overflow-y-auto rounded-2xl border border-border bg-background/50 p-6 no-scrollbar relative shadow-inner">
+					<ScrollTimeline
+						items={[
+							{
+								date: 'Phase 01',
+								title: 'Mathematical Invariants',
+								description: 'Analytical spring ODEs and zero-allocation ring buffers.',
+							},
+							{
+								date: 'Phase 02',
+								title: '13-Ecosystem Compilers',
+								description: 'Deterministic AST compilation to React, Vue, Svelte, Angular, and more.',
+							},
+						]}
+					/>
+				</div>
+			);
+		}
+
+		if (selectedSlug === 'sticky-parallax') {
+			return (
+				<div className="w-full max-w-md mx-auto h-[460px] overflow-y-auto rounded-2xl border border-border bg-background/50 relative no-scrollbar shadow-inner">
+					<StickyParallaxScroll trackHeight="800px">
+						<div className="relative w-full h-full flex items-center justify-center">
+							<ParallaxLayer speed={-0.4}>
+								<div className="text-4xl font-extrabold text-foreground/20 select-none">
+									BACKGROUND
+								</div>
+							</ParallaxLayer>
+							<ParallaxLayer speed={0.8}>
+								<div className="rounded-2xl border border-primary/40 bg-card p-6 shadow-2xl backdrop-blur-md text-center">
+									<span className="kbd text-[10px] text-primary">PARALLAX</span>
+									<h4 className="text-lg font-bold text-foreground mt-1">Differential Layers</h4>
+								</div>
+							</ParallaxLayer>
+						</div>
+					</StickyParallaxScroll>
+				</div>
+			);
+		}
+
+		if (selectedSlug === 'border-beam') {
+			const size = Number(propValues.size ?? 200);
+			const duration = Number(propValues.duration ?? 8);
+			const borderWidth = Number(propValues.borderWidth ?? 2);
+			return (
+				<div className="relative flex h-64 w-full max-w-sm mx-auto flex-col items-center justify-center overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-xl">
+					<span className="kbd text-[10px] text-primary">PERIMETER TRACE</span>
+					<h4 className="text-xl font-bold text-foreground mt-2">Border Beam</h4>
+					<p className="text-xs text-muted-foreground text-center mt-1">
+						Hardware-accelerated conic perimeter trace with zero GC pauses.
+					</p>
+					<BorderBeam size={size} duration={duration} borderWidth={borderWidth} />
+				</div>
+			);
+		}
+
+		if (selectedSlug === 'animated-sphere') {
+			const color = String(propValues.color ?? '#6366f1');
+			const speed = Number(propValues.speed ?? 1.0);
+			const radiusScale = Number(propValues.radiusScale ?? 0.475);
+			return (
+				<div className="flex flex-col items-center justify-center p-4">
+					<AnimatedSphere
+						color={color}
+						speed={speed}
+						radiusScale={radiusScale}
+						className="w-64 h-64 rounded-2xl border border-border bg-black/40 backdrop-blur-md shadow-2xl"
+					/>
+				</div>
+			);
+		}
+
+		if (selectedSlug === 'floating-dock') {
+			const baseSize = Number(propValues.baseSize ?? 44);
+			const maxMagnification = Number(propValues.maxMagnification ?? 0.6);
+			const influenceRadius = Number(propValues.influenceRadius ?? 70);
+			return (
+				<div className="w-full max-w-md mx-auto flex flex-col items-center justify-center py-12">
+					<p className="text-xs text-muted-foreground mb-6">Hover over icons to test Gaussian proximity curve</p>
+					<FloatingDock
+						baseSize={baseSize}
+						maxMagnification={maxMagnification}
+						influenceRadius={influenceRadius}
+						items={[
+							{ title: 'Terminal', icon: <Terminal className="h-5 w-5" /> },
+							{ title: 'Kinetics', icon: <Sliders className="h-5 w-5" /> },
+							{ title: 'Hardware', icon: <Cpu className="h-5 w-5" /> },
+							{ title: 'Shaders', icon: <Sparkles className="h-5 w-5" /> },
+							{ title: 'Security', icon: <Layers className="h-5 w-5" /> },
+						]}
+					/>
+				</div>
+			);
+		}
+
+		if (selectedSlug === 'interactive-grid') {
+			const width = Number(propValues.width ?? 32);
+			const height = Number(propValues.height ?? 32);
+			return (
+				<div className="relative flex h-[380px] w-full max-w-xl mx-auto flex-col items-center justify-center overflow-hidden rounded-2xl border border-border bg-background p-8 shadow-inner">
+					<InteractiveGridPattern
+						width={width}
+						height={height}
+						squares={[24, 16]}
+						className="opacity-70 [mask-image:radial-gradient(400px_circle_at_center,white,transparent)]"
+					/>
+					<div className="z-10 flex flex-col items-center text-center">
+						<span className="kbd text-[10px] text-primary">VECTOR KINETICS</span>
+						<h4 className="text-xl font-bold text-foreground mt-1">Interactive Grid</h4>
+						<p className="text-xs text-muted-foreground max-w-xs mt-1">
+							Hover over grid squares to trigger hardware-accelerated kinetic active states.
+						</p>
 					</div>
-				))}
-			</div>
-		);
+				</div>
+			);
+		}
+
+		if (selectedSlug === 'number-ticker') {
+			const value = Number(propValues.value ?? 1000);
+			const decimalPlaces = Number(propValues.decimalPlaces ?? 0);
+			return (
+				<div className="flex flex-col items-center justify-center p-8 rounded-2xl border border-border bg-card shadow-lg text-center max-w-sm mx-auto">
+					<span className="kbd text-[10px] text-primary mb-2">ANALYTICAL EASING (rAF)</span>
+					<div className="text-6xl font-black tracking-tight text-foreground font-mono">
+						$<NumberTicker value={value} decimalPlaces={decimalPlaces} />
+					</div>
+					<p className="text-xs text-muted-foreground mt-3">
+						Continuous ease-out exponential ticker with zero Framer Motion dependencies.
+					</p>
+				</div>
+			);
+		}
+
+		if (selectedSlug === 'magnetic-button') {
+			const strength = Number(propValues.strength ?? 0.35);
+			const radius = Number(propValues.radius ?? 120);
+			const springDamping = Number(propValues.springDamping ?? 18);
+			return (
+				<div className="flex flex-col items-center justify-center p-12">
+					<p className="text-xs text-muted-foreground mb-6">Move cursor near button to feel inverted magnetic pull field</p>
+					<MagneticButton
+						strength={strength}
+						radius={radius}
+						springDamping={springDamping}
+						className="rounded-2xl border border-primary/50 bg-primary/10 px-8 py-4 font-bold text-foreground backdrop-blur-md shadow-xl hover:bg-primary/20 transition-colors"
+					>
+						<span className="flex items-center gap-2">
+							<Sparkles className="h-4 w-4 text-primary" />
+							<span>Magnetic Attraction</span>
+						</span>
+					</MagneticButton>
+				</div>
+			);
+		}
+
+		if (selectedSlug === 'card-swipe-stack') {
+			const thresholdDistance = Number(propValues.thresholdDistance ?? 120);
+			const maxRotation = Number(propValues.maxRotation ?? 20);
+			return (
+				<div className="w-full max-w-sm mx-auto py-8 flex flex-col items-center">
+					<p className="text-xs text-muted-foreground mb-4">Drag card left or right to dismiss with momentum fling</p>
+					<CardSwipeStack
+						thresholdDistance={thresholdDistance}
+						maxRotation={maxRotation}
+						items={[
+							{ id: 1, title: 'Big-Omega Guarantees', tag: 'MATHEMATICS', desc: 'Guaranteed lower bound frame rate floor of 120Hz.' },
+							{ id: 2, title: 'Zero Framework Locks', tag: 'COMPILERS', desc: 'Pure AST universal generation targeting 13 ecosystems.' },
+							{ id: 3, title: 'Direct GPU Pipeline', tag: 'KINETICS', desc: 'Direct translate3d writes bypassing virtual DOM reconciliation.' },
+						]}
+						renderCard={(item) => (
+							<div className="rounded-2xl border border-border bg-card p-6 shadow-2xl backdrop-blur-md">
+								<span className="kbd text-[10px] text-primary">{item.tag}</span>
+								<h4 className="text-lg font-bold text-foreground mt-2">{item.title}</h4>
+								<p className="text-xs text-muted-foreground mt-1">{item.desc}</p>
+								<div className="mt-4 pt-3 border-t border-border flex items-center justify-between text-[10px] text-muted-foreground font-mono">
+									<span>← SWIPE LEFT</span>
+									<span>SWIPE RIGHT →</span>
+								</div>
+							</div>
+						)}
+					/>
+				</div>
+			);
+		}
+
+		if (selectedSlug === 'comparison-slider') {
+			const defaultPosition = Number(propValues.defaultPosition ?? 0.5);
+			return (
+				<div className="w-full max-w-md mx-auto py-4">
+					<ComparisonSlider
+						aspectRatio="16/10"
+						defaultPosition={defaultPosition}
+						before={
+							<div className="w-full h-full bg-linear-to-br from-indigo-950 via-purple-950 to-slate-900 p-6 flex flex-col justify-between text-white">
+								<span className="kbd text-[10px] bg-white/20 text-white self-start">ORIGINAL MOCKUP</span>
+								<div>
+									<h4 className="text-xl font-bold">Static Canvas</h4>
+									<p className="text-xs opacity-70">Unaccelerated design view</p>
+								</div>
+							</div>
+						}
+						after={
+							<div className="w-full h-full bg-linear-to-br from-emerald-950 via-teal-950 to-slate-900 p-6 flex flex-col justify-between text-white">
+								<span className="kbd text-[10px] bg-emerald-500/30 text-emerald-300 self-start">EXHUMA KINETIC ENGINE</span>
+								<div>
+									<h4 className="text-xl font-bold">120Hz ProMotion</h4>
+									<p className="text-xs opacity-70">Analytical physics active</p>
+								</div>
+							</div>
+						}
+					/>
+				</div>
+			);
+		}
+
+		if (selectedSlug === 'expandable-card') {
+			return (
+				<div className="w-full max-w-sm mx-auto py-4">
+					<ExpandableCard
+						cardContent={
+							<div className="rounded-2xl border border-border bg-card p-6 shadow-lg transition-all hover:border-primary/50">
+								<span className="kbd text-[10px] text-primary">CLICK TO EXPAND</span>
+								<h4 className="text-lg font-bold text-foreground mt-2">FLIP Morphing Architecture</h4>
+								<p className="text-xs text-muted-foreground mt-1">Mathematical geometry snapshot with zero Framer Motion.</p>
+							</div>
+						}
+						expandedContent={
+							<div className="space-y-4">
+								<span className="kbd text-[10px] text-primary">MODAL DIALOG (FLIP INVERTED)</span>
+								<h3 className="text-2xl font-black text-foreground">Hardware-Accelerated Dialog</h3>
+								<p className="text-sm text-muted-foreground leading-relaxed">
+									The card morphs smoothly from its trigger bounding rect into a centered dialog snapshot using analytical FLIP transformation matrices.
+								</p>
+								<div className="rounded-xl border border-border bg-background p-4 text-xs font-mono text-muted-foreground">
+									Press ESC or click backdrop to close
+								</div>
+							</div>
+						}
+					/>
+				</div>
+			);
+		}
+
+		if (selectedSlug === 'cursor-tooltip') {
+			const springDamping = Number(propValues.springDamping ?? 22);
+			return (
+				<div className="flex flex-col items-center justify-center p-12">
+					<CursorTooltip
+						springDamping={springDamping}
+						content="Exhuma Exponential Cursor Smoothing"
+						className="rounded-2xl border border-border bg-card/80 p-8 shadow-xl text-center cursor-pointer hover:border-primary transition-colors"
+					>
+						<span className="kbd text-[10px] text-primary mb-2 inline-block">HOVER OVER CARD</span>
+						<h4 className="text-xl font-bold text-foreground">Interactive Viewport Target</h4>
+						<p className="text-xs text-muted-foreground mt-1">
+							Hover cursor anywhere over this card to activate the magnetic trailing tooltip.
+						</p>
+					</CursorTooltip>
+				</div>
+			);
+		}
+
+		return null;
 	};
 
 	return (

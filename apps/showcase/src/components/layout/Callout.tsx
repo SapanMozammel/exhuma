@@ -1,5 +1,10 @@
 import * as React from 'react';
-import { Info, Lightbulb, AlertTriangle, ShieldAlert } from 'lucide-react';
+import {
+  IconInfoCircle as Info,
+  IconBulb as Lightbulb,
+  IconAlertTriangle as AlertTriangle,
+  IconShieldExclamation as ShieldAlert,
+} from '@tabler/icons-react';
 import { cn } from '@/lib/utils';
 
 type CalloutType = 'note' | 'tip' | 'warning' | 'important';

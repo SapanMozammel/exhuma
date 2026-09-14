@@ -6,6 +6,7 @@ import ora from 'ora';
 import { getConfig, detectEcosystem } from '../utils/config';
 import { fetchComponentFromRegistry } from '../utils/registry';
 import { CANONICAL_COMPONENTS, DEFAULT_PATHS, EcosystemFlavor, SUPPORTED_ECOSYSTEMS } from '../constants';
+import { ensureUtilsHelper, ensureCoreDependency } from '../utils/dependencies';
 
 export interface AddCommandOptions {
   flavor?: string;
@@ -13,6 +14,8 @@ export interface AddCommandOptions {
   all?: boolean;
   path?: string;
   yes?: boolean;
+  eject?: boolean;
+  vendor?: boolean;
 }
 
 export async function addCommand(
@@ -49,6 +52,23 @@ export async function addCommand(
       return;
     }
     selectedSlugs = response.selected;
+  }
+
+  // Ensure helper utilities and core packages for modern frameworks
+  if (['react', 'nextjs', 'vue', 'svelte', 'solid', 'angular'].includes(flavor)) {
+    ensureUtilsHelper(process.cwd());
+    ensureCoreDependency(process.cwd());
+  }
+
+  // Handle enterprise --vendor flag for local asset hosting
+  if (options.vendor) {
+    const vendorDir = resolve(process.cwd(), 'public/vendor/exhuma');
+    if (!existsSync(vendorDir)) {
+      mkdirSync(vendorDir, { recursive: true });
+    }
+    const runtimeStub = `// Exhuma Kinetic Micro-Kernel (Local Vendor Asset)\nimport '@exhuma/core';\n`;
+    writeFileSync(join(vendorDir, 'kinetic.js'), runtimeStub, 'utf8');
+    console.log(pc.green('  ✔ Vendored ') + pc.bold('public/vendor/exhuma/kinetic.js') + pc.dim(' for offline/firewall use'));
   }
 
   const destinationPath = resolve(process.cwd(), targetDir);

@@ -6,6 +6,8 @@ export default defineConfig({
 		'src/cards.ts',
 		'src/layouts.ts',
 		'src/router.ts',
+		'src/physics.ts',
+		'src/gestures.ts',
 	],
 	format: ['esm', 'cjs'],
 	dts: true,

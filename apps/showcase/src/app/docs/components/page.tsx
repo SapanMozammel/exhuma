@@ -1,6 +1,12 @@
 import React from 'react';
 import Link from 'next/link';
-import { Sliders, ArrowRight, Layers, Box, Cpu } from 'lucide-react';
+import {
+  IconAdjustments as Sliders,
+  IconArrowRight as ArrowRight,
+  IconStack2 as Layers,
+  IconBox as Box,
+  IconCpu as Cpu,
+} from '@tabler/icons-react';
 import { ALL_COMPONENTS, CATEGORIES } from '@/registry';
 import { ComponentCard } from '@/components/showcase/ComponentCard';
 import { PackageManagerTabs } from '@/components/showcase/PackageManagerTabs';
@@ -13,6 +19,7 @@ const tocItems = [
 	{ id: 'cards', title: 'Tactile Cards & Interactions' },
 	{ id: 'layouts', title: 'Responsive Layout Engines' },
 	{ id: 'navigation', title: 'Navigation & Rails' },
+	{ id: 'primitives', title: 'Kinetic Primitives & Disclosures' },
 	{ id: 'quick-add', title: 'CLI Quick Add' },
 ];
 
@@ -20,6 +27,7 @@ export default function ComponentsHubPage() {
 	const cards = ALL_COMPONENTS.filter((c) => c.category === 'cards');
 	const layouts = ALL_COMPONENTS.filter((c) => c.category === 'layouts');
 	const navigation = ALL_COMPONENTS.filter((c) => c.category === 'navigation');
+	const primitives = ALL_COMPONENTS.filter((c) => c.category === 'primitives');
 
 	return (
 		<div className="flex gap-10">
@@ -39,7 +47,7 @@ export default function ComponentsHubPage() {
 								Canonical Components
 							</h1>
 							<p className="mt-2 text-sm sm:text-base text-muted-foreground leading-relaxed">
-								5 core interaction systems and layout engines. Every component is authored natively into 13 production framework contracts.
+								23 core interaction systems, layout engines, and kinetic primitives. Every component is authored natively into 13 production framework contracts.
 							</p>
 						</div>
 						<Link href="/studio">
@@ -129,6 +137,31 @@ export default function ComponentsHubPage() {
 
 					<div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
 						{navigation.map((comp) => (
+							<ComponentCard
+								key={comp.slug}
+								slug={comp.slug}
+								name={comp.name}
+								category={comp.category}
+								description={comp.description}
+							/>
+						))}
+					</div>
+				</section>
+
+				{/* Primitives Category */}
+				<section id="primitives" className="space-y-4 pt-6 border-t border-border">
+					<div>
+						<Badge variant="outline" className="mb-1">Category</Badge>
+						<h2 className="text-xl font-bold tracking-tight text-foreground">
+							Kinetic Primitives & Disclosures
+						</h2>
+						<p className="text-xs sm:text-sm text-muted-foreground">
+							Self-contained dynamic primitives, mathematical springs, coordinate projections, and zero-layout-shift kinetic transitions.
+						</p>
+					</div>
+
+					<div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
+						{primitives.map((comp) => (
 							<ComponentCard
 								key={comp.slug}
 								slug={comp.slug}
