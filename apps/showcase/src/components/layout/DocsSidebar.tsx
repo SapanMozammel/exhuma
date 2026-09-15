@@ -8,6 +8,7 @@ import {
   IconSearch as Search,
   IconBook2 as BookOpen,
   IconTerminal2 as Terminal,
+  IconPackage as Package,
   IconCpu as Cpu,
   IconPalette as Palette,
   IconShieldCheck as ShieldCheck,
@@ -24,7 +25,7 @@ export function DocsSidebar() {
 
 	const gettingStartedLinks = [
 		{ href: '/docs', label: 'Introduction & Philosophy', icon: BookOpen },
-		{ href: '/docs/installation', label: 'Installation', icon: Terminal },
+		{ href: '/docs/installation', label: 'Installation', icon: Package },
 		{ href: '/docs/theming', label: 'Theming & Dark Mode', icon: Palette },
 		{ href: '/docs/cli', label: 'CLI Reference', icon: Terminal },
 	];
@@ -76,7 +77,7 @@ export function DocsSidebar() {
 								)}
 							>
 								<div className="flex items-center gap-2">
-									<Icon className="h-3.5 w-3.5" />
+									<Icon className="h-4 w-4" />
 									<span>{item.label}</span>
 								</div>
 								{isActive && <ChevronRight className="h-3.5 w-3.5" />}
@@ -107,7 +108,7 @@ export function DocsSidebar() {
 								)}
 							>
 								<div className="flex items-center gap-2">
-									<Icon className="h-3.5 w-3.5" />
+									<Icon className="h-4 w-4" />
 									<span>{item.label}</span>
 								</div>
 								{isActive && <ChevronRight className="h-3.5 w-3.5" />}

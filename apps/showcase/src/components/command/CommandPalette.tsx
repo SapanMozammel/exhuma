@@ -11,9 +11,11 @@ import {
   IconCopy as Copy,
   IconCheck as Check,
   IconArrowRight as ArrowRight,
-  IconExternalLink as ExternalLink,
   IconCommand as Command,
   IconSparkles as Sparkles,
+  IconLayoutGrid as LayoutGrid,
+  IconRoute as Route,
+  IconBox as Box,
 } from '@tabler/icons-react';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { ALL_COMPONENTS, ECOSYSTEM_LABELS, EcosystemFlavor } from '@/registry';
@@ -21,6 +23,43 @@ import { BLOG_POSTS } from '@/lib/blog-data';
 import { cn } from '@/lib/utils';
 
 type FilterCategory = 'all' | 'components' | 'ecosystems' | 'docs' | 'actions';
+type PackageManager = 'pnpm' | 'npm' | 'bun' | 'yarn';
+
+const PM_OPTIONS: PackageManager[] = ['pnpm', 'npm', 'bun', 'yarn'];
+const RUNNERS: Record<PackageManager, string> = {
+	pnpm: 'pnpm dlx',
+	npm: 'npx',
+	bun: 'bunx',
+	yarn: 'yarn dlx',
+};
+const CREATORS: Record<PackageManager, string> = {
+	pnpm: 'pnpm create',
+	npm: 'npm create',
+	bun: 'bun create',
+	yarn: 'yarn create',
+};
+
+/** Rewrites a Quick Add command (authored as npx/npm create) for the chosen package manager. */
+function withPackageManager(command: string, pm: PackageManager): string {
+	if (command.startsWith('npm create ')) {
+		return `${CREATORS[pm]} ${command.slice('npm create '.length)}`;
+	}
+	if (command.startsWith('npx ')) {
+		return `${RUNNERS[pm]} ${command.slice('npx '.length)}`;
+	}
+	return command;
+}
+
+const COMPONENT_CATEGORY_ICONS: Record<string, React.ElementType> = {
+	cards: Layers,
+	layouts: LayoutGrid,
+	navigation: Route,
+	primitives: Box,
+};
+
+function capitalize(s: string): string {
+	return s.charAt(0).toUpperCase() + s.slice(1);
+}
 
 interface PaletteItem {
 	id: string;
@@ -42,7 +81,23 @@ export function CommandPalette() {
 		React.useState<FilterCategory>('all');
 	const [selectedIndex, setSelectedIndex] = React.useState(0);
 	const [copied, setCopied] = React.useState(false);
+	const [pm, setPm] = React.useState<PackageManager>('pnpm');
 	const router = useRouter();
+	const itemRefs = React.useRef<Array<HTMLDivElement | null>>([]);
+
+	// Reset search state whenever the palette closes, so reopening starts fresh
+	React.useEffect(() => {
+		if (!open) {
+			setQuery('');
+			setActiveCategory('all');
+			setSelectedIndex(0);
+		}
+	}, [open]);
+
+	// Keep the highlighted row scrolled into view during keyboard navigation
+	React.useEffect(() => {
+		itemRefs.current[selectedIndex]?.scrollIntoView({ block: 'nearest' });
+	}, [selectedIndex]);
 
 	// Global Keyboard Listener
 	React.useEffect(() => {
@@ -77,11 +132,11 @@ export function CommandPalette() {
 				title: comp.name,
 				subtitle: `Canonical Component (${comp.category})`,
 				category: 'components',
-				icon: Layers,
+				icon: COMPONENT_CATEGORY_ICONS[comp.category] || Layers,
 				href: `/docs/components/${comp.slug}`,
 				cliCommand: `npx exhuma add ${comp.slug}`,
 				description: comp.description,
-				badges: ['13 Ecosystems', 'Self-Contained', 'Zero-CSS-Leak'],
+				badges: [capitalize(comp.category), '13 Ecosystems', 'Zero-CSS-Leak'],
 			});
 		});
 
@@ -268,7 +323,7 @@ export function CommandPalette() {
 			}
 		} else if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'c' && selectedItem?.cliCommand) {
 			e.preventDefault();
-			navigator.clipboard.writeText(selectedItem.cliCommand);
+			navigator.clipboard.writeText(withPackageManager(selectedItem.cliCommand, pm));
 			setCopied(true);
 			setTimeout(() => setCopied(false), 2000);
 		}
@@ -280,11 +335,50 @@ export function CommandPalette() {
 		setTimeout(() => setCopied(false), 2000);
 	};
 
+	const renderQuickAddCommand = (cliCommand: string) => (
+		<>
+			<div className="flex items-center gap-0.5 mb-1.5 w-fit rounded-md border border-border/50 bg-muted/60 p-0.5">
+				{PM_OPTIONS.map((m) => (
+					<button
+						key={m}
+						type="button"
+						onClick={() => setPm(m)}
+						className={cn(
+							'rounded px-1.5 py-0.5 font-mono text-[10px] font-medium transition-all cursor-pointer',
+							pm === m
+								? 'bg-background text-foreground shadow-xs font-semibold'
+								: 'text-muted-foreground hover:text-foreground'
+						)}
+					>
+						{m}
+					</button>
+				))}
+			</div>
+			<div className="flex items-center justify-between rounded-md border border-border bg-card px-2.5 py-1.5 font-mono text-[11px] text-foreground">
+				<span className="truncate mr-2">{withPackageManager(cliCommand, pm)}</span>
+				<button
+					type="button"
+					onClick={() => copyCli(withPackageManager(cliCommand, pm))}
+					className="text-muted-foreground hover:text-foreground shrink-0 cursor-pointer"
+					title="Copy command"
+					aria-label="Copy command"
+				>
+					{copied ? (
+						<Check className="h-3.5 w-3.5 text-emerald-500" />
+					) : (
+						<Copy className="h-3.5 w-3.5" />
+					)}
+				</button>
+			</div>
+		</>
+	);
+
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogContent
 				className="max-w-3xl p-0 gap-0 overflow-hidden border-border bg-card shadow-2xl rounded-xl"
 				onKeyDown={handleKeyDown}
+				showClose={false}
 			>
 				<DialogTitle className="sr-only">Command Palette</DialogTitle>
 
@@ -293,6 +387,11 @@ export function CommandPalette() {
 					<Search className="h-4 w-4 shrink-0 text-muted-foreground mr-3" />
 					<input
 						type="text"
+						role="combobox"
+						aria-expanded="true"
+						aria-autocomplete="list"
+						aria-controls="command-palette-listbox"
+						aria-activedescendant={selectedItem ? `command-palette-item-${selectedItem.id}` : undefined}
 						value={query}
 						onChange={(e) => setQuery(e.target.value)}
 						placeholder="Search components, 13 ecosystems, docs, actions... (⌘K)"
@@ -326,6 +425,7 @@ export function CommandPalette() {
 							key={tab.id}
 							type="button"
 							onClick={() => setActiveCategory(tab.id)}
+							aria-pressed={activeCategory === tab.id}
 							className={cn(
 								'rounded-md px-2.5 py-1 text-xs font-medium transition-colors',
 								activeCategory === tab.id
@@ -341,7 +441,12 @@ export function CommandPalette() {
 				{/* Dual-Pane Layout */}
 				<div className="grid grid-cols-1 md:grid-cols-5 h-[380px]">
 					{/* Left Results List (3 cols) */}
-					<div className="md:col-span-3 overflow-y-auto border-r border-border p-2 space-y-0.5">
+					<div
+						id="command-palette-listbox"
+						role="listbox"
+						aria-label="Command palette results"
+						className="md:col-span-3 overflow-y-auto border-r border-border p-2 space-y-0.5"
+					>
 						{filteredItems.length === 0 ? (
 							<div className="flex flex-col items-center justify-center h-full text-center p-6 text-muted-foreground">
 								<Command className="h-8 w-8 mb-2 stroke-1 opacity-50" />
@@ -355,6 +460,12 @@ export function CommandPalette() {
 								return (
 									<div
 										key={item.id}
+										id={`command-palette-item-${item.id}`}
+										role="option"
+										aria-selected={isSelected}
+										ref={(el) => {
+											itemRefs.current[idx] = el;
+										}}
 										onClick={() => {
 											if (item.action) {
 												item.action();
@@ -375,13 +486,13 @@ export function CommandPalette() {
 										<div className="flex items-center gap-2.5 min-w-0">
 											<div
 												className={cn(
-													'flex h-7 w-7 shrink-0 items-center justify-center rounded-md border text-xs',
+													'flex h-8 w-8 shrink-0 items-center justify-center rounded-md border text-xs',
 													isSelected
 														? 'border-primary/40 bg-primary/10 text-primary'
 														: 'border-border bg-muted/60 text-muted-foreground'
 												)}
 											>
-												<Icon className="h-3.5 w-3.5" />
+												<Icon className="h-4.5 w-4.5" />
 											</div>
 											<div className="min-w-0">
 												<div className="text-xs font-semibold text-foreground truncate">
@@ -409,7 +520,7 @@ export function CommandPalette() {
 						{selectedItem ? (
 							<div className="space-y-4">
 								<div>
-									<span className="kbd text-[10px] uppercase font-bold text-primary tracking-wider">
+									<span className="text-[10px] uppercase font-bold text-emerald-600 dark:text-emerald-400 tracking-wider">
 										{selectedItem.category}
 									</span>
 									<h4 className="text-base font-bold text-foreground mt-1 tracking-tight">
@@ -437,25 +548,9 @@ export function CommandPalette() {
 									<div className="pt-2 border-t border-border">
 										<div className="flex items-center justify-between text-[11px] text-muted-foreground mb-1.5">
 											<span>Quick Add</span>
-											<span className="kbd text-[9px]">⌘C to copy</span>
+											<span className="text-emerald-600 dark:text-emerald-400">⌘C to copy</span>
 										</div>
-										<div className="flex items-center justify-between rounded-md border border-border bg-card px-2.5 py-1.5 font-mono text-[11px] text-foreground">
-											<span className="truncate mr-2">
-												{selectedItem.cliCommand}
-											</span>
-											<button
-												type="button"
-												onClick={() => copyCli(selectedItem.cliCommand!)}
-												className="text-muted-foreground hover:text-foreground shrink-0 cursor-pointer"
-												title="Copy command"
-											>
-												{copied ? (
-													<Check className="h-3.5 w-3.5 text-emerald-500" />
-												) : (
-													<Copy className="h-3.5 w-3.5" />
-												)}
-											</button>
-										</div>
+										{renderQuickAddCommand(selectedItem.cliCommand)}
 									</div>
 								)}
 							</div>
@@ -468,17 +563,27 @@ export function CommandPalette() {
 						{/* Footer Helper */}
 						<div className="flex items-center justify-between pt-3 border-t border-border text-[11px] text-muted-foreground">
 							<div className="flex items-center gap-2">
-								<span className="kbd text-[9px]">↑</span>
-								<span className="kbd text-[9px]">↓</span>
+								<span className="kbd h-6 min-w-6 text-sm">↑</span>
+								<span className="kbd h-6 min-w-6 text-sm">↓</span>
 								<span>Navigate</span>
 							</div>
 							<div className="flex items-center gap-1.5">
-								<span className="kbd text-[9px]">↵</span>
+								<span className="kbd h-6 min-w-6 text-sm">↵</span>
 								<span>Open</span>
 							</div>
 						</div>
 					</div>
 				</div>
+				{/* Mobile Quick Add (the right preview pane is desktop-only) */}
+				{selectedItem?.cliCommand && (
+					<div className="md:hidden border-t border-border p-3 bg-muted/20">
+						<div className="flex items-center justify-between text-[11px] text-muted-foreground mb-1.5">
+							<span className="truncate mr-2">Quick Add · {selectedItem.title}</span>
+							<span className="text-emerald-600 dark:text-emerald-400 shrink-0">⌘C to copy</span>
+						</div>
+						{renderQuickAddCommand(selectedItem.cliCommand)}
+					</div>
+				)}
 			</DialogContent>
 		</Dialog>
 	);

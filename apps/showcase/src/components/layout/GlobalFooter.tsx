@@ -20,11 +20,9 @@ export function GlobalFooter() {
 				<div className="grid grid-cols-2 md:grid-cols-5 gap-8">
 					{/* Col 1: Brand & Purpose */}
 					<div className="col-span-2 md:col-span-1 space-y-3">
-						<div className="flex items-center gap-2.5">
-							<div className="flex h-6 w-6 items-center justify-center rounded-md border border-border bg-card text-foreground shadow-xs">
-								<ExhumaLogo size={14} />
-							</div>
-							<span className="font-bold tracking-tight text-foreground text-sm font-sans">
+						<div className="flex items-center gap-1.5">
+							<ExhumaLogo size={20} className="text-foreground shrink-0 -mr-0.5" />
+							<span className="font-display font-extrabold tracking-tight text-base text-foreground">
 								Exhuma
 							</span>
 						</div>

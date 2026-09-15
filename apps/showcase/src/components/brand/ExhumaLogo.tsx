@@ -5,21 +5,21 @@ export interface ExhumaLogoProps extends React.SVGProps<SVGSVGElement> {
   size?: number | string;
   className?: string;
   strokeWidth?: number;
+  cursorFill?: string;
 }
 
 /**
- * ExhumaLogo — The Official Minimalist Brand Mark
+ * ExhumaLogo — The Official Brand Mark
  *
- * Visual Synthesis:
- * 1. Name: Typographic 'E'
- * 2. Meaning: 'Exhuma' (Latin: ex-humus / unearth, emerging from the ground plane into depth)
- * 3. Service: Kinetic UI card layers (3 ascending cantilevered component planes)
- * 4. Style: Tabler Icons standard (24x24 grid, 2px stroke, round caps, currentColor)
+ * Vector structure:
+ * - 3 layered perspective cards with progressive opacities (0.25, 0.5, 1.0)
+ * - Precision pointer cursor layered across the focal card
+ * - Adaptive light/dark contrast with currentColor card planes
  */
 export function ExhumaLogo({
   size = 24,
   className,
-  strokeWidth = 2,
+  cursorFill,
   ...props
 }: ExhumaLogoProps) {
   return (
@@ -27,25 +27,36 @@ export function ExhumaLogo({
       xmlns="http://www.w3.org/2000/svg"
       width={size}
       height={size}
-      viewBox="0 0 24 24"
+      viewBox="46 32 440 440"
       fill="none"
-      stroke="currentColor"
-      strokeWidth={strokeWidth}
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className={cn('tabler-icon tabler-icon-brand-exhuma transition-transform duration-200 group-hover:scale-105', className)}
+      className={cn('transition-transform duration-200 group-hover:scale-105', className)}
       {...props}
     >
-      {/* Ground horizon / surface from which components are un-earthed */}
-      <path d="M3 20h18" />
-      {/* Vertical kinetic elevation spine */}
-      <path d="M7 20v-14" />
-      {/* 3 cantilevered UI component layers forming the letter 'E' */}
-      <path d="M7 6h10" />
-      <path d="M7 11h6" />
-      <path d="M7 16h10" />
-      {/* Upward kinetic lift / exhumation vector */}
-      <path d="M14 4l3 2l-3 2" />
+      {/* Layer 3 - Base Elevation Card */}
+      <path
+        opacity="0.25"
+        d="M74.6667 224L309.333 192C330.667 187.734 352 202.667 354.133 224L366.933 320C369.067 341.334 352 362.667 330.667 364.8L106.667 394.667C85.3333 398.934 68.2667 381.867 64 362.667L74.6667 224Z"
+        fill="currentColor"
+      />
+      {/* Layer 2 - Mid Elevation Card */}
+      <path
+        opacity="0.5"
+        d="M96 196.267L341.333 162.133C362.667 157.867 384 174.933 388.267 196.267L405.333 324.267C409.6 345.6 390.4 366.933 366.933 369.067L138.667 401.067C117.333 405.333 98.1334 388.267 93.8667 366.933L96 196.267Z"
+        fill="currentColor"
+      />
+      {/* Layer 1 - Focal Foreground Card */}
+      <path
+        d="M117.333 170.667C110.933 140.8 134.4 115.2 164.267 110.933L373.333 81.0666C403.2 76.7999 430.933 98.1333 435.2 128L462.933 330.667C467.2 360.533 445.867 388.267 416 392.533L206.933 422.4C177.067 426.667 149.333 405.333 145.067 375.467L117.333 170.667Z"
+        fill="currentColor"
+      />
+      {/* High-Contrast Interactive Pointer */}
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M295.94 185.05C291.197 181.055 284.594 180.208 279.013 182.863C273.435 185.521 269.867 191.205 269.867 197.453V340.759C269.867 347.041 273.476 352.745 279.099 355.384C284.725 358.021 291.355 357.109 296.078 353.04L315.421 336.351L345.493 402.604L409.819 393.414C410.716 392.201 411.448 390.854 411.982 389.408C413.469 385.383 413.305 380.911 411.533 377.006L381.268 310.303H400.628C407.326 310.303 413.311 306.053 415.588 299.667C417.864 293.28 415.942 286.129 410.791 281.789L295.94 185.05Z"
+        fill={cursorFill}
+        className={cn(!cursorFill && 'fill-white dark:fill-[#09090b]')}
+      />
     </svg>
   );
 }

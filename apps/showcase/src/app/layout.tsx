@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Bricolage_Grotesque } from 'next/font/google';
 import '@/styles/global.scss';
 
 
@@ -6,6 +7,13 @@ import { Providers } from '@/providers';
 import { GlobalHeader } from '@/components/layout/GlobalHeader';
 import { GlobalFooter } from '@/components/layout/GlobalFooter';
 import { CommandPalette } from '@/components/command/CommandPalette';
+
+const bricolageGrotesque = Bricolage_Grotesque({
+	subsets: ['latin'],
+	weight: ['700', '800'],
+	variable: '--font-display',
+	display: 'swap',
+});
 
 export const metadata: Metadata = {
 	title: 'Exhuma — Universal Component Architecture for 13 Ecosystems',
@@ -19,7 +27,7 @@ export default function RootLayout({
 	children: React.ReactNode;
 }) {
 	return (
-		<html lang="en" suppressHydrationWarning>
+		<html lang="en" suppressHydrationWarning className={bricolageGrotesque.variable}>
 			<body
 				suppressHydrationWarning
 				className="min-h-screen bg-background text-foreground antialiased selection:bg-primary/10 selection:text-primary"
