@@ -3,19 +3,19 @@
 import * as React from 'react';
 import { useRouter } from 'next/navigation';
 import {
-  IconSearch as Search,
-  IconStack2 as Layers,
-  IconBook2 as BookOpen,
-  IconCpu as Cpu,
-  IconAdjustments as Sliders,
-  IconCopy as Copy,
-  IconCheck as Check,
-  IconArrowRight as ArrowRight,
-  IconCommand as Command,
-  IconSparkles as Sparkles,
-  IconLayoutGrid as LayoutGrid,
-  IconRoute as Route,
-  IconBox as Box,
+	IconSearch as Search,
+	IconStack2 as Layers,
+	IconBook2 as BookOpen,
+	IconCpu as Cpu,
+	IconAdjustments as Sliders,
+	IconCopy as Copy,
+	IconCheck as Check,
+	IconArrowRight as ArrowRight,
+	IconCommand as Command,
+	IconSparkles as Sparkles,
+	IconLayoutGrid as LayoutGrid,
+	IconRoute as Route,
+	IconBox as Box,
 } from '@tabler/icons-react';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { ALL_COMPONENTS, ECOSYSTEM_LABELS, EcosystemFlavor } from '@/registry';
@@ -77,8 +77,7 @@ interface PaletteItem {
 export function CommandPalette() {
 	const [open, setOpen] = React.useState(false);
 	const [query, setQuery] = React.useState('');
-	const [activeCategory, setActiveCategory] =
-		React.useState<FilterCategory>('all');
+	const [activeCategory, setActiveCategory] = React.useState<FilterCategory>('all');
 	const [selectedIndex, setSelectedIndex] = React.useState(0);
 	const [copied, setCopied] = React.useState(false);
 	const [pm, setPm] = React.useState<PackageManager>('pnpm');
@@ -107,9 +106,7 @@ export function CommandPalette() {
 				setOpen((prev) => !prev);
 			} else if (e.key === '/' && !open) {
 				const activeElement = document.activeElement;
-				const isInput =
-					activeElement instanceof HTMLInputElement ||
-					activeElement instanceof HTMLTextAreaElement;
+				const isInput = activeElement instanceof HTMLInputElement || activeElement instanceof HTMLTextAreaElement;
 				if (!isInput) {
 					e.preventDefault();
 					setOpen(true);
@@ -164,8 +161,7 @@ export function CommandPalette() {
 				category: 'docs',
 				icon: BookOpen,
 				href: '/docs',
-				description:
-					'Why copy-paste headless engineering beats bloated monolithic npm dependencies.',
+				description: 'Why copy-paste headless engineering beats bloated monolithic npm dependencies.',
 			},
 			{
 				id: 'doc-install',
@@ -175,8 +171,7 @@ export function CommandPalette() {
 				icon: BookOpen,
 				href: '/docs/installation',
 				cliCommand: 'npm create exhuma@latest',
-				description:
-					'Get up and running with create-exhuma and standalone components in seconds.',
+				description: 'Get up and running with create-exhuma and standalone components in seconds.',
 			},
 			{
 				id: 'doc-cli',
@@ -186,8 +181,7 @@ export function CommandPalette() {
 				icon: BookOpen,
 				href: '/docs/cli',
 				cliCommand: 'npx exhuma --help',
-				description:
-					'Complete command-line manual, flags, options, and offline embedded canonical execution.',
+				description: 'Complete command-line manual, flags, options, and offline embedded canonical execution.',
 			},
 			{
 				id: 'doc-theming',
@@ -196,8 +190,7 @@ export function CommandPalette() {
 				category: 'docs',
 				icon: BookOpen,
 				href: '/docs/theming',
-				description:
-					'Dual-theme CSS variables, Tailwind v4 @theme integration, and custom palette tokens.',
+				description: 'Dual-theme CSS variables, Tailwind v4 @theme integration, and custom palette tokens.',
 				badges: ['Light/Dark', '⌘⌥T', 'Zero-Flash'],
 			},
 			{
@@ -207,8 +200,7 @@ export function CommandPalette() {
 				category: 'docs',
 				icon: BookOpen,
 				href: '/docs/lifecycle',
-				description:
-					'Zero memory leaks, listener detaching, and observer disconnection contracts.',
+				description: 'Zero memory leaks, listener detaching, and observer disconnection contracts.',
 				badges: ['Safety', 'Garbage Collection', 'Verified'],
 			},
 			{
@@ -218,8 +210,7 @@ export function CommandPalette() {
 				category: 'docs',
 				icon: Sparkles,
 				href: '/showcase',
-				description:
-					'Real-world dashboards, developer tools, and mobile shells built with Exhuma.',
+				description: 'Real-world dashboards, developer tools, and mobile shells built with Exhuma.',
 				badges: ['Showcase', 'Templates', 'Multi-Framework'],
 			},
 			{
@@ -229,8 +220,7 @@ export function CommandPalette() {
 				category: 'docs',
 				icon: BookOpen,
 				href: '/blog',
-				description:
-					'Essays on kinetic spring math, copy-paste architecture, and multi-framework design.',
+				description: 'Essays on kinetic spring math, copy-paste architecture, and multi-framework design.',
 				badges: ['Articles', 'Journal'],
 			}
 		);
@@ -258,8 +248,7 @@ export function CommandPalette() {
 				category: 'actions',
 				icon: Sliders,
 				href: '/studio',
-				description:
-					'Figma & Xcode-style visual inspector with real-time code synthesis across all 13 platforms.',
+				description: 'Figma & Xcode-style visual inspector with real-time code synthesis across all 13 platforms.',
 			},
 			{
 				id: 'action-cli-init',
@@ -268,8 +257,7 @@ export function CommandPalette() {
 				category: 'actions',
 				icon: Copy,
 				cliCommand: 'npx exhuma init',
-				description:
-					'Initialize exhuma.json configuration file in your active workspace.',
+				description: 'Initialize exhuma.json configuration file in your active workspace.',
 			}
 		);
 
@@ -279,17 +267,12 @@ export function CommandPalette() {
 	// Filter by search query & category
 	const filteredItems = React.useMemo(() => {
 		return items.filter((item) => {
-			const matchesCategory =
-				activeCategory === 'all' || item.category === activeCategory;
+			const matchesCategory = activeCategory === 'all' || item.category === activeCategory;
 			if (!matchesCategory) return false;
 
 			if (!query.trim()) return true;
 			const q = query.toLowerCase();
-			return (
-				item.title.toLowerCase().includes(q) ||
-				item.subtitle.toLowerCase().includes(q) ||
-				(item.description && item.description.toLowerCase().includes(q))
-			);
+			return item.title.toLowerCase().includes(q) || item.subtitle.toLowerCase().includes(q) || (item.description && item.description.toLowerCase().includes(q));
 		});
 	}, [items, query, activeCategory]);
 
@@ -309,9 +292,7 @@ export function CommandPalette() {
 			setSelectedIndex((prev) => (prev + 1) % filteredItems.length);
 		} else if (e.key === 'ArrowUp') {
 			e.preventDefault();
-			setSelectedIndex(
-				(prev) => (prev - 1 + filteredItems.length) % filteredItems.length
-			);
+			setSelectedIndex((prev) => (prev - 1 + filteredItems.length) % filteredItems.length);
 		} else if (e.key === 'Enter' && selectedItem) {
 			e.preventDefault();
 			if (selectedItem.action) {
@@ -337,37 +318,31 @@ export function CommandPalette() {
 
 	const renderQuickAddCommand = (cliCommand: string) => (
 		<>
-			<div className="flex items-center gap-0.5 mb-1.5 w-fit rounded-md border border-border/50 bg-muted/60 p-0.5">
+			<div className='border-border/50 bg-muted/60 mb-1.5 flex w-fit items-center gap-0.5 rounded-md border p-0.5'>
 				{PM_OPTIONS.map((m) => (
 					<button
 						key={m}
-						type="button"
+						type='button'
 						onClick={() => setPm(m)}
 						className={cn(
-							'rounded px-1.5 py-0.5 font-mono text-[10px] font-medium transition-all cursor-pointer',
-							pm === m
-								? 'bg-background text-foreground shadow-xs font-semibold'
-								: 'text-muted-foreground hover:text-foreground'
+							'cursor-pointer rounded px-1.5 py-0.5 font-mono text-[10px] font-medium transition-all',
+							pm === m ? 'bg-background text-foreground font-semibold shadow-xs' : 'text-muted-foreground hover:text-foreground'
 						)}
 					>
 						{m}
 					</button>
 				))}
 			</div>
-			<div className="flex items-center justify-between rounded-md border border-border bg-card px-2.5 py-1.5 font-mono text-[11px] text-foreground">
-				<span className="truncate mr-2">{withPackageManager(cliCommand, pm)}</span>
+			<div className='border-border bg-card text-foreground flex items-center justify-between rounded-md border px-2.5 py-1.5 font-mono text-[11px]'>
+				<span className='mr-2 truncate'>{withPackageManager(cliCommand, pm)}</span>
 				<button
-					type="button"
+					type='button'
 					onClick={() => copyCli(withPackageManager(cliCommand, pm))}
-					className="text-muted-foreground hover:text-foreground shrink-0 cursor-pointer"
-					title="Copy command"
-					aria-label="Copy command"
+					className='text-muted-foreground hover:text-foreground shrink-0 cursor-pointer'
+					title='Copy command'
+					aria-label='Copy command'
 				>
-					{copied ? (
-						<Check className="h-3.5 w-3.5 text-emerald-500" />
-					) : (
-						<Copy className="h-3.5 w-3.5" />
-					)}
+					{copied ? <Check className='h-3.5 w-3.5 text-emerald-500' /> : <Copy className='h-3.5 w-3.5' />}
 				</button>
 			</div>
 		</>
@@ -375,43 +350,35 @@ export function CommandPalette() {
 
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
-			<DialogContent
-				className="max-w-3xl p-0 gap-0 overflow-hidden border-border bg-card shadow-2xl rounded-xl"
-				onKeyDown={handleKeyDown}
-				showClose={false}
-			>
-				<DialogTitle className="sr-only">Command Palette</DialogTitle>
+			<DialogContent className='border-border bg-card max-w-3xl gap-0 overflow-hidden rounded-xl p-0 shadow-2xl' onKeyDown={handleKeyDown} showClose={false}>
+				<DialogTitle className='sr-only'>Command Palette</DialogTitle>
 
 				{/* Search Input Bar */}
-				<div className="flex items-center border-b border-border px-4 py-3 bg-muted/20">
-					<Search className="h-4 w-4 shrink-0 text-muted-foreground mr-3" />
+				<div className='border-border bg-muted/20 flex items-center border-b px-4 py-3'>
+					<Search className='text-muted-foreground mr-3 h-4 w-4 shrink-0' />
 					<input
-						type="text"
-						role="combobox"
-						aria-expanded="true"
-						aria-autocomplete="list"
-						aria-controls="command-palette-listbox"
+						type='text'
+						role='combobox'
+						aria-expanded='true'
+						aria-autocomplete='list'
+						aria-controls='command-palette-listbox'
 						aria-activedescendant={selectedItem ? `command-palette-item-${selectedItem.id}` : undefined}
 						value={query}
 						onChange={(e) => setQuery(e.target.value)}
-						placeholder="Search components, 13 ecosystems, docs, actions... (⌘K)"
-						className="w-full bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
+						placeholder='Search components, 13 ecosystems, docs, actions... (⌘K)'
+						className='text-foreground placeholder:text-muted-foreground w-full bg-transparent text-sm outline-none'
 						autoFocus
 					/>
 					{query && (
-						<button
-							type="button"
-							onClick={() => setQuery('')}
-							className="text-xs text-muted-foreground hover:text-foreground mr-2"
-						>
+						<button type='button' onClick={() => setQuery('')} className='text-muted-foreground hover:text-foreground mr-2 text-xs'>
 							Clear
 						</button>
 					)}
-					<span className="kbd text-[10px]">ESC</span>
+					<span className='kbd text-[10px]'>ESC</span>
 				</div>
 
 				{/* Category Filter Pills */}
-				<div className="flex items-center gap-1 px-4 py-2 border-b border-border bg-muted/10 overflow-x-auto">
+				<div className='border-border bg-muted/10 flex items-center gap-1 overflow-x-auto border-b px-4 py-2'>
 					{(
 						[
 							{ id: 'all', label: 'All' },
@@ -423,14 +390,12 @@ export function CommandPalette() {
 					).map((tab) => (
 						<button
 							key={tab.id}
-							type="button"
+							type='button'
 							onClick={() => setActiveCategory(tab.id)}
 							aria-pressed={activeCategory === tab.id}
 							className={cn(
 								'rounded-md px-2.5 py-1 text-xs font-medium transition-colors',
-								activeCategory === tab.id
-									? 'bg-primary text-primary-foreground font-semibold shadow-xs'
-									: 'text-muted-foreground hover:bg-accent hover:text-foreground'
+								activeCategory === tab.id ? 'bg-primary text-primary-foreground font-semibold shadow-xs' : 'text-muted-foreground hover:bg-accent hover:text-foreground'
 							)}
 						>
 							{tab.label}
@@ -439,19 +404,14 @@ export function CommandPalette() {
 				</div>
 
 				{/* Dual-Pane Layout */}
-				<div className="grid grid-cols-1 md:grid-cols-5 h-[380px]">
+				<div className='grid h-[380px] grid-cols-1 md:grid-cols-5'>
 					{/* Left Results List (3 cols) */}
-					<div
-						id="command-palette-listbox"
-						role="listbox"
-						aria-label="Command palette results"
-						className="md:col-span-3 overflow-y-auto border-r border-border p-2 space-y-0.5"
-					>
+					<div id='command-palette-listbox' role='listbox' aria-label='Command palette results' className='border-border space-y-0.5 overflow-y-auto border-r p-2 md:col-span-3'>
 						{filteredItems.length === 0 ? (
-							<div className="flex flex-col items-center justify-center h-full text-center p-6 text-muted-foreground">
-								<Command className="h-8 w-8 mb-2 stroke-1 opacity-50" />
-								<p className="text-sm">No results found for &ldquo;{query}&rdquo;</p>
-								<p className="text-xs mt-1">Try another keyword or category.</p>
+							<div className='text-muted-foreground flex h-full flex-col items-center justify-center p-6 text-center'>
+								<Command className='mb-2 h-8 w-8 stroke-1 opacity-50' />
+								<p className='text-sm'>No results found for &ldquo;{query}&rdquo;</p>
+								<p className='mt-1 text-xs'>Try another keyword or category.</p>
 							</div>
 						) : (
 							filteredItems.map((item, idx) => {
@@ -461,7 +421,7 @@ export function CommandPalette() {
 									<div
 										key={item.id}
 										id={`command-palette-item-${item.id}`}
-										role="option"
+										role='option'
 										aria-selected={isSelected}
 										ref={(el) => {
 											itemRefs.current[idx] = el;
@@ -477,38 +437,25 @@ export function CommandPalette() {
 										}}
 										onMouseEnter={() => setSelectedIndex(idx)}
 										className={cn(
-											'flex items-center justify-between rounded-lg px-3 py-2 cursor-pointer transition-all',
-											isSelected
-												? 'bg-accent text-accent-foreground shadow-xs'
-												: 'text-muted-foreground hover:bg-accent/50 hover:text-foreground'
+											'flex cursor-pointer items-center justify-between rounded-lg px-3 py-2 transition-all',
+											isSelected ? 'bg-accent text-accent-foreground shadow-xs' : 'text-muted-foreground hover:bg-accent/50 hover:text-foreground'
 										)}
 									>
-										<div className="flex items-center gap-2.5 min-w-0">
+										<div className='flex min-w-0 items-center gap-2.5'>
 											<div
 												className={cn(
 													'flex h-8 w-8 shrink-0 items-center justify-center rounded-md border text-xs',
-													isSelected
-														? 'border-primary/40 bg-primary/10 text-primary'
-														: 'border-border bg-muted/60 text-muted-foreground'
+													isSelected ? 'border-primary/40 bg-primary/10 text-primary' : 'border-border bg-muted/60 text-muted-foreground'
 												)}
 											>
-												<Icon className="h-4.5 w-4.5" />
+												<Icon className='h-4.5 w-4.5' />
 											</div>
-											<div className="min-w-0">
-												<div className="text-xs font-semibold text-foreground truncate">
-													{item.title}
-												</div>
-												<div className="text-[11px] text-muted-foreground truncate">
-													{item.subtitle}
-												</div>
+											<div className='min-w-0'>
+												<div className='text-foreground truncate text-xs font-semibold'>{item.title}</div>
+												<div className='text-muted-foreground truncate text-[11px]'>{item.subtitle}</div>
 											</div>
 										</div>
-										<ArrowRight
-											className={cn(
-												'h-3.5 w-3.5 shrink-0 transition-opacity',
-												isSelected ? 'opacity-100 text-primary' : 'opacity-0'
-											)}
-										/>
+										<ArrowRight className={cn('h-3.5 w-3.5 shrink-0 transition-opacity', isSelected ? 'text-primary opacity-100' : 'opacity-0')} />
 									</div>
 								);
 							})
@@ -516,28 +463,19 @@ export function CommandPalette() {
 					</div>
 
 					{/* Right Preview Pane (2 cols) */}
-					<div className="hidden md:flex md:col-span-2 flex-col justify-between p-4 bg-muted/20">
+					<div className='bg-muted/20 hidden flex-col justify-between p-4 md:col-span-2 md:flex'>
 						{selectedItem ? (
-							<div className="space-y-4">
+							<div className='space-y-4'>
 								<div>
-									<span className="text-[10px] uppercase font-bold text-emerald-600 dark:text-emerald-400 tracking-wider">
-										{selectedItem.category}
-									</span>
-									<h4 className="text-base font-bold text-foreground mt-1 tracking-tight">
-										{selectedItem.title}
-									</h4>
-									<p className="text-xs text-muted-foreground mt-1 leading-relaxed">
-										{selectedItem.description || selectedItem.subtitle}
-									</p>
+									<span className='text-[10px] font-bold tracking-wider text-emerald-600 uppercase dark:text-emerald-400'>{selectedItem.category}</span>
+									<h4 className='text-foreground mt-1 text-base font-bold tracking-tight'>{selectedItem.title}</h4>
+									<p className='text-muted-foreground mt-1 text-xs leading-relaxed'>{selectedItem.description || selectedItem.subtitle}</p>
 								</div>
 
 								{selectedItem.badges && (
-									<div className="flex flex-wrap gap-1">
+									<div className='flex flex-wrap gap-1'>
 										{selectedItem.badges.map((badge) => (
-											<span
-												key={badge}
-												className="rounded border border-border bg-card px-2 py-0.5 text-[10px] font-mono text-muted-foreground"
-											>
+											<span key={badge} className='border-border bg-card text-muted-foreground rounded border px-2 py-0.5 font-mono text-[10px]'>
 												{badge}
 											</span>
 										))}
@@ -545,30 +483,28 @@ export function CommandPalette() {
 								)}
 
 								{selectedItem.cliCommand && (
-									<div className="pt-2 border-t border-border">
-										<div className="flex items-center justify-between text-[11px] text-muted-foreground mb-1.5">
+									<div className='border-border border-t pt-2'>
+										<div className='text-muted-foreground mb-1.5 flex items-center justify-between text-[11px]'>
 											<span>Quick Add</span>
-											<span className="text-emerald-600 dark:text-emerald-400">⌘C to copy</span>
+											<span className='text-emerald-600 dark:text-emerald-400'>⌘C to copy</span>
 										</div>
 										{renderQuickAddCommand(selectedItem.cliCommand)}
 									</div>
 								)}
 							</div>
 						) : (
-							<div className="flex items-center justify-center h-full text-xs text-muted-foreground">
-								Select an item to view preview
-							</div>
+							<div className='text-muted-foreground flex h-full items-center justify-center text-xs'>Select an item to view preview</div>
 						)}
 
 						{/* Footer Helper */}
-						<div className="flex items-center justify-between pt-3 border-t border-border text-[11px] text-muted-foreground">
-							<div className="flex items-center gap-2">
-								<span className="kbd h-6 min-w-6 text-sm">↑</span>
-								<span className="kbd h-6 min-w-6 text-sm">↓</span>
+						<div className='border-border text-muted-foreground flex items-center justify-between border-t pt-3 text-[11px]'>
+							<div className='flex items-center gap-2'>
+								<span className='kbd h-6 min-w-6 text-sm'>↑</span>
+								<span className='kbd h-6 min-w-6 text-sm'>↓</span>
 								<span>Navigate</span>
 							</div>
-							<div className="flex items-center gap-1.5">
-								<span className="kbd h-6 min-w-6 text-sm">↵</span>
+							<div className='flex items-center gap-1.5'>
+								<span className='kbd h-6 min-w-6 text-sm'>↵</span>
 								<span>Open</span>
 							</div>
 						</div>
@@ -576,10 +512,10 @@ export function CommandPalette() {
 				</div>
 				{/* Mobile Quick Add (the right preview pane is desktop-only) */}
 				{selectedItem?.cliCommand && (
-					<div className="md:hidden border-t border-border p-3 bg-muted/20">
-						<div className="flex items-center justify-between text-[11px] text-muted-foreground mb-1.5">
-							<span className="truncate mr-2">Quick Add · {selectedItem.title}</span>
-							<span className="text-emerald-600 dark:text-emerald-400 shrink-0">⌘C to copy</span>
+					<div className='border-border bg-muted/20 border-t p-3 md:hidden'>
+						<div className='text-muted-foreground mb-1.5 flex items-center justify-between text-[11px]'>
+							<span className='mr-2 truncate'>Quick Add · {selectedItem.title}</span>
+							<span className='shrink-0 text-emerald-600 dark:text-emerald-400'>⌘C to copy</span>
 						</div>
 						{renderQuickAddCommand(selectedItem.cliCommand)}
 					</div>

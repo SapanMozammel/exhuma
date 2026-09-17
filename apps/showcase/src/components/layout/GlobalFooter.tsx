@@ -111,8 +111,8 @@ export function GlobalFooter() {
 
 			{/* Bottom Bar: Operational Status & Shortcuts */}
 			<div className='border-border border-t'>
-				<div className='container-fluid text-muted-foreground flex flex-col md:flex-row items-center justify-between gap-3 py-4 text-[11px]'>
-					<div className='flex flex-wrap items-center text-center justify-center gap-3'>
+				<div className='container-fluid text-muted-foreground flex flex-col items-center justify-between gap-3 py-4 text-[11px] md:flex-row'>
+					<div className='flex flex-wrap items-center justify-center gap-3 text-center'>
 						<StatusDot />
 						<span>All 13 Framework Contracts Operational</span>
 						<span>·</span>
