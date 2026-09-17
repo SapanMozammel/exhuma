@@ -134,10 +134,10 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 			<div className='border-border flex flex-col gap-4 border-b pb-6 sm:flex-row sm:items-center sm:justify-between'>
 				<div>
 					<div className='mb-2 flex items-center gap-2'>
-						<Badge variant='outline' className='text-[10px] capitalize'>
+						<Badge variant='outline' className='text-3xs capitalize'>
 							{component.category}
 						</Badge>
-						<Badge variant='secondary' className='font-mono text-[10px]'>
+						<Badge variant='secondary' className='text-3xs font-mono'>
 							v{component.version}
 						</Badge>
 						<span className='text-muted-foreground font-mono text-xs'>13 Ecosystems</span>
@@ -149,7 +149,7 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 				<div className='flex items-center gap-2 self-start sm:self-auto'>
 					<Link href={`/studio?slug=${component.slug}`}>
 						<Button className='gap-2 shadow-sm'>
-							<Sliders className='h-4 w-4' />
+							<Sliders className='h-4 w-4 shrink-0' />
 							<span>Open in Studio</span>
 						</Button>
 					</Link>
@@ -159,7 +159,7 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 			{/* CLI Quick Install Command Bar */}
 			<div className='border-border bg-card flex flex-col items-start justify-between gap-3 rounded-2xl border p-3 shadow-xs sm:flex-row sm:items-center sm:px-4'>
 				<div className='text-muted-foreground flex items-center gap-2 font-mono text-xs'>
-					<Terminal className='text-primary h-4 w-4' />
+					<Terminal className='text-primary h-4 w-4 shrink-0' />
 					<span className='text-foreground font-semibold'>CLI Command:</span>
 					<span className='text-muted-foreground bg-muted/60 rounded-md px-2 py-0.5 font-mono select-all'>{cliCommand}</span>
 				</div>
@@ -214,7 +214,7 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 				<div className='border-border bg-card overflow-hidden rounded-2xl border shadow-sm'>
 					<div className='border-border bg-muted/30 flex items-center justify-between border-b px-4 py-2 text-xs'>
 						<div className='flex items-center gap-2'>
-							<Cpu className='text-primary h-3.5 w-3.5' />
+							<Cpu className='text-primary h-3.5 w-3.5 shrink-0' />
 							<span className='text-muted-foreground font-mono'>Contract:</span>
 							<span className='text-foreground font-bold'>{ECOSYSTEM_LABELS[selectedFlavor]}</span>
 						</div>
@@ -225,14 +225,14 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 					</div>
 
 					{/* Stage Body */}
-					<div className='bg-dot-grid relative flex min-h-[420px] items-center justify-center p-6 sm:p-10'>
+					<div className='bg-dot-grid relative flex min-h-[26.25rem] items-center justify-center p-6 sm:p-10'>
 						{activeTab === 'preview' ? (
 							<div className='flex w-full flex-col items-center gap-8'>
 								{/* 1. Tilt Card */}
 								{component.slug === 'tilt-card' && (
 									<TiltCard maxTilt={tiltMax} glare={glare} perspective={1000} className='bg-card border-border w-full max-w-md cursor-pointer border p-8 shadow-2xl'>
 										<div className='mb-4 flex items-center justify-between'>
-											<span className='kbd text-primary text-[10px] font-bold'>INTERACTIVE 3D</span>
+											<span className='kbd text-primary text-3xs font-bold'>INTERACTIVE 3D</span>
 											<span className='text-muted-foreground font-mono text-xs'>Max: {tiltMax}°</span>
 										</div>
 										<h3 className='text-foreground text-2xl font-black tracking-tight'>Tactile 3D Tilt Card</h3>
@@ -246,16 +246,16 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 
 								{/* 2. Stacking Cards */}
 								{component.slug === 'stacking-cards' && (
-									<div ref={stackingScrollRef} className='border-border bg-background/50 no-scrollbar relative h-[460px] w-full max-w-md overflow-y-auto rounded-2xl border p-6 shadow-inner'>
-										<div className='text-muted-foreground mb-6 flex items-center justify-center gap-2 text-center font-mono text-[11px]'>
-											<span className='kbd text-[10px]'>SCROLL DOWN INSIDE STAGE</span>
+									<div ref={stackingScrollRef} className='border-border bg-background/50 no-scrollbar relative h-[28.75rem] w-full max-w-md overflow-y-auto rounded-2xl border p-6 shadow-inner'>
+										<div className='text-muted-foreground text-2xs mb-6 flex items-center justify-center gap-2 text-center font-mono'>
+											<span className='kbd text-3xs'>SCROLL DOWN INSIDE STAGE</span>
 											<span>↓</span>
 										</div>
 										<StackingCards topStart={20} topIncrement={stackOffset} minScale={0.92} scaleThreshold={100} scrollContainerRef={stackingScrollRef}>
 											{Array.from({ length: 4 }).map((_, idx) => (
 												<div key={idx} className='border-border bg-card/95 rounded-2xl border p-6 shadow-xl backdrop-blur-md'>
 													<div className='text-muted-foreground mb-2 flex items-center justify-between font-mono text-xs'>
-														<span className='kbd text-[10px]'>LAYER 0{idx + 1}</span>
+														<span className='kbd text-3xs'>LAYER 0{idx + 1}</span>
 														<span className='text-primary font-bold'>Sticky Stack</span>
 													</div>
 													<h4 className='text-foreground text-lg font-bold'>Sticky Stacking Card</h4>
@@ -263,21 +263,21 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 												</div>
 											))}
 										</StackingCards>
-										<div className='text-muted-foreground flex h-[260px] items-center justify-center font-mono text-xs'>Terminal scroll reached</div>
+										<div className='text-muted-foreground flex h-[16.25rem] items-center justify-center font-mono text-xs'>Terminal scroll reached</div>
 									</div>
 								)}
 
 								{/* 3. Horizontal Scroller */}
 								{component.slug === 'horizontal-scroller' && (
-									<div ref={horizontalScrollRef} className='border-border bg-background/50 no-scrollbar relative h-[460px] w-full overflow-y-auto rounded-2xl border shadow-inner'>
-										<div className='text-muted-foreground pointer-events-none sticky top-4 z-20 mb-2 flex items-center justify-center gap-2 text-center font-mono text-[11px]'>
-											<span className='kbd bg-card/90 text-[10px] shadow'>VERTICAL SCROLL → HORIZONTAL RAIL</span>
+									<div ref={horizontalScrollRef} className='border-border bg-background/50 no-scrollbar relative h-[28.75rem] w-full overflow-y-auto rounded-2xl border shadow-inner'>
+										<div className='text-muted-foreground text-2xs pointer-events-none sticky top-4 z-20 mb-2 flex items-center justify-center gap-2 text-center font-mono'>
+											<span className='kbd bg-card/90 text-3xs shadow-sm'>VERTICAL SCROLL → HORIZONTAL RAIL</span>
 											<span>↓</span>
 										</div>
 										<HorizontalScroller speed={0.85} scrollContainerRef={horizontalScrollRef}>
 											{Array.from({ length: 6 }).map((_, idx) => (
 												<div key={idx} className='border-border bg-card hover:border-primary w-64 shrink-0 rounded-2xl border p-6 shadow-md transition-all'>
-													<span className='kbd text-primary text-[10px]'>SLIDE #{idx + 1}</span>
+													<span className='kbd text-primary text-3xs'>SLIDE #{idx + 1}</span>
 													<h4 className='text-foreground mt-2 text-base font-bold'>Momentum Rail</h4>
 													<p className='text-muted-foreground mt-1 text-xs'>Horizontal translation mapped to scroll progress.</p>
 												</div>
@@ -291,9 +291,9 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 									<CssMasonry columns={masonryCols} gap={16} className='w-full'>
 										{[90, 150, 110, 170, 130, 190].map((h, idx) => (
 											<div key={idx} className='border-border bg-card mb-4 break-inside-avoid rounded-xl border p-4 shadow-sm' style={{ height: `${h}px` }}>
-												<span className='kbd text-primary text-[10px]'>ITEM 0{idx + 1}</span>
+												<span className='kbd text-primary text-3xs'>ITEM 0{idx + 1}</span>
 												<div className='text-foreground mt-1 text-xs font-bold'>CSS Masonry</div>
-												<div className='text-muted-foreground text-[10px]'>{h}px</div>
+												<div className='text-muted-foreground text-3xs'>{h}px</div>
 											</div>
 										))}
 									</CssMasonry>
@@ -304,7 +304,7 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 									<AutoGrid minItemWidth={gridMin} gap={16} className='w-full'>
 										{Array.from({ length: 6 }).map((_, idx) => (
 											<div key={idx} className='border-border bg-card rounded-xl border p-5 shadow-sm'>
-												<span className='kbd text-primary text-[10px]'>GRID #{idx + 1}</span>
+												<span className='kbd text-primary text-3xs'>GRID #{idx + 1}</span>
 												<div className='text-foreground mt-1 text-sm font-bold'>Auto-Fit Grid</div>
 												<div className='text-muted-foreground mt-1 text-xs'>MinMax responsive</div>
 											</div>
@@ -316,7 +316,7 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 								{component.slug === 'spotlight-card' && (
 									<SpotlightCard radius={spotlightRadius} color='rgba(99, 102, 241, 0.25)' borderColor='rgba(99, 102, 241, 0.6)' className='w-full max-w-md p-8 shadow-xl'>
 										<div className='flex flex-col gap-3'>
-											<span className='kbd text-primary text-[10px]'>SPOTLIGHT PRIMITIVE</span>
+											<span className='kbd text-primary text-3xs'>SPOTLIGHT PRIMITIVE</span>
 											<h4 className='text-foreground text-xl font-bold tracking-tight'>Hardware-Accelerated Glow</h4>
 											<p className='text-muted-foreground text-sm leading-relaxed'>
 												Glide your pointer over this card. Notice the sub-pixel radial edge mask and background sheen driven at 120Hz with zero React re-renders.
@@ -416,28 +416,28 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 										<BentoGrid cols={3} gap='1rem'>
 											<BentoCard colSpan={2}>
 												<BentoHeader>
-													<span className='kbd text-primary text-[10px]'>ANALYTICAL KINETICS</span>
+													<span className='kbd text-primary text-3xs'>ANALYTICAL KINETICS</span>
 													<h4 className='text-foreground text-base font-bold'>Continuous Math Engine</h4>
 												</BentoHeader>
 												<BentoContent>Hardware-accelerated CSS custom properties driven directly by requestAnimationFrame loops.</BentoContent>
 											</BentoCard>
 											<BentoCard colSpan={1}>
 												<BentoHeader>
-													<span className='kbd text-[10px] text-emerald-500'>BIG-OMEGA</span>
+													<span className='kbd text-3xs text-emerald-500'>BIG-OMEGA</span>
 													<h4 className='text-foreground text-base font-bold'>Ω(120Hz)</h4>
 												</BentoHeader>
 												<BentoContent>Guaranteed lower-bound execution.</BentoContent>
 											</BentoCard>
 											<BentoCard colSpan={1}>
 												<BentoHeader>
-													<span className='kbd text-[10px] text-purple-500'>CROSS-PLATFORM</span>
+													<span className='kbd text-3xs text-purple-500'>CROSS-PLATFORM</span>
 													<h4 className='text-foreground text-base font-bold'>13 Targets</h4>
 												</BentoHeader>
 												<BentoContent>Zero runtime dependencies across all targets.</BentoContent>
 											</BentoCard>
 											<BentoCard colSpan={2}>
 												<BentoHeader>
-													<span className='kbd text-primary text-[10px]'>DENSE AUTO-FLOW</span>
+													<span className='kbd text-primary text-3xs'>DENSE AUTO-FLOW</span>
 													<h4 className='text-foreground text-base font-bold'>Dynamic Responsive Matrix</h4>
 												</BentoHeader>
 												<BentoContent>Zero layout shift fluid arrangement on any device.</BentoContent>
@@ -455,7 +455,7 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 													key={idx}
 													className='border-border bg-card/80 hover:border-primary flex aspect-square w-12 flex-col items-center justify-center rounded-2xl border p-2 text-center shadow-md backdrop-blur-md transition-all duration-300 hover:scale-105 sm:w-16'
 												>
-													<span className='text-primary font-mono text-[10px] font-bold'>#{idx + 1}</span>
+													<span className='text-primary text-3xs font-mono font-bold'>#{idx + 1}</span>
 												</div>
 											))}
 										</DiamondGrid>
@@ -464,7 +464,7 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 
 								{/* 12. Scroll Timeline */}
 								{component.slug === 'scroll-timeline' && (
-									<div className='border-border bg-background/50 no-scrollbar relative h-[460px] w-full max-w-md overflow-y-auto rounded-2xl border p-6 shadow-inner'>
+									<div className='border-border bg-background/50 no-scrollbar relative h-[28.75rem] w-full max-w-md overflow-y-auto rounded-2xl border p-6 shadow-inner'>
 										<ScrollTimeline
 											items={[
 												{
@@ -492,15 +492,15 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 
 								{/* 13. Sticky Parallax Scroll */}
 								{component.slug === 'sticky-parallax' && (
-									<div className='border-border bg-background/50 no-scrollbar relative h-[460px] w-full max-w-md overflow-y-auto rounded-2xl border shadow-inner'>
+									<div className='border-border bg-background/50 no-scrollbar relative h-[28.75rem] w-full max-w-md overflow-y-auto rounded-2xl border shadow-inner'>
 										<StickyParallaxScroll trackHeight='800px'>
-											<div className='relative flex h-full w-full items-center justify-center'>
+											<div className='relative flex size-full items-center justify-center'>
 												<ParallaxLayer speed={-0.4}>
 													<div className='text-foreground/20 text-4xl font-extrabold select-none'>BACKGROUND</div>
 												</ParallaxLayer>
 												<ParallaxLayer speed={0.8}>
 													<div className='border-primary/40 bg-card rounded-2xl border p-6 text-center shadow-2xl backdrop-blur-md'>
-														<span className='kbd text-primary text-[10px]'>DIFFERENTIAL MOMENTUM</span>
+														<span className='kbd text-primary text-3xs'>DIFFERENTIAL MOMENTUM</span>
 														<h4 className='text-foreground mt-1 text-lg font-bold'>Multi-Speed Layers</h4>
 														<p className='text-muted-foreground mt-1 text-xs'>Scroll inside stage to observe parallax</p>
 													</div>
@@ -513,7 +513,7 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 								{/* 14. Border Beam */}
 								{component.slug === 'border-beam' && (
 									<div className='border-border bg-card relative flex h-64 w-full max-w-sm flex-col items-center justify-center overflow-hidden rounded-2xl border p-6 shadow-xl'>
-										<span className='kbd text-primary text-[10px]'>PERIMETER TRACE</span>
+										<span className='kbd text-primary text-3xs'>PERIMETER TRACE</span>
 										<h4 className='text-foreground mt-2 text-xl font-bold'>Border Beam</h4>
 										<p className='text-muted-foreground mt-1 text-center text-xs'>Conic gradient perimeter trace with sub-pixel exclusion mask and zero-runtime CSS.</p>
 										<BorderBeam size={180} duration={borderBeamDuration} borderWidth={2} />
@@ -545,10 +545,10 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 
 								{/* 17. Interactive Grid Pattern */}
 								{component.slug === 'interactive-grid' && (
-									<div className='border-border bg-background relative flex h-[380px] w-full max-w-xl flex-col items-center justify-center overflow-hidden rounded-2xl border p-8 shadow-inner'>
-										<InteractiveGridPattern width={32} height={32} squares={[24, 16]} className='[mask-image:radial-gradient(400px_circle_at_center,white,transparent)] opacity-70' />
+									<div className='border-border bg-background relative flex h-[23.75rem] w-full max-w-xl flex-col items-center justify-center overflow-hidden rounded-2xl border p-8 shadow-inner'>
+										<InteractiveGridPattern width={32} height={32} squares={[24, 16]} className='mask-[radial-gradient(400px_circle_at_center,white,transparent)] opacity-70' />
 										<div className='z-10 flex flex-col items-center text-center'>
-											<span className='kbd text-primary text-[10px]'>VECTOR KINETICS</span>
+											<span className='kbd text-primary text-3xs'>VECTOR KINETICS</span>
 											<h4 className='text-foreground mt-1 text-xl font-bold'>Interactive Grid</h4>
 											<p className='text-muted-foreground mt-1 max-w-xs text-xs'>Hover over grid squares to trigger hardware-accelerated kinetic active states.</p>
 										</div>
@@ -558,7 +558,7 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 								{/* 18. Number Ticker */}
 								{component.slug === 'number-ticker' && (
 									<div className='border-border bg-card flex flex-col items-center justify-center rounded-2xl border p-8 text-center shadow-lg'>
-										<span className='kbd text-primary mb-2 text-[10px]'>ANALYTICAL EASING (rAF)</span>
+										<span className='kbd text-primary text-3xs mb-2'>ANALYTICAL EASING (rAF)</span>
 										<div className='text-foreground font-mono text-6xl font-black tracking-tight'>
 											$<NumberTicker value={tickerValue} decimalPlaces={0} />
 										</div>
@@ -576,7 +576,7 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 											className='border-primary/50 bg-primary/10 text-foreground hover:bg-primary/20 rounded-2xl border px-8 py-4 font-bold shadow-xl backdrop-blur-md transition-colors'
 										>
 											<span className='flex items-center gap-2'>
-												<Sparkles className='text-primary h-4 w-4' />
+												<Sparkles className='text-primary h-4 w-4 shrink-0' />
 												<span>Magnetic Attraction</span>
 											</span>
 										</MagneticButton>
@@ -595,10 +595,10 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 											]}
 											renderCard={(item) => (
 												<div className='border-border bg-card rounded-2xl border p-6 shadow-2xl backdrop-blur-md'>
-													<span className='kbd text-primary text-[10px]'>{item.tag}</span>
+													<span className='kbd text-primary text-3xs'>{item.tag}</span>
 													<h4 className='text-foreground mt-2 text-lg font-bold'>{item.title}</h4>
 													<p className='text-muted-foreground mt-1 text-xs'>{item.desc}</p>
-													<div className='border-border text-muted-foreground mt-4 flex items-center justify-between border-t pt-3 font-mono text-[10px]'>
+													<div className='border-border text-muted-foreground text-3xs mt-4 flex items-center justify-between border-t pt-3 font-mono'>
 														<span>← SWIPE LEFT</span>
 														<span>SWIPE RIGHT →</span>
 													</div>
@@ -616,8 +616,8 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 											defaultPosition={sliderPos}
 											onPositionChange={setSliderPos}
 											before={
-												<div className='flex h-full w-full flex-col justify-between bg-linear-to-br from-indigo-950 via-purple-950 to-slate-900 p-6 text-white'>
-													<span className='kbd self-start bg-white/20 text-[10px] text-white'>ORIGINAL MOCKUP</span>
+												<div className='flex size-full flex-col justify-between bg-linear-to-br from-indigo-950 via-purple-950 to-slate-900 p-6 text-white'>
+													<span className='kbd text-3xs self-start bg-white/20 text-white'>ORIGINAL MOCKUP</span>
 													<div>
 														<h4 className='text-xl font-bold'>Static Canvas</h4>
 														<p className='text-xs opacity-70'>Unaccelerated design view</p>
@@ -625,8 +625,8 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 												</div>
 											}
 											after={
-												<div className='flex h-full w-full flex-col justify-between bg-linear-to-br from-emerald-950 via-teal-950 to-slate-900 p-6 text-white'>
-													<span className='kbd self-start bg-emerald-500/30 text-[10px] text-emerald-300'>EXHUMA KINETIC ENGINE</span>
+												<div className='flex size-full flex-col justify-between bg-linear-to-br from-emerald-950 via-teal-950 to-slate-900 p-6 text-white'>
+													<span className='kbd text-3xs self-start bg-emerald-500/30 text-emerald-300'>EXHUMA KINETIC ENGINE</span>
 													<div>
 														<h4 className='text-xl font-bold'>120Hz ProMotion</h4>
 														<p className='text-xs opacity-70'>Analytical physics active</p>
@@ -643,14 +643,14 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 										<ExpandableCard
 											cardContent={
 												<div className='border-border bg-card hover:border-primary/50 rounded-2xl border p-6 shadow-lg transition-all'>
-													<span className='kbd text-primary text-[10px]'>CLICK TO EXPAND</span>
+													<span className='kbd text-primary text-3xs'>CLICK TO EXPAND</span>
 													<h4 className='text-foreground mt-2 text-lg font-bold'>FLIP Morphing Architecture</h4>
 													<p className='text-muted-foreground mt-1 text-xs'>Mathematical geometry snapshot with zero Framer Motion.</p>
 												</div>
 											}
 											expandedContent={
 												<div className='space-y-4'>
-													<span className='kbd text-primary text-[10px]'>MODAL DIALOG (FLIP INVERTED)</span>
+													<span className='kbd text-primary text-3xs'>MODAL DIALOG (FLIP INVERTED)</span>
 													<h3 className='text-foreground text-2xl font-black'>Hardware-Accelerated Dialog</h3>
 													<p className='text-muted-foreground text-sm leading-relaxed'>
 														The card morphs smoothly from its trigger bounding rect into a centered dialog snapshot using analytical FLIP transformation matrices.
@@ -669,7 +669,7 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 											content='Exhuma Exponential Cursor Smoothing'
 											className='border-border bg-card/80 hover:border-primary cursor-pointer rounded-2xl border p-8 text-center shadow-xl transition-colors'
 										>
-											<span className='kbd text-primary mb-2 inline-block text-[10px]'>HOVER OVER CARD</span>
+											<span className='kbd text-primary text-3xs mb-2 inline-block'>HOVER OVER CARD</span>
 											<h4 className='text-foreground text-xl font-bold'>Interactive Viewport Target</h4>
 											<p className='text-muted-foreground mt-1 text-xs'>Hover cursor anywhere over this card to activate the magnetic trailing tooltip.</p>
 										</CursorTooltip>
@@ -681,13 +681,13 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 									{component.slug === 'tilt-card' && (
 										<>
 											<div className='flex items-center gap-2'>
-												<Sliders className='text-muted-foreground h-3.5 w-3.5' />
-												<span className='text-muted-foreground text-[11px]'>Max Tilt:</span>
+												<Sliders className='text-muted-foreground h-3.5 w-3.5 shrink-0' />
+												<span className='text-muted-foreground text-2xs'>Max Tilt:</span>
 												<input type='range' min='5' max='40' value={tiltMax} onChange={(e) => setTiltMax(Number(e.target.value))} className='accent-primary h-1.5 w-24 cursor-pointer' />
-												<span className='w-6 font-mono text-[11px] font-bold'>{tiltMax}°</span>
+												<span className='text-2xs w-6 font-mono font-bold'>{tiltMax}°</span>
 											</div>
-											<label className='text-muted-foreground hover:text-foreground flex cursor-pointer items-center gap-1.5 text-[11px]'>
-												<input type='checkbox' checked={glare} onChange={(e) => setGlare(e.target.checked)} className='border-border accent-primary cursor-pointer rounded' />
+											<label className='text-muted-foreground hover:text-foreground text-2xs flex cursor-pointer items-center gap-1.5'>
+												<input type='checkbox' checked={glare} onChange={(e) => setGlare(e.target.checked)} className='border-border accent-primary cursor-pointer rounded-sm' />
 												<span>Glare</span>
 											</label>
 										</>
@@ -695,44 +695,44 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 
 									{component.slug === 'stacking-cards' && (
 										<div className='flex items-center gap-2'>
-											<Sliders className='text-muted-foreground h-3.5 w-3.5' />
-											<span className='text-muted-foreground text-[11px]'>Offset:</span>
+											<Sliders className='text-muted-foreground h-3.5 w-3.5 shrink-0' />
+											<span className='text-muted-foreground text-2xs'>Offset:</span>
 											<input type='range' min='10' max='40' value={stackOffset} onChange={(e) => setStackOffset(Number(e.target.value))} className='accent-primary h-1.5 w-28 cursor-pointer' />
-											<span className='w-8 font-mono text-[11px] font-bold'>{stackOffset}px</span>
+											<span className='text-2xs w-8 font-mono font-bold'>{stackOffset}px</span>
 										</div>
 									)}
 
 									{component.slug === 'horizontal-scroller' && (
 										<div className='flex items-center gap-2'>
-											<Sliders className='text-muted-foreground h-3.5 w-3.5' />
-											<span className='text-muted-foreground text-[11px]'>Gap:</span>
+											<Sliders className='text-muted-foreground h-3.5 w-3.5 shrink-0' />
+											<span className='text-muted-foreground text-2xs'>Gap:</span>
 											<input type='range' min='8' max='32' value={scrollGap} onChange={(e) => setScrollGap(Number(e.target.value))} className='accent-primary h-1.5 w-28 cursor-pointer' />
-											<span className='w-8 font-mono text-[11px] font-bold'>{scrollGap}px</span>
+											<span className='text-2xs w-8 font-mono font-bold'>{scrollGap}px</span>
 										</div>
 									)}
 
 									{component.slug === 'css-masonry' && (
 										<div className='flex items-center gap-2'>
-											<Sliders className='text-muted-foreground h-3.5 w-3.5' />
-											<span className='text-muted-foreground text-[11px]'>Columns:</span>
+											<Sliders className='text-muted-foreground h-3.5 w-3.5 shrink-0' />
+											<span className='text-muted-foreground text-2xs'>Columns:</span>
 											<input type='range' min='2' max='4' value={masonryCols} onChange={(e) => setMasonryCols(Number(e.target.value))} className='accent-primary h-1.5 w-20 cursor-pointer' />
-											<span className='w-4 font-mono text-[11px] font-bold'>{masonryCols}</span>
+											<span className='text-2xs w-4 font-mono font-bold'>{masonryCols}</span>
 										</div>
 									)}
 
 									{component.slug === 'auto-grid' && (
 										<div className='flex items-center gap-2'>
-											<Sliders className='text-muted-foreground h-3.5 w-3.5' />
-											<span className='text-muted-foreground text-[11px]'>Min Width:</span>
+											<Sliders className='text-muted-foreground h-3.5 w-3.5 shrink-0' />
+											<span className='text-muted-foreground text-2xs'>Min Width:</span>
 											<input type='range' min='150' max='280' value={gridMin} onChange={(e) => setGridMin(Number(e.target.value))} className='accent-primary h-1.5 w-24 cursor-pointer' />
-											<span className='w-12 font-mono text-[11px] font-bold'>{gridMin}px</span>
+											<span className='text-2xs w-12 font-mono font-bold'>{gridMin}px</span>
 										</div>
 									)}
 
 									{component.slug === 'spotlight-card' && (
 										<div className='flex items-center gap-2'>
-											<Sliders className='text-muted-foreground h-3.5 w-3.5' />
-											<span className='text-muted-foreground text-[11px]'>Radius:</span>
+											<Sliders className='text-muted-foreground h-3.5 w-3.5 shrink-0' />
+											<span className='text-muted-foreground text-2xs'>Radius:</span>
 											<input
 												type='range'
 												min='150'
@@ -742,18 +742,18 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 												onChange={(e) => setSpotlightRadius(Number(e.target.value))}
 												className='accent-primary h-1.5 w-28 cursor-pointer'
 											/>
-											<span className='w-10 font-mono text-[11px] font-bold'>{spotlightRadius}px</span>
+											<span className='text-2xs w-10 font-mono font-bold'>{spotlightRadius}px</span>
 										</div>
 									)}
 
 									{component.slug === 'accordion' && (
 										<div className='flex items-center gap-2'>
-											<Sliders className='text-muted-foreground h-3.5 w-3.5' />
-											<span className='text-muted-foreground text-[11px]'>Mode:</span>
+											<Sliders className='text-muted-foreground h-3.5 w-3.5 shrink-0' />
+											<span className='text-muted-foreground text-2xs'>Mode:</span>
 											<button
 												type='button'
 												onClick={() => setAccordionMode((m) => (m === 'single' ? 'multiple' : 'single'))}
-												className='kbd hover:border-primary cursor-pointer px-2 py-0.5 font-mono text-[11px] transition-colors'
+												className='kbd hover:border-primary text-2xs cursor-pointer px-2 py-0.5 font-mono transition-colors'
 											>
 												{accordionMode.toUpperCase()}
 											</button>
@@ -762,8 +762,8 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 
 									{component.slug === 'infinite-marquee' && (
 										<div className='flex items-center gap-2'>
-											<Sliders className='text-muted-foreground h-3.5 w-3.5' />
-											<span className='text-muted-foreground text-[11px]'>Speed:</span>
+											<Sliders className='text-muted-foreground h-3.5 w-3.5 shrink-0' />
+											<span className='text-muted-foreground text-2xs'>Speed:</span>
 											<input
 												type='range'
 												min='10'
@@ -773,14 +773,14 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 												onChange={(e) => setMarqueeSpeed(Number(e.target.value))}
 												className='accent-primary h-1.5 w-28 cursor-pointer'
 											/>
-											<span className='w-12 font-mono text-[11px] font-bold'>{marqueeSpeed}px/s</span>
+											<span className='text-2xs w-12 font-mono font-bold'>{marqueeSpeed}px/s</span>
 										</div>
 									)}
 
 									{component.slug === 'border-beam' && (
 										<div className='flex items-center gap-2'>
-											<Sliders className='text-muted-foreground h-3.5 w-3.5' />
-											<span className='text-muted-foreground text-[11px]'>Duration:</span>
+											<Sliders className='text-muted-foreground h-3.5 w-3.5 shrink-0' />
+											<span className='text-muted-foreground text-2xs'>Duration:</span>
 											<input
 												type='range'
 												min='2'
@@ -790,13 +790,13 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 												onChange={(e) => setBorderBeamDuration(Number(e.target.value))}
 												className='accent-primary h-1.5 w-24 cursor-pointer'
 											/>
-											<span className='w-6 font-mono text-[11px] font-bold'>{borderBeamDuration}s</span>
+											<span className='text-2xs w-6 font-mono font-bold'>{borderBeamDuration}s</span>
 										</div>
 									)}
 
 									{component.slug === 'animated-sphere' && (
-										<label className='text-muted-foreground hover:text-foreground flex cursor-pointer items-center gap-1.5 text-[11px]'>
-											<input type='checkbox' checked={sphereAscii} onChange={(e) => setSphereAscii(e.target.checked)} className='border-border accent-primary cursor-pointer rounded' />
+										<label className='text-muted-foreground hover:text-foreground text-2xs flex cursor-pointer items-center gap-1.5'>
+											<input type='checkbox' checked={sphereAscii} onChange={(e) => setSphereAscii(e.target.checked)} className='border-border accent-primary cursor-pointer rounded-sm' />
 											<span>ASCII Shader Mode</span>
 										</label>
 									)}
@@ -806,7 +806,7 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 											<button
 												type='button'
 												onClick={() => setTickerValue((v) => (v === 1000 ? 5420 : 1000))}
-												className='kbd hover:border-primary cursor-pointer px-2 py-0.5 font-mono text-[11px] transition-colors'
+												className='kbd hover:border-primary text-2xs cursor-pointer px-2 py-0.5 font-mono transition-colors'
 											>
 												RETRIGGER ({tickerValue === 1000 ? '-> 5420' : '-> 1000'})
 											</button>
@@ -815,8 +815,8 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 
 									{component.slug === 'magnetic-button' && (
 										<div className='flex items-center gap-2'>
-											<Sliders className='text-muted-foreground h-3.5 w-3.5' />
-											<span className='text-muted-foreground text-[11px]'>Strength:</span>
+											<Sliders className='text-muted-foreground h-3.5 w-3.5 shrink-0' />
+											<span className='text-muted-foreground text-2xs'>Strength:</span>
 											<input
 												type='range'
 												min='0.1'
@@ -826,7 +826,7 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 												onChange={(e) => setMagneticStrength(Number(e.target.value))}
 												className='accent-primary h-1.5 w-24 cursor-pointer'
 											/>
-											<span className='w-8 font-mono text-[11px] font-bold'>{magneticStrength}</span>
+											<span className='text-2xs w-8 font-mono font-bold'>{magneticStrength}</span>
 										</div>
 									)}
 								</div>
@@ -839,7 +839,7 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 										<Cpu className='text-primary h-4 w-4 shrink-0' />
 										<div className='flex flex-wrap items-center gap-1.5'>
 											<span className='text-foreground font-semibold'>Inner Engine:</span>
-											<code className='bg-muted text-foreground rounded px-2 py-0.5 font-mono text-[11px]'>{selectedFlavor === 'flutter' ? 'exhuma: ^1.0.0' : '@exhuma/core'}</code>
+											<code className='bg-muted text-foreground text-2xs rounded-sm px-2 py-0.5 font-mono'>{selectedFlavor === 'flutter' ? 'exhuma: ^1.0.0' : '@exhuma/core'}</code>
 										</div>
 									</div>
 
@@ -848,7 +848,7 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 											type='button'
 											onClick={() => setCodeMode('clean')}
 											className={cn(
-												'cursor-pointer rounded-md px-2.5 py-1 text-[11px] font-medium transition-colors',
+												'text-2xs cursor-pointer rounded-md px-2.5 py-1 font-medium transition-colors',
 												codeMode === 'clean' ? 'bg-card text-foreground font-semibold shadow-xs' : 'text-muted-foreground hover:text-foreground'
 											)}
 										>
@@ -858,7 +858,7 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 											type='button'
 											onClick={() => setCodeMode('ejected')}
 											className={cn(
-												'cursor-pointer rounded-md px-2.5 py-1 text-[11px] font-medium transition-colors',
+												'text-2xs cursor-pointer rounded-md px-2.5 py-1 font-medium transition-colors',
 												codeMode === 'ejected' ? 'bg-card text-foreground font-semibold shadow-xs' : 'text-muted-foreground hover:text-foreground'
 											)}
 										>
@@ -902,7 +902,7 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 
 				<div className='border-border bg-card overflow-x-auto rounded-2xl border shadow-xs'>
 					<table className='w-full text-left text-xs'>
-						<thead className='bg-muted/50 text-muted-foreground border-border border-b font-mono text-[11px] tracking-wider uppercase'>
+						<thead className='bg-muted/50 text-muted-foreground border-border text-2xs border-b font-mono tracking-wider uppercase'>
 							<tr>
 								<th className='px-4 py-3'>Prop</th>
 								<th className='px-4 py-3'>Type</th>
@@ -937,7 +937,7 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 				<div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
 					<div className='border-border bg-card rounded-xl border p-4 shadow-xs'>
 						<div className='text-foreground mb-2 flex items-center gap-2 text-xs font-bold'>
-							<ShieldCheck className='h-4 w-4 text-emerald-500' />
+							<ShieldCheck className='h-4 w-4 shrink-0 text-emerald-500' />
 							<span>Deterministic Cleanup</span>
 						</div>
 						<p className='text-muted-foreground text-xs leading-relaxed'>
@@ -947,11 +947,11 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 
 					<div className='border-border bg-card rounded-xl border p-4 shadow-xs'>
 						<div className='text-foreground mb-2 flex items-center gap-2 text-xs font-bold'>
-							<Sparkles className='text-primary h-4 w-4' />
+							<Sparkles className='text-primary h-4 w-4 shrink-0' />
 							<span>GPU Compositor Acceleration</span>
 						</div>
 						<p className='text-muted-foreground text-xs leading-relaxed'>
-							Transform and opacity modifications run directly on the GPU compositor thread using <code className='text-foreground font-mono text-[11px]'>will-change: transform</code> without triggering
+							Transform and opacity modifications run directly on the GPU compositor thread using <code className='text-foreground text-2xs font-mono'>will-change: transform</code> without triggering
 							browser layout recalcs.
 						</p>
 					</div>
@@ -970,12 +970,12 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 
 				<div className='border-border bg-card space-y-3 rounded-2xl border p-5'>
 					<div className='text-foreground flex items-center gap-2 text-xs font-bold'>
-						<Accessibility className='text-primary h-4 w-4' />
+						<Accessibility className='text-primary h-4 w-4 shrink-0' />
 						<span>prefers-reduced-motion Support</span>
 					</div>
 					<p className='text-muted-foreground text-xs leading-relaxed'>
-						When a user has <code className='text-foreground font-mono text-[11px]'>prefers-reduced-motion: reduce</code> enabled in their operating system, Exhuma components automatically disable 3D
-						gyroscope tilt and spring animations, rendering static accessible content.
+						When a user has <code className='text-foreground text-2xs font-mono'>prefers-reduced-motion: reduce</code> enabled in their operating system, Exhuma components automatically disable 3D gyroscope
+						tilt and spring animations, rendering static accessible content.
 					</p>
 				</div>
 			</section>
@@ -986,7 +986,7 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 					<Link href={`/docs/components/${prevComp.slug}`} className='border-border hover:bg-muted/50 flex flex-1 items-center gap-3 rounded-xl border p-4 transition-colors'>
 						<ArrowLeft className='text-muted-foreground h-4 w-4 shrink-0' />
 						<div className='text-left'>
-							<div className='text-muted-foreground font-mono text-[10px] uppercase'>Previous</div>
+							<div className='text-muted-foreground text-3xs font-mono uppercase'>Previous</div>
 							<div className='text-foreground text-xs font-bold'>{prevComp.name}</div>
 						</div>
 					</Link>
@@ -997,7 +997,7 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 				{nextComp && (
 					<Link href={`/docs/components/${nextComp.slug}`} className='border-border hover:bg-muted/50 flex flex-1 items-center justify-end gap-3 rounded-xl border p-4 transition-colors'>
 						<div className='text-right'>
-							<div className='text-muted-foreground font-mono text-[10px] uppercase'>Next</div>
+							<div className='text-muted-foreground text-3xs font-mono uppercase'>Next</div>
 							<div className='text-foreground text-xs font-bold'>{nextComp.name}</div>
 						</div>
 						<ArrowRight className='text-muted-foreground h-4 w-4 shrink-0' />

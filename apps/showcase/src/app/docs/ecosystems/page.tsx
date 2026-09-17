@@ -45,19 +45,19 @@ export default function EcosystemsDocPage() {
 					<div className='grid grid-cols-1 gap-3 pt-1 sm:grid-cols-2'>
 						<div className='border-border bg-card rounded-xl border p-4'>
 							<div className='text-foreground mb-1 text-xs font-semibold'>1. Zero CSS Leakage</div>
-							<p className='text-muted-foreground text-[11px] leading-relaxed'>Scoped styles or unique class prefixes prevent collision with host applications.</p>
+							<p className='text-muted-foreground text-2xs leading-relaxed'>Scoped styles or unique class prefixes prevent collision with host applications.</p>
 						</div>
 						<div className='border-border bg-card rounded-xl border p-4'>
 							<div className='text-foreground mb-1 text-xs font-semibold'>2. Teardown Safety</div>
-							<p className='text-muted-foreground text-[11px] leading-relaxed'>Every event listener and requestAnimationFrame handle is properly canceled during unmount or destroy.</p>
+							<p className='text-muted-foreground text-2xs leading-relaxed'>Every event listener and requestAnimationFrame handle is properly canceled during unmount or destroy.</p>
 						</div>
 						<div className='border-border bg-card rounded-xl border p-4'>
 							<div className='text-foreground mb-1 text-xs font-semibold'>3. Idiomatic Reactivity</div>
-							<p className='text-muted-foreground text-[11px] leading-relaxed'>Uses the framework&apos;s first-class state primitives (Runes, Signals, Composition, StatefulWidget).</p>
+							<p className='text-muted-foreground text-2xs leading-relaxed'>Uses the framework&apos;s first-class state primitives (Runes, Signals, Composition, StatefulWidget).</p>
 						</div>
 						<div className='border-border bg-card rounded-xl border p-4'>
 							<div className='text-foreground mb-1 text-xs font-semibold'>4. Zero Runtime Overhead</div>
-							<p className='text-muted-foreground text-[11px] leading-relaxed'>No proprietary middleman library. Pure self-contained component source code.</p>
+							<p className='text-muted-foreground text-2xs leading-relaxed'>No proprietary middleman library. Pure self-contained component source code.</p>
 						</div>
 					</div>
 				</section>

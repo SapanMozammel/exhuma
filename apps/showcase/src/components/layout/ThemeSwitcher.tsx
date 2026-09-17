@@ -86,7 +86,7 @@ export function ThemeSwitcher() {
 				</Tooltip>
 
 				<PopoverContent align='end' className='border-border bg-popover w-40 border p-1.5 shadow-xl'>
-					<div className='text-muted-foreground border-border mb-1 flex items-center justify-between border-b px-2 py-1.5 text-[11px] font-semibold'>
+					<div className='text-muted-foreground border-border text-2xs mb-1 flex items-center justify-between border-b px-2 py-1.5 font-semibold'>
 						<span>Appearance</span>
 						<span className='text-emerald-600 dark:text-emerald-400'>⌘⌥T</span>
 					</div>

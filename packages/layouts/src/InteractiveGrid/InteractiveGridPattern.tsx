@@ -32,7 +32,7 @@ export const InteractiveGridPattern: React.FC<InteractiveGridPatternProps> = ({ 
 	}, []);
 
 	return (
-		<svg aria-hidden='true' className={`exhuma-interactive-grid pointer-events-auto h-full w-full stroke-neutral-400/30 dark:stroke-neutral-700/30 ${className}`} {...props}>
+		<svg aria-hidden='true' className={`exhuma-interactive-grid pointer-events-auto size-full stroke-neutral-400/30 dark:stroke-neutral-700/30 ${className}`} {...props}>
 			<defs>
 				<pattern id={patternId} width={width} height={height} patternUnits='userSpaceOnUse' x={-1} y={-1}>
 					<path d={`M.5 ${height}V.5H${width}`} fill='none' strokeDasharray='0' />

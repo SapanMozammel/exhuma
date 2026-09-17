@@ -252,8 +252,8 @@ export function StudioWorkbench({ initialSlug = 'stacking-cards' }: { initialSlu
 		return ALL_COMPONENTS.filter((c) => c.name.toLowerCase().includes(catalogSearch.toLowerCase()) || c.category.toLowerCase().includes(catalogSearch.toLowerCase()));
 	}, [catalogSearch]);
 
-	// Viewport widths
-	const viewportWidth = viewportMode === 'mobile' ? 'max-w-[375px]' : viewportMode === 'tablet' ? 'max-w-[768px]' : viewportMode === 'laptop' ? 'max-w-[1024px]' : 'w-full';
+	// Viewport widths (23.4375rem/48rem/64rem = 375px/768px/1024px device breakpoints)
+	const viewportWidth = viewportMode === 'mobile' ? 'max-w-[23.4375rem]' : viewportMode === 'tablet' ? 'max-w-[48rem]' : viewportMode === 'laptop' ? 'max-w-[64rem]' : 'w-full';
 
 	// Render interactive canvas preview according to selected component
 	const renderCanvasPreview = () => {
@@ -264,17 +264,17 @@ export function StudioWorkbench({ initialSlug = 'stacking-cards' }: { initialSlu
 			const count = Number(propValues.cardCount ?? 4);
 
 			return (
-				<div ref={studioStackingRef} className='border-border bg-background/50 no-scrollbar relative mx-auto h-[500px] w-full max-w-xl overflow-y-auto rounded-2xl border p-6 shadow-inner'>
-					<div className='text-muted-foreground mb-6 flex items-center justify-center gap-2 text-center font-mono text-[11px]'>
-						<span className='kbd text-[10px]'>SCROLL DOWN TO TEST DYNAMIC SCALE</span>
+				<div ref={studioStackingRef} className='border-border bg-background/50 no-scrollbar relative mx-auto h-[31.25rem] w-full max-w-xl overflow-y-auto rounded-2xl border p-6 shadow-inner'>
+					<div className='text-muted-foreground text-2xs mb-6 flex items-center justify-center gap-2 text-center font-mono'>
+						<span className='kbd text-3xs'>SCROLL DOWN TO TEST DYNAMIC SCALE</span>
 						<span>↓</span>
 					</div>
 					<StackingCards topStart={topStart} topIncrement={topIncrement} minScale={minScale} scaleThreshold={100} scrollContainerRef={studioStackingRef}>
 						{Array.from({ length: count }).map((_, idx) => (
 							<div key={idx} className='border-border bg-card/95 rounded-2xl border p-6 shadow-xl backdrop-blur-md'>
 								<div className='text-muted-foreground mb-3 flex items-center justify-between font-mono text-xs'>
-									<span className='kbd text-primary text-[10px] font-bold uppercase'>STACK LAYER 0{idx + 1}</span>
-									<span className='text-[11px] font-semibold text-emerald-500'>Dynamic Physics</span>
+									<span className='kbd text-primary text-3xs font-bold uppercase'>STACK LAYER 0{idx + 1}</span>
+									<span className='text-2xs font-semibold text-emerald-500'>Dynamic Physics</span>
 								</div>
 								<h4 className='text-foreground text-xl font-bold tracking-tight'>Autonomous Stacking Card</h4>
 								<p className='text-muted-foreground mt-2 text-xs leading-relaxed'>Card stacks with dynamic mathematical scale decay. Zero layout thrashing or parent scroll locking.</p>
@@ -285,7 +285,7 @@ export function StudioWorkbench({ initialSlug = 'stacking-cards' }: { initialSlu
 							</div>
 						))}
 					</StackingCards>
-					<div className='text-muted-foreground flex h-[280px] items-center justify-center font-mono text-xs'>Terminal scroll reached — reverse scaling applied</div>
+					<div className='text-muted-foreground flex h-[17.5rem] items-center justify-center font-mono text-xs'>Terminal scroll reached — reverse scaling applied</div>
 				</div>
 			);
 		}
@@ -296,17 +296,17 @@ export function StudioWorkbench({ initialSlug = 'stacking-cards' }: { initialSlu
 			const itemWidth = Number(propValues.itemWidth ?? 280);
 
 			return (
-				<div ref={studioHorizontalRef} className='border-border bg-background/50 no-scrollbar relative h-[500px] w-full overflow-y-auto rounded-2xl border shadow-inner'>
-					<div className='text-muted-foreground pointer-events-none sticky top-4 z-20 mb-2 flex items-center justify-center gap-2 text-center font-mono text-[11px]'>
-						<span className='kbd bg-card/90 text-[10px] shadow'>VERTICAL SCROLL → HORIZONTAL RAIL</span>
+				<div ref={studioHorizontalRef} className='border-border bg-background/50 no-scrollbar relative h-[31.25rem] w-full overflow-y-auto rounded-2xl border shadow-inner'>
+					<div className='text-muted-foreground text-2xs pointer-events-none sticky top-4 z-20 mb-2 flex items-center justify-center gap-2 text-center font-mono'>
+						<span className='kbd bg-card/90 text-3xs shadow-sm'>VERTICAL SCROLL → HORIZONTAL RAIL</span>
 						<span>↓</span>
 					</div>
 					<HorizontalScroller speed={speed} scrollContainerRef={studioHorizontalRef}>
 						{Array.from({ length: 6 }).map((_, idx) => (
 							<div key={idx} className='border-border bg-card hover:border-primary/50 shrink-0 rounded-2xl border p-6 shadow-lg transition-all' style={{ width: `${itemWidth}px` }}>
 								<div className='text-muted-foreground mb-2 flex items-center justify-between font-mono text-xs'>
-									<span className='kbd text-primary text-[10px]'>RAIL ITEM #{idx + 1}</span>
-									<span className='text-[10px]'>Momentum Rail</span>
+									<span className='kbd text-primary text-3xs'>RAIL ITEM #{idx + 1}</span>
+									<span className='text-3xs'>Momentum Rail</span>
 								</div>
 								<h4 className='text-foreground mt-1 text-base font-bold'>Momentum Scroller</h4>
 								<p className='text-muted-foreground mt-1 text-xs leading-relaxed'>Dynamic translation mapped to scroll progress via GPU-decoupled CSS variable.</p>
@@ -327,7 +327,7 @@ export function StudioWorkbench({ initialSlug = 'stacking-cards' }: { initialSlu
 						className='bg-card border-border w-full max-w-md cursor-pointer border p-8 shadow-2xl'
 					>
 						<div className='mb-4 flex items-center justify-between'>
-							<span className='kbd text-primary text-[10px] font-bold'>3D PERSPECTIVE</span>
+							<span className='kbd text-primary text-3xs font-bold'>3D PERSPECTIVE</span>
 							<span className='text-muted-foreground font-mono text-xs'>Max Tilt: {Number(propValues.maxTilt ?? 15)}°</span>
 						</div>
 						<h4 className='text-foreground text-2xl font-black tracking-tight'>Tactile 3D Tilt Card</h4>
@@ -349,7 +349,7 @@ export function StudioWorkbench({ initialSlug = 'stacking-cards' }: { initialSlu
 					{[140, 200, 160, 240, 180, 260].map((h, idx) => (
 						<div key={idx} className='border-border bg-card hover:border-input mb-4 break-inside-avoid rounded-2xl border p-5 shadow-sm transition-all' style={{ height: `${h}px` }}>
 							<div className='text-muted-foreground mb-1 flex items-center justify-between font-mono text-xs'>
-								<span className='kbd text-primary text-[10px]'>TILE 0{idx + 1}</span>
+								<span className='kbd text-primary text-3xs'>TILE 0{idx + 1}</span>
 								<span>{h}px</span>
 							</div>
 							<div className='text-foreground mt-2 text-sm font-bold'>Dynamic Masonry</div>
@@ -365,7 +365,7 @@ export function StudioWorkbench({ initialSlug = 'stacking-cards' }: { initialSlu
 				<AutoGrid minItemWidth={Number(propValues.minItemWidth ?? 200)} gap={Number(propValues.gap ?? 16)} className='w-full p-6'>
 					{Array.from({ length: 6 }).map((_, idx) => (
 						<div key={idx} className='border-border bg-card hover:border-input rounded-2xl border p-5 shadow-sm transition-all'>
-							<span className='kbd text-primary text-[10px]'>GRID #{idx + 1}</span>
+							<span className='kbd text-primary text-3xs'>GRID #{idx + 1}</span>
 							<div className='text-foreground mt-2 text-sm font-bold'>Auto Responsive</div>
 							<div className='text-muted-foreground mt-1 text-xs'>MinMax Width Flow</div>
 						</div>
@@ -384,7 +384,7 @@ export function StudioWorkbench({ initialSlug = 'stacking-cards' }: { initialSlu
 				<div className='mx-auto w-full max-w-md p-4'>
 					<SpotlightCard radius={radius} color={color} opacity={opacity} borderColor={borderColor} className='p-8 shadow-2xl'>
 						<div className='flex flex-col gap-3'>
-							<span className='kbd text-primary text-[10px]'>STUDIO PREVIEW</span>
+							<span className='kbd text-primary text-3xs'>STUDIO PREVIEW</span>
 							<h4 className='text-foreground text-xl font-bold tracking-tight'>Spotlight Card</h4>
 							<p className='text-muted-foreground text-xs leading-relaxed'>Interactive pointer tracking with sub-pixel radial border mask. Radius: {radius}px.</p>
 							<div className='border-border/50 text-muted-foreground mt-4 flex items-center justify-between border-t pt-3 font-mono text-xs'>
@@ -480,14 +480,14 @@ export function StudioWorkbench({ initialSlug = 'stacking-cards' }: { initialSlu
 					<BentoGrid cols={cols} gap='1rem'>
 						<BentoCard colSpan={2}>
 							<BentoHeader>
-								<span className='kbd text-primary text-[10px]'>ANALYTICAL KINETICS</span>
+								<span className='kbd text-primary text-3xs'>ANALYTICAL KINETICS</span>
 								<h4 className='text-foreground text-base font-bold'>Continuous Math Engine</h4>
 							</BentoHeader>
 							<BentoContent>Hardware-accelerated CSS custom properties driven directly by rAF loops.</BentoContent>
 						</BentoCard>
 						<BentoCard colSpan={1}>
 							<BentoHeader>
-								<span className='kbd text-[10px] text-emerald-500'>BIG-OMEGA</span>
+								<span className='kbd text-3xs text-emerald-500'>BIG-OMEGA</span>
 								<h4 className='text-foreground text-base font-bold'>Ω(120Hz)</h4>
 							</BentoHeader>
 							<BentoContent>Guaranteed lower-bound execution.</BentoContent>
@@ -506,7 +506,7 @@ export function StudioWorkbench({ initialSlug = 'stacking-cards' }: { initialSlu
 								key={idx}
 								className='border-border bg-card/80 hover:border-primary flex aspect-square w-12 flex-col items-center justify-center rounded-2xl border p-2 text-center shadow-md backdrop-blur-md transition-all duration-300 hover:scale-105 sm:w-16'
 							>
-								<span className='text-primary font-mono text-[10px] font-bold'>#{idx + 1}</span>
+								<span className='text-primary text-3xs font-mono font-bold'>#{idx + 1}</span>
 							</div>
 						))}
 					</DiamondGrid>
@@ -516,7 +516,7 @@ export function StudioWorkbench({ initialSlug = 'stacking-cards' }: { initialSlu
 
 		if (selectedSlug === 'scroll-timeline') {
 			return (
-				<div className='border-border bg-background/50 no-scrollbar relative mx-auto h-[460px] w-full max-w-md overflow-y-auto rounded-2xl border p-6 shadow-inner'>
+				<div className='border-border bg-background/50 no-scrollbar relative mx-auto h-[28.75rem] w-full max-w-md overflow-y-auto rounded-2xl border p-6 shadow-inner'>
 					<ScrollTimeline
 						items={[
 							{
@@ -537,15 +537,15 @@ export function StudioWorkbench({ initialSlug = 'stacking-cards' }: { initialSlu
 
 		if (selectedSlug === 'sticky-parallax') {
 			return (
-				<div className='border-border bg-background/50 no-scrollbar relative mx-auto h-[460px] w-full max-w-md overflow-y-auto rounded-2xl border shadow-inner'>
+				<div className='border-border bg-background/50 no-scrollbar relative mx-auto h-[28.75rem] w-full max-w-md overflow-y-auto rounded-2xl border shadow-inner'>
 					<StickyParallaxScroll trackHeight='800px'>
-						<div className='relative flex h-full w-full items-center justify-center'>
+						<div className='relative flex size-full items-center justify-center'>
 							<ParallaxLayer speed={-0.4}>
 								<div className='text-foreground/20 text-4xl font-extrabold select-none'>BACKGROUND</div>
 							</ParallaxLayer>
 							<ParallaxLayer speed={0.8}>
 								<div className='border-primary/40 bg-card rounded-2xl border p-6 text-center shadow-2xl backdrop-blur-md'>
-									<span className='kbd text-primary text-[10px]'>PARALLAX</span>
+									<span className='kbd text-primary text-3xs'>PARALLAX</span>
 									<h4 className='text-foreground mt-1 text-lg font-bold'>Differential Layers</h4>
 								</div>
 							</ParallaxLayer>
@@ -561,7 +561,7 @@ export function StudioWorkbench({ initialSlug = 'stacking-cards' }: { initialSlu
 			const borderWidth = Number(propValues.borderWidth ?? 2);
 			return (
 				<div className='border-border bg-card relative mx-auto flex h-64 w-full max-w-sm flex-col items-center justify-center overflow-hidden rounded-2xl border p-6 shadow-xl'>
-					<span className='kbd text-primary text-[10px]'>PERIMETER TRACE</span>
+					<span className='kbd text-primary text-3xs'>PERIMETER TRACE</span>
 					<h4 className='text-foreground mt-2 text-xl font-bold'>Border Beam</h4>
 					<p className='text-muted-foreground mt-1 text-center text-xs'>Hardware-accelerated conic perimeter trace with zero GC pauses.</p>
 					<BorderBeam size={size} duration={duration} borderWidth={borderWidth} />
@@ -607,10 +607,10 @@ export function StudioWorkbench({ initialSlug = 'stacking-cards' }: { initialSlu
 			const width = Number(propValues.width ?? 32);
 			const height = Number(propValues.height ?? 32);
 			return (
-				<div className='border-border bg-background relative mx-auto flex h-[380px] w-full max-w-xl flex-col items-center justify-center overflow-hidden rounded-2xl border p-8 shadow-inner'>
-					<InteractiveGridPattern width={width} height={height} squares={[24, 16]} className='[mask-image:radial-gradient(400px_circle_at_center,white,transparent)] opacity-70' />
+				<div className='border-border bg-background relative mx-auto flex h-[23.75rem] w-full max-w-xl flex-col items-center justify-center overflow-hidden rounded-2xl border p-8 shadow-inner'>
+					<InteractiveGridPattern width={width} height={height} squares={[24, 16]} className='mask-[radial-gradient(400px_circle_at_center,white,transparent)] opacity-70' />
 					<div className='z-10 flex flex-col items-center text-center'>
-						<span className='kbd text-primary text-[10px]'>VECTOR KINETICS</span>
+						<span className='kbd text-primary text-3xs'>VECTOR KINETICS</span>
 						<h4 className='text-foreground mt-1 text-xl font-bold'>Interactive Grid</h4>
 						<p className='text-muted-foreground mt-1 max-w-xs text-xs'>Hover over grid squares to trigger hardware-accelerated kinetic active states.</p>
 					</div>
@@ -623,7 +623,7 @@ export function StudioWorkbench({ initialSlug = 'stacking-cards' }: { initialSlu
 			const decimalPlaces = Number(propValues.decimalPlaces ?? 0);
 			return (
 				<div className='border-border bg-card mx-auto flex max-w-sm flex-col items-center justify-center rounded-2xl border p-8 text-center shadow-lg'>
-					<span className='kbd text-primary mb-2 text-[10px]'>ANALYTICAL EASING (rAF)</span>
+					<span className='kbd text-primary text-3xs mb-2'>ANALYTICAL EASING (rAF)</span>
 					<div className='text-foreground font-mono text-6xl font-black tracking-tight'>
 						$<NumberTicker value={value} decimalPlaces={decimalPlaces} />
 					</div>
@@ -646,7 +646,7 @@ export function StudioWorkbench({ initialSlug = 'stacking-cards' }: { initialSlu
 						className='border-primary/50 bg-primary/10 text-foreground hover:bg-primary/20 rounded-2xl border px-8 py-4 font-bold shadow-xl backdrop-blur-md transition-colors'
 					>
 						<span className='flex items-center gap-2'>
-							<Sparkles className='text-primary h-4 w-4' />
+							<Sparkles className='text-primary h-4 w-4 shrink-0' />
 							<span>Magnetic Attraction</span>
 						</span>
 					</MagneticButton>
@@ -670,10 +670,10 @@ export function StudioWorkbench({ initialSlug = 'stacking-cards' }: { initialSlu
 						]}
 						renderCard={(item) => (
 							<div className='border-border bg-card rounded-2xl border p-6 shadow-2xl backdrop-blur-md'>
-								<span className='kbd text-primary text-[10px]'>{item.tag}</span>
+								<span className='kbd text-primary text-3xs'>{item.tag}</span>
 								<h4 className='text-foreground mt-2 text-lg font-bold'>{item.title}</h4>
 								<p className='text-muted-foreground mt-1 text-xs'>{item.desc}</p>
-								<div className='border-border text-muted-foreground mt-4 flex items-center justify-between border-t pt-3 font-mono text-[10px]'>
+								<div className='border-border text-muted-foreground text-3xs mt-4 flex items-center justify-between border-t pt-3 font-mono'>
 									<span>← SWIPE LEFT</span>
 									<span>SWIPE RIGHT →</span>
 								</div>
@@ -692,8 +692,8 @@ export function StudioWorkbench({ initialSlug = 'stacking-cards' }: { initialSlu
 						aspectRatio='16/10'
 						defaultPosition={defaultPosition}
 						before={
-							<div className='flex h-full w-full flex-col justify-between bg-linear-to-br from-indigo-950 via-purple-950 to-slate-900 p-6 text-white'>
-								<span className='kbd self-start bg-white/20 text-[10px] text-white'>ORIGINAL MOCKUP</span>
+							<div className='flex size-full flex-col justify-between bg-linear-to-br from-indigo-950 via-purple-950 to-slate-900 p-6 text-white'>
+								<span className='kbd text-3xs self-start bg-white/20 text-white'>ORIGINAL MOCKUP</span>
 								<div>
 									<h4 className='text-xl font-bold'>Static Canvas</h4>
 									<p className='text-xs opacity-70'>Unaccelerated design view</p>
@@ -701,8 +701,8 @@ export function StudioWorkbench({ initialSlug = 'stacking-cards' }: { initialSlu
 							</div>
 						}
 						after={
-							<div className='flex h-full w-full flex-col justify-between bg-linear-to-br from-emerald-950 via-teal-950 to-slate-900 p-6 text-white'>
-								<span className='kbd self-start bg-emerald-500/30 text-[10px] text-emerald-300'>EXHUMA KINETIC ENGINE</span>
+							<div className='flex size-full flex-col justify-between bg-linear-to-br from-emerald-950 via-teal-950 to-slate-900 p-6 text-white'>
+								<span className='kbd text-3xs self-start bg-emerald-500/30 text-emerald-300'>EXHUMA KINETIC ENGINE</span>
 								<div>
 									<h4 className='text-xl font-bold'>120Hz ProMotion</h4>
 									<p className='text-xs opacity-70'>Analytical physics active</p>
@@ -720,14 +720,14 @@ export function StudioWorkbench({ initialSlug = 'stacking-cards' }: { initialSlu
 					<ExpandableCard
 						cardContent={
 							<div className='border-border bg-card hover:border-primary/50 rounded-2xl border p-6 shadow-lg transition-all'>
-								<span className='kbd text-primary text-[10px]'>CLICK TO EXPAND</span>
+								<span className='kbd text-primary text-3xs'>CLICK TO EXPAND</span>
 								<h4 className='text-foreground mt-2 text-lg font-bold'>FLIP Morphing Architecture</h4>
 								<p className='text-muted-foreground mt-1 text-xs'>Mathematical geometry snapshot with zero Framer Motion.</p>
 							</div>
 						}
 						expandedContent={
 							<div className='space-y-4'>
-								<span className='kbd text-primary text-[10px]'>MODAL DIALOG (FLIP INVERTED)</span>
+								<span className='kbd text-primary text-3xs'>MODAL DIALOG (FLIP INVERTED)</span>
 								<h3 className='text-foreground text-2xl font-black'>Hardware-Accelerated Dialog</h3>
 								<p className='text-muted-foreground text-sm leading-relaxed'>
 									The card morphs smoothly from its trigger bounding rect into a centered dialog snapshot using analytical FLIP transformation matrices.
@@ -749,7 +749,7 @@ export function StudioWorkbench({ initialSlug = 'stacking-cards' }: { initialSlu
 						content='Exhuma Exponential Cursor Smoothing'
 						className='border-border bg-card/80 hover:border-primary cursor-pointer rounded-2xl border p-8 text-center shadow-xl transition-colors'
 					>
-						<span className='kbd text-primary mb-2 inline-block text-[10px]'>HOVER OVER CARD</span>
+						<span className='kbd text-primary text-3xs mb-2 inline-block'>HOVER OVER CARD</span>
 						<h4 className='text-foreground text-xl font-bold'>Interactive Viewport Target</h4>
 						<p className='text-muted-foreground mt-1 text-xs'>Hover cursor anywhere over this card to activate the magnetic trailing tooltip.</p>
 					</CursorTooltip>
@@ -772,11 +772,11 @@ export function StudioWorkbench({ initialSlug = 'stacking-cards' }: { initialSlu
 					<div>
 						<div className='text-muted-foreground flex items-center gap-1.5 font-mono text-xs'>
 							<span>Studio Workbench</span>
-							<ChevronRight className='h-3 w-3' />
+							<ChevronRight className='h-3 w-3 shrink-0' />
 							<span className='text-foreground font-bold'>{component.name}</span>
 						</div>
 						<div className='mt-0.5 flex items-center gap-2'>
-							<Badge variant='ecosystem' className='text-primary text-[10px] font-bold uppercase'>
+							<Badge variant='ecosystem' className='text-primary text-3xs font-bold uppercase'>
 								{component.category}
 							</Badge>
 							<span className='text-muted-foreground text-xs'>· 13 Native Idioms</span>
@@ -810,7 +810,7 @@ export function StudioWorkbench({ initialSlug = 'stacking-cards' }: { initialSlu
 				<div className='flex items-center gap-2.5'>
 					<div className='border-border bg-muted/40 text-foreground flex items-center gap-2 rounded-lg border px-3 py-1.5 font-mono text-xs'>
 						<Terminal className='text-primary h-3.5 w-3.5 shrink-0' />
-						<span className='text-muted-foreground max-w-[180px] truncate text-[11px] sm:max-w-none'>{cliCommand}</span>
+						<span className='text-muted-foreground text-2xs max-w-[11.25rem] truncate sm:max-w-none'>{cliCommand}</span>
 						<button type='button' onClick={copyCli} className='text-muted-foreground hover:text-foreground cursor-pointer transition-colors' title='Copy CLI command'>
 							{copiedCli ? <Check className='h-3.5 w-3.5 text-emerald-500' /> : <Copy className='h-3.5 w-3.5' />}
 						</button>
@@ -829,10 +829,10 @@ export function StudioWorkbench({ initialSlug = 'stacking-cards' }: { initialSlu
 				<div className='border-border bg-card space-y-4 rounded-2xl border p-4 shadow-sm lg:col-span-3'>
 					<div className='border-border flex items-center justify-between border-b pb-3'>
 						<div className='flex items-center gap-2'>
-							<Layers className='text-primary h-4 w-4' />
+							<Layers className='text-primary h-4 w-4 shrink-0' />
 							<span className='text-foreground font-mono text-xs font-bold tracking-wider uppercase'>Components</span>
 						</div>
-						<span className='kbd text-[9px]'>{ALL_COMPONENTS.length} CANONICAL</span>
+						<span className='kbd text-4xs'>{ALL_COMPONENTS.length} CANONICAL</span>
 					</div>
 
 					{/* Search input */}
@@ -848,7 +848,7 @@ export function StudioWorkbench({ initialSlug = 'stacking-cards' }: { initialSlu
 					</div>
 
 					{/* Component Tree Items */}
-					<div className='max-h-[520px] space-y-1 overflow-y-auto pr-1'>
+					<div className='max-h-[32.5rem] space-y-1 overflow-y-auto pr-1'>
 						{filteredComponents.map((comp) => {
 							const isSelected = comp.slug === selectedSlug;
 							return (
@@ -863,7 +863,7 @@ export function StudioWorkbench({ initialSlug = 'stacking-cards' }: { initialSlu
 								>
 									<div>
 										<div className='truncate font-semibold'>{comp.name}</div>
-										<div className={cn('font-mono text-[10px] capitalize', isSelected ? 'text-primary-foreground/80' : 'text-muted-foreground')}>{comp.category}</div>
+										<div className={cn('text-3xs font-mono capitalize', isSelected ? 'text-primary-foreground/80' : 'text-muted-foreground')}>{comp.category}</div>
 									</div>
 									<ChevronRight className={cn('h-3.5 w-3.5 shrink-0 transition-transform', isSelected ? 'translate-x-0.5 opacity-100' : 'opacity-40')} />
 								</button>
@@ -929,15 +929,15 @@ export function StudioWorkbench({ initialSlug = 'stacking-cards' }: { initialSlu
 						</div>
 
 						{/* Zoom & Canvas Texture */}
-						<div className='text-muted-foreground flex items-center gap-3 font-mono text-[11px]'>
-							<span className='kbd text-[9px]'>{viewportMode === 'mobile' ? '375 × 667 px' : viewportMode === 'tablet' ? '768 × 1024 px' : viewportMode === 'laptop' ? '1024 × 768 px' : 'Fluid 100%'}</span>
+						<div className='text-muted-foreground text-2xs flex items-center gap-3 font-mono'>
+							<span className='kbd text-4xs'>{viewportMode === 'mobile' ? '375 × 667 px' : viewportMode === 'tablet' ? '768 × 1024 px' : viewportMode === 'laptop' ? '1024 × 768 px' : 'Fluid 100%'}</span>
 
 							<div className='hidden items-center gap-1 sm:flex'>
-								<button type='button' onClick={() => setZoomScale((z) => Math.max(50, z - 25))} className='hover:bg-accent hover:text-foreground cursor-pointer rounded p-1' title='Zoom out'>
+								<button type='button' onClick={() => setZoomScale((z) => Math.max(50, z - 25))} className='hover:bg-accent hover:text-foreground cursor-pointer rounded-sm p-1' title='Zoom out'>
 									<ZoomOut className='h-3.5 w-3.5' />
 								</button>
 								<span className='w-8 text-center'>{zoomScale}%</span>
-								<button type='button' onClick={() => setZoomScale((z) => Math.min(150, z + 25))} className='hover:bg-accent hover:text-foreground cursor-pointer rounded p-1' title='Zoom in'>
+								<button type='button' onClick={() => setZoomScale((z) => Math.min(150, z + 25))} className='hover:bg-accent hover:text-foreground cursor-pointer rounded-sm p-1' title='Zoom in'>
 									<ZoomIn className='h-3.5 w-3.5' />
 								</button>
 							</div>
@@ -947,7 +947,7 @@ export function StudioWorkbench({ initialSlug = 'stacking-cards' }: { initialSlu
 					{/* Dot-Grid Canvas Viewport */}
 					<div
 						className={cn(
-							'flex min-h-[480px] items-center justify-center overflow-auto p-6 transition-colors sm:p-10',
+							'flex min-h-[30rem] items-center justify-center overflow-auto p-6 transition-colors sm:p-10',
 							canvasGrid === 'dots' ? 'bg-dot-grid' : canvasGrid === 'dense' ? 'bg-dot-grid-dense' : 'bg-background'
 						)}
 					>
@@ -967,27 +967,27 @@ export function StudioWorkbench({ initialSlug = 'stacking-cards' }: { initialSlu
 				<div className='border-border bg-card space-y-4 rounded-2xl border p-4 shadow-sm lg:col-span-3'>
 					<div className='border-border flex items-center justify-between border-b pb-3'>
 						<div className='flex items-center gap-2'>
-							<Sliders className='text-primary h-4 w-4' />
+							<Sliders className='text-primary h-4 w-4 shrink-0' />
 							<span className='text-foreground font-mono text-xs font-bold tracking-wider uppercase'>Property Inspector</span>
 						</div>
-						<span className='kbd text-[9px]'>{component.props.length} PROPS</span>
+						<span className='kbd text-4xs'>{component.props.length} PROPS</span>
 					</div>
 
 					{/* Prop Controls List */}
-					<div className='max-h-[520px] space-y-4 overflow-y-auto pr-1'>
+					<div className='max-h-[32.5rem] space-y-4 overflow-y-auto pr-1'>
 						{component.props.map((propDef) => {
 							const val = propValues[propDef.name] ?? propDef.defaultValue;
 
 							return (
 								<div key={propDef.name} className='border-border/60 bg-muted/20 space-y-1.5 rounded-xl border p-3'>
 									<div className='flex items-center justify-between text-xs'>
-										<label htmlFor={`prop-${propDef.name}`} className='text-foreground font-mono text-[11px] font-semibold'>
+										<label htmlFor={`prop-${propDef.name}`} className='text-foreground text-2xs font-mono font-semibold'>
 											{propDef.name}
 										</label>
-										<span className='kbd text-[10px]'>{String(val)}</span>
+										<span className='kbd text-3xs'>{String(val)}</span>
 									</div>
 
-									{propDef.description && <p className='text-muted-foreground text-[10px] leading-tight'>{propDef.description}</p>}
+									{propDef.description && <p className='text-muted-foreground text-3xs leading-tight'>{propDef.description}</p>}
 
 									{/* Render Control based on type */}
 									{propDef.type === 'boolean' ? (
@@ -997,7 +997,7 @@ export function StudioWorkbench({ initialSlug = 'stacking-cards' }: { initialSlu
 												id={`prop-${propDef.name}`}
 												checked={Boolean(val)}
 												onChange={(e) => handlePropChange(propDef.name, e.target.checked)}
-												className='border-border accent-primary h-4 w-4 cursor-pointer rounded'
+												className='border-border accent-primary h-4 w-4 cursor-pointer rounded-sm'
 											/>
 											<label htmlFor={`prop-${propDef.name}`} className='text-muted-foreground cursor-pointer text-xs'>
 												{val ? 'Enabled' : 'Disabled'}
@@ -1036,7 +1036,7 @@ export function StudioWorkbench({ initialSlug = 'stacking-cards' }: { initialSlu
 												step={propDef.step ?? 1}
 												value={Number(val)}
 												onChange={(e) => handlePropChange(propDef.name, Number(e.target.value))}
-												className='border-input bg-background text-foreground w-14 rounded border px-1.5 py-0.5 text-right font-mono text-[11px]'
+												className='border-input bg-background text-foreground text-2xs w-14 rounded-sm border px-1.5 py-0.5 text-right font-mono'
 											/>
 										</div>
 									)}
@@ -1052,9 +1052,9 @@ export function StudioWorkbench({ initialSlug = 'stacking-cards' }: { initialSlu
 				{/* Top bar */}
 				<div className='border-border bg-muted/30 flex flex-col items-stretch justify-between gap-3 border-b px-4 py-3 md:flex-row md:items-center'>
 					<div className='flex items-center gap-2'>
-						<Sparkles className='text-primary h-4 w-4' />
+						<Sparkles className='text-primary h-4 w-4 shrink-0' />
 						<span className='text-foreground font-mono text-xs font-bold'>Universal Code Synchronizer</span>
-						<Badge variant='ecosystem' className='text-[10px]'>
+						<Badge variant='ecosystem' className='text-3xs'>
 							{selectedFlavor}
 						</Badge>
 					</div>
@@ -1066,7 +1066,7 @@ export function StudioWorkbench({ initialSlug = 'stacking-cards' }: { initialSlu
 							className='border-border bg-background text-foreground hover:bg-accent inline-flex cursor-pointer items-center gap-1.5 rounded-md border px-3 py-1.5 text-xs font-medium transition-colors'
 							title='Download component source'
 						>
-							<Download className='h-3.5 w-3.5' />
+							<Download className='h-3.5 w-3.5 shrink-0' />
 							<span>Download Source</span>
 						</button>
 					</div>
@@ -1098,7 +1098,7 @@ export function StudioWorkbench({ initialSlug = 'stacking-cards' }: { initialSlu
 				{/* Multi-File Tabs (for WordPress Gutenberg, etc.) */}
 				{generatedFiles.length > 1 && (
 					<div className='border-border bg-muted/20 flex items-center gap-1.5 border-b px-4 py-2'>
-						<span className='text-muted-foreground mr-2 font-mono text-[10px]'>Generated Files ({generatedFiles.length}):</span>
+						<span className='text-muted-foreground text-3xs mr-2 font-mono'>Generated Files ({generatedFiles.length}):</span>
 						{generatedFiles.map((file, idx) => (
 							<button
 								key={file.filename}

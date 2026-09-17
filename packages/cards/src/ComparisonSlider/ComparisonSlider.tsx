@@ -124,10 +124,10 @@ export const ComparisonSlider = memo<ComparisonSliderProps>(({ before, after, de
 			style={{ aspectRatio }}
 		>
 			{/* After Layer (Background - full width) */}
-			<div className='pointer-events-none absolute inset-0 h-full w-full'>{after}</div>
+			<div className='pointer-events-none absolute inset-0 size-full'>{after}</div>
 
 			{/* Before Layer (Foreground - clipped by polygon) */}
-			<div className='pointer-events-none absolute inset-0 h-full w-full will-change-[clip-path]' style={{ clipPath: clipPathStyle }}>
+			<div className='pointer-events-none absolute inset-0 size-full will-change-[clip-path]' style={{ clipPath: clipPathStyle }}>
 				{before}
 			</div>
 

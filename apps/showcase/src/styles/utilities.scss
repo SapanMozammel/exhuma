@@ -58,6 +58,24 @@
 	@apply text-xs font-bold uppercase tracking-wider;
 }
 
+// ── Auto-Fitting Grid Columns ──────────────────────────────────
+// `grid-cols-auto-fit-64` → tracks of at least 16rem that reflow on their own.
+// The `min(…, 100%)` guard keeps a track from outgrowing a narrow container,
+// which is what otherwise forces horizontal scroll on small screens.
+@utility grid-cols-auto-fit-* {
+	grid-template-columns: repeat(auto-fit, minmax(min(--spacing(--value(integer)), 100%), 1fr));
+}
+
+// ── No Scrollbar Utility ───────────────────────────────────────
+@utility no-scrollbar {
+	-ms-overflow-style: none; /* IE and Edge */
+	scrollbar-width: none; /* Firefox */
+
+	&::-webkit-scrollbar {
+		display: none; /* Chrome, Safari and Opera */
+	}
+}
+
 // ── Custom Scrollbar ───────────────────────────────────────────
 ::-webkit-scrollbar {
 	width: 6px;
@@ -86,4 +104,3 @@ html.dark .shiki span {
 	font-weight: var(--shiki-dark-font-weight) !important;
 	text-decoration: var(--shiki-dark-text-decoration) !important;
 }
-

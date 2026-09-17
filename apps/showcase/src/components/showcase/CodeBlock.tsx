@@ -79,22 +79,22 @@ export function CodeBlock({ code, language = 'tsx', filename, showLineNumbers = 
 						<div className='h-2.5 w-2.5 rounded-full bg-emerald-500/80' />
 					</div>
 					{filename ? (
-						<span className='text-foreground ml-1.5 font-sans text-[12px] font-medium tracking-tight'>{filename}</span>
+						<span className='text-foreground ml-1.5 font-sans text-xs font-medium tracking-tight'>{filename}</span>
 					) : (
-						<span className='text-muted-foreground ml-1.5 flex items-center gap-1.5 text-[11px]'>
-							<Terminal className='h-3 w-3' />
+						<span className='text-muted-foreground text-2xs ml-1.5 flex items-center gap-1.5'>
+							<Terminal className='h-3 w-3 shrink-0' />
 							<span>Snippet</span>
 						</span>
 					)}
 				</div>
 
 				<div className='flex items-center gap-2'>
-					<span className='kbd text-[10px] font-semibold uppercase'>{language}</span>
+					<span className='kbd text-3xs font-semibold uppercase'>{language}</span>
 					<button
 						type='button'
 						onClick={copyToClipboard}
 						className={cn(
-							'border-border bg-background text-foreground hover:bg-accent flex cursor-pointer items-center gap-1.5 rounded-md border px-2.5 py-1 text-[11px] font-medium transition-all active:scale-95'
+							'border-border bg-background text-foreground hover:bg-accent text-2xs flex cursor-pointer items-center gap-1.5 rounded-md border px-2.5 py-1 font-medium transition-all active:scale-95'
 						)}
 						title='Copy code to clipboard'
 					>
@@ -114,7 +114,7 @@ export function CodeBlock({ code, language = 'tsx', filename, showLineNumbers = 
 			</div>
 
 			{/* Code Content Viewport */}
-			<div className='max-h-[500px] overflow-auto p-4 text-[12px] leading-relaxed'>
+			<div className='max-h-[31.25rem] overflow-auto p-4 text-xs leading-relaxed'>
 				{highlightedHtml ? (
 					<div dangerouslySetInnerHTML={{ __html: highlightedHtml }} className='shiki-container' />
 				) : (

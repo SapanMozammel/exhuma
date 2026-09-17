@@ -55,7 +55,7 @@ export function GlobalFooter() {
 				<div className='container-fluid flex flex-col items-center justify-between gap-4 py-5 text-center sm:flex-row sm:text-left'>
 					<div>
 						<div className='font-display text-foreground text-base font-extrabold'>Ship your first component in seconds</div>
-						<div className='text-muted-foreground text-[11px]'>Copy-paste, framework-native — no lock-in. {flavors.length} ecosystems supported.</div>
+						<div className='text-muted-foreground text-2xs'>Copy-paste, framework-native — no lock-in. {flavors.length} ecosystems supported.</div>
 					</div>
 					<Link
 						href='/docs/installation'
@@ -73,13 +73,13 @@ export function GlobalFooter() {
 						<ExhumaLogo size={20} className='text-foreground -mr-0.5 shrink-0' />
 						<div className='flex items-start gap-0.5'>
 							<span className='font-display text-foreground text-base leading-none font-extrabold tracking-tight'>Exhuma</span>
-							<sup className='text-muted-foreground/80 text-[9px] leading-none font-bold tracking-wider uppercase'>Beta</sup>
+							<sup className='text-muted-foreground/80 text-4xs leading-none font-bold tracking-wider uppercase'>Beta</sup>
 						</div>
 					</div>
-					<p className='text-muted-foreground text-[11px] leading-relaxed'>
+					<p className='text-muted-foreground text-2xs leading-relaxed'>
 						Universal tactile interaction engines and layout architecture adapted natively across 13 frontend ecosystems. Free, open-source under MIT.
 					</p>
-					<div className='flex items-center gap-1.5 pt-1 font-mono text-[10px] text-emerald-600 dark:text-emerald-400'>
+					<div className='text-3xs flex items-center gap-1.5 pt-1 font-mono text-emerald-600 dark:text-emerald-400'>
 						<ShieldCheck className='h-3.5 w-3.5 shrink-0' />
 						<span>Zero Runtime Wrappers · 100% Offline CLI</span>
 					</div>
@@ -88,8 +88,8 @@ export function GlobalFooter() {
 					{LINK_GROUPS.map((group) => (
 						<div key={group.title} className='flex grow flex-col md:items-center'>
 							<div className='space-y-2.5'>
-								<div className='text-muted-foreground font-mono text-[10px] font-bold tracking-wider uppercase'>{group.title}</div>
-								<ul className='text-muted-foreground space-y-2 text-[11px]'>
+								<div className='text-muted-foreground text-3xs font-mono font-bold tracking-wider uppercase'>{group.title}</div>
+								<ul className='text-muted-foreground text-2xs space-y-2'>
 									{group.links.map((link) => (
 										<li key={link.label}>
 											<Link
@@ -111,7 +111,7 @@ export function GlobalFooter() {
 
 			{/* Bottom Bar: Operational Status & Shortcuts */}
 			<div className='border-border border-t'>
-				<div className='container-fluid text-muted-foreground flex flex-col items-center justify-between gap-3 py-4 text-[11px] md:flex-row'>
+				<div className='container-fluid text-muted-foreground text-2xs flex flex-col items-center justify-between gap-3 py-4 md:flex-row'>
 					<div className='flex flex-wrap items-center justify-center gap-3 text-center'>
 						<StatusDot />
 						<span>All 13 Framework Contracts Operational</span>

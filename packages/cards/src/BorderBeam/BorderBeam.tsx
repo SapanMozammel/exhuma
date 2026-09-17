@@ -15,7 +15,7 @@ export const BorderBeam: React.FC<BorderBeamProps> = ({ size = 250, duration = 1
 	return (
 		<div
 			aria-hidden='true'
-			className={`exhuma-border-beam pointer-events-none absolute inset-0 rounded-[inherit] border border-transparent [mask-composite:intersect] [mask-clip:padding-box,border-box] [mask:linear-gradient(transparent,transparent),linear-gradient(#000,#000)] ${className}`}
+			className={`exhuma-border-beam pointer-events-none absolute inset-0 rounded-[inherit] border border-transparent mask-intersect [mask-clip:padding-box,border-box] [mask:linear-gradient(transparent,transparent),linear-gradient(#000,#000)] ${className}`}
 			style={
 				{
 					'--border-beam-size': `${size}px`,

@@ -45,31 +45,31 @@ export default function ThemingPage() {
 					<div className='grid grid-cols-1 gap-4 pt-2 sm:grid-cols-3'>
 						<div className='border-border bg-card space-y-2 rounded-xl border p-4'>
 							<div className='text-foreground flex items-center gap-2 text-xs font-bold'>
-								<Sun className='h-4 w-4 text-amber-500' />
+								<Sun className='h-4 w-4 shrink-0 text-amber-500' />
 								<span>Light Theme</span>
 							</div>
-							<p className='text-muted-foreground text-[11px] leading-relaxed'>Optimized for crisp readability in high-ambient lighting with gentle contrast borders.</p>
+							<p className='text-muted-foreground text-2xs leading-relaxed'>Optimized for crisp readability in high-ambient lighting with gentle contrast borders.</p>
 						</div>
 
 						<div className='border-border bg-card space-y-2 rounded-xl border p-4'>
 							<div className='text-foreground flex items-center gap-2 text-xs font-bold'>
-								<Moon className='h-4 w-4 text-indigo-400' />
+								<Moon className='h-4 w-4 shrink-0 text-indigo-400' />
 								<span>Dark Theme</span>
 							</div>
-							<p className='text-muted-foreground text-[11px] leading-relaxed'>OLED-tuned true blacks and deep neutral slates matching Raycast and shadcn/ui.</p>
+							<p className='text-muted-foreground text-2xs leading-relaxed'>OLED-tuned true blacks and deep neutral slates matching Raycast and shadcn/ui.</p>
 						</div>
 
 						<div className='border-border bg-card space-y-2 rounded-xl border p-4'>
 							<div className='text-foreground flex items-center gap-2 text-xs font-bold'>
-								<Laptop className='text-primary h-4 w-4' />
+								<Laptop className='text-primary h-4 w-4 shrink-0' />
 								<span>System Sync</span>
 							</div>
-							<p className='text-muted-foreground text-[11px] leading-relaxed'>Automatic synchronization with operating system dark mode preferences with zero layout flash.</p>
+							<p className='text-muted-foreground text-2xs leading-relaxed'>Automatic synchronization with operating system dark mode preferences with zero layout flash.</p>
 						</div>
 					</div>
 
 					<Callout type='tip' title='Global Keyboard Shortcut'>
-						You can cycle themes instantly anywhere on this documentation site by pressing <span className='kbd text-[10px]'>⌘⌥T</span> (or Alt+T on Windows/Linux).
+						You can cycle themes instantly anywhere on this documentation site by pressing <span className='kbd text-3xs'>⌘⌥T</span> (or Alt+T on Windows/Linux).
 					</Callout>
 				</section>
 

@@ -94,8 +94,8 @@ export default function DocsOverviewPage() {
 							{ name: 'Flutter', ext: '.dart' },
 						].map((item) => (
 							<div key={item.name} className='border-border bg-card rounded-lg border p-2.5 font-mono text-xs shadow-xs'>
-								<div className='text-foreground font-sans text-[11px] font-semibold'>{item.name}</div>
-								<div className='text-primary mt-0.5 text-[10px]'>{item.ext}</div>
+								<div className='text-foreground text-2xs font-sans font-semibold'>{item.name}</div>
+								<div className='text-primary text-3xs mt-0.5'>{item.ext}</div>
 							</div>
 						))}
 					</div>

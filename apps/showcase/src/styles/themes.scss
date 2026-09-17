@@ -81,6 +81,12 @@
 	--radius-md: calc(var(--radius) - 2px);
 	--radius-sm: calc(var(--radius) - 4px);
 
+	/* Sub-xs caption/label sizes: Tailwind's default scale bottoms out at text-xs (12px),
+	   but this codebase uses 9/10/11px extensively for eyebrows, timestamps, and kbd hints. */
+	--text-2xs: 0.6875rem; /* 11px */
+	--text-3xs: 0.625rem; /* 10px */
+	--text-4xs: 0.5625rem; /* 9px */
+
 	/* Exhuma Brand Colors */
 	--color-exhuma-50: #f4f4f5;
 	--color-exhuma-100: #e4e4e7;

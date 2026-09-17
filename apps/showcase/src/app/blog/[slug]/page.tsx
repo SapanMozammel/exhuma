@@ -51,7 +51,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 					{/* Back Link & Breadcrumb */}
 					<div className='text-muted-foreground flex items-center gap-2 font-mono text-xs'>
 						<Link href='/blog' className='hover:text-foreground inline-flex items-center gap-1 transition-colors'>
-							<ArrowLeft className='h-3.5 w-3.5' />
+							<ArrowLeft className='h-3.5 w-3.5 shrink-0' />
 							<span>Back to Journal</span>
 						</Link>
 						<span>/</span>
@@ -62,7 +62,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 					<div className='border-border space-y-4 border-b pb-8'>
 						<div className='flex flex-wrap gap-2'>
 							{post.tags.map((tag) => (
-								<Badge key={tag} variant='secondary' className='text-[10px]'>
+								<Badge key={tag} variant='secondary' className='text-3xs'>
 									{tag}
 								</Badge>
 							))}
@@ -77,12 +77,12 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 								<div className='bg-primary/10 text-primary flex h-9 w-9 items-center justify-center rounded-full text-xs font-bold'>{post.author.avatar}</div>
 								<div>
 									<div className='text-foreground font-semibold'>{post.author.name}</div>
-									<div className='text-muted-foreground text-[11px]'>{post.author.role}</div>
+									<div className='text-muted-foreground text-2xs'>{post.author.role}</div>
 								</div>
 							</div>
 
-							<div className='text-muted-foreground flex items-center gap-2 font-mono text-[11px]'>
-								<Calendar className='h-3.5 w-3.5' />
+							<div className='text-muted-foreground text-2xs flex items-center gap-2 font-mono'>
+								<Calendar className='h-3.5 w-3.5 shrink-0' />
 								<span>{post.publishedAt}</span>
 								<span>·</span>
 								<Clock className='h-3.5 w-3.5' />
@@ -120,7 +120,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 							<Link href={`/blog/${prevPost.slug}`} className='border-border hover:bg-muted/50 flex flex-1 items-center gap-3 rounded-xl border p-4 transition-colors'>
 								<ArrowLeft className='text-muted-foreground h-4 w-4 shrink-0' />
 								<div className='text-left'>
-									<div className='text-muted-foreground font-mono text-[10px] uppercase'>Previous Article</div>
+									<div className='text-muted-foreground text-3xs font-mono uppercase'>Previous Article</div>
 									<div className='text-foreground line-clamp-1 text-xs font-bold'>{prevPost.title}</div>
 								</div>
 							</Link>
@@ -131,7 +131,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 						{nextPost && (
 							<Link href={`/blog/${nextPost.slug}`} className='border-border hover:bg-muted/50 flex flex-1 items-center justify-end gap-3 rounded-xl border p-4 transition-colors'>
 								<div className='text-right'>
-									<div className='text-muted-foreground font-mono text-[10px] uppercase'>Next Article</div>
+									<div className='text-muted-foreground text-3xs font-mono uppercase'>Next Article</div>
 									<div className='text-foreground line-clamp-1 text-xs font-bold'>{nextPost.title}</div>
 								</div>
 								<ArrowRight className='text-muted-foreground h-4 w-4 shrink-0' />

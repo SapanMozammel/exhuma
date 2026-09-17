@@ -56,7 +56,7 @@ export default function MethodologyPage() {
 					<div className='grid grid-cols-1 gap-4 pt-2 sm:grid-cols-3'>
 						<div className='border-border bg-card space-y-2 rounded-xl border p-5'>
 							<div className='text-foreground flex items-center gap-2 text-xs font-bold'>
-								<Activity className='text-primary h-4 w-4' />
+								<Activity className='text-primary h-4 w-4 shrink-0' />
 								<span>Frame Rate Floor</span>
 							</div>
 							<div className='text-foreground font-mono text-xl font-extrabold'>Ω(120Hz)</div>
@@ -65,7 +65,7 @@ export default function MethodologyPage() {
 
 						<div className='border-border bg-card space-y-2 rounded-xl border p-5'>
 							<div className='text-foreground flex items-center gap-2 text-xs font-bold'>
-								<Zap className='h-4 w-4 text-emerald-500' />
+								<Zap className='h-4 w-4 shrink-0 text-emerald-500' />
 								<span>Time Complexity</span>
 							</div>
 							<div className='text-foreground font-mono text-xl font-extrabold'>Ω(1) = O(1)</div>
@@ -74,7 +74,7 @@ export default function MethodologyPage() {
 
 						<div className='border-border bg-card space-y-2 rounded-xl border p-5'>
 							<div className='text-foreground flex items-center gap-2 text-xs font-bold'>
-								<ShieldCheck className='h-4 w-4 text-purple-500' />
+								<ShieldCheck className='h-4 w-4 shrink-0 text-purple-500' />
 								<span>Memory Invariant</span>
 							</div>
 							<div className='text-foreground font-mono text-xl font-extrabold'>Ω(1) Heap</div>

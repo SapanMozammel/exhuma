@@ -54,7 +54,7 @@ export function DocsSidebar() {
 
 			{/* Getting Started Section */}
 			<div className='space-y-1'>
-				<h4 className='text-muted-foreground px-3 font-mono text-[11px] font-bold tracking-wider uppercase'>Getting Started</h4>
+				<h4 className='text-muted-foreground text-2xs px-3 font-mono font-bold tracking-wider uppercase'>Getting Started</h4>
 				<div className='space-y-0.5 pt-1'>
 					{gettingStartedLinks.map((item) => {
 						const isActive = pathname === item.href;
@@ -69,7 +69,7 @@ export function DocsSidebar() {
 								)}
 							>
 								<div className='flex items-center gap-2'>
-									<Icon className='h-4 w-4' />
+									<Icon className='h-4 w-4 shrink-0' />
 									<span>{item.label}</span>
 								</div>
 								{isActive && <ChevronRight className='h-3.5 w-3.5' />}
@@ -81,7 +81,7 @@ export function DocsSidebar() {
 
 			{/* Architecture Section */}
 			<div className='space-y-1 pt-1'>
-				<h4 className='text-muted-foreground px-3 font-mono text-[11px] font-bold tracking-wider uppercase'>Architecture</h4>
+				<h4 className='text-muted-foreground text-2xs px-3 font-mono font-bold tracking-wider uppercase'>Architecture</h4>
 				<div className='space-y-0.5 pt-1'>
 					{architectureLinks.map((item) => {
 						const isActive = pathname === item.href;
@@ -96,7 +96,7 @@ export function DocsSidebar() {
 								)}
 							>
 								<div className='flex items-center gap-2'>
-									<Icon className='h-4 w-4' />
+									<Icon className='h-4 w-4 shrink-0' />
 									<span>{item.label}</span>
 								</div>
 								{isActive && <ChevronRight className='h-3.5 w-3.5' />}
@@ -111,11 +111,11 @@ export function DocsSidebar() {
 				<div className='flex items-center justify-between px-3'>
 					<Link
 						href='/docs/components'
-						className={cn('hover:text-foreground font-mono text-[11px] font-bold tracking-wider uppercase transition-colors', pathname === '/docs/components' ? 'text-primary' : 'text-muted-foreground')}
+						className={cn('hover:text-foreground text-2xs font-mono font-bold tracking-wider uppercase transition-colors', pathname === '/docs/components' ? 'text-primary' : 'text-muted-foreground')}
 					>
 						Components
 					</Link>
-					<span className='kbd text-[9px]'>13 contracts</span>
+					<span className='kbd text-4xs'>13 contracts</span>
 				</div>
 
 				<div className='space-y-0.5'>
@@ -127,7 +127,7 @@ export function DocsSidebar() {
 						)}
 					>
 						<span>All Components</span>
-						<Badge variant='outline' className='px-1 py-0 text-[9px]'>
+						<Badge variant='outline' className='text-4xs px-1 py-0'>
 							{ALL_COMPONENTS.length}
 						</Badge>
 					</Link>
@@ -145,9 +145,9 @@ export function DocsSidebar() {
 							>
 								<div>
 									<div>{comp.name}</div>
-									<div className='text-muted-foreground font-mono text-[10px] capitalize'>{comp.category}</div>
+									<div className='text-muted-foreground text-3xs font-mono capitalize'>{comp.category}</div>
 								</div>
-								<Badge variant='outline' className='px-1 py-0 text-[9px]'>
+								<Badge variant='outline' className='text-4xs px-1 py-0'>
 									13
 								</Badge>
 							</Link>

@@ -128,7 +128,7 @@ export const ScrollTimeline: React.FC<ScrollTimelineProps> & {
 		<div ref={containerRef} className={`exhuma-timeline-root relative w-full ${className}`} style={style}>
 			{/* Mobile Rail (< md): straight vertical guide on left */}
 			<div className='pointer-events-none absolute top-0 bottom-0 left-4 z-0 w-0.5 md:hidden'>
-				<div className='bg-border h-full w-full' />
+				<div className='bg-border size-full' />
 				<div
 					ref={mobileActiveLineRef}
 					className='bg-primary absolute top-0 left-0 w-full origin-top'
@@ -142,7 +142,7 @@ export const ScrollTimeline: React.FC<ScrollTimelineProps> & {
 			</div>
 
 			{/* Desktop S-Curve SVG Rail (>= md): centered serpentine line */}
-			<div className='pointer-events-none absolute top-0 bottom-0 left-1/2 z-0 hidden -translate-x-1/2 overflow-visible md:block' style={{ width: 400 }}>
+			<div className='pointer-events-none absolute top-0 bottom-0 left-1/2 z-0 hidden -translate-x-1/2 overflow-visible md:block' style={{ width: '25rem' }}>
 				{nodeHeights.length > 0 && totalHeight > 0 && (
 					<svg viewBox={`-200 0 400 ${totalHeight}`} width='400' height={totalHeight} className='absolute top-0 left-0 w-full' fill='none' preserveAspectRatio='none'>
 						{/* Inactive background track */}
@@ -172,7 +172,7 @@ export const ScrollTimeline: React.FC<ScrollTimelineProps> & {
 									</div>
 
 									{/* Node beacon point */}
-									<div className='border-primary bg-background absolute left-[-16px] flex h-8 w-8 items-center justify-center rounded-full border-2 shadow-md md:left-1/2 md:-translate-x-1/2'>
+									<div className='border-primary bg-background absolute -left-4 flex h-8 w-8 items-center justify-center rounded-full border-2 shadow-md md:left-1/2 md:-translate-x-1/2'>
 										<div className='bg-primary h-2.5 w-2.5 rounded-full' />
 									</div>
 								</div>
@@ -200,10 +200,7 @@ const TimelineItem: React.FC<React.HTMLAttributes<HTMLDivElement> & { align?: 'l
 );
 
 const TimelinePoint: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ children, className = '', ...props }) => (
-	<div
-		className={`exhuma-timeline-point border-primary bg-background absolute left-[-16px] flex h-8 w-8 items-center justify-center rounded-full border-2 shadow-md md:left-1/2 md:-translate-x-1/2 ${className}`}
-		{...props}
-	>
+	<div className={`exhuma-timeline-point border-primary bg-background absolute -left-4 flex h-8 w-8 items-center justify-center rounded-full border-2 shadow-md md:left-1/2 md:-translate-x-1/2 ${className}`} {...props}>
 		{children || <div className='bg-primary h-2.5 w-2.5 rounded-full' />}
 	</div>
 );

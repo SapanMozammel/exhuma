@@ -20,7 +20,7 @@ export default function BlogIndexPage() {
 			{/* Page Header */}
 			<div className='max-w-3xl space-y-4'>
 				<div className='border-border bg-muted/60 text-foreground inline-flex items-center gap-2 rounded-full border px-3.5 py-1 text-xs font-semibold backdrop-blur-md'>
-					<Sparkles className='text-primary h-3.5 w-3.5' />
+					<Sparkles className='text-primary h-3.5 w-3.5 shrink-0' />
 					<span>Engineering & Architecture</span>
 				</div>
 				<h1 className='text-heading-xlarge text-foreground tracking-tight'>Exhuma Journal</h1>
@@ -38,16 +38,16 @@ export default function BlogIndexPage() {
 					<div className='bg-primary/5 group-hover:bg-primary/10 pointer-events-none absolute top-0 right-0 h-64 w-64 rounded-full blur-3xl transition-colors' />
 					<div className='max-w-3xl space-y-4'>
 						<div className='flex flex-wrap items-center gap-2'>
-							<Badge variant='default' className='text-[10px]'>
+							<Badge variant='default' className='text-3xs'>
 								Featured
 							</Badge>
 							{featuredPost.tags.map((tag) => (
-								<Badge key={tag} variant='outline' className='text-[10px]'>
+								<Badge key={tag} variant='outline' className='text-3xs'>
 									{tag}
 								</Badge>
 							))}
 							<div className='text-muted-foreground ml-auto flex items-center gap-1.5 font-mono text-xs'>
-								<Calendar className='h-3.5 w-3.5' />
+								<Calendar className='h-3.5 w-3.5 shrink-0' />
 								<span>{featuredPost.publishedAt}</span>
 								<span>·</span>
 								<Clock className='h-3.5 w-3.5' />
@@ -64,7 +64,7 @@ export default function BlogIndexPage() {
 								<div className='bg-primary/10 text-primary flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold'>{featuredPost.author.avatar}</div>
 								<div>
 									<div className='text-foreground font-semibold'>{featuredPost.author.name}</div>
-									<div className='text-muted-foreground text-[11px]'>{featuredPost.author.role}</div>
+									<div className='text-muted-foreground text-2xs'>{featuredPost.author.role}</div>
 								</div>
 							</div>
 
@@ -92,13 +92,13 @@ export default function BlogIndexPage() {
 								<div className='flex items-center justify-between gap-2'>
 									<div className='flex flex-wrap gap-1.5'>
 										{post.tags.map((tag) => (
-											<Badge key={tag} variant='outline' className='text-[10px]'>
+											<Badge key={tag} variant='outline' className='text-3xs'>
 												{tag}
 											</Badge>
 										))}
 									</div>
-									<div className='text-muted-foreground flex items-center gap-1 font-mono text-[11px]'>
-										<Clock className='h-3 w-3' />
+									<div className='text-muted-foreground text-2xs flex items-center gap-1 font-mono'>
+										<Clock className='h-3 w-3 shrink-0' />
 										<span>{post.readTime}</span>
 									</div>
 								</div>
@@ -110,10 +110,10 @@ export default function BlogIndexPage() {
 
 							<div className='border-border mt-6 flex items-center justify-between border-t pt-6 text-xs'>
 								<div className='flex items-center gap-2'>
-									<div className='bg-primary/10 text-primary flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-bold'>{post.author.avatar}</div>
-									<span className='text-muted-foreground text-[11px] font-medium'>{post.author.name}</span>
+									<div className='bg-primary/10 text-primary text-3xs flex h-6 w-6 items-center justify-center rounded-full font-bold'>{post.author.avatar}</div>
+									<span className='text-muted-foreground text-2xs font-medium'>{post.author.name}</span>
 								</div>
-								<span className='text-muted-foreground font-mono text-[11px]'>{post.publishedAt}</span>
+								<span className='text-muted-foreground text-2xs font-mono'>{post.publishedAt}</span>
 							</div>
 						</Link>
 					))}

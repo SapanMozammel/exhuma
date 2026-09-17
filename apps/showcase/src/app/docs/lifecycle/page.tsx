@@ -46,7 +46,7 @@ export default function LifecycleSafetyPage() {
 					<div className='grid grid-cols-1 gap-4 pt-2 sm:grid-cols-2'>
 						<div className='border-border bg-card space-y-2 rounded-xl border p-5'>
 							<div className='text-foreground flex items-center gap-2 text-xs font-bold'>
-								<ShieldCheck className='h-4 w-4 text-emerald-500' />
+								<ShieldCheck className='h-4 w-4 shrink-0 text-emerald-500' />
 								<span>Detached DOM Prevention</span>
 							</div>
 							<p className='text-muted-foreground text-xs leading-relaxed'>
@@ -56,11 +56,11 @@ export default function LifecycleSafetyPage() {
 
 						<div className='border-border bg-card space-y-2 rounded-xl border p-5'>
 							<div className='text-foreground flex items-center gap-2 text-xs font-bold'>
-								<Activity className='text-primary h-4 w-4' />
+								<Activity className='text-primary h-4 w-4 shrink-0' />
 								<span>Animation Frame Cancellation</span>
 							</div>
 							<p className='text-muted-foreground text-xs leading-relaxed'>
-								Active requestAnimationFrame loops are cleanly canceled via <code className='text-foreground font-mono text-[11px]'>cancelAnimationFrame</code> before component destruction.
+								Active requestAnimationFrame loops are cleanly canceled via <code className='text-foreground text-2xs font-mono'>cancelAnimationFrame</code> before component destruction.
 							</p>
 						</div>
 					</div>
@@ -125,14 +125,14 @@ return () => observer.disconnect();`}
 
 					<div className='border-border bg-card overflow-x-auto rounded-2xl border shadow-xs'>
 						<table className='w-full text-left text-xs'>
-							<thead className='bg-muted/50 text-muted-foreground border-border border-b font-mono text-[11px] tracking-wider uppercase'>
+							<thead className='bg-muted/50 text-muted-foreground border-border text-2xs border-b font-mono tracking-wider uppercase'>
 								<tr>
 									<th className='px-4 py-3'>Framework</th>
 									<th className='px-4 py-3'>Lifecycle Cleanup Hook</th>
 									<th className='px-4 py-3'>Observer Disposal</th>
 								</tr>
 							</thead>
-							<tbody className='divide-border divide-y font-mono text-[11px]'>
+							<tbody className='divide-border text-2xs divide-y font-mono'>
 								{[
 									{ fw: 'React 18 / 19', hook: 'useEffect() return () => {}', obs: 'disconnect()' },
 									{ fw: 'Next.js 15', hook: 'useEffect() return () => {}', obs: 'disconnect()' },

@@ -160,7 +160,7 @@ export const DockItem: React.FC<{
 		>
 			{/* Hover tooltip label */}
 			{title && hovered && (
-				<div className='border-border bg-card/95 text-foreground pointer-events-none absolute -top-9 z-20 rounded-md border px-2.5 py-1 text-[10px] font-semibold whitespace-nowrap shadow-lg backdrop-blur-md'>
+				<div className='border-border bg-card/95 text-foreground text-3xs pointer-events-none absolute -top-9 z-20 rounded-md border px-2.5 py-1 font-semibold whitespace-nowrap shadow-lg backdrop-blur-md'>
 					{title}
 				</div>
 			)}

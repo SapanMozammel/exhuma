@@ -55,10 +55,10 @@ export default function ComponentsHubPage() {
 				<section id='quick-add' className='border-border bg-card rounded-2xl border p-4 shadow-xs sm:p-6'>
 					<div className='mb-3 flex items-center justify-between'>
 						<div className='text-foreground flex items-center gap-2 text-xs font-bold'>
-							<Cpu className='text-primary h-4 w-4' />
+							<Cpu className='text-primary h-4 w-4 shrink-0' />
 							<span>Install Any Component via CLI</span>
 						</div>
-						<span className='text-muted-foreground font-mono text-[11px]'>13 Targets Supported</span>
+						<span className='text-muted-foreground text-2xs font-mono'>13 Targets Supported</span>
 					</div>
 					<PackageManagerTabs command='exhuma add tilt-card' />
 				</section>

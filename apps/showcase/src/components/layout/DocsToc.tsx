@@ -43,8 +43,8 @@ export function DocsToc({ items, className }: DocsTocProps) {
 	return (
 		<div className={cn('hidden w-56 shrink-0 py-6 text-xs xl:block', className)}>
 			<div className='sticky top-20 space-y-3'>
-				<div className='text-muted-foreground flex items-center gap-1.5 font-mono text-[11px] font-bold tracking-wider uppercase'>
-					<AlignLeft className='h-3.5 w-3.5' />
+				<div className='text-muted-foreground text-2xs flex items-center gap-1.5 font-mono font-bold tracking-wider uppercase'>
+					<AlignLeft className='h-3.5 w-3.5 shrink-0' />
 					<span>On This Page</span>
 				</div>
 
@@ -55,7 +55,7 @@ export function DocsToc({ items, className }: DocsTocProps) {
 							<a
 								key={item.id}
 								href={`#${item.id}`}
-								className={cn('hover:text-foreground block py-1 transition-colors', isActive ? 'text-primary font-semibold' : 'text-muted-foreground', item.level === 3 ? 'pl-2 text-[11px]' : '')}
+								className={cn('hover:text-foreground block py-1 transition-colors', isActive ? 'text-primary font-semibold' : 'text-muted-foreground', item.level === 3 ? 'text-2xs pl-2' : '')}
 							>
 								{item.title}
 							</a>

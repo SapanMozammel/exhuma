@@ -72,7 +72,7 @@ export function GlobalHeader() {
 		<div className='sticky top-0 z-40 w-full'>
 			{/* Top Announcement Banner (shadcn / Vercel style) */}
 			{!bannerDismissed && (
-				<div className='border-border bg-muted relative border-b py-1.5 pr-10 pl-4 text-center text-[11px] font-medium transition-colors'>
+				<div className='border-border bg-muted text-2xs relative border-b py-1.5 pr-10 pl-4 text-center font-medium transition-colors'>
 					<Link href='https://github.com/SapanMozammel/exhuma' target='_blank' rel='noreferrer' className='text-muted-foreground hover:text-foreground group inline transition-colors'>
 						<Star className='-mt-0.5 mr-1.5 inline-block h-3 w-3 fill-emerald-500/20 align-middle text-emerald-500' />
 						<span>Free &amp; open source, built for every frontend stack.</span> <span className='text-foreground font-semibold'>Star Exhuma on GitHub</span>{' '}
@@ -98,7 +98,7 @@ export function GlobalHeader() {
 							<ExhumaLogo size={24} className='text-foreground -mr-0.5 shrink-0' />
 							<div className='flex items-start gap-0.5'>
 								<span className='font-display text-foreground group-hover:text-foreground/80 text-base leading-none font-extrabold tracking-tight transition-colors'>Exhuma</span>
-								<sup className='text-muted-foreground/80 hidden text-[9px] leading-none font-bold tracking-wider uppercase sm:inline-block'>Beta</sup>
+								<sup className='text-muted-foreground/80 text-4xs hidden leading-none font-bold tracking-wider uppercase sm:inline-block'>Beta</sup>
 							</div>
 						</Link>
 

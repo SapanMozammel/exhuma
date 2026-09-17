@@ -123,7 +123,7 @@ export default function ShowcasePage() {
 			<div className='flex flex-col justify-between gap-6 sm:flex-row sm:items-end'>
 				<div className='max-w-2xl space-y-4'>
 					<div className='border-border bg-muted/60 text-foreground inline-flex items-center gap-2 rounded-full border px-3.5 py-1 text-xs font-semibold backdrop-blur-md'>
-						<Sparkles className='text-primary h-3.5 w-3.5' />
+						<Sparkles className='text-primary h-3.5 w-3.5 shrink-0' />
 						<span>Ecosystem In Action</span>
 					</div>
 					<h1 className='text-heading-xlarge text-foreground tracking-tight'>Showcase</h1>
@@ -172,18 +172,18 @@ export default function ShowcasePage() {
 						className='group border-border bg-card hover:border-primary/50 relative flex flex-col justify-between overflow-hidden rounded-3xl border p-6 shadow-sm transition-all hover:shadow-xl'
 					>
 						{/* Gradient Glow */}
-						<div className={cn('pointer-events-none absolute top-0 right-0 h-48 w-48 rounded-full bg-gradient-to-br opacity-40 blur-3xl transition-opacity group-hover:opacity-70', project.gradient)} />
+						<div className={cn('pointer-events-none absolute top-0 right-0 h-48 w-48 rounded-full bg-linear-to-br opacity-40 blur-3xl transition-opacity group-hover:opacity-70', project.gradient)} />
 
 						<div className='relative space-y-4'>
 							<div className='flex items-center justify-between gap-2'>
-								<Badge variant='outline' className='font-mono text-[10px]'>
+								<Badge variant='outline' className='text-3xs font-mono'>
 									{project.framework}
 								</Badge>
-								<span className='text-muted-foreground font-mono text-[11px]'>{project.author}</span>
+								<span className='text-muted-foreground text-2xs font-mono'>{project.author}</span>
 							</div>
 
 							<div>
-								<div className='text-primary font-mono text-[11px] font-bold tracking-wider uppercase'>{project.tagline}</div>
+								<div className='text-primary text-2xs font-mono font-bold tracking-wider uppercase'>{project.tagline}</div>
 								<h3 className='text-foreground group-hover:text-primary mt-1 text-xl font-extrabold tracking-tight transition-colors'>{project.title}</h3>
 							</div>
 
@@ -195,9 +195,9 @@ export default function ShowcasePage() {
 									<Link
 										key={comp}
 										href={`/docs/components/${comp}`}
-										className='bg-muted/70 text-foreground hover:bg-accent inline-flex items-center gap-1 rounded-md px-2 py-0.5 font-mono text-[10px] transition-colors'
+										className='bg-muted/70 text-foreground hover:bg-accent text-3xs inline-flex items-center gap-1 rounded-md px-2 py-0.5 font-mono transition-colors'
 									>
-										<Layers className='text-primary h-3 w-3' />
+										<Layers className='text-primary h-3 w-3 shrink-0' />
 										<span>{comp}</span>
 									</Link>
 								))}
@@ -212,7 +212,7 @@ export default function ShowcasePage() {
 							</Link>
 
 							<Link href={`/docs/components/${project.demoSlug}`}>
-								<Button variant='outline' size='sm' className='h-7 text-[11px]'>
+								<Button variant='outline' size='sm' className='text-2xs h-7'>
 									View Docs
 								</Button>
 							</Link>

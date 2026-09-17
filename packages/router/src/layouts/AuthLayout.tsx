@@ -7,7 +7,7 @@ export const AuthLayout: React.FC<AuthLayoutProps> = ({ children, title, subtitl
 			<div className={`exhuma-auth-layout grid min-h-screen grid-cols-1 bg-zinc-950 text-zinc-100 lg:grid-cols-2 ${className}`} style={style}>
 				<div className='flex flex-col justify-between border-r border-zinc-900 p-8 sm:p-12 lg:p-16'>
 					{brand && <div>{brand}</div>}
-					<div className='mx-auto my-auto w-full max-w-md'>
+					<div className='m-auto w-full max-w-md'>
 						{title && <h1 className='text-3xl font-bold tracking-tight text-white'>{title}</h1>}
 						{subtitle && <p className='mt-2 text-sm text-zinc-400'>{subtitle}</p>}
 						<div className='mt-8'>{children}</div>

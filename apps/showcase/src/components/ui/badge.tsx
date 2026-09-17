@@ -9,7 +9,7 @@ const badgeVariants = cva('inline-flex items-center rounded-md border px-2.5 py-
 			secondary: 'border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80',
 			destructive: 'border-transparent bg-destructive text-destructive-foreground shadow hover:bg-destructive/80',
 			outline: 'text-foreground border-border',
-			ecosystem: 'border-border bg-muted/60 text-muted-foreground hover:bg-muted font-mono text-[11px]',
+			ecosystem: 'border-border bg-muted/60 text-muted-foreground hover:bg-muted font-mono text-2xs',
 			success: 'border-emerald-500/20 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400',
 		},
 	},

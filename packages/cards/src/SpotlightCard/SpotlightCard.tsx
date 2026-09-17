@@ -118,7 +118,7 @@ export const SpotlightCard: React.FC<SpotlightCardProps> = ({ children, radius =
 			{/* Specular Border Glow Mask */}
 			<div
 				aria-hidden='true'
-				className='pointer-events-none absolute -inset-px rounded-[inherit] opacity-[var(--exhuma-spotlight-opacity,0)] transition-opacity duration-300'
+				className='pointer-events-none absolute -inset-px rounded-[inherit] opacity-(--exhuma-spotlight-opacity,0) transition-opacity duration-300'
 				style={{
 					background: `radial-gradient(var(--exhuma-spotlight-radius) circle at var(--exhuma-spotlight-x, -9999px) var(--exhuma-spotlight-y, -9999px), var(--exhuma-spotlight-border-color), transparent 80%)`,
 					WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
@@ -131,7 +131,7 @@ export const SpotlightCard: React.FC<SpotlightCardProps> = ({ children, radius =
 			{/* Background Radial Sheen */}
 			<div
 				aria-hidden='true'
-				className='pointer-events-none absolute inset-0 opacity-[var(--exhuma-spotlight-opacity,0)] transition-opacity duration-300'
+				className='pointer-events-none absolute inset-0 opacity-(--exhuma-spotlight-opacity,0) transition-opacity duration-300'
 				style={{
 					background: `radial-gradient(var(--exhuma-spotlight-radius) circle at var(--exhuma-spotlight-x, -9999px) var(--exhuma-spotlight-y, -9999px), var(--exhuma-spotlight-color), transparent 80%)`,
 				}}

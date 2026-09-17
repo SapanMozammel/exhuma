@@ -325,7 +325,7 @@ export function CommandPalette() {
 						type='button'
 						onClick={() => setPm(m)}
 						className={cn(
-							'cursor-pointer rounded px-1.5 py-0.5 font-mono text-[10px] font-medium transition-all',
+							'text-3xs cursor-pointer rounded-sm px-1.5 py-0.5 font-mono font-medium transition-all',
 							pm === m ? 'bg-background text-foreground font-semibold shadow-xs' : 'text-muted-foreground hover:text-foreground'
 						)}
 					>
@@ -333,7 +333,7 @@ export function CommandPalette() {
 					</button>
 				))}
 			</div>
-			<div className='border-border bg-card text-foreground flex items-center justify-between rounded-md border px-2.5 py-1.5 font-mono text-[11px]'>
+			<div className='border-border bg-card text-foreground text-2xs flex items-center justify-between rounded-md border px-2.5 py-1.5 font-mono'>
 				<span className='mr-2 truncate'>{withPackageManager(cliCommand, pm)}</span>
 				<button
 					type='button'
@@ -374,7 +374,7 @@ export function CommandPalette() {
 							Clear
 						</button>
 					)}
-					<span className='kbd text-[10px]'>ESC</span>
+					<span className='kbd text-3xs'>ESC</span>
 				</div>
 
 				{/* Category Filter Pills */}
@@ -404,12 +404,12 @@ export function CommandPalette() {
 				</div>
 
 				{/* Dual-Pane Layout */}
-				<div className='grid h-[380px] grid-cols-1 md:grid-cols-5'>
+				<div className='grid h-[23.75rem] grid-cols-1 md:grid-cols-5'>
 					{/* Left Results List (3 cols) */}
 					<div id='command-palette-listbox' role='listbox' aria-label='Command palette results' className='border-border space-y-0.5 overflow-y-auto border-r p-2 md:col-span-3'>
 						{filteredItems.length === 0 ? (
 							<div className='text-muted-foreground flex h-full flex-col items-center justify-center p-6 text-center'>
-								<Command className='mb-2 h-8 w-8 stroke-1 opacity-50' />
+								<Command className='mb-2 h-8 w-8 shrink-0 stroke-1 opacity-50' />
 								<p className='text-sm'>No results found for &ldquo;{query}&rdquo;</p>
 								<p className='mt-1 text-xs'>Try another keyword or category.</p>
 							</div>
@@ -452,7 +452,7 @@ export function CommandPalette() {
 											</div>
 											<div className='min-w-0'>
 												<div className='text-foreground truncate text-xs font-semibold'>{item.title}</div>
-												<div className='text-muted-foreground truncate text-[11px]'>{item.subtitle}</div>
+												<div className='text-muted-foreground text-2xs truncate'>{item.subtitle}</div>
 											</div>
 										</div>
 										<ArrowRight className={cn('h-3.5 w-3.5 shrink-0 transition-opacity', isSelected ? 'text-primary opacity-100' : 'opacity-0')} />
@@ -467,7 +467,7 @@ export function CommandPalette() {
 						{selectedItem ? (
 							<div className='space-y-4'>
 								<div>
-									<span className='text-[10px] font-bold tracking-wider text-emerald-600 uppercase dark:text-emerald-400'>{selectedItem.category}</span>
+									<span className='text-3xs font-bold tracking-wider text-emerald-600 uppercase dark:text-emerald-400'>{selectedItem.category}</span>
 									<h4 className='text-foreground mt-1 text-base font-bold tracking-tight'>{selectedItem.title}</h4>
 									<p className='text-muted-foreground mt-1 text-xs leading-relaxed'>{selectedItem.description || selectedItem.subtitle}</p>
 								</div>
@@ -475,7 +475,7 @@ export function CommandPalette() {
 								{selectedItem.badges && (
 									<div className='flex flex-wrap gap-1'>
 										{selectedItem.badges.map((badge) => (
-											<span key={badge} className='border-border bg-card text-muted-foreground rounded border px-2 py-0.5 font-mono text-[10px]'>
+											<span key={badge} className='border-border bg-card text-muted-foreground text-3xs rounded-sm border px-2 py-0.5 font-mono'>
 												{badge}
 											</span>
 										))}
@@ -484,7 +484,7 @@ export function CommandPalette() {
 
 								{selectedItem.cliCommand && (
 									<div className='border-border border-t pt-2'>
-										<div className='text-muted-foreground mb-1.5 flex items-center justify-between text-[11px]'>
+										<div className='text-muted-foreground text-2xs mb-1.5 flex items-center justify-between'>
 											<span>Quick Add</span>
 											<span className='text-emerald-600 dark:text-emerald-400'>⌘C to copy</span>
 										</div>
@@ -497,7 +497,7 @@ export function CommandPalette() {
 						)}
 
 						{/* Footer Helper */}
-						<div className='border-border text-muted-foreground flex items-center justify-between border-t pt-3 text-[11px]'>
+						<div className='border-border text-muted-foreground text-2xs flex items-center justify-between border-t pt-3'>
 							<div className='flex items-center gap-2'>
 								<span className='kbd h-6 min-w-6 text-sm'>↑</span>
 								<span className='kbd h-6 min-w-6 text-sm'>↓</span>
@@ -513,7 +513,7 @@ export function CommandPalette() {
 				{/* Mobile Quick Add (the right preview pane is desktop-only) */}
 				{selectedItem?.cliCommand && (
 					<div className='border-border bg-muted/20 border-t p-3 md:hidden'>
-						<div className='text-muted-foreground mb-1.5 flex items-center justify-between text-[11px]'>
+						<div className='text-muted-foreground text-2xs mb-1.5 flex items-center justify-between'>
 							<span className='mr-2 truncate'>Quick Add · {selectedItem.title}</span>
 							<span className='shrink-0 text-emerald-600 dark:text-emerald-400'>⌘C to copy</span>
 						</div>

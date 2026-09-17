@@ -6,6 +6,8 @@
 	--animate-modal-out: modal-out 0.15s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 	--animate-slide-up: slide-up 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 	--animate-pulse-glow: pulse-glow 3s ease-in-out infinite;
+	--animate-gradient-x: gradient-x 8s ease infinite;
+	--animate-float: float 5s ease-in-out infinite;
 
 	// Keyframes
 	@keyframes overlay-in {
@@ -62,10 +64,32 @@
 	@keyframes pulse-glow {
 		0%,
 		100% {
-			opacity: 0.4;
+			opacity: 0.45;
+			transform: scale(0.98);
 		}
 		50% {
-			opacity: 0.8;
+			opacity: 0.85;
+			transform: scale(1.02);
+		}
+	}
+
+	@keyframes gradient-x {
+		0%, 100% {
+			background-size: 200% 200%;
+			background-position: left center;
+		}
+		50% {
+			background-size: 200% 200%;
+			background-position: right center;
+		}
+	}
+
+	@keyframes float {
+		0%, 100% {
+			transform: translateY(0px);
+		}
+		50% {
+			transform: translateY(-6px);
 		}
 	}
 }
