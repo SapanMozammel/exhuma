@@ -3,42 +3,27 @@
 import * as React from 'react';
 import Link from 'next/link';
 import {
-  IconAdjustments as Sliders,
-  IconTerminal2 as Terminal,
-  IconCheck as Check,
-  IconCopy as Copy,
-  IconEye as Eye,
-  IconCode as Code2,
-  IconCpu as Cpu,
-  IconSparkles as Sparkles,
-  IconShieldCheck as ShieldCheck,
-  IconAccessible as Accessibility,
-  IconArrowRight as ArrowRight,
-  IconArrowLeft as ArrowLeft,
-  IconExternalLink as ExternalLink,
+	IconAdjustments as Sliders,
+	IconTerminal2 as Terminal,
+	IconCheck as Check,
+	IconCopy as Copy,
+	IconEye as Eye,
+	IconCode as Code2,
+	IconCpu as Cpu,
+	IconSparkles as Sparkles,
+	IconShieldCheck as ShieldCheck,
+	IconAccessible as Accessibility,
+	IconArrowRight as ArrowRight,
+	IconArrowLeft as ArrowLeft,
+	IconExternalLink as ExternalLink,
 } from '@tabler/icons-react';
-import {
-	COMPONENT_REGISTRY,
-	ALL_COMPONENTS,
-	EcosystemFlavor,
-	ECOSYSTEM_LABELS,
-	UniversalComponent,
-} from '@/registry';
+import { COMPONENT_REGISTRY, ALL_COMPONENTS, EcosystemFlavor, ECOSYSTEM_LABELS, UniversalComponent } from '@/registry';
 import { EcosystemPills } from './EcosystemPills';
 import { CodeBlock } from './CodeBlock';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
-import {
-	StackingCards,
-	HorizontalScroller,
-	TiltCard,
-	SpotlightCard,
-	BorderBeam,
-	CardSwipeStack,
-	ComparisonSlider,
-	ExpandableCard,
-} from '@exhuma/cards';
+import { StackingCards, HorizontalScroller, TiltCard, SpotlightCard, BorderBeam, CardSwipeStack, ComparisonSlider, ExpandableCard } from '@exhuma/cards';
 import {
 	CssMasonry,
 	AutoGrid,
@@ -54,15 +39,7 @@ import {
 	ParallaxLayer,
 	InteractiveGridPattern,
 } from '@exhuma/layouts';
-import {
-	MorphingTabs,
-	Accordion,
-	AnimatedSphere,
-	FloatingDock,
-	NumberTicker,
-	MagneticButton,
-	CursorTooltip,
-} from '@exhuma/core';
+import { MorphingTabs, Accordion, AnimatedSphere, FloatingDock, NumberTicker, MagneticButton, CursorTooltip } from '@exhuma/core';
 
 interface ComponentDocViewProps {
 	slug: string;
@@ -71,8 +48,7 @@ interface ComponentDocViewProps {
 export function ComponentDocView({ slug }: ComponentDocViewProps) {
 	const component = COMPONENT_REGISTRY[slug] || ALL_COMPONENTS[0];
 	const [activeTab, setActiveTab] = React.useState<'preview' | 'code'>('preview');
-	const [selectedFlavor, setSelectedFlavor] =
-		React.useState<EcosystemFlavor>('react');
+	const [selectedFlavor, setSelectedFlavor] = React.useState<EcosystemFlavor>('react');
 	const [copied, setCopied] = React.useState(false);
 	const [codeMode, setCodeMode] = React.useState<'clean' | 'ejected'>('clean');
 
@@ -108,9 +84,7 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 		const rotX = ((y - centerY) / centerY) * -tiltMax;
 		const rotY = ((x - centerX) / centerX) * tiltMax;
 
-		setTiltTransform(
-			`perspective(1000px) rotateX(${rotX.toFixed(2)}deg) rotateY(${rotY.toFixed(2)}deg) scale3d(1.04, 1.04, 1.04)`
-		);
+		setTiltTransform(`perspective(1000px) rotateX(${rotX.toFixed(2)}deg) rotateY(${rotY.toFixed(2)}deg) scale3d(1.04, 1.04, 1.04)`);
 		if (glare) {
 			setGlareCoord({
 				x: (x / rect.width) * 100,
@@ -121,9 +95,7 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 	};
 
 	const handleMouseLeaveTilt = () => {
-		setTiltTransform(
-			'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)'
-		);
+		setTiltTransform('perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)');
 		setGlareCoord({ x: 50, y: 50, opacity: 0 });
 	};
 
@@ -141,17 +113,7 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 		};
 		const files = component.generateCode(selectedFlavor, props, { eject: codeMode === 'ejected' });
 		return files[0]?.code || '';
-	}, [
-		component,
-		selectedFlavor,
-		codeMode,
-		tiltMax,
-		glare,
-		stackOffset,
-		scrollGap,
-		masonryCols,
-		gridMin,
-	]);
+	}, [component, selectedFlavor, codeMode, tiltMax, glare, stackOffset, scrollGap, masonryCols, gridMin]);
 
 	const cliCommand = `npx exhuma add ${component.slug} --flavor=${selectedFlavor}`;
 
@@ -164,37 +126,30 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 	// Determine prev / next components
 	const currentIndex = ALL_COMPONENTS.findIndex((c) => c.slug === component.slug);
 	const prevComp = currentIndex > 0 ? ALL_COMPONENTS[currentIndex - 1] : null;
-	const nextComp =
-		currentIndex < ALL_COMPONENTS.length - 1 ? ALL_COMPONENTS[currentIndex + 1] : null;
+	const nextComp = currentIndex < ALL_COMPONENTS.length - 1 ? ALL_COMPONENTS[currentIndex + 1] : null;
 
 	return (
-		<div className="space-y-10">
+		<div className='space-y-10'>
 			{/* Component Header */}
-			<div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-border pb-6">
+			<div className='border-border flex flex-col gap-4 border-b pb-6 sm:flex-row sm:items-center sm:justify-between'>
 				<div>
-					<div className="flex items-center gap-2 mb-2">
-						<Badge variant="outline" className="capitalize text-[10px]">
+					<div className='mb-2 flex items-center gap-2'>
+						<Badge variant='outline' className='text-[10px] capitalize'>
 							{component.category}
 						</Badge>
-						<Badge variant="secondary" className="text-[10px] font-mono">
+						<Badge variant='secondary' className='font-mono text-[10px]'>
 							v{component.version}
 						</Badge>
-						<span className="text-xs text-muted-foreground font-mono">
-							13 Ecosystems
-						</span>
+						<span className='text-muted-foreground font-mono text-xs'>13 Ecosystems</span>
 					</div>
-					<h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground">
-						{component.name}
-					</h1>
-					<p className="mt-2 text-sm sm:text-base text-muted-foreground max-w-2xl leading-relaxed">
-						{component.description}
-					</p>
+					<h1 className='text-foreground text-3xl font-extrabold tracking-tight sm:text-4xl'>{component.name}</h1>
+					<p className='text-muted-foreground mt-2 max-w-2xl text-sm leading-relaxed sm:text-base'>{component.description}</p>
 				</div>
 
-				<div className="flex items-center gap-2 self-start sm:self-auto">
+				<div className='flex items-center gap-2 self-start sm:self-auto'>
 					<Link href={`/studio?slug=${component.slug}`}>
-						<Button className="gap-2 shadow-sm">
-							<Sliders className="h-4 w-4" />
+						<Button className='gap-2 shadow-sm'>
+							<Sliders className='h-4 w-4' />
 							<span>Open in Studio</span>
 						</Button>
 					</Link>
@@ -202,28 +157,21 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 			</div>
 
 			{/* CLI Quick Install Command Bar */}
-			<div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 rounded-2xl border border-border bg-card p-3 sm:px-4 shadow-xs">
-				<div className="flex items-center gap-2 text-xs font-mono text-muted-foreground">
-					<Terminal className="h-4 w-4 text-primary" />
-					<span className="text-foreground font-semibold">CLI Command:</span>
-					<span className="select-all font-mono text-muted-foreground bg-muted/60 px-2 py-0.5 rounded-md">
-						{cliCommand}
-					</span>
+			<div className='border-border bg-card flex flex-col items-start justify-between gap-3 rounded-2xl border p-3 shadow-xs sm:flex-row sm:items-center sm:px-4'>
+				<div className='text-muted-foreground flex items-center gap-2 font-mono text-xs'>
+					<Terminal className='text-primary h-4 w-4' />
+					<span className='text-foreground font-semibold'>CLI Command:</span>
+					<span className='text-muted-foreground bg-muted/60 rounded-md px-2 py-0.5 font-mono select-all'>{cliCommand}</span>
 				</div>
-				<Button
-					variant="outline"
-					size="sm"
-					onClick={copyCli}
-					className="gap-1.5 h-8 text-xs shrink-0 self-end sm:self-auto"
-				>
+				<Button variant='outline' size='sm' onClick={copyCli} className='h-8 shrink-0 gap-1.5 self-end text-xs sm:self-auto'>
 					{copied ? (
 						<>
-							<Check className="h-3.5 w-3.5 text-emerald-500" />
-							<span className="text-emerald-500 font-semibold">Copied!</span>
+							<Check className='h-3.5 w-3.5 text-emerald-500' />
+							<span className='font-semibold text-emerald-500'>Copied!</span>
 						</>
 					) : (
 						<>
-							<Copy className="h-3.5 w-3.5" />
+							<Copy className='h-3.5 w-3.5' />
 							<span>Copy Command</span>
 						</>
 					)}
@@ -231,162 +179,107 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 			</div>
 
 			{/* Live Interactive Sandbox / Code Stage */}
-			<section id="interactive-stage" className="space-y-4">
-				<div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-					<h2 className="text-xl font-bold tracking-tight text-foreground">
-						Interactive Specification
-					</h2>
+			<section id='interactive-stage' className='space-y-4'>
+				<div className='flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center'>
+					<h2 className='text-foreground text-xl font-bold tracking-tight'>Interactive Specification</h2>
 
 					{/* [Preview | Code] Segment */}
-					<div className="flex items-center gap-1 bg-muted/60 p-1 rounded-lg border border-border/60">
+					<div className='bg-muted/60 border-border/60 flex items-center gap-1 rounded-lg border p-1'>
 						<button
-							type="button"
+							type='button'
 							onClick={() => setActiveTab('preview')}
 							className={cn(
-								'flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-medium transition-all cursor-pointer',
-								activeTab === 'preview'
-									? 'bg-background text-foreground shadow-xs font-bold'
-									: 'text-muted-foreground hover:text-foreground'
+								'flex cursor-pointer items-center gap-1.5 rounded-md px-3 py-1 text-xs font-medium transition-all',
+								activeTab === 'preview' ? 'bg-background text-foreground font-bold shadow-xs' : 'text-muted-foreground hover:text-foreground'
 							)}
 						>
-							<Eye className="h-3.5 w-3.5" />
+							<Eye className='h-3.5 w-3.5' />
 							<span>Live Preview</span>
 						</button>
 						<button
-							type="button"
+							type='button'
 							onClick={() => setActiveTab('code')}
 							className={cn(
-								'flex items-center gap-1.5 px-3 py-1 rounded-md text-xs font-medium transition-all cursor-pointer',
-								activeTab === 'code'
-									? 'bg-background text-foreground shadow-xs font-bold'
-									: 'text-muted-foreground hover:text-foreground'
+								'flex cursor-pointer items-center gap-1.5 rounded-md px-3 py-1 text-xs font-medium transition-all',
+								activeTab === 'code' ? 'bg-background text-foreground font-bold shadow-xs' : 'text-muted-foreground hover:text-foreground'
 							)}
 						>
-							<Code2 className="h-3.5 w-3.5" />
+							<Code2 className='h-3.5 w-3.5' />
 							<span>Native Code</span>
 						</button>
 					</div>
 				</div>
 
 				{/* 13-Ecosystem Switcher Bar */}
-				<div className="rounded-2xl border border-border bg-card overflow-hidden shadow-sm">
-					<div className="flex items-center justify-between border-b border-border bg-muted/30 px-4 py-2 text-xs">
-						<div className="flex items-center gap-2">
-							<Cpu className="h-3.5 w-3.5 text-primary" />
-							<span className="text-muted-foreground font-mono">Contract:</span>
-							<span className="font-bold text-foreground">
-								{ECOSYSTEM_LABELS[selectedFlavor]}
-							</span>
+				<div className='border-border bg-card overflow-hidden rounded-2xl border shadow-sm'>
+					<div className='border-border bg-muted/30 flex items-center justify-between border-b px-4 py-2 text-xs'>
+						<div className='flex items-center gap-2'>
+							<Cpu className='text-primary h-3.5 w-3.5' />
+							<span className='text-muted-foreground font-mono'>Contract:</span>
+							<span className='text-foreground font-bold'>{ECOSYSTEM_LABELS[selectedFlavor]}</span>
 						</div>
 					</div>
 
-					<div className="p-3 border-b border-border bg-background/50 overflow-x-auto">
-						<EcosystemPills
-							selectedFlavor={selectedFlavor}
-							onSelectFlavor={setSelectedFlavor}
-						/>
+					<div className='border-border bg-background/50 overflow-x-auto border-b p-3'>
+						<EcosystemPills selectedFlavor={selectedFlavor} onSelectFlavor={setSelectedFlavor} />
 					</div>
 
 					{/* Stage Body */}
-					<div className="p-6 sm:p-10 min-h-[420px] flex items-center justify-center bg-dot-grid relative">
+					<div className='bg-dot-grid relative flex min-h-[420px] items-center justify-center p-6 sm:p-10'>
 						{activeTab === 'preview' ? (
-							<div className="w-full flex flex-col items-center gap-8">
+							<div className='flex w-full flex-col items-center gap-8'>
 								{/* 1. Tilt Card */}
 								{component.slug === 'tilt-card' && (
-									<TiltCard
-										maxTilt={tiltMax}
-										glare={glare}
-										perspective={1000}
-										className="w-full max-w-md bg-card p-8 border border-border shadow-2xl cursor-pointer"
-									>
-										<div className="flex items-center justify-between mb-4">
-											<span className="kbd text-[10px] text-primary font-bold">
-												INTERACTIVE 3D
-											</span>
-											<span className="text-xs font-mono text-muted-foreground">
-												Max: {tiltMax}°
-											</span>
+									<TiltCard maxTilt={tiltMax} glare={glare} perspective={1000} className='bg-card border-border w-full max-w-md cursor-pointer border p-8 shadow-2xl'>
+										<div className='mb-4 flex items-center justify-between'>
+											<span className='kbd text-primary text-[10px] font-bold'>INTERACTIVE 3D</span>
+											<span className='text-muted-foreground font-mono text-xs'>Max: {tiltMax}°</span>
 										</div>
-										<h3 className="text-2xl font-black tracking-tight text-foreground">
-											Tactile 3D Tilt Card
-										</h3>
-										<p className="mt-2 text-xs text-muted-foreground leading-relaxed">
-											Move your cursor across this surface. Calculated with 60 FPS spring physics and zero layout re-renders.
-										</p>
-										<div className="mt-6 pt-4 border-t border-border flex items-center justify-between text-xs font-mono text-muted-foreground">
+										<h3 className='text-foreground text-2xl font-black tracking-tight'>Tactile 3D Tilt Card</h3>
+										<p className='text-muted-foreground mt-2 text-xs leading-relaxed'>Move your cursor across this surface. Calculated with 60 FPS spring physics and zero layout re-renders.</p>
+										<div className='border-border text-muted-foreground mt-6 flex items-center justify-between border-t pt-4 font-mono text-xs'>
 											<span>Perspective: 1000px</span>
-											<span className="text-emerald-500 font-bold">Hardware Accelerated</span>
+											<span className='font-bold text-emerald-500'>Hardware Accelerated</span>
 										</div>
 									</TiltCard>
 								)}
 
 								{/* 2. Stacking Cards */}
 								{component.slug === 'stacking-cards' && (
-									<div
-										ref={stackingScrollRef}
-										className="w-full max-w-md h-[460px] overflow-y-auto rounded-2xl border border-border bg-background/50 p-6 no-scrollbar relative shadow-inner"
-									>
-										<div className="text-[11px] font-mono text-muted-foreground text-center mb-6 flex items-center justify-center gap-2">
-											<span className="kbd text-[10px]">SCROLL DOWN INSIDE STAGE</span>
+									<div ref={stackingScrollRef} className='border-border bg-background/50 no-scrollbar relative h-[460px] w-full max-w-md overflow-y-auto rounded-2xl border p-6 shadow-inner'>
+										<div className='text-muted-foreground mb-6 flex items-center justify-center gap-2 text-center font-mono text-[11px]'>
+											<span className='kbd text-[10px]'>SCROLL DOWN INSIDE STAGE</span>
 											<span>↓</span>
 										</div>
-										<StackingCards
-											topStart={20}
-											topIncrement={stackOffset}
-											minScale={0.92}
-											scaleThreshold={100}
-											scrollContainerRef={stackingScrollRef}
-										>
+										<StackingCards topStart={20} topIncrement={stackOffset} minScale={0.92} scaleThreshold={100} scrollContainerRef={stackingScrollRef}>
 											{Array.from({ length: 4 }).map((_, idx) => (
-												<div
-													key={idx}
-													className="rounded-2xl border border-border bg-card/95 backdrop-blur-md p-6 shadow-xl"
-												>
-													<div className="flex items-center justify-between text-xs font-mono text-muted-foreground mb-2">
-														<span className="kbd text-[10px]">LAYER 0{idx + 1}</span>
-														<span className="text-primary font-bold">Sticky Stack</span>
+												<div key={idx} className='border-border bg-card/95 rounded-2xl border p-6 shadow-xl backdrop-blur-md'>
+													<div className='text-muted-foreground mb-2 flex items-center justify-between font-mono text-xs'>
+														<span className='kbd text-[10px]'>LAYER 0{idx + 1}</span>
+														<span className='text-primary font-bold'>Sticky Stack</span>
 													</div>
-													<h4 className="text-lg font-bold text-foreground">
-														Sticky Stacking Card
-													</h4>
-													<p className="text-xs text-muted-foreground mt-1">
-														Scroll down to observe progressive scale decay and reverse exit scaling.
-													</p>
+													<h4 className='text-foreground text-lg font-bold'>Sticky Stacking Card</h4>
+													<p className='text-muted-foreground mt-1 text-xs'>Scroll down to observe progressive scale decay and reverse exit scaling.</p>
 												</div>
 											))}
 										</StackingCards>
-										<div className="h-[260px] flex items-center justify-center text-xs font-mono text-muted-foreground">
-											Terminal scroll reached
-										</div>
+										<div className='text-muted-foreground flex h-[260px] items-center justify-center font-mono text-xs'>Terminal scroll reached</div>
 									</div>
 								)}
 
 								{/* 3. Horizontal Scroller */}
 								{component.slug === 'horizontal-scroller' && (
-									<div
-										ref={horizontalScrollRef}
-										className="w-full h-[460px] overflow-y-auto rounded-2xl border border-border bg-background/50 relative no-scrollbar shadow-inner"
-									>
-										<div className="sticky top-4 z-20 text-[11px] font-mono text-muted-foreground text-center mb-2 flex items-center justify-center gap-2 pointer-events-none">
-											<span className="kbd text-[10px] bg-card/90 shadow">VERTICAL SCROLL → HORIZONTAL RAIL</span>
+									<div ref={horizontalScrollRef} className='border-border bg-background/50 no-scrollbar relative h-[460px] w-full overflow-y-auto rounded-2xl border shadow-inner'>
+										<div className='text-muted-foreground pointer-events-none sticky top-4 z-20 mb-2 flex items-center justify-center gap-2 text-center font-mono text-[11px]'>
+											<span className='kbd bg-card/90 text-[10px] shadow'>VERTICAL SCROLL → HORIZONTAL RAIL</span>
 											<span>↓</span>
 										</div>
-										<HorizontalScroller
-											speed={0.85}
-											scrollContainerRef={horizontalScrollRef}
-										>
+										<HorizontalScroller speed={0.85} scrollContainerRef={horizontalScrollRef}>
 											{Array.from({ length: 6 }).map((_, idx) => (
-												<div
-													key={idx}
-													className="shrink-0 w-64 rounded-2xl border border-border bg-card p-6 shadow-md transition-all hover:border-primary"
-												>
-													<span className="kbd text-[10px] text-primary">SLIDE #{idx + 1}</span>
-													<h4 className="text-base font-bold text-foreground mt-2">
-														Momentum Rail
-													</h4>
-													<p className="text-xs text-muted-foreground mt-1">
-														Horizontal translation mapped to scroll progress.
-													</p>
+												<div key={idx} className='border-border bg-card hover:border-primary w-64 shrink-0 rounded-2xl border p-6 shadow-md transition-all'>
+													<span className='kbd text-primary text-[10px]'>SLIDE #{idx + 1}</span>
+													<h4 className='text-foreground mt-2 text-base font-bold'>Momentum Rail</h4>
+													<p className='text-muted-foreground mt-1 text-xs'>Horizontal translation mapped to scroll progress.</p>
 												</div>
 											))}
 										</HorizontalScroller>
@@ -395,20 +288,12 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 
 								{/* 4. CSS Masonry */}
 								{component.slug === 'css-masonry' && (
-									<CssMasonry
-										columns={masonryCols}
-										gap={16}
-										className="w-full"
-									>
+									<CssMasonry columns={masonryCols} gap={16} className='w-full'>
 										{[90, 150, 110, 170, 130, 190].map((h, idx) => (
-											<div
-												key={idx}
-												className="rounded-xl border border-border bg-card p-4 shadow-sm mb-4 break-inside-avoid"
-												style={{ height: `${h}px` }}
-											>
-												<span className="kbd text-[10px] text-primary">ITEM 0{idx + 1}</span>
-												<div className="text-xs font-bold text-foreground mt-1">CSS Masonry</div>
-												<div className="text-[10px] text-muted-foreground">{h}px</div>
+											<div key={idx} className='border-border bg-card mb-4 break-inside-avoid rounded-xl border p-4 shadow-sm' style={{ height: `${h}px` }}>
+												<span className='kbd text-primary text-[10px]'>ITEM 0{idx + 1}</span>
+												<div className='text-foreground mt-1 text-xs font-bold'>CSS Masonry</div>
+												<div className='text-muted-foreground text-[10px]'>{h}px</div>
 											</div>
 										))}
 									</CssMasonry>
@@ -416,19 +301,12 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 
 								{/* 5. Auto Grid */}
 								{component.slug === 'auto-grid' && (
-									<AutoGrid
-										minItemWidth={gridMin}
-										gap={16}
-										className="w-full"
-									>
+									<AutoGrid minItemWidth={gridMin} gap={16} className='w-full'>
 										{Array.from({ length: 6 }).map((_, idx) => (
-											<div
-												key={idx}
-												className="rounded-xl border border-border bg-card p-5 shadow-sm"
-											>
-												<span className="kbd text-[10px] text-primary">GRID #{idx + 1}</span>
-												<div className="text-sm font-bold text-foreground mt-1">Auto-Fit Grid</div>
-												<div className="text-xs text-muted-foreground mt-1">MinMax responsive</div>
+											<div key={idx} className='border-border bg-card rounded-xl border p-5 shadow-sm'>
+												<span className='kbd text-primary text-[10px]'>GRID #{idx + 1}</span>
+												<div className='text-foreground mt-1 text-sm font-bold'>Auto-Fit Grid</div>
+												<div className='text-muted-foreground mt-1 text-xs'>MinMax responsive</div>
 											</div>
 										))}
 									</AutoGrid>
@@ -436,21 +314,16 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 
 								{/* 6. Spotlight Card */}
 								{component.slug === 'spotlight-card' && (
-									<SpotlightCard
-										radius={spotlightRadius}
-										color="rgba(99, 102, 241, 0.25)"
-										borderColor="rgba(99, 102, 241, 0.6)"
-										className="w-full max-w-md p-8 shadow-xl"
-									>
-										<div className="flex flex-col gap-3">
-											<span className="kbd text-[10px] text-primary">SPOTLIGHT PRIMITIVE</span>
-											<h4 className="text-xl font-bold tracking-tight text-foreground">Hardware-Accelerated Glow</h4>
-											<p className="text-sm text-muted-foreground leading-relaxed">
+									<SpotlightCard radius={spotlightRadius} color='rgba(99, 102, 241, 0.25)' borderColor='rgba(99, 102, 241, 0.6)' className='w-full max-w-md p-8 shadow-xl'>
+										<div className='flex flex-col gap-3'>
+											<span className='kbd text-primary text-[10px]'>SPOTLIGHT PRIMITIVE</span>
+											<h4 className='text-foreground text-xl font-bold tracking-tight'>Hardware-Accelerated Glow</h4>
+											<p className='text-muted-foreground text-sm leading-relaxed'>
 												Glide your pointer over this card. Notice the sub-pixel radial edge mask and background sheen driven at 120Hz with zero React re-renders.
 											</p>
-											<div className="mt-4 flex items-center gap-2">
-												<span className="inline-flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
-												<span className="text-xs font-mono text-muted-foreground">GPU CSS Variables Active</span>
+											<div className='mt-4 flex items-center gap-2'>
+												<span className='inline-flex h-2 w-2 animate-pulse rounded-full bg-emerald-500' />
+												<span className='text-muted-foreground font-mono text-xs'>GPU CSS Variables Active</span>
 											</div>
 										</div>
 									</SpotlightCard>
@@ -458,25 +331,31 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 
 								{/* 7. Morphing Tabs */}
 								{component.slug === 'morphing-tabs' && (
-									<div className="w-full max-w-md">
-										<MorphingTabs.Root defaultValue="preview">
-											<MorphingTabs.List className="w-full justify-between">
+									<div className='w-full max-w-md'>
+										<MorphingTabs.Root defaultValue='preview'>
+											<MorphingTabs.List className='w-full justify-between'>
 												<MorphingTabs.Indicator />
-												<MorphingTabs.Trigger value="preview" className="flex-1">Preview</MorphingTabs.Trigger>
-												<MorphingTabs.Trigger value="code" className="flex-1">Code</MorphingTabs.Trigger>
-												<MorphingTabs.Trigger value="schema" className="flex-1">Schema</MorphingTabs.Trigger>
+												<MorphingTabs.Trigger value='preview' className='flex-1'>
+													Preview
+												</MorphingTabs.Trigger>
+												<MorphingTabs.Trigger value='code' className='flex-1'>
+													Code
+												</MorphingTabs.Trigger>
+												<MorphingTabs.Trigger value='schema' className='flex-1'>
+													Schema
+												</MorphingTabs.Trigger>
 											</MorphingTabs.List>
-											<MorphingTabs.Content value="preview" className="rounded-xl border border-border bg-card p-6 shadow-sm text-sm">
-												<div className="font-bold text-foreground mb-1">Live Interactive Preview Stage</div>
-												<div className="text-muted-foreground text-xs">The floating indicator tracks active geometry and morphs dynamically using an analytical spring ODE.</div>
+											<MorphingTabs.Content value='preview' className='border-border bg-card rounded-xl border p-6 text-sm shadow-sm'>
+												<div className='text-foreground mb-1 font-bold'>Live Interactive Preview Stage</div>
+												<div className='text-muted-foreground text-xs'>The floating indicator tracks active geometry and morphs dynamically using an analytical spring ODE.</div>
 											</MorphingTabs.Content>
-											<MorphingTabs.Content value="code" className="rounded-xl border border-border bg-card p-6 shadow-sm text-sm">
-												<div className="font-bold text-foreground mb-1">Generated Universal Syntax</div>
-												<div className="text-muted-foreground text-xs">Compiles across 13 ecosystems with zero external animation dependencies.</div>
+											<MorphingTabs.Content value='code' className='border-border bg-card rounded-xl border p-6 text-sm shadow-sm'>
+												<div className='text-foreground mb-1 font-bold'>Generated Universal Syntax</div>
+												<div className='text-muted-foreground text-xs'>Compiles across 13 ecosystems with zero external animation dependencies.</div>
 											</MorphingTabs.Content>
-											<MorphingTabs.Content value="schema" className="rounded-xl border border-border bg-card p-6 shadow-sm text-sm">
-												<div className="font-bold text-foreground mb-1">WAI-ARIA Accessibility Contract</div>
-												<div className="text-muted-foreground text-xs">Roving tabindex with circular modulo arrow navigation.</div>
+											<MorphingTabs.Content value='schema' className='border-border bg-card rounded-xl border p-6 text-sm shadow-sm'>
+												<div className='text-foreground mb-1 font-bold'>WAI-ARIA Accessibility Contract</div>
+												<div className='text-muted-foreground text-xs'>Roving tabindex with circular modulo arrow navigation.</div>
 											</MorphingTabs.Content>
 										</MorphingTabs.Root>
 									</div>
@@ -484,9 +363,9 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 
 								{/* 8. Accordion */}
 								{component.slug === 'accordion' && (
-									<div className="w-full max-w-lg">
-										<Accordion.Root mode={accordionMode} defaultValue="faq-1">
-											<Accordion.Item value="faq-1">
+									<div className='w-full max-w-lg'>
+										<Accordion.Root mode={accordionMode} defaultValue='faq-1'>
+											<Accordion.Item value='faq-1'>
 												<Accordion.Trigger>
 													<span>How does Exhuma eliminate animation jank?</span>
 													<Accordion.Icon />
@@ -495,16 +374,14 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 													Exhuma uses modern CSS Grid 0fr to 1fr interpolation with exact analytical spring differential equations, eliminating layout reflows and max-height timing glitches.
 												</Accordion.Content>
 											</Accordion.Item>
-											<Accordion.Item value="faq-2">
+											<Accordion.Item value='faq-2'>
 												<Accordion.Trigger>
 													<span>Does this require Framer Motion or GSAP?</span>
 													<Accordion.Icon />
 												</Accordion.Trigger>
-												<Accordion.Content>
-													Zero external dependencies. Every component is 100% handcrafted with pure mathematics, DSA, and native browser APIs.
-												</Accordion.Content>
+												<Accordion.Content>Zero external dependencies. Every component is 100% handcrafted with pure mathematics, DSA, and native browser APIs.</Accordion.Content>
 											</Accordion.Item>
-											<Accordion.Item value="faq-3">
+											<Accordion.Item value='faq-3'>
 												<Accordion.Trigger>
 													<span>Which platforms are supported?</span>
 													<Accordion.Icon />
@@ -519,67 +396,51 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 
 								{/* 9. Infinite Marquee */}
 								{component.slug === 'infinite-marquee' && (
-									<div className="w-full max-w-2xl py-4 overflow-hidden">
-										<InfiniteMarquee speed={marqueeSpeed} pauseOnHover={true} gap="1.5rem">
-											{[
-												'120Hz ProMotion Ready',
-												'Zero External Animation Deps',
-												'Zero Layout Thrashing',
-												'Modulo Wrap Arithmetic',
-												'13-Ecosystem Universal',
-												'Exhuma Kinetic Engine',
-											].map((text, i) => (
-												<div
-													key={i}
-													className="flex items-center gap-2 rounded-xl border border-border bg-card/80 px-5 py-3 text-xs font-semibold backdrop-blur-md shadow-xs shrink-0"
-												>
-													<span className="h-2 w-2 rounded-full bg-primary" />
-													<span className="text-foreground">{text}</span>
-												</div>
-											))}
+									<div className='w-full max-w-2xl overflow-hidden py-4'>
+										<InfiniteMarquee speed={marqueeSpeed} pauseOnHover={true} gap='1.5rem'>
+											{['120Hz ProMotion Ready', 'Zero External Animation Deps', 'Zero Layout Thrashing', 'Modulo Wrap Arithmetic', '13-Ecosystem Universal', 'Exhuma Kinetic Engine'].map(
+												(text, i) => (
+													<div key={i} className='border-border bg-card/80 flex shrink-0 items-center gap-2 rounded-xl border px-5 py-3 text-xs font-semibold shadow-xs backdrop-blur-md'>
+														<span className='bg-primary h-2 w-2 rounded-full' />
+														<span className='text-foreground'>{text}</span>
+													</div>
+												)
+											)}
 										</InfiniteMarquee>
 									</div>
 								)}
 
 								{/* 10. Bento Grid */}
 								{component.slug === 'bento-grid' && (
-									<div className="w-full max-w-2xl">
-										<BentoGrid cols={3} gap="1rem">
+									<div className='w-full max-w-2xl'>
+										<BentoGrid cols={3} gap='1rem'>
 											<BentoCard colSpan={2}>
 												<BentoHeader>
-													<span className="kbd text-[10px] text-primary">ANALYTICAL KINETICS</span>
-													<h4 className="text-base font-bold text-foreground">Continuous Math Engine</h4>
+													<span className='kbd text-primary text-[10px]'>ANALYTICAL KINETICS</span>
+													<h4 className='text-foreground text-base font-bold'>Continuous Math Engine</h4>
 												</BentoHeader>
-												<BentoContent>
-													Hardware-accelerated CSS custom properties driven directly by requestAnimationFrame loops.
-												</BentoContent>
+												<BentoContent>Hardware-accelerated CSS custom properties driven directly by requestAnimationFrame loops.</BentoContent>
 											</BentoCard>
 											<BentoCard colSpan={1}>
 												<BentoHeader>
-													<span className="kbd text-[10px] text-emerald-500">BIG-OMEGA</span>
-													<h4 className="text-base font-bold text-foreground">Ω(120Hz)</h4>
+													<span className='kbd text-[10px] text-emerald-500'>BIG-OMEGA</span>
+													<h4 className='text-foreground text-base font-bold'>Ω(120Hz)</h4>
 												</BentoHeader>
-												<BentoContent>
-													Guaranteed lower-bound execution.
-												</BentoContent>
+												<BentoContent>Guaranteed lower-bound execution.</BentoContent>
 											</BentoCard>
 											<BentoCard colSpan={1}>
 												<BentoHeader>
-													<span className="kbd text-[10px] text-purple-500">CROSS-PLATFORM</span>
-													<h4 className="text-base font-bold text-foreground">13 Targets</h4>
+													<span className='kbd text-[10px] text-purple-500'>CROSS-PLATFORM</span>
+													<h4 className='text-foreground text-base font-bold'>13 Targets</h4>
 												</BentoHeader>
-												<BentoContent>
-													Zero runtime dependencies across all targets.
-												</BentoContent>
+												<BentoContent>Zero runtime dependencies across all targets.</BentoContent>
 											</BentoCard>
 											<BentoCard colSpan={2}>
 												<BentoHeader>
-													<span className="kbd text-[10px] text-primary">DENSE AUTO-FLOW</span>
-													<h4 className="text-base font-bold text-foreground">Dynamic Responsive Matrix</h4>
+													<span className='kbd text-primary text-[10px]'>DENSE AUTO-FLOW</span>
+													<h4 className='text-foreground text-base font-bold'>Dynamic Responsive Matrix</h4>
 												</BentoHeader>
-												<BentoContent>
-													Zero layout shift fluid arrangement on any device.
-												</BentoContent>
+												<BentoContent>Zero layout shift fluid arrangement on any device.</BentoContent>
 											</BentoCard>
 										</BentoGrid>
 									</div>
@@ -587,14 +448,14 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 
 								{/* 11. Diamond Grid */}
 								{component.slug === 'diamond-grid' && (
-									<div className="w-full max-w-xl py-4">
-										<DiamondGrid gap="0.75vw">
+									<div className='w-full max-w-xl py-4'>
+										<DiamondGrid gap='0.75vw'>
 											{Array.from({ length: 16 }).map((_, idx) => (
 												<div
 													key={idx}
-													className="aspect-square w-12 sm:w-16 rounded-2xl border border-border bg-card/80 backdrop-blur-md flex flex-col items-center justify-center p-2 text-center shadow-md hover:border-primary transition-all duration-300 hover:scale-105"
+													className='border-border bg-card/80 hover:border-primary flex aspect-square w-12 flex-col items-center justify-center rounded-2xl border p-2 text-center shadow-md backdrop-blur-md transition-all duration-300 hover:scale-105 sm:w-16'
 												>
-													<span className="text-[10px] font-mono font-bold text-primary">#{idx + 1}</span>
+													<span className='text-primary font-mono text-[10px] font-bold'>#{idx + 1}</span>
 												</div>
 											))}
 										</DiamondGrid>
@@ -603,7 +464,7 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 
 								{/* 12. Scroll Timeline */}
 								{component.slug === 'scroll-timeline' && (
-									<div className="w-full max-w-md h-[460px] overflow-y-auto rounded-2xl border border-border bg-background/50 p-6 no-scrollbar relative shadow-inner">
+									<div className='border-border bg-background/50 no-scrollbar relative h-[460px] w-full max-w-md overflow-y-auto rounded-2xl border p-6 shadow-inner'>
 										<ScrollTimeline
 											items={[
 												{
@@ -631,19 +492,17 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 
 								{/* 13. Sticky Parallax Scroll */}
 								{component.slug === 'sticky-parallax' && (
-									<div className="w-full max-w-md h-[460px] overflow-y-auto rounded-2xl border border-border bg-background/50 relative no-scrollbar shadow-inner">
-										<StickyParallaxScroll trackHeight="800px">
-											<div className="relative w-full h-full flex items-center justify-center">
+									<div className='border-border bg-background/50 no-scrollbar relative h-[460px] w-full max-w-md overflow-y-auto rounded-2xl border shadow-inner'>
+										<StickyParallaxScroll trackHeight='800px'>
+											<div className='relative flex h-full w-full items-center justify-center'>
 												<ParallaxLayer speed={-0.4}>
-													<div className="text-4xl font-extrabold text-foreground/20 select-none">
-														BACKGROUND
-													</div>
+													<div className='text-foreground/20 text-4xl font-extrabold select-none'>BACKGROUND</div>
 												</ParallaxLayer>
 												<ParallaxLayer speed={0.8}>
-													<div className="rounded-2xl border border-primary/40 bg-card p-6 shadow-2xl backdrop-blur-md text-center">
-														<span className="kbd text-[10px] text-primary">DIFFERENTIAL MOMENTUM</span>
-														<h4 className="text-lg font-bold text-foreground mt-1">Multi-Speed Layers</h4>
-														<p className="text-xs text-muted-foreground mt-1">Scroll inside stage to observe parallax</p>
+													<div className='border-primary/40 bg-card rounded-2xl border p-6 text-center shadow-2xl backdrop-blur-md'>
+														<span className='kbd text-primary text-[10px]'>DIFFERENTIAL MOMENTUM</span>
+														<h4 className='text-foreground mt-1 text-lg font-bold'>Multi-Speed Layers</h4>
+														<p className='text-muted-foreground mt-1 text-xs'>Scroll inside stage to observe parallax</p>
 													</div>
 												</ParallaxLayer>
 											</div>
@@ -653,39 +512,32 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 
 								{/* 14. Border Beam */}
 								{component.slug === 'border-beam' && (
-									<div className="relative flex h-64 w-full max-w-sm flex-col items-center justify-center overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-xl">
-										<span className="kbd text-[10px] text-primary">PERIMETER TRACE</span>
-										<h4 className="text-xl font-bold text-foreground mt-2">Border Beam</h4>
-										<p className="text-xs text-muted-foreground text-center mt-1">
-											Conic gradient perimeter trace with sub-pixel exclusion mask and zero-runtime CSS.
-										</p>
+									<div className='border-border bg-card relative flex h-64 w-full max-w-sm flex-col items-center justify-center overflow-hidden rounded-2xl border p-6 shadow-xl'>
+										<span className='kbd text-primary text-[10px]'>PERIMETER TRACE</span>
+										<h4 className='text-foreground mt-2 text-xl font-bold'>Border Beam</h4>
+										<p className='text-muted-foreground mt-1 text-center text-xs'>Conic gradient perimeter trace with sub-pixel exclusion mask and zero-runtime CSS.</p>
 										<BorderBeam size={180} duration={borderBeamDuration} borderWidth={2} />
 									</div>
 								)}
 
 								{/* 15. Animated Sphere */}
 								{component.slug === 'animated-sphere' && (
-									<div className="flex flex-col items-center justify-center p-4">
-										<AnimatedSphere
-											speed={sphereAscii ? 1.5 : 1.0}
-											radiusScale={0.45}
-											color="#6366f1"
-											className="w-64 h-64 rounded-2xl border border-border bg-black/40 backdrop-blur-md shadow-2xl"
-										/>
+									<div className='flex flex-col items-center justify-center p-4'>
+										<AnimatedSphere speed={sphereAscii ? 1.5 : 1.0} radiusScale={0.45} color='#6366f1' className='border-border h-64 w-64 rounded-2xl border bg-black/40 shadow-2xl backdrop-blur-md' />
 									</div>
 								)}
 
 								{/* 16. Floating Dock */}
 								{component.slug === 'floating-dock' && (
-									<div className="w-full max-w-md flex flex-col items-center justify-center py-12">
-										<p className="text-xs text-muted-foreground mb-6">Hover over icons to experience Gaussian scale distribution</p>
+									<div className='flex w-full max-w-md flex-col items-center justify-center py-12'>
+										<p className='text-muted-foreground mb-6 text-xs'>Hover over icons to experience Gaussian scale distribution</p>
 										<FloatingDock
 											items={[
-												{ title: 'Dashboard', icon: <Terminal className="h-5 w-5" /> },
-												{ title: 'Kinetics', icon: <Sliders className="h-5 w-5" /> },
-												{ title: 'Hardware', icon: <Cpu className="h-5 w-5" /> },
-												{ title: 'Shaders', icon: <Sparkles className="h-5 w-5" /> },
-												{ title: 'Security', icon: <ShieldCheck className="h-5 w-5" /> },
+												{ title: 'Dashboard', icon: <Terminal className='h-5 w-5' /> },
+												{ title: 'Kinetics', icon: <Sliders className='h-5 w-5' /> },
+												{ title: 'Hardware', icon: <Cpu className='h-5 w-5' /> },
+												{ title: 'Shaders', icon: <Sparkles className='h-5 w-5' /> },
+												{ title: 'Security', icon: <ShieldCheck className='h-5 w-5' /> },
 											]}
 										/>
 									</div>
@@ -693,47 +545,38 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 
 								{/* 17. Interactive Grid Pattern */}
 								{component.slug === 'interactive-grid' && (
-									<div className="relative flex h-[380px] w-full max-w-xl flex-col items-center justify-center overflow-hidden rounded-2xl border border-border bg-background p-8 shadow-inner">
-										<InteractiveGridPattern
-											width={32}
-											height={32}
-											squares={[24, 16]}
-											className="opacity-70 [mask-image:radial-gradient(400px_circle_at_center,white,transparent)]"
-										/>
-										<div className="z-10 flex flex-col items-center text-center">
-											<span className="kbd text-[10px] text-primary">VECTOR KINETICS</span>
-											<h4 className="text-xl font-bold text-foreground mt-1">Interactive Grid</h4>
-											<p className="text-xs text-muted-foreground max-w-xs mt-1">
-												Hover over grid squares to trigger hardware-accelerated kinetic active states.
-											</p>
+									<div className='border-border bg-background relative flex h-[380px] w-full max-w-xl flex-col items-center justify-center overflow-hidden rounded-2xl border p-8 shadow-inner'>
+										<InteractiveGridPattern width={32} height={32} squares={[24, 16]} className='[mask-image:radial-gradient(400px_circle_at_center,white,transparent)] opacity-70' />
+										<div className='z-10 flex flex-col items-center text-center'>
+											<span className='kbd text-primary text-[10px]'>VECTOR KINETICS</span>
+											<h4 className='text-foreground mt-1 text-xl font-bold'>Interactive Grid</h4>
+											<p className='text-muted-foreground mt-1 max-w-xs text-xs'>Hover over grid squares to trigger hardware-accelerated kinetic active states.</p>
 										</div>
 									</div>
 								)}
 
 								{/* 18. Number Ticker */}
 								{component.slug === 'number-ticker' && (
-									<div className="flex flex-col items-center justify-center p-8 rounded-2xl border border-border bg-card shadow-lg text-center">
-										<span className="kbd text-[10px] text-primary mb-2">ANALYTICAL EASING (rAF)</span>
-										<div className="text-6xl font-black tracking-tight text-foreground font-mono">
+									<div className='border-border bg-card flex flex-col items-center justify-center rounded-2xl border p-8 text-center shadow-lg'>
+										<span className='kbd text-primary mb-2 text-[10px]'>ANALYTICAL EASING (rAF)</span>
+										<div className='text-foreground font-mono text-6xl font-black tracking-tight'>
 											$<NumberTicker value={tickerValue} decimalPlaces={0} />
 										</div>
-										<p className="text-xs text-muted-foreground mt-3">
-											Continuous ease-out exponential ticker with zero Framer Motion dependencies.
-										</p>
+										<p className='text-muted-foreground mt-3 text-xs'>Continuous ease-out exponential ticker with zero Framer Motion dependencies.</p>
 									</div>
 								)}
 
 								{/* 19. Magnetic Button */}
 								{component.slug === 'magnetic-button' && (
-									<div className="flex flex-col items-center justify-center p-12">
-										<p className="text-xs text-muted-foreground mb-6">Move cursor near button to feel inverted magnetic pull field</p>
+									<div className='flex flex-col items-center justify-center p-12'>
+										<p className='text-muted-foreground mb-6 text-xs'>Move cursor near button to feel inverted magnetic pull field</p>
 										<MagneticButton
 											strength={magneticStrength}
 											radius={140}
-											className="rounded-2xl border border-primary/50 bg-primary/10 px-8 py-4 font-bold text-foreground backdrop-blur-md shadow-xl hover:bg-primary/20 transition-colors"
+											className='border-primary/50 bg-primary/10 text-foreground hover:bg-primary/20 rounded-2xl border px-8 py-4 font-bold shadow-xl backdrop-blur-md transition-colors'
 										>
-											<span className="flex items-center gap-2">
-												<Sparkles className="h-4 w-4 text-primary" />
+											<span className='flex items-center gap-2'>
+												<Sparkles className='text-primary h-4 w-4' />
 												<span>Magnetic Attraction</span>
 											</span>
 										</MagneticButton>
@@ -742,8 +585,8 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 
 								{/* 20. Card Swipe Stack */}
 								{component.slug === 'card-swipe-stack' && (
-									<div className="w-full max-w-sm py-8 flex flex-col items-center">
-										<p className="text-xs text-muted-foreground mb-4">Drag card left or right to dismiss with momentum fling</p>
+									<div className='flex w-full max-w-sm flex-col items-center py-8'>
+										<p className='text-muted-foreground mb-4 text-xs'>Drag card left or right to dismiss with momentum fling</p>
 										<CardSwipeStack
 											items={[
 												{ id: 1, title: 'Big-Omega Guarantees', tag: 'MATHEMATICS', desc: 'Guaranteed lower bound frame rate floor of 120Hz.' },
@@ -751,11 +594,11 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 												{ id: 3, title: 'Direct GPU Pipeline', tag: 'KINETICS', desc: 'Direct translate3d writes bypassing virtual DOM reconciliation.' },
 											]}
 											renderCard={(item) => (
-												<div className="rounded-2xl border border-border bg-card p-6 shadow-2xl backdrop-blur-md">
-													<span className="kbd text-[10px] text-primary">{item.tag}</span>
-													<h4 className="text-lg font-bold text-foreground mt-2">{item.title}</h4>
-													<p className="text-xs text-muted-foreground mt-1">{item.desc}</p>
-													<div className="mt-4 pt-3 border-t border-border flex items-center justify-between text-[10px] text-muted-foreground font-mono">
+												<div className='border-border bg-card rounded-2xl border p-6 shadow-2xl backdrop-blur-md'>
+													<span className='kbd text-primary text-[10px]'>{item.tag}</span>
+													<h4 className='text-foreground mt-2 text-lg font-bold'>{item.title}</h4>
+													<p className='text-muted-foreground mt-1 text-xs'>{item.desc}</p>
+													<div className='border-border text-muted-foreground mt-4 flex items-center justify-between border-t pt-3 font-mono text-[10px]'>
 														<span>← SWIPE LEFT</span>
 														<span>SWIPE RIGHT →</span>
 													</div>
@@ -767,26 +610,26 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 
 								{/* 21. Comparison Slider */}
 								{component.slug === 'comparison-slider' && (
-									<div className="w-full max-w-md py-4">
+									<div className='w-full max-w-md py-4'>
 										<ComparisonSlider
-											aspectRatio="16/10"
+											aspectRatio='16/10'
 											defaultPosition={sliderPos}
 											onPositionChange={setSliderPos}
 											before={
-												<div className="w-full h-full bg-linear-to-br from-indigo-950 via-purple-950 to-slate-900 p-6 flex flex-col justify-between text-white">
-													<span className="kbd text-[10px] bg-white/20 text-white self-start">ORIGINAL MOCKUP</span>
+												<div className='flex h-full w-full flex-col justify-between bg-linear-to-br from-indigo-950 via-purple-950 to-slate-900 p-6 text-white'>
+													<span className='kbd self-start bg-white/20 text-[10px] text-white'>ORIGINAL MOCKUP</span>
 													<div>
-														<h4 className="text-xl font-bold">Static Canvas</h4>
-														<p className="text-xs opacity-70">Unaccelerated design view</p>
+														<h4 className='text-xl font-bold'>Static Canvas</h4>
+														<p className='text-xs opacity-70'>Unaccelerated design view</p>
 													</div>
 												</div>
 											}
 											after={
-												<div className="w-full h-full bg-linear-to-br from-emerald-950 via-teal-950 to-slate-900 p-6 flex flex-col justify-between text-white">
-													<span className="kbd text-[10px] bg-emerald-500/30 text-emerald-300 self-start">EXHUMA KINETIC ENGINE</span>
+												<div className='flex h-full w-full flex-col justify-between bg-linear-to-br from-emerald-950 via-teal-950 to-slate-900 p-6 text-white'>
+													<span className='kbd self-start bg-emerald-500/30 text-[10px] text-emerald-300'>EXHUMA KINETIC ENGINE</span>
 													<div>
-														<h4 className="text-xl font-bold">120Hz ProMotion</h4>
-														<p className="text-xs opacity-70">Analytical physics active</p>
+														<h4 className='text-xl font-bold'>120Hz ProMotion</h4>
+														<p className='text-xs opacity-70'>Analytical physics active</p>
 													</div>
 												</div>
 											}
@@ -796,25 +639,23 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 
 								{/* 22. Expandable Card */}
 								{component.slug === 'expandable-card' && (
-									<div className="w-full max-w-sm py-4">
+									<div className='w-full max-w-sm py-4'>
 										<ExpandableCard
 											cardContent={
-												<div className="rounded-2xl border border-border bg-card p-6 shadow-lg transition-all hover:border-primary/50">
-													<span className="kbd text-[10px] text-primary">CLICK TO EXPAND</span>
-													<h4 className="text-lg font-bold text-foreground mt-2">FLIP Morphing Architecture</h4>
-													<p className="text-xs text-muted-foreground mt-1">Mathematical geometry snapshot with zero Framer Motion.</p>
+												<div className='border-border bg-card hover:border-primary/50 rounded-2xl border p-6 shadow-lg transition-all'>
+													<span className='kbd text-primary text-[10px]'>CLICK TO EXPAND</span>
+													<h4 className='text-foreground mt-2 text-lg font-bold'>FLIP Morphing Architecture</h4>
+													<p className='text-muted-foreground mt-1 text-xs'>Mathematical geometry snapshot with zero Framer Motion.</p>
 												</div>
 											}
 											expandedContent={
-												<div className="space-y-4">
-													<span className="kbd text-[10px] text-primary">MODAL DIALOG (FLIP INVERTED)</span>
-													<h3 className="text-2xl font-black text-foreground">Hardware-Accelerated Dialog</h3>
-													<p className="text-sm text-muted-foreground leading-relaxed">
+												<div className='space-y-4'>
+													<span className='kbd text-primary text-[10px]'>MODAL DIALOG (FLIP INVERTED)</span>
+													<h3 className='text-foreground text-2xl font-black'>Hardware-Accelerated Dialog</h3>
+													<p className='text-muted-foreground text-sm leading-relaxed'>
 														The card morphs smoothly from its trigger bounding rect into a centered dialog snapshot using analytical FLIP transformation matrices.
 													</p>
-													<div className="rounded-xl border border-border bg-background p-4 text-xs font-mono text-muted-foreground">
-														Press ESC or click backdrop to close
-													</div>
+													<div className='border-border bg-background text-muted-foreground rounded-xl border p-4 font-mono text-xs'>Press ESC or click backdrop to close</div>
 												</div>
 											}
 										/>
@@ -823,138 +664,96 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 
 								{/* 23. Cursor Tooltip */}
 								{component.slug === 'cursor-tooltip' && (
-									<div className="flex flex-col items-center justify-center p-12">
+									<div className='flex flex-col items-center justify-center p-12'>
 										<CursorTooltip
-											content="Exhuma Exponential Cursor Smoothing"
-											className="rounded-2xl border border-border bg-card/80 p-8 shadow-xl text-center cursor-pointer hover:border-primary transition-colors"
+											content='Exhuma Exponential Cursor Smoothing'
+											className='border-border bg-card/80 hover:border-primary cursor-pointer rounded-2xl border p-8 text-center shadow-xl transition-colors'
 										>
-											<span className="kbd text-[10px] text-primary mb-2 inline-block">HOVER OVER CARD</span>
-											<h4 className="text-xl font-bold text-foreground">Interactive Viewport Target</h4>
-											<p className="text-xs text-muted-foreground mt-1">
-												Hover cursor anywhere over this card to activate the magnetic trailing tooltip.
-											</p>
+											<span className='kbd text-primary mb-2 inline-block text-[10px]'>HOVER OVER CARD</span>
+											<h4 className='text-foreground text-xl font-bold'>Interactive Viewport Target</h4>
+											<p className='text-muted-foreground mt-1 text-xs'>Hover cursor anywhere over this card to activate the magnetic trailing tooltip.</p>
 										</CursorTooltip>
 									</div>
 								)}
 
 								{/* Quick Live Sliders */}
-								<div className="flex flex-wrap items-center justify-center gap-4 bg-card/90 backdrop-blur-md border border-border rounded-2xl p-3 shadow-md text-xs">
+								<div className='bg-card/90 border-border flex flex-wrap items-center justify-center gap-4 rounded-2xl border p-3 text-xs shadow-md backdrop-blur-md'>
 									{component.slug === 'tilt-card' && (
 										<>
-											<div className="flex items-center gap-2">
-												<Sliders className="h-3.5 w-3.5 text-muted-foreground" />
-												<span className="text-muted-foreground text-[11px]">Max Tilt:</span>
-												<input
-													type="range"
-													min="5"
-													max="40"
-													value={tiltMax}
-													onChange={(e) => setTiltMax(Number(e.target.value))}
-													className="w-24 accent-primary h-1.5 cursor-pointer"
-												/>
-												<span className="font-mono text-[11px] font-bold w-6">{tiltMax}°</span>
+											<div className='flex items-center gap-2'>
+												<Sliders className='text-muted-foreground h-3.5 w-3.5' />
+												<span className='text-muted-foreground text-[11px]'>Max Tilt:</span>
+												<input type='range' min='5' max='40' value={tiltMax} onChange={(e) => setTiltMax(Number(e.target.value))} className='accent-primary h-1.5 w-24 cursor-pointer' />
+												<span className='w-6 font-mono text-[11px] font-bold'>{tiltMax}°</span>
 											</div>
-											<label className="flex items-center gap-1.5 cursor-pointer text-muted-foreground hover:text-foreground text-[11px]">
-												<input
-													type="checkbox"
-													checked={glare}
-													onChange={(e) => setGlare(e.target.checked)}
-													className="rounded border-border accent-primary cursor-pointer"
-												/>
+											<label className='text-muted-foreground hover:text-foreground flex cursor-pointer items-center gap-1.5 text-[11px]'>
+												<input type='checkbox' checked={glare} onChange={(e) => setGlare(e.target.checked)} className='border-border accent-primary cursor-pointer rounded' />
 												<span>Glare</span>
 											</label>
 										</>
 									)}
 
 									{component.slug === 'stacking-cards' && (
-										<div className="flex items-center gap-2">
-											<Sliders className="h-3.5 w-3.5 text-muted-foreground" />
-											<span className="text-muted-foreground text-[11px]">Offset:</span>
-											<input
-												type="range"
-												min="10"
-												max="40"
-												value={stackOffset}
-												onChange={(e) => setStackOffset(Number(e.target.value))}
-												className="w-28 accent-primary h-1.5 cursor-pointer"
-											/>
-											<span className="font-mono text-[11px] font-bold w-8">{stackOffset}px</span>
+										<div className='flex items-center gap-2'>
+											<Sliders className='text-muted-foreground h-3.5 w-3.5' />
+											<span className='text-muted-foreground text-[11px]'>Offset:</span>
+											<input type='range' min='10' max='40' value={stackOffset} onChange={(e) => setStackOffset(Number(e.target.value))} className='accent-primary h-1.5 w-28 cursor-pointer' />
+											<span className='w-8 font-mono text-[11px] font-bold'>{stackOffset}px</span>
 										</div>
 									)}
 
 									{component.slug === 'horizontal-scroller' && (
-										<div className="flex items-center gap-2">
-											<Sliders className="h-3.5 w-3.5 text-muted-foreground" />
-											<span className="text-muted-foreground text-[11px]">Gap:</span>
-											<input
-												type="range"
-												min="8"
-												max="32"
-												value={scrollGap}
-												onChange={(e) => setScrollGap(Number(e.target.value))}
-												className="w-28 accent-primary h-1.5 cursor-pointer"
-											/>
-											<span className="font-mono text-[11px] font-bold w-8">{scrollGap}px</span>
+										<div className='flex items-center gap-2'>
+											<Sliders className='text-muted-foreground h-3.5 w-3.5' />
+											<span className='text-muted-foreground text-[11px]'>Gap:</span>
+											<input type='range' min='8' max='32' value={scrollGap} onChange={(e) => setScrollGap(Number(e.target.value))} className='accent-primary h-1.5 w-28 cursor-pointer' />
+											<span className='w-8 font-mono text-[11px] font-bold'>{scrollGap}px</span>
 										</div>
 									)}
 
 									{component.slug === 'css-masonry' && (
-										<div className="flex items-center gap-2">
-											<Sliders className="h-3.5 w-3.5 text-muted-foreground" />
-											<span className="text-muted-foreground text-[11px]">Columns:</span>
-											<input
-												type="range"
-												min="2"
-												max="4"
-												value={masonryCols}
-												onChange={(e) => setMasonryCols(Number(e.target.value))}
-												className="w-20 accent-primary h-1.5 cursor-pointer"
-											/>
-											<span className="font-mono text-[11px] font-bold w-4">{masonryCols}</span>
+										<div className='flex items-center gap-2'>
+											<Sliders className='text-muted-foreground h-3.5 w-3.5' />
+											<span className='text-muted-foreground text-[11px]'>Columns:</span>
+											<input type='range' min='2' max='4' value={masonryCols} onChange={(e) => setMasonryCols(Number(e.target.value))} className='accent-primary h-1.5 w-20 cursor-pointer' />
+											<span className='w-4 font-mono text-[11px] font-bold'>{masonryCols}</span>
 										</div>
 									)}
 
 									{component.slug === 'auto-grid' && (
-										<div className="flex items-center gap-2">
-											<Sliders className="h-3.5 w-3.5 text-muted-foreground" />
-											<span className="text-muted-foreground text-[11px]">Min Width:</span>
-											<input
-												type="range"
-												min="150"
-												max="280"
-												value={gridMin}
-												onChange={(e) => setGridMin(Number(e.target.value))}
-												className="w-24 accent-primary h-1.5 cursor-pointer"
-											/>
-											<span className="font-mono text-[11px] font-bold w-12">{gridMin}px</span>
+										<div className='flex items-center gap-2'>
+											<Sliders className='text-muted-foreground h-3.5 w-3.5' />
+											<span className='text-muted-foreground text-[11px]'>Min Width:</span>
+											<input type='range' min='150' max='280' value={gridMin} onChange={(e) => setGridMin(Number(e.target.value))} className='accent-primary h-1.5 w-24 cursor-pointer' />
+											<span className='w-12 font-mono text-[11px] font-bold'>{gridMin}px</span>
 										</div>
 									)}
 
 									{component.slug === 'spotlight-card' && (
-										<div className="flex items-center gap-2">
-											<Sliders className="h-3.5 w-3.5 text-muted-foreground" />
-											<span className="text-muted-foreground text-[11px]">Radius:</span>
+										<div className='flex items-center gap-2'>
+											<Sliders className='text-muted-foreground h-3.5 w-3.5' />
+											<span className='text-muted-foreground text-[11px]'>Radius:</span>
 											<input
-												type="range"
-												min="150"
-												max="600"
-												step="25"
+												type='range'
+												min='150'
+												max='600'
+												step='25'
 												value={spotlightRadius}
 												onChange={(e) => setSpotlightRadius(Number(e.target.value))}
-												className="w-28 accent-primary h-1.5 cursor-pointer"
+												className='accent-primary h-1.5 w-28 cursor-pointer'
 											/>
-											<span className="font-mono text-[11px] font-bold w-10">{spotlightRadius}px</span>
+											<span className='w-10 font-mono text-[11px] font-bold'>{spotlightRadius}px</span>
 										</div>
 									)}
 
 									{component.slug === 'accordion' && (
-										<div className="flex items-center gap-2">
-											<Sliders className="h-3.5 w-3.5 text-muted-foreground" />
-											<span className="text-muted-foreground text-[11px]">Mode:</span>
+										<div className='flex items-center gap-2'>
+											<Sliders className='text-muted-foreground h-3.5 w-3.5' />
+											<span className='text-muted-foreground text-[11px]'>Mode:</span>
 											<button
-												type="button"
+												type='button'
 												onClick={() => setAccordionMode((m) => (m === 'single' ? 'multiple' : 'single'))}
-												className="kbd px-2 py-0.5 text-[11px] font-mono hover:border-primary transition-colors cursor-pointer"
+												className='kbd hover:border-primary cursor-pointer px-2 py-0.5 font-mono text-[11px] transition-colors'
 											>
 												{accordionMode.toUpperCase()}
 											</button>
@@ -962,57 +761,52 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 									)}
 
 									{component.slug === 'infinite-marquee' && (
-										<div className="flex items-center gap-2">
-											<Sliders className="h-3.5 w-3.5 text-muted-foreground" />
-											<span className="text-muted-foreground text-[11px]">Speed:</span>
+										<div className='flex items-center gap-2'>
+											<Sliders className='text-muted-foreground h-3.5 w-3.5' />
+											<span className='text-muted-foreground text-[11px]'>Speed:</span>
 											<input
-												type="range"
-												min="10"
-												max="150"
-												step="5"
+												type='range'
+												min='10'
+												max='150'
+												step='5'
 												value={marqueeSpeed}
 												onChange={(e) => setMarqueeSpeed(Number(e.target.value))}
-												className="w-28 accent-primary h-1.5 cursor-pointer"
+												className='accent-primary h-1.5 w-28 cursor-pointer'
 											/>
-											<span className="font-mono text-[11px] font-bold w-12">{marqueeSpeed}px/s</span>
+											<span className='w-12 font-mono text-[11px] font-bold'>{marqueeSpeed}px/s</span>
 										</div>
 									)}
 
 									{component.slug === 'border-beam' && (
-										<div className="flex items-center gap-2">
-											<Sliders className="h-3.5 w-3.5 text-muted-foreground" />
-											<span className="text-muted-foreground text-[11px]">Duration:</span>
+										<div className='flex items-center gap-2'>
+											<Sliders className='text-muted-foreground h-3.5 w-3.5' />
+											<span className='text-muted-foreground text-[11px]'>Duration:</span>
 											<input
-												type="range"
-												min="2"
-												max="20"
-												step="1"
+												type='range'
+												min='2'
+												max='20'
+												step='1'
 												value={borderBeamDuration}
 												onChange={(e) => setBorderBeamDuration(Number(e.target.value))}
-												className="w-24 accent-primary h-1.5 cursor-pointer"
+												className='accent-primary h-1.5 w-24 cursor-pointer'
 											/>
-											<span className="font-mono text-[11px] font-bold w-6">{borderBeamDuration}s</span>
+											<span className='w-6 font-mono text-[11px] font-bold'>{borderBeamDuration}s</span>
 										</div>
 									)}
 
 									{component.slug === 'animated-sphere' && (
-										<label className="flex items-center gap-1.5 cursor-pointer text-muted-foreground hover:text-foreground text-[11px]">
-											<input
-												type="checkbox"
-												checked={sphereAscii}
-												onChange={(e) => setSphereAscii(e.target.checked)}
-												className="rounded border-border accent-primary cursor-pointer"
-											/>
+										<label className='text-muted-foreground hover:text-foreground flex cursor-pointer items-center gap-1.5 text-[11px]'>
+											<input type='checkbox' checked={sphereAscii} onChange={(e) => setSphereAscii(e.target.checked)} className='border-border accent-primary cursor-pointer rounded' />
 											<span>ASCII Shader Mode</span>
 										</label>
 									)}
 
 									{component.slug === 'number-ticker' && (
-										<div className="flex items-center gap-2">
+										<div className='flex items-center gap-2'>
 											<button
-												type="button"
+												type='button'
 												onClick={() => setTickerValue((v) => (v === 1000 ? 5420 : 1000))}
-												className="kbd px-2 py-0.5 text-[11px] font-mono hover:border-primary transition-colors cursor-pointer"
+												className='kbd hover:border-primary cursor-pointer px-2 py-0.5 font-mono text-[11px] transition-colors'
 											>
 												RETRIGGER ({tickerValue === 1000 ? '-> 5420' : '-> 1000'})
 											</button>
@@ -1020,58 +814,52 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 									)}
 
 									{component.slug === 'magnetic-button' && (
-										<div className="flex items-center gap-2">
-											<Sliders className="h-3.5 w-3.5 text-muted-foreground" />
-											<span className="text-muted-foreground text-[11px]">Strength:</span>
+										<div className='flex items-center gap-2'>
+											<Sliders className='text-muted-foreground h-3.5 w-3.5' />
+											<span className='text-muted-foreground text-[11px]'>Strength:</span>
 											<input
-												type="range"
-												min="0.1"
-												max="0.8"
-												step="0.05"
+												type='range'
+												min='0.1'
+												max='0.8'
+												step='0.05'
 												value={magneticStrength}
 												onChange={(e) => setMagneticStrength(Number(e.target.value))}
-												className="w-24 accent-primary h-1.5 cursor-pointer"
+												className='accent-primary h-1.5 w-24 cursor-pointer'
 											/>
-											<span className="font-mono text-[11px] font-bold w-8">{magneticStrength}</span>
+											<span className='w-8 font-mono text-[11px] font-bold'>{magneticStrength}</span>
 										</div>
 									)}
 								</div>
 							</div>
 						) : (
-							<div className="w-full space-y-4">
+							<div className='w-full space-y-4'>
 								{/* Dependency Info & Dual-View Switcher */}
-								<div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-xl border border-border bg-card/60 p-3.5 text-xs shadow-xs">
-									<div className="flex items-center gap-2.5">
-										<Cpu className="h-4 w-4 text-primary shrink-0" />
-										<div className="flex flex-wrap items-center gap-1.5">
-											<span className="font-semibold text-foreground">Inner Engine:</span>
-											<code className="rounded bg-muted px-2 py-0.5 font-mono text-[11px] text-foreground">
-												{selectedFlavor === 'flutter' ? 'exhuma: ^1.0.0' : '@exhuma/core'}
-											</code>
+								<div className='border-border bg-card/60 flex flex-col justify-between gap-3 rounded-xl border p-3.5 text-xs shadow-xs sm:flex-row sm:items-center'>
+									<div className='flex items-center gap-2.5'>
+										<Cpu className='text-primary h-4 w-4 shrink-0' />
+										<div className='flex flex-wrap items-center gap-1.5'>
+											<span className='text-foreground font-semibold'>Inner Engine:</span>
+											<code className='bg-muted text-foreground rounded px-2 py-0.5 font-mono text-[11px]'>{selectedFlavor === 'flutter' ? 'exhuma: ^1.0.0' : '@exhuma/core'}</code>
 										</div>
 									</div>
 
-									<div className="flex items-center gap-1 rounded-lg border border-border bg-muted/40 p-1">
+									<div className='border-border bg-muted/40 flex items-center gap-1 rounded-lg border p-1'>
 										<button
-											type="button"
+											type='button'
 											onClick={() => setCodeMode('clean')}
 											className={cn(
-												'rounded-md px-2.5 py-1 text-[11px] font-medium transition-colors cursor-pointer',
-												codeMode === 'clean'
-													? 'bg-card text-foreground shadow-xs font-semibold'
-													: 'text-muted-foreground hover:text-foreground'
+												'cursor-pointer rounded-md px-2.5 py-1 text-[11px] font-medium transition-colors',
+												codeMode === 'clean' ? 'bg-card text-foreground font-semibold shadow-xs' : 'text-muted-foreground hover:text-foreground'
 											)}
 										>
 											✨ Clean (Shadcn)
 										</button>
 										<button
-											type="button"
+											type='button'
 											onClick={() => setCodeMode('ejected')}
 											className={cn(
-												'rounded-md px-2.5 py-1 text-[11px] font-medium transition-colors cursor-pointer',
-												codeMode === 'ejected'
-													? 'bg-card text-foreground shadow-xs font-semibold'
-													: 'text-muted-foreground hover:text-foreground'
+												'cursor-pointer rounded-md px-2.5 py-1 text-[11px] font-medium transition-colors',
+												codeMode === 'ejected' ? 'bg-card text-foreground font-semibold shadow-xs' : 'text-muted-foreground hover:text-foreground'
 											)}
 										>
 											⚙️ Ejected Engine
@@ -1081,29 +869,19 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 
 								<CodeBlock
 									code={generatedCode}
-									language={
-										selectedFlavor === 'flutter'
-											? 'dart'
-											: selectedFlavor === 'blade'
-											? 'php'
-											: selectedFlavor === 'vue'
-											? 'vue'
-											: selectedFlavor === 'svelte'
-											? 'svelte'
-											: 'tsx'
-									}
+									language={selectedFlavor === 'flutter' ? 'dart' : selectedFlavor === 'blade' ? 'php' : selectedFlavor === 'vue' ? 'vue' : selectedFlavor === 'svelte' ? 'svelte' : 'tsx'}
 									filename={`${component.name.replace(/\s+/g, '')}.${
 										selectedFlavor === 'flutter'
 											? 'dart'
 											: selectedFlavor === 'blade'
-											? 'blade.php'
-											: selectedFlavor === 'vue'
-											? 'vue'
-											: selectedFlavor === 'svelte'
-											? 'svelte'
-											: selectedFlavor === 'angular'
-											? 'component.ts'
-											: 'tsx'
+												? 'blade.php'
+												: selectedFlavor === 'vue'
+													? 'vue'
+													: selectedFlavor === 'svelte'
+														? 'svelte'
+														: selectedFlavor === 'angular'
+															? 'component.ts'
+															: 'tsx'
 									}`}
 								/>
 							</div>
@@ -1113,42 +891,32 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 			</section>
 
 			{/* Props API Reference Table */}
-			<section id="props-api" className="space-y-4 pt-4 border-t border-border">
+			<section id='props-api' className='border-border space-y-4 border-t pt-4'>
 				<div>
-					<Badge variant="outline" className="mb-1">API Contract</Badge>
-					<h2 className="text-xl font-bold tracking-tight text-foreground">
-						Props & Configuration
-					</h2>
-					<p className="text-xs sm:text-sm text-muted-foreground">
-						Every parameter is statically type-checked and validated across all 13 ecosystem target templates.
-					</p>
+					<Badge variant='outline' className='mb-1'>
+						API Contract
+					</Badge>
+					<h2 className='text-foreground text-xl font-bold tracking-tight'>Props & Configuration</h2>
+					<p className='text-muted-foreground text-xs sm:text-sm'>Every parameter is statically type-checked and validated across all 13 ecosystem target templates.</p>
 				</div>
 
-				<div className="overflow-x-auto rounded-2xl border border-border bg-card shadow-xs">
-					<table className="w-full text-left text-xs">
-						<thead className="bg-muted/50 font-mono text-[11px] uppercase tracking-wider text-muted-foreground border-b border-border">
+				<div className='border-border bg-card overflow-x-auto rounded-2xl border shadow-xs'>
+					<table className='w-full text-left text-xs'>
+						<thead className='bg-muted/50 text-muted-foreground border-border border-b font-mono text-[11px] tracking-wider uppercase'>
 							<tr>
-								<th className="px-4 py-3">Prop</th>
-								<th className="px-4 py-3">Type</th>
-								<th className="px-4 py-3">Default</th>
-								<th className="px-4 py-3">Description</th>
+								<th className='px-4 py-3'>Prop</th>
+								<th className='px-4 py-3'>Type</th>
+								<th className='px-4 py-3'>Default</th>
+								<th className='px-4 py-3'>Description</th>
 							</tr>
 						</thead>
-						<tbody className="divide-y divide-border">
+						<tbody className='divide-border divide-y'>
 							{component.props.map((p) => (
-								<tr key={p.name} className="hover:bg-muted/30 transition-colors">
-									<td className="px-4 py-3 font-mono font-bold text-primary">
-										{p.name}
-									</td>
-									<td className="px-4 py-3 font-mono text-muted-foreground">
-										{p.type}
-									</td>
-									<td className="px-4 py-3 font-mono text-foreground font-semibold">
-										{String(p.defaultValue)}
-									</td>
-									<td className="px-4 py-3 text-muted-foreground leading-relaxed">
-										{p.description || 'Configures dynamic calculation parameters.'}
-									</td>
+								<tr key={p.name} className='hover:bg-muted/30 transition-colors'>
+									<td className='text-primary px-4 py-3 font-mono font-bold'>{p.name}</td>
+									<td className='text-muted-foreground px-4 py-3 font-mono'>{p.type}</td>
+									<td className='text-foreground px-4 py-3 font-mono font-semibold'>{String(p.defaultValue)}</td>
+									<td className='text-muted-foreground px-4 py-3 leading-relaxed'>{p.description || 'Configures dynamic calculation parameters.'}</td>
 								</tr>
 							))}
 						</tbody>
@@ -1157,90 +925,82 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 			</section>
 
 			{/* Architectural Guarantees & Lifecycle Cleanup */}
-			<section id="lifecycle-safety" className="space-y-4 pt-4 border-t border-border">
+			<section id='lifecycle-safety' className='border-border space-y-4 border-t pt-4'>
 				<div>
-					<Badge variant="outline" className="mb-1">Architecture</Badge>
-					<h2 className="text-xl font-bold tracking-tight text-foreground">
-						Lifecycle Safety & Performance
-					</h2>
-					<p className="text-xs sm:text-sm text-muted-foreground">
-						Designed for high-frequency user interactions with zero memory leaks.
-					</p>
+					<Badge variant='outline' className='mb-1'>
+						Architecture
+					</Badge>
+					<h2 className='text-foreground text-xl font-bold tracking-tight'>Lifecycle Safety & Performance</h2>
+					<p className='text-muted-foreground text-xs sm:text-sm'>Designed for high-frequency user interactions with zero memory leaks.</p>
 				</div>
 
-				<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-					<div className="rounded-xl border border-border bg-card p-4 shadow-xs">
-						<div className="flex items-center gap-2 text-xs font-bold text-foreground mb-2">
-							<ShieldCheck className="h-4 w-4 text-emerald-500" />
+				<div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
+					<div className='border-border bg-card rounded-xl border p-4 shadow-xs'>
+						<div className='text-foreground mb-2 flex items-center gap-2 text-xs font-bold'>
+							<ShieldCheck className='h-4 w-4 text-emerald-500' />
 							<span>Deterministic Cleanup</span>
 						</div>
-						<p className="text-xs text-muted-foreground leading-relaxed">
+						<p className='text-muted-foreground text-xs leading-relaxed'>
 							All pointer event listeners, scroll handlers, and resize observers are cleanly destroyed on component unmount, preventing lingering background processes.
 						</p>
 					</div>
 
-					<div className="rounded-xl border border-border bg-card p-4 shadow-xs">
-						<div className="flex items-center gap-2 text-xs font-bold text-foreground mb-2">
-							<Sparkles className="h-4 w-4 text-primary" />
+					<div className='border-border bg-card rounded-xl border p-4 shadow-xs'>
+						<div className='text-foreground mb-2 flex items-center gap-2 text-xs font-bold'>
+							<Sparkles className='text-primary h-4 w-4' />
 							<span>GPU Compositor Acceleration</span>
 						</div>
-						<p className="text-xs text-muted-foreground leading-relaxed">
-							Transform and opacity modifications run directly on the GPU compositor thread using <code className="font-mono text-foreground text-[11px]">will-change: transform</code> without triggering browser layout recalcs.
+						<p className='text-muted-foreground text-xs leading-relaxed'>
+							Transform and opacity modifications run directly on the GPU compositor thread using <code className='text-foreground font-mono text-[11px]'>will-change: transform</code> without triggering
+							browser layout recalcs.
 						</p>
 					</div>
 				</div>
 			</section>
 
 			{/* Accessibility (a11y) */}
-			<section id="accessibility" className="space-y-4 pt-4 border-t border-border">
+			<section id='accessibility' className='border-border space-y-4 border-t pt-4'>
 				<div>
-					<Badge variant="outline" className="mb-1">a11y</Badge>
-					<h2 className="text-xl font-bold tracking-tight text-foreground">
-						Accessibility Considerations
-					</h2>
-					<p className="text-xs sm:text-sm text-muted-foreground">
-						Fully compliant with WCAG guidelines and respects user motion preferences.
-					</p>
+					<Badge variant='outline' className='mb-1'>
+						a11y
+					</Badge>
+					<h2 className='text-foreground text-xl font-bold tracking-tight'>Accessibility Considerations</h2>
+					<p className='text-muted-foreground text-xs sm:text-sm'>Fully compliant with WCAG guidelines and respects user motion preferences.</p>
 				</div>
 
-				<div className="rounded-2xl border border-border bg-card p-5 space-y-3">
-					<div className="flex items-center gap-2 text-xs font-bold text-foreground">
-						<Accessibility className="h-4 w-4 text-primary" />
+				<div className='border-border bg-card space-y-3 rounded-2xl border p-5'>
+					<div className='text-foreground flex items-center gap-2 text-xs font-bold'>
+						<Accessibility className='text-primary h-4 w-4' />
 						<span>prefers-reduced-motion Support</span>
 					</div>
-					<p className="text-xs text-muted-foreground leading-relaxed">
-						When a user has <code className="font-mono text-foreground text-[11px]">prefers-reduced-motion: reduce</code> enabled in their operating system, Exhuma components automatically disable 3D gyroscope tilt and spring animations, rendering static accessible content.
+					<p className='text-muted-foreground text-xs leading-relaxed'>
+						When a user has <code className='text-foreground font-mono text-[11px]'>prefers-reduced-motion: reduce</code> enabled in their operating system, Exhuma components automatically disable 3D
+						gyroscope tilt and spring animations, rendering static accessible content.
 					</p>
 				</div>
 			</section>
 
 			{/* Previous / Next Navigation */}
-			<div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 pt-8 border-t border-border">
+			<div className='border-border flex flex-col items-stretch justify-between gap-4 border-t pt-8 sm:flex-row sm:items-center'>
 				{prevComp ? (
-					<Link
-						href={`/docs/components/${prevComp.slug}`}
-						className="flex items-center gap-3 rounded-xl border border-border p-4 hover:bg-muted/50 transition-colors flex-1"
-					>
-						<ArrowLeft className="h-4 w-4 text-muted-foreground shrink-0" />
-						<div className="text-left">
-							<div className="text-[10px] uppercase font-mono text-muted-foreground">Previous</div>
-							<div className="text-xs font-bold text-foreground">{prevComp.name}</div>
+					<Link href={`/docs/components/${prevComp.slug}`} className='border-border hover:bg-muted/50 flex flex-1 items-center gap-3 rounded-xl border p-4 transition-colors'>
+						<ArrowLeft className='text-muted-foreground h-4 w-4 shrink-0' />
+						<div className='text-left'>
+							<div className='text-muted-foreground font-mono text-[10px] uppercase'>Previous</div>
+							<div className='text-foreground text-xs font-bold'>{prevComp.name}</div>
 						</div>
 					</Link>
 				) : (
-					<div className="flex-1" />
+					<div className='flex-1' />
 				)}
 
 				{nextComp && (
-					<Link
-						href={`/docs/components/${nextComp.slug}`}
-						className="flex items-center justify-end gap-3 rounded-xl border border-border p-4 hover:bg-muted/50 transition-colors flex-1"
-					>
-						<div className="text-right">
-							<div className="text-[10px] uppercase font-mono text-muted-foreground">Next</div>
-							<div className="text-xs font-bold text-foreground">{nextComp.name}</div>
+					<Link href={`/docs/components/${nextComp.slug}`} className='border-border hover:bg-muted/50 flex flex-1 items-center justify-end gap-3 rounded-xl border p-4 transition-colors'>
+						<div className='text-right'>
+							<div className='text-muted-foreground font-mono text-[10px] uppercase'>Next</div>
+							<div className='text-foreground text-xs font-bold'>{nextComp.name}</div>
 						</div>
-						<ArrowRight className="h-4 w-4 text-muted-foreground shrink-0" />
+						<ArrowRight className='text-muted-foreground h-4 w-4 shrink-0' />
 					</Link>
 				)}
 			</div>

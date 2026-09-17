@@ -13,16 +13,7 @@ import { calculateSpotlightCoordinates } from './spotlight-math';
  * - Sub-pixel radial border illumination mask + background gradient fill.
  * - Graceful fade-out on pointer leave / touch cancel.
  */
-export const SpotlightCard: React.FC<SpotlightCardProps> = ({
-	children,
-	radius = 350,
-	color = 'rgba(99, 102, 241, 0.25)',
-	opacity = 0.8,
-	borderColor = 'rgba(99, 102, 241, 0.5)',
-	className = '',
-	style,
-	...props
-}) => {
+export const SpotlightCard: React.FC<SpotlightCardProps> = ({ children, radius = 350, color = 'rgba(99, 102, 241, 0.25)', opacity = 0.8, borderColor = 'rgba(99, 102, 241, 0.5)', className = '', style, ...props }) => {
 	const cardRef = useRef<HTMLDivElement>(null);
 	const rafIdRef = useRef<number | null>(null);
 
@@ -126,8 +117,8 @@ export const SpotlightCard: React.FC<SpotlightCardProps> = ({
 		>
 			{/* Specular Border Glow Mask */}
 			<div
-				aria-hidden="true"
-				className="pointer-events-none absolute -inset-px rounded-[inherit] opacity-[var(--exhuma-spotlight-opacity,0)] transition-opacity duration-300"
+				aria-hidden='true'
+				className='pointer-events-none absolute -inset-px rounded-[inherit] opacity-[var(--exhuma-spotlight-opacity,0)] transition-opacity duration-300'
 				style={{
 					background: `radial-gradient(var(--exhuma-spotlight-radius) circle at var(--exhuma-spotlight-x, -9999px) var(--exhuma-spotlight-y, -9999px), var(--exhuma-spotlight-border-color), transparent 80%)`,
 					WebkitMask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
@@ -139,15 +130,15 @@ export const SpotlightCard: React.FC<SpotlightCardProps> = ({
 
 			{/* Background Radial Sheen */}
 			<div
-				aria-hidden="true"
-				className="pointer-events-none absolute inset-0 opacity-[var(--exhuma-spotlight-opacity,0)] transition-opacity duration-300"
+				aria-hidden='true'
+				className='pointer-events-none absolute inset-0 opacity-[var(--exhuma-spotlight-opacity,0)] transition-opacity duration-300'
 				style={{
 					background: `radial-gradient(var(--exhuma-spotlight-radius) circle at var(--exhuma-spotlight-x, -9999px) var(--exhuma-spotlight-y, -9999px), var(--exhuma-spotlight-color), transparent 80%)`,
 				}}
 			/>
 
 			{/* Content Slot */}
-			<div className="relative z-10">{children}</div>
+			<div className='relative z-10'>{children}</div>
 		</div>
 	);
 };

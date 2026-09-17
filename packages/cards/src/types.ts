@@ -175,4 +175,3 @@ export interface BorderBeamProps {
 export type { CardSwipeStackProps } from './CardSwipeStack/CardSwipeStack';
 export type { ComparisonSliderProps } from './ComparisonSlider/ComparisonSlider';
 export type { ExpandableCardProps } from './ExpandableCard/ExpandableCard';
-

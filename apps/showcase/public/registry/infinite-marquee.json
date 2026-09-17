@@ -1,188 +1,168 @@
 {
-  "name": "Infinite Marquee",
-  "slug": "infinite-marquee",
-  "category": "layouts",
-  "description": "High-performance rAF continuous translation loop with modulo wrap, exponential hover damping, and zero external animation libraries.",
-  "version": "1.0.0",
-  "props": [
-    {
-      "name": "speed",
-      "label": "Scroll Speed (px/s)",
-      "type": "number",
-      "defaultValue": 40,
-      "min": 10,
-      "max": 200,
-      "step": 5,
-      "description": "Scroll speed in pixels per second."
-    },
-    {
-      "name": "direction",
-      "label": "Direction",
-      "type": "select",
-      "defaultValue": "left",
-      "options": [
-        {
-          "label": "Left",
-          "value": "left"
-        },
-        {
-          "label": "Right",
-          "value": "right"
-        }
-      ],
-      "description": "Direction of marquee translation."
-    },
-    {
-      "name": "pauseOnHover",
-      "label": "Pause On Hover",
-      "type": "boolean",
-      "defaultValue": true,
-      "description": "Smoothly decelerate to zero when hovered."
-    },
-    {
-      "name": "gap",
-      "label": "Item Gap",
-      "type": "string",
-      "defaultValue": "1.5rem",
-      "description": "Spacing between items and repeated tracks."
-    }
-  ],
-  "dependencies": {
-    "react": [
-      "@exhuma/core"
-    ],
-    "nextjs": [
-      "@exhuma/core"
-    ],
-    "vue": [
-      "@exhuma/core"
-    ],
-    "svelte": [
-      "@exhuma/core"
-    ],
-    "solid": [
-      "@exhuma/core"
-    ],
-    "angular": [
-      "@exhuma/core"
-    ],
-    "astro": [
-      "@exhuma/core"
-    ],
-    "vanilla": [
-      "@exhuma/core"
-    ],
-    "react-native": [
-      "@exhuma/core"
-    ],
-    "flutter": [
-      "exhuma"
-    ]
-  },
-  "flavors": {
-    "react": [
-      {
-        "filename": "InfiniteMarquee.tsx",
-        "language": "tsx",
-        "description": "Infinite Marquee — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
-        "code": "import * as React from 'react';\nimport * as InfiniteMarqueePrimitive from '@exhuma/core';\nimport { cn } from '@/lib/utils';\n\nexport interface InfiniteMarqueeProps extends React.ComponentPropsWithoutRef<typeof InfiniteMarqueePrimitive.InfiniteMarquee> {\n  className?: string;\n}\n\nexport const InfiniteMarquee = React.forwardRef<HTMLDivElement, InfiniteMarqueeProps>(\n  ({ className, children, ...props }, ref) => (\n    <InfiniteMarqueePrimitive.InfiniteMarquee\n      ref={ref}\n      className={cn(\n        'relative flex overflow-hidden select-none w-full py-4 [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </InfiniteMarqueePrimitive.InfiniteMarquee>\n  )\n);\nInfiniteMarquee.displayName = 'InfiniteMarquee';\n"
-      }
-    ],
-    "nextjs": [
-      {
-        "filename": "InfiniteMarquee.tsx",
-        "language": "tsx",
-        "description": "Infinite Marquee — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
-        "code": "'use client';\n\nimport * as React from 'react';\nimport * as InfiniteMarqueePrimitive from '@exhuma/core';\nimport { cn } from '@/lib/utils';\n\nexport interface InfiniteMarqueeProps extends React.ComponentPropsWithoutRef<typeof InfiniteMarqueePrimitive.InfiniteMarquee> {\n  className?: string;\n}\n\nexport const InfiniteMarquee = React.forwardRef<HTMLDivElement, InfiniteMarqueeProps>(\n  ({ className, children, ...props }, ref) => (\n    <InfiniteMarqueePrimitive.InfiniteMarquee\n      ref={ref}\n      className={cn(\n        'relative flex overflow-hidden select-none w-full py-4 [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </InfiniteMarqueePrimitive.InfiniteMarquee>\n  )\n);\nInfiniteMarquee.displayName = 'InfiniteMarquee';\n"
-      }
-    ],
-    "vue": [
-      {
-        "filename": "InfiniteMarquee.vue",
-        "language": "vue",
-        "description": "Vue 3 Infinite Marquee outer adapter wrapping @exhuma/core headless primitive.",
-        "code": "<script setup lang=\"ts\">\nimport { InfiniteMarquee as InfiniteMarqueePrimitive } from '@exhuma/core';\nimport { cn } from '@/lib/utils';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst props = withDefaults(defineProps<Props>(), {\n  class: '',\n});\n</script>\n\n<template>\n  <InfiniteMarqueePrimitive\n    v-bind=\"props\"\n    :class=\"cn('relative flex overflow-hidden select-none w-full py-4 [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]', props.class)\"\n  >\n    <slot />\n  </InfiniteMarqueePrimitive>\n</template>\n"
-      }
-    ],
-    "svelte": [
-      {
-        "filename": "InfiniteMarquee.svelte",
-        "language": "svelte",
-        "description": "Svelte 5 Infinite Marquee adapter using runes and @exhuma/core primitives.",
-        "code": "<script lang=\"ts\">\n  import { InfiniteMarquee as InfiniteMarqueePrimitive } from '@exhuma/core';\n  import { cn } from '$lib/utils';\n\n  let {\n    class: className = '',\n    children,\n    ...restProps\n  }: {\n    class?: string;\n    children?: import('svelte').Snippet;\n    [key: string]: unknown;\n  } = $props();\n</script>\n\n<InfiniteMarqueePrimitive\n  class={cn('relative flex overflow-hidden select-none w-full py-4 [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]', className)}\n  {...restProps}\n>\n  {@render children?.()}\n</InfiniteMarqueePrimitive>\n"
-      }
-    ],
-    "angular": [
-      {
-        "filename": "infinite-marquee.component.ts",
-        "language": "typescript",
-        "description": "Angular 18+ Standalone Infinite Marquee component.",
-        "code": "import { Component, input } from '@angular/core';\nimport { CommonModule } from '@angular/common';\n\n@Component({\n  selector: 'exhuma-infinite-marquee',\n  standalone: true,\n  imports: [CommonModule],\n  template: `\n    <div\n      class=\"relative flex overflow-hidden select-none w-full py-4 [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)] {{ customClass() }}\"\n    >\n      <ng-content></ng-content>\n    </div>\n  `,\n})\nexport class ExhumaInfiniteMarqueeComponent {\n  readonly customClass = input<string>('');\n}\n"
-      }
-    ],
-    "solid": [
-      {
-        "filename": "InfiniteMarquee.tsx",
-        "language": "tsx",
-        "description": "SolidJS Infinite Marquee adapter wrapping @exhuma/core headless primitive.",
-        "code": "import { Component, JSX, splitProps } from 'solid-js';\nimport * as InfiniteMarqueePrimitive from '@exhuma/core';\n\nexport interface InfiniteMarqueeProps extends JSX.HTMLAttributes<HTMLDivElement> {\n  [key: string]: unknown;\n}\n\nexport const InfiniteMarquee: Component<InfiniteMarqueeProps> = (props) => {\n  const [local, others] = splitProps(props, ['class', 'children']);\n  return (\n    <InfiniteMarqueePrimitive.InfiniteMarquee\n      class={`relative flex overflow-hidden select-none w-full py-4 [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)] ${local.class ?? ''}`}\n      {...others}\n    >\n      {local.children}\n    </InfiniteMarqueePrimitive.InfiniteMarquee>\n  );\n};\n"
-      }
-    ],
-    "astro": [
-      {
-        "filename": "InfiniteMarquee.astro",
-        "language": "astro",
-        "description": "Astro Infinite Marquee component with @exhuma/core primitive.",
-        "code": "---\nimport * as InfiniteMarqueePrimitive from '@exhuma/core';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst { class: className = '', ...props } = Astro.props;\n---\n\n<InfiniteMarqueePrimitive.InfiniteMarquee\n  client:visible\n  className={`relative flex overflow-hidden select-none w-full py-4 [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)] ${className}`}\n  {...props}\n>\n  <slot />\n</InfiniteMarqueePrimitive.InfiniteMarquee>\n"
-      }
-    ],
-    "blade": [
-      {
-        "filename": "infinite-marquee.blade.php",
-        "language": "php",
-        "description": "Laravel Blade component for Infinite Marquee with Alpine / data attributes.",
-        "code": "@props([])\n\n<exhuma-infinite-marquee\n    {{ $attributes->merge([\n        'class' => 'relative flex overflow-hidden select-none w-full py-4 [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)] block',\n    ]) }}\n>\n    {{ $slot }}\n</exhuma-infinite-marquee>\n"
-      }
-    ],
-    "vanilla": [
-      {
-        "filename": "exhuma-infinite-marquee.js",
-        "language": "javascript",
-        "description": "Autonomous Vanilla JS Infinite Marquee initialization module.",
-        "code": "import { InfiniteMarquee } from '@exhuma/core';\n\nexport function initInfiniteMarquee(selector = '[data-exhuma-infinite-marquee]', options = {}) {\n  const elements = document.querySelectorAll(selector);\n  return Array.from(elements);\n}\n"
-      }
-    ],
-    "wordpress": [
-      {
-        "filename": "block.json",
-        "language": "json",
-        "description": "WordPress Block API v3 definition for Infinite Marquee.",
-        "code": "{\n  \"$schema\": \"https://schemas.wp.org/trunk/block.json\",\n  \"apiVersion\": 3,\n  \"name\": \"exhuma/infinite-marquee\",\n  \"version\": \"1.0.0\",\n  \"title\": \"Exhuma Infinite Marquee\",\n  \"category\": \"design\",\n  \"icon\": \"art\",\n  \"description\": \"High-performance continuous translation loop with modulo wrap.\",\n  \"attributes\": {},\n  \"editorScript\": \"file:./index.js\",\n  \"viewScript\": \"exhuma-kinetic\"\n}"
-      }
-    ],
-    "webcomponent": [
-      {
-        "filename": "exhuma-infinite-marquee.js",
-        "language": "javascript",
-        "description": "Universal Web Component wrapper for <exhuma-infinite-marquee>.",
-        "code": "import { InfiniteMarquee } from '@exhuma/core';\n\nclass ExhumaInfiniteMarqueeElement extends HTMLElement {\n  connectedCallback() {\n    this.classList.add('exhuma-infinite-marquee');\n    this.style.display = 'block';\n  }\n}\n\nif (!customElements.get('exhuma-infinite-marquee')) {\n  customElements.define('exhuma-infinite-marquee', ExhumaInfiniteMarqueeElement);\n}\n"
-      }
-    ],
-    "react-native": [
-      {
-        "filename": "InfiniteMarquee.tsx",
-        "language": "tsx",
-        "description": "React Native Infinite Marquee adapter wrapping @exhuma/core touch primitive.",
-        "code": "import React from 'react';\nimport { View, StyleSheet, type ViewProps } from 'react-native';\nimport * as InfiniteMarqueePrimitive from '@exhuma/core';\n\nexport interface InfiniteMarqueeProps extends ViewProps {\n  children?: React.ReactNode;\n}\n\nexport function InfiniteMarquee({ style, children, ...props }: InfiniteMarqueeProps) {\n  return (\n    <View style={[styles.container, style]} {...props}>\n      {children}\n    </View>\n  );\n}\n\nconst styles = StyleSheet.create({\n  container: {\n    borderRadius: 16,\n    borderWidth: 1,\n    borderColor: '#e2e8f0',\n    backgroundColor: '#ffffff',\n    padding: 20,\n    overflow: 'hidden',\n  },\n});\n"
-      }
-    ],
-    "flutter": [
-      {
-        "filename": "infinite_marquee.dart",
-        "language": "dart",
-        "description": "Flutter Infinite Marquee widget wrapping package:exhuma.",
-        "code": "import 'package:flutter/material.dart';\nimport 'package:exhuma/exhuma.dart' as exhuma;\n\nclass ExhumaInfiniteMarquee extends StatelessWidget {\n  final Widget child;\n\n  const ExhumaInfiniteMarquee({\n    super.key,\n    required this.child,\n  });\n\n  @override\n  Widget build(BuildContext context) {\n    return Container(\n      decoration: BoxDecoration(\n        borderRadius: BorderRadius.circular(16.0),\n        border: Border.all(color: Theme.of(context).dividerColor),\n        color: Theme.of(context).cardColor,\n      ),\n      padding: const EdgeInsets.all(20.0),\n      child: child,\n    );\n  }\n}\n"
-      }
-    ]
-  }
+	"name": "Infinite Marquee",
+	"slug": "infinite-marquee",
+	"category": "layouts",
+	"description": "High-performance rAF continuous translation loop with modulo wrap, exponential hover damping, and zero external animation libraries.",
+	"version": "1.0.0",
+	"props": [
+		{
+			"name": "speed",
+			"label": "Scroll Speed (px/s)",
+			"type": "number",
+			"defaultValue": 40,
+			"min": 10,
+			"max": 200,
+			"step": 5,
+			"description": "Scroll speed in pixels per second."
+		},
+		{
+			"name": "direction",
+			"label": "Direction",
+			"type": "select",
+			"defaultValue": "left",
+			"options": [
+				{
+					"label": "Left",
+					"value": "left"
+				},
+				{
+					"label": "Right",
+					"value": "right"
+				}
+			],
+			"description": "Direction of marquee translation."
+		},
+		{
+			"name": "pauseOnHover",
+			"label": "Pause On Hover",
+			"type": "boolean",
+			"defaultValue": true,
+			"description": "Smoothly decelerate to zero when hovered."
+		},
+		{
+			"name": "gap",
+			"label": "Item Gap",
+			"type": "string",
+			"defaultValue": "1.5rem",
+			"description": "Spacing between items and repeated tracks."
+		}
+	],
+	"dependencies": {
+		"react": ["@exhuma/core"],
+		"nextjs": ["@exhuma/core"],
+		"vue": ["@exhuma/core"],
+		"svelte": ["@exhuma/core"],
+		"solid": ["@exhuma/core"],
+		"angular": ["@exhuma/core"],
+		"astro": ["@exhuma/core"],
+		"vanilla": ["@exhuma/core"],
+		"react-native": ["@exhuma/core"],
+		"flutter": ["exhuma"]
+	},
+	"flavors": {
+		"react": [
+			{
+				"filename": "InfiniteMarquee.tsx",
+				"language": "tsx",
+				"description": "Infinite Marquee — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
+				"code": "import * as React from 'react';\nimport * as InfiniteMarqueePrimitive from '@exhuma/core';\nimport { cn } from '@/lib/utils';\n\nexport interface InfiniteMarqueeProps extends React.ComponentPropsWithoutRef<typeof InfiniteMarqueePrimitive.InfiniteMarquee> {\n  className?: string;\n}\n\nexport const InfiniteMarquee = React.forwardRef<HTMLDivElement, InfiniteMarqueeProps>(\n  ({ className, children, ...props }, ref) => (\n    <InfiniteMarqueePrimitive.InfiniteMarquee\n      ref={ref}\n      className={cn(\n        'relative flex overflow-hidden select-none w-full py-4 [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </InfiniteMarqueePrimitive.InfiniteMarquee>\n  )\n);\nInfiniteMarquee.displayName = 'InfiniteMarquee';\n"
+			}
+		],
+		"nextjs": [
+			{
+				"filename": "InfiniteMarquee.tsx",
+				"language": "tsx",
+				"description": "Infinite Marquee — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
+				"code": "'use client';\n\nimport * as React from 'react';\nimport * as InfiniteMarqueePrimitive from '@exhuma/core';\nimport { cn } from '@/lib/utils';\n\nexport interface InfiniteMarqueeProps extends React.ComponentPropsWithoutRef<typeof InfiniteMarqueePrimitive.InfiniteMarquee> {\n  className?: string;\n}\n\nexport const InfiniteMarquee = React.forwardRef<HTMLDivElement, InfiniteMarqueeProps>(\n  ({ className, children, ...props }, ref) => (\n    <InfiniteMarqueePrimitive.InfiniteMarquee\n      ref={ref}\n      className={cn(\n        'relative flex overflow-hidden select-none w-full py-4 [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </InfiniteMarqueePrimitive.InfiniteMarquee>\n  )\n);\nInfiniteMarquee.displayName = 'InfiniteMarquee';\n"
+			}
+		],
+		"vue": [
+			{
+				"filename": "InfiniteMarquee.vue",
+				"language": "vue",
+				"description": "Vue 3 Infinite Marquee outer adapter wrapping @exhuma/core headless primitive.",
+				"code": "<script setup lang=\"ts\">\nimport { InfiniteMarquee as InfiniteMarqueePrimitive } from '@exhuma/core';\nimport { cn } from '@/lib/utils';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst props = withDefaults(defineProps<Props>(), {\n  class: '',\n});\n</script>\n\n<template>\n  <InfiniteMarqueePrimitive\n    v-bind=\"props\"\n    :class=\"cn('relative flex overflow-hidden select-none w-full py-4 [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]', props.class)\"\n  >\n    <slot />\n  </InfiniteMarqueePrimitive>\n</template>\n"
+			}
+		],
+		"svelte": [
+			{
+				"filename": "InfiniteMarquee.svelte",
+				"language": "svelte",
+				"description": "Svelte 5 Infinite Marquee adapter using runes and @exhuma/core primitives.",
+				"code": "<script lang=\"ts\">\n  import { InfiniteMarquee as InfiniteMarqueePrimitive } from '@exhuma/core';\n  import { cn } from '$lib/utils';\n\n  let {\n    class: className = '',\n    children,\n    ...restProps\n  }: {\n    class?: string;\n    children?: import('svelte').Snippet;\n    [key: string]: unknown;\n  } = $props();\n</script>\n\n<InfiniteMarqueePrimitive\n  class={cn('relative flex overflow-hidden select-none w-full py-4 [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]', className)}\n  {...restProps}\n>\n  {@render children?.()}\n</InfiniteMarqueePrimitive>\n"
+			}
+		],
+		"angular": [
+			{
+				"filename": "infinite-marquee.component.ts",
+				"language": "typescript",
+				"description": "Angular 18+ Standalone Infinite Marquee component.",
+				"code": "import { Component, input } from '@angular/core';\nimport { CommonModule } from '@angular/common';\n\n@Component({\n  selector: 'exhuma-infinite-marquee',\n  standalone: true,\n  imports: [CommonModule],\n  template: `\n    <div\n      class=\"relative flex overflow-hidden select-none w-full py-4 [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)] {{ customClass() }}\"\n    >\n      <ng-content></ng-content>\n    </div>\n  `,\n})\nexport class ExhumaInfiniteMarqueeComponent {\n  readonly customClass = input<string>('');\n}\n"
+			}
+		],
+		"solid": [
+			{
+				"filename": "InfiniteMarquee.tsx",
+				"language": "tsx",
+				"description": "SolidJS Infinite Marquee adapter wrapping @exhuma/core headless primitive.",
+				"code": "import { Component, JSX, splitProps } from 'solid-js';\nimport * as InfiniteMarqueePrimitive from '@exhuma/core';\n\nexport interface InfiniteMarqueeProps extends JSX.HTMLAttributes<HTMLDivElement> {\n  [key: string]: unknown;\n}\n\nexport const InfiniteMarquee: Component<InfiniteMarqueeProps> = (props) => {\n  const [local, others] = splitProps(props, ['class', 'children']);\n  return (\n    <InfiniteMarqueePrimitive.InfiniteMarquee\n      class={`relative flex overflow-hidden select-none w-full py-4 [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)] ${local.class ?? ''}`}\n      {...others}\n    >\n      {local.children}\n    </InfiniteMarqueePrimitive.InfiniteMarquee>\n  );\n};\n"
+			}
+		],
+		"astro": [
+			{
+				"filename": "InfiniteMarquee.astro",
+				"language": "astro",
+				"description": "Astro Infinite Marquee component with @exhuma/core primitive.",
+				"code": "---\nimport * as InfiniteMarqueePrimitive from '@exhuma/core';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst { class: className = '', ...props } = Astro.props;\n---\n\n<InfiniteMarqueePrimitive.InfiniteMarquee\n  client:visible\n  className={`relative flex overflow-hidden select-none w-full py-4 [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)] ${className}`}\n  {...props}\n>\n  <slot />\n</InfiniteMarqueePrimitive.InfiniteMarquee>\n"
+			}
+		],
+		"blade": [
+			{
+				"filename": "infinite-marquee.blade.php",
+				"language": "php",
+				"description": "Laravel Blade component for Infinite Marquee with Alpine / data attributes.",
+				"code": "@props([])\n\n<exhuma-infinite-marquee\n    {{ $attributes->merge([\n        'class' => 'relative flex overflow-hidden select-none w-full py-4 [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)] block',\n    ]) }}\n>\n    {{ $slot }}\n</exhuma-infinite-marquee>\n"
+			}
+		],
+		"vanilla": [
+			{
+				"filename": "exhuma-infinite-marquee.js",
+				"language": "javascript",
+				"description": "Autonomous Vanilla JS Infinite Marquee initialization module.",
+				"code": "import { InfiniteMarquee } from '@exhuma/core';\n\nexport function initInfiniteMarquee(selector = '[data-exhuma-infinite-marquee]', options = {}) {\n  const elements = document.querySelectorAll(selector);\n  return Array.from(elements);\n}\n"
+			}
+		],
+		"wordpress": [
+			{
+				"filename": "block.json",
+				"language": "json",
+				"description": "WordPress Block API v3 definition for Infinite Marquee.",
+				"code": "{\n  \"$schema\": \"https://schemas.wp.org/trunk/block.json\",\n  \"apiVersion\": 3,\n  \"name\": \"exhuma/infinite-marquee\",\n  \"version\": \"1.0.0\",\n  \"title\": \"Exhuma Infinite Marquee\",\n  \"category\": \"design\",\n  \"icon\": \"art\",\n  \"description\": \"High-performance continuous translation loop with modulo wrap.\",\n  \"attributes\": {},\n  \"editorScript\": \"file:./index.js\",\n  \"viewScript\": \"exhuma-kinetic\"\n}"
+			}
+		],
+		"webcomponent": [
+			{
+				"filename": "exhuma-infinite-marquee.js",
+				"language": "javascript",
+				"description": "Universal Web Component wrapper for <exhuma-infinite-marquee>.",
+				"code": "import { InfiniteMarquee } from '@exhuma/core';\n\nclass ExhumaInfiniteMarqueeElement extends HTMLElement {\n  connectedCallback() {\n    this.classList.add('exhuma-infinite-marquee');\n    this.style.display = 'block';\n  }\n}\n\nif (!customElements.get('exhuma-infinite-marquee')) {\n  customElements.define('exhuma-infinite-marquee', ExhumaInfiniteMarqueeElement);\n}\n"
+			}
+		],
+		"react-native": [
+			{
+				"filename": "InfiniteMarquee.tsx",
+				"language": "tsx",
+				"description": "React Native Infinite Marquee adapter wrapping @exhuma/core touch primitive.",
+				"code": "import React from 'react';\nimport { View, StyleSheet, type ViewProps } from 'react-native';\nimport * as InfiniteMarqueePrimitive from '@exhuma/core';\n\nexport interface InfiniteMarqueeProps extends ViewProps {\n  children?: React.ReactNode;\n}\n\nexport function InfiniteMarquee({ style, children, ...props }: InfiniteMarqueeProps) {\n  return (\n    <View style={[styles.container, style]} {...props}>\n      {children}\n    </View>\n  );\n}\n\nconst styles = StyleSheet.create({\n  container: {\n    borderRadius: 16,\n    borderWidth: 1,\n    borderColor: '#e2e8f0',\n    backgroundColor: '#ffffff',\n    padding: 20,\n    overflow: 'hidden',\n  },\n});\n"
+			}
+		],
+		"flutter": [
+			{
+				"filename": "infinite_marquee.dart",
+				"language": "dart",
+				"description": "Flutter Infinite Marquee widget wrapping package:exhuma.",
+				"code": "import 'package:flutter/material.dart';\nimport 'package:exhuma/exhuma.dart' as exhuma;\n\nclass ExhumaInfiniteMarquee extends StatelessWidget {\n  final Widget child;\n\n  const ExhumaInfiniteMarquee({\n    super.key,\n    required this.child,\n  });\n\n  @override\n  Widget build(BuildContext context) {\n    return Container(\n      decoration: BoxDecoration(\n        borderRadius: BorderRadius.circular(16.0),\n        border: Border.all(color: Theme.of(context).dividerColor),\n        color: Theme.of(context).cardColor,\n      ),\n      padding: const EdgeInsets.all(20.0),\n      child: child,\n    );\n  }\n}\n"
+			}
+		]
+	}
 }

@@ -16,13 +16,7 @@
  * @param direction 'left' translates towards negative x, 'right' towards positive x
  * @param contentWidth Total width of a single un-duplicated track
  */
-export function calculateMarqueeOffset(
-	currentOffset: number,
-	deltaSeconds: number,
-	speed: number,
-	direction: 'left' | 'right',
-	contentWidth: number
-): number {
+export function calculateMarqueeOffset(currentOffset: number, deltaSeconds: number, speed: number, direction: 'left' | 'right', contentWidth: number): number {
 	if (contentWidth <= 0) return 0;
 
 	const deltaMove = speed * deltaSeconds;
@@ -52,11 +46,6 @@ export function calculateMarqueeOffset(
  * @param lambda Smoothing factor (e.g. 10.0 for snappy deceleration)
  * @param dt Delta time in seconds
  */
-export function dampFactor(
-	current: number,
-	target: number,
-	lambda: number,
-	dt: number
-): number {
+export function dampFactor(current: number, target: number, lambda: number, dt: number): number {
 	return target + (current - target) * Math.exp(-lambda * dt);
 }

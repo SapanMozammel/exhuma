@@ -10,11 +10,7 @@
 /**
  * Calculates normalized split ratio p in [0, 1] from pointer coordinate.
  */
-export function calculateSplitPosition(
-	clientX: number,
-	containerLeft: number,
-	containerWidth: number
-): number {
+export function calculateSplitPosition(clientX: number, containerLeft: number, containerWidth: number): number {
 	if (containerWidth <= 0) return 0.5;
 	const raw = (clientX - containerLeft) / containerWidth;
 	return Math.max(0, Math.min(1, raw));

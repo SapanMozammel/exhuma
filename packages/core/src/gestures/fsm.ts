@@ -96,12 +96,7 @@ export interface SlopConfig {
 /**
  * Evaluates whether a touch displacement qualifies as an intentional primary-axis gesture.
  */
-export function checkGestureSlop(
-	dx: number,
-	dy: number,
-	primaryAxis: 'x' | 'y' = 'x',
-	config: SlopConfig = {}
-): { isClaimed: boolean; isRejected: boolean } {
+export function checkGestureSlop(dx: number, dy: number, primaryAxis: 'x' | 'y' = 'x', config: SlopConfig = {}): { isClaimed: boolean; isRejected: boolean } {
 	const threshold = config.distanceThreshold ?? 8;
 	const distance = Math.hypot(dx, dy);
 

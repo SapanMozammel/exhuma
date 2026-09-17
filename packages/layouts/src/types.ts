@@ -184,4 +184,3 @@ export interface InteractiveGridPatternProps extends React.SVGAttributes<SVGSVGE
 	squares?: [number, number];
 	className?: string;
 }
-

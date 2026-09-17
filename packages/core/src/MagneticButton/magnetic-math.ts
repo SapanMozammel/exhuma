@@ -19,14 +19,7 @@ export interface MagneticCoordinates {
  * When pointer is within radius R of center:
  *   displacement = (pointer - center) * strength * (1 - distance / R)
  */
-export function calculateMagneticPull(
-	pointerX: number,
-	pointerY: number,
-	centerX: number,
-	centerY: number,
-	radius: number,
-	strength: number = 0.4
-): MagneticCoordinates {
+export function calculateMagneticPull(pointerX: number, pointerY: number, centerX: number, centerY: number, radius: number, strength: number = 0.4): MagneticCoordinates {
 	const dx = pointerX - centerX;
 	const dy = pointerY - centerY;
 	const distance = Math.hypot(dx, dy);

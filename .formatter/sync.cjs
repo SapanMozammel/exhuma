@@ -273,15 +273,11 @@ const generatePrettierConfig = (config) => {
 // Generate .prettierignore at project root
 const generatePrettierIgnore = () => {
 	return `# Generated from FORMATTER_CONFIG.md
-# Only format files in src folder
+# Monorepo layout: source lives under apps/*/src and packages/*/src,
+# not a single root-level src/ — so this excludes generated/vendor
+# output instead of whitelisting one src folder (which would silently
+# blackhole every workspace package).
 
-# Ignore everything at root level
-/*
-
-# But include src folder
-!/src/
-
-# Standard ignores
 node_modules/
 vendor/
 build/
@@ -290,8 +286,8 @@ dist/
 *.min.css
 *.log
 coverage/
-.cache
-.next
+.cache/
+.next/
 package-lock.json
 yarn.lock
 pnpm-lock.yaml
@@ -302,7 +298,7 @@ Thumbs.db
 *.temp`;
 };
 
-// Generate ESLint flat config (eslint.config.js) for ESLint 9+ / Next.js 16+
+// Generate ESLint flat config (eslint.config.cjs) for ESLint 9+ / Next.js 16+
 const generateESLintConfig = (config) => {
 	// Helper function to get config value with fallback
 	const getConfigValue = (key, fallback) => config[key] !== undefined ? config[key] : fallback;
@@ -323,8 +319,8 @@ const prettierPlugin = require('eslint-plugin-prettier');
 const typescriptParser = require('@typescript-eslint/parser');
 const unicornPlugin = require('eslint-plugin-unicorn').default ?? require('eslint-plugin-unicorn');
 
-// Prettier options from .formatter/.prettierrc.js (strip Prettier-only keys not valid in ESLint rule)
-const { plugins: _p, overrides: _o, ...prettierOptions } = require('./.formatter/.prettierrc.js');
+// Prettier options from .formatter/.prettierrc.cjs (strip Prettier-only keys not valid in ESLint rule)
+const { plugins: _p, overrides: _o, ...prettierOptions } = require('./.formatter/.prettierrc.cjs');
 
 // Tailwind class options for eslint-plugin-better-tailwindcss — mirror VS Code's tailwindCSS.classFunctions
 // and tailwindCSS.experimental.configFile, so CLI lint surfaces the exact diagnostics the IDE shows.
@@ -360,7 +356,7 @@ module.exports = (async () => {
 			},
 		},
 		rules: {
-			// Prettier — reads options from .formatter/.prettierrc.js
+			// Prettier — reads options from .formatter/.prettierrc.cjs
 			'prettier/prettier': ['error', prettierOptions],
 
 			// Code quality
@@ -417,8 +413,11 @@ module.exports = (async () => {
 			'object-shorthand': 'error',
 			'prefer-template': 'error',
 
-			// Filename casing — kebab-case for all .ts/.tsx files (sapan H2-B convention)
-			'unicorn/filename-case': ['error', { case: 'kebabCase' }],
+			// Filename casing (sapan H2-B convention): kebab-case for utility/helper files,
+			// but also allow PascalCase (component files matching their component name,
+			// e.g. StackingCards/StackingCards.tsx) and camelCase (hook files, e.g. useMacy.ts)
+			// — both are standard React conventions already used consistently across this codebase.
+			'unicorn/filename-case': ['error', { cases: { kebabCase: true, pascalCase: true, camelCase: true } }],
 
 			// Tailwind diagnostics — parity with bradlc.vscode-tailwindcss IDE flags
 			// suggestCanonicalClasses (autofixable): three sub-cases
@@ -708,7 +707,7 @@ const generateVSCodeTasks = () => {
 					}
 
 					// Step 2: Format with Prettier AFTER import organization
-					execSync(\`npx prettier --config .formatter/.prettierrc.js --write "\${filePath}"\`, { stdio: 'pipe' });
+					execSync(\`npx prettier --config .formatter/.prettierrc.cjs --write "\${filePath}"\`, { stdio: 'pipe' });
 				`, "${file}"],
 				"group": "build",
 				"presentation": {
@@ -802,10 +801,10 @@ const sync = () => {
 
 	// Write all files with error handling
 	const files = [
-		{ path: '.formatter/.prettierrc.js', content: prettierConfig },
-		{ path: 'eslint.config.js', content: eslintConfig },
+		{ path: '.formatter/.prettierrc.cjs', content: prettierConfig },
+		{ path: 'eslint.config.cjs', content: eslintConfig },
 		{ path: '.formatter/.editorconfig', content: editorConfig },
-		{ path: '.prettierrc.js', content: `// Prettier configuration that extends .formatter/.prettierrc.js\n// This allows Prettier to work from the project root while keeping\n// the actual configuration in .formatter/ directory\n\nmodule.exports = require('./.formatter/.prettierrc.js');\n` },
+		{ path: '.prettierrc.cjs', content: `// Prettier configuration that extends .formatter/.prettierrc.cjs\n// This allows Prettier to work from the project root while keeping\n// the actual configuration in .formatter/ directory\n\nmodule.exports = require('./.formatter/.prettierrc.cjs');\n` },
 		{ path: '.prettierignore', content: prettierIgnore },
 		{ path: '.gitattributes', content: gitAttributes },
 		{ path: '.vscode/settings.json', content: vscodeSettings },
@@ -822,7 +821,7 @@ const sync = () => {
 
 	if (successCount === files.length) {
 		console.log(`📋 Settings: ${config.PRINT_WIDTH} width, ${config.INDENT_STYLE}(${config.INDENT_SIZE}), ${config.USE_SINGLE_QUOTES === 'true' ? 'single' : 'double'} quotes`);
-		console.log('✅ Updated: .formatter/.prettierrc.js, eslint.config.js (flat config), IDE settings');
+		console.log('✅ Updated: .formatter/.prettierrc.cjs, eslint.config.cjs (flat config), IDE settings');
 		console.log('🎯 Target: src folder only');
 		console.log('🛡️ File Safety: Enabled - No files will be deleted');
 		console.log('💡 Commands: pnpm run format | pnpm run lint:fix | pnpm run format:all');

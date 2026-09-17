@@ -17,12 +17,7 @@ export const checkTimelineDirection = (index: number): boolean => index % 2 !== 
  * @param curveWidth Horizontal amplitude of bezier swing (default: 20)
  * @param curveHeight Vertical transition height (default: 40)
  */
-export function generateTimelinePath(
-	heights: number[],
-	startY: number = 42,
-	curveWidth: number = 20,
-	curveHeight: number = 40
-): string {
+export function generateTimelinePath(heights: number[], startY: number = 42, curveWidth: number = 20, curveHeight: number = 40): string {
 	if (heights.length < 2) {
 		return '';
 	}

@@ -1,157 +1,137 @@
 {
-  "name": "Morphing Tabs",
-  "slug": "morphing-tabs",
-  "category": "navigation",
-  "description": "Dynamic active rect geometry tracking with a floating spring indicator and roving focus keyboard navigation.",
-  "version": "1.0.0",
-  "props": [
-    {
-      "name": "springStiffness",
-      "label": "Spring Stiffness (omega)",
-      "type": "number",
-      "defaultValue": 26,
-      "min": 10,
-      "max": 50,
-      "step": 2,
-      "description": "Stiffness of the critically damped spring pill."
-    }
-  ],
-  "dependencies": {
-    "react": [
-      "@exhuma/core"
-    ],
-    "nextjs": [
-      "@exhuma/core"
-    ],
-    "vue": [
-      "@exhuma/core"
-    ],
-    "svelte": [
-      "@exhuma/core"
-    ],
-    "solid": [
-      "@exhuma/core"
-    ],
-    "angular": [
-      "@exhuma/core"
-    ],
-    "astro": [
-      "@exhuma/core"
-    ],
-    "vanilla": [
-      "@exhuma/core"
-    ],
-    "react-native": [
-      "@exhuma/core"
-    ],
-    "flutter": [
-      "exhuma"
-    ]
-  },
-  "flavors": {
-    "react": [
-      {
-        "filename": "MorphingTabs.tsx",
-        "language": "tsx",
-        "description": "Morphing Tabs — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
-        "code": "import * as React from 'react';\nimport * as MorphingTabsPrimitive from '@exhuma/core';\nimport { cn } from '@/lib/utils';\n\nexport interface MorphingTabsProps extends React.ComponentPropsWithoutRef<typeof MorphingTabsPrimitive.MorphingTabs> {\n  className?: string;\n}\n\nexport const MorphingTabs = React.forwardRef<HTMLDivElement, MorphingTabsProps>(\n  ({ className, children, ...props }, ref) => (\n    <MorphingTabsPrimitive.MorphingTabs\n      ref={ref}\n      className={cn(\n        'relative flex items-center gap-1 rounded-2xl border border-border bg-muted/40 p-1.5 shadow-sm',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </MorphingTabsPrimitive.MorphingTabs>\n  )\n);\nMorphingTabs.displayName = 'MorphingTabs';\n"
-      }
-    ],
-    "nextjs": [
-      {
-        "filename": "MorphingTabs.tsx",
-        "language": "tsx",
-        "description": "Morphing Tabs — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
-        "code": "'use client';\n\nimport * as React from 'react';\nimport * as MorphingTabsPrimitive from '@exhuma/core';\nimport { cn } from '@/lib/utils';\n\nexport interface MorphingTabsProps extends React.ComponentPropsWithoutRef<typeof MorphingTabsPrimitive.MorphingTabs> {\n  className?: string;\n}\n\nexport const MorphingTabs = React.forwardRef<HTMLDivElement, MorphingTabsProps>(\n  ({ className, children, ...props }, ref) => (\n    <MorphingTabsPrimitive.MorphingTabs\n      ref={ref}\n      className={cn(\n        'relative flex items-center gap-1 rounded-2xl border border-border bg-muted/40 p-1.5 shadow-sm',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </MorphingTabsPrimitive.MorphingTabs>\n  )\n);\nMorphingTabs.displayName = 'MorphingTabs';\n"
-      }
-    ],
-    "vue": [
-      {
-        "filename": "MorphingTabs.vue",
-        "language": "vue",
-        "description": "Vue 3 Morphing Tabs outer adapter wrapping @exhuma/core headless primitive.",
-        "code": "<script setup lang=\"ts\">\nimport { MorphingTabs as MorphingTabsPrimitive } from '@exhuma/core';\nimport { cn } from '@/lib/utils';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst props = withDefaults(defineProps<Props>(), {\n  class: '',\n});\n</script>\n\n<template>\n  <MorphingTabsPrimitive\n    v-bind=\"props\"\n    :class=\"cn('relative flex items-center gap-1 rounded-2xl border border-border bg-muted/40 p-1.5 shadow-sm', props.class)\"\n  >\n    <slot />\n  </MorphingTabsPrimitive>\n</template>\n"
-      }
-    ],
-    "svelte": [
-      {
-        "filename": "MorphingTabs.svelte",
-        "language": "svelte",
-        "description": "Svelte 5 Morphing Tabs adapter using runes and @exhuma/core primitives.",
-        "code": "<script lang=\"ts\">\n  import { MorphingTabs as MorphingTabsPrimitive } from '@exhuma/core';\n  import { cn } from '$lib/utils';\n\n  let {\n    class: className = '',\n    children,\n    ...restProps\n  }: {\n    class?: string;\n    children?: import('svelte').Snippet;\n    [key: string]: unknown;\n  } = $props();\n</script>\n\n<MorphingTabsPrimitive\n  class={cn('relative flex items-center gap-1 rounded-2xl border border-border bg-muted/40 p-1.5 shadow-sm', className)}\n  {...restProps}\n>\n  {@render children?.()}\n</MorphingTabsPrimitive>\n"
-      }
-    ],
-    "angular": [
-      {
-        "filename": "morphing-tabs.component.ts",
-        "language": "typescript",
-        "description": "Angular 18+ Standalone Morphing Tabs component.",
-        "code": "import { Component, input } from '@angular/core';\nimport { CommonModule } from '@angular/common';\n\n@Component({\n  selector: 'exhuma-morphing-tabs',\n  standalone: true,\n  imports: [CommonModule],\n  template: `\n    <div\n      class=\"relative flex items-center gap-1 rounded-2xl border border-border bg-muted/40 p-1.5 shadow-sm {{ customClass() }}\"\n    >\n      <ng-content></ng-content>\n    </div>\n  `,\n})\nexport class ExhumaMorphingTabsComponent {\n  readonly customClass = input<string>('');\n}\n"
-      }
-    ],
-    "solid": [
-      {
-        "filename": "MorphingTabs.tsx",
-        "language": "tsx",
-        "description": "SolidJS Morphing Tabs adapter wrapping @exhuma/core headless primitive.",
-        "code": "import { Component, JSX, splitProps } from 'solid-js';\nimport * as MorphingTabsPrimitive from '@exhuma/core';\n\nexport interface MorphingTabsProps extends JSX.HTMLAttributes<HTMLDivElement> {\n  [key: string]: unknown;\n}\n\nexport const MorphingTabs: Component<MorphingTabsProps> = (props) => {\n  const [local, others] = splitProps(props, ['class', 'children']);\n  return (\n    <MorphingTabsPrimitive.MorphingTabs\n      class={`relative flex items-center gap-1 rounded-2xl border border-border bg-muted/40 p-1.5 shadow-sm ${local.class ?? ''}`}\n      {...others}\n    >\n      {local.children}\n    </MorphingTabsPrimitive.MorphingTabs>\n  );\n};\n"
-      }
-    ],
-    "astro": [
-      {
-        "filename": "MorphingTabs.astro",
-        "language": "astro",
-        "description": "Astro Morphing Tabs component with @exhuma/core primitive.",
-        "code": "---\nimport * as MorphingTabsPrimitive from '@exhuma/core';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst { class: className = '', ...props } = Astro.props;\n---\n\n<MorphingTabsPrimitive.MorphingTabs\n  client:visible\n  className={`relative flex items-center gap-1 rounded-2xl border border-border bg-muted/40 p-1.5 shadow-sm ${className}`}\n  {...props}\n>\n  <slot />\n</MorphingTabsPrimitive.MorphingTabs>\n"
-      }
-    ],
-    "blade": [
-      {
-        "filename": "morphing-tabs.blade.php",
-        "language": "php",
-        "description": "Laravel Blade component for Morphing Tabs with Alpine / data attributes.",
-        "code": "@props([])\n\n<exhuma-morphing-tabs\n    {{ $attributes->merge([\n        'class' => 'relative flex items-center gap-1 rounded-2xl border border-border bg-muted/40 p-1.5 shadow-sm block',\n    ]) }}\n>\n    {{ $slot }}\n</exhuma-morphing-tabs>\n"
-      }
-    ],
-    "vanilla": [
-      {
-        "filename": "exhuma-morphing-tabs.js",
-        "language": "javascript",
-        "description": "Autonomous Vanilla JS Morphing Tabs initialization module.",
-        "code": "import { MorphingTabs } from '@exhuma/core';\n\nexport function initMorphingTabs(selector = '[data-exhuma-morphing-tabs]', options = {}) {\n  const elements = document.querySelectorAll(selector);\n  return Array.from(elements);\n}\n"
-      }
-    ],
-    "wordpress": [
-      {
-        "filename": "block.json",
-        "language": "json",
-        "description": "WordPress Block API v3 definition for Morphing Tabs.",
-        "code": "{\n  \"$schema\": \"https://schemas.wp.org/trunk/block.json\",\n  \"apiVersion\": 3,\n  \"name\": \"exhuma/morphing-tabs\",\n  \"version\": \"1.0.0\",\n  \"title\": \"Exhuma Morphing Tabs\",\n  \"category\": \"design\",\n  \"icon\": \"art\",\n  \"description\": \"Dynamic active rect geometry tracking with a floating spring indicator and roving focus.\",\n  \"attributes\": {},\n  \"editorScript\": \"file:./index.js\",\n  \"viewScript\": \"exhuma-kinetic\"\n}"
-      }
-    ],
-    "webcomponent": [
-      {
-        "filename": "exhuma-morphing-tabs.js",
-        "language": "javascript",
-        "description": "Universal Web Component wrapper for <exhuma-morphing-tabs>.",
-        "code": "import { MorphingTabs } from '@exhuma/core';\n\nclass ExhumaMorphingTabsElement extends HTMLElement {\n  connectedCallback() {\n    this.classList.add('exhuma-morphing-tabs');\n    this.style.display = 'block';\n  }\n}\n\nif (!customElements.get('exhuma-morphing-tabs')) {\n  customElements.define('exhuma-morphing-tabs', ExhumaMorphingTabsElement);\n}\n"
-      }
-    ],
-    "react-native": [
-      {
-        "filename": "MorphingTabs.tsx",
-        "language": "tsx",
-        "description": "React Native Morphing Tabs adapter wrapping @exhuma/core touch primitive.",
-        "code": "import React from 'react';\nimport { View, StyleSheet, type ViewProps } from 'react-native';\nimport * as MorphingTabsPrimitive from '@exhuma/core';\n\nexport interface MorphingTabsProps extends ViewProps {\n  children?: React.ReactNode;\n}\n\nexport function MorphingTabs({ style, children, ...props }: MorphingTabsProps) {\n  return (\n    <View style={[styles.container, style]} {...props}>\n      {children}\n    </View>\n  );\n}\n\nconst styles = StyleSheet.create({\n  container: {\n    borderRadius: 16,\n    borderWidth: 1,\n    borderColor: '#e2e8f0',\n    backgroundColor: '#ffffff',\n    padding: 20,\n    overflow: 'hidden',\n  },\n});\n"
-      }
-    ],
-    "flutter": [
-      {
-        "filename": "morphing_tabs.dart",
-        "language": "dart",
-        "description": "Flutter Morphing Tabs widget wrapping package:exhuma.",
-        "code": "import 'package:flutter/material.dart';\nimport 'package:exhuma/exhuma.dart' as exhuma;\n\nclass ExhumaMorphingTabs extends StatelessWidget {\n  final Widget child;\n\n  const ExhumaMorphingTabs({\n    super.key,\n    required this.child,\n  });\n\n  @override\n  Widget build(BuildContext context) {\n    return Container(\n      decoration: BoxDecoration(\n        borderRadius: BorderRadius.circular(16.0),\n        border: Border.all(color: Theme.of(context).dividerColor),\n        color: Theme.of(context).cardColor,\n      ),\n      padding: const EdgeInsets.all(20.0),\n      child: child,\n    );\n  }\n}\n"
-      }
-    ]
-  }
+	"name": "Morphing Tabs",
+	"slug": "morphing-tabs",
+	"category": "navigation",
+	"description": "Dynamic active rect geometry tracking with a floating spring indicator and roving focus keyboard navigation.",
+	"version": "1.0.0",
+	"props": [
+		{
+			"name": "springStiffness",
+			"label": "Spring Stiffness (omega)",
+			"type": "number",
+			"defaultValue": 26,
+			"min": 10,
+			"max": 50,
+			"step": 2,
+			"description": "Stiffness of the critically damped spring pill."
+		}
+	],
+	"dependencies": {
+		"react": ["@exhuma/core"],
+		"nextjs": ["@exhuma/core"],
+		"vue": ["@exhuma/core"],
+		"svelte": ["@exhuma/core"],
+		"solid": ["@exhuma/core"],
+		"angular": ["@exhuma/core"],
+		"astro": ["@exhuma/core"],
+		"vanilla": ["@exhuma/core"],
+		"react-native": ["@exhuma/core"],
+		"flutter": ["exhuma"]
+	},
+	"flavors": {
+		"react": [
+			{
+				"filename": "MorphingTabs.tsx",
+				"language": "tsx",
+				"description": "Morphing Tabs — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
+				"code": "import * as React from 'react';\nimport * as MorphingTabsPrimitive from '@exhuma/core';\nimport { cn } from '@/lib/utils';\n\nexport interface MorphingTabsProps extends React.ComponentPropsWithoutRef<typeof MorphingTabsPrimitive.MorphingTabs> {\n  className?: string;\n}\n\nexport const MorphingTabs = React.forwardRef<HTMLDivElement, MorphingTabsProps>(\n  ({ className, children, ...props }, ref) => (\n    <MorphingTabsPrimitive.MorphingTabs\n      ref={ref}\n      className={cn(\n        'relative flex items-center gap-1 rounded-2xl border border-border bg-muted/40 p-1.5 shadow-sm',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </MorphingTabsPrimitive.MorphingTabs>\n  )\n);\nMorphingTabs.displayName = 'MorphingTabs';\n"
+			}
+		],
+		"nextjs": [
+			{
+				"filename": "MorphingTabs.tsx",
+				"language": "tsx",
+				"description": "Morphing Tabs — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
+				"code": "'use client';\n\nimport * as React from 'react';\nimport * as MorphingTabsPrimitive from '@exhuma/core';\nimport { cn } from '@/lib/utils';\n\nexport interface MorphingTabsProps extends React.ComponentPropsWithoutRef<typeof MorphingTabsPrimitive.MorphingTabs> {\n  className?: string;\n}\n\nexport const MorphingTabs = React.forwardRef<HTMLDivElement, MorphingTabsProps>(\n  ({ className, children, ...props }, ref) => (\n    <MorphingTabsPrimitive.MorphingTabs\n      ref={ref}\n      className={cn(\n        'relative flex items-center gap-1 rounded-2xl border border-border bg-muted/40 p-1.5 shadow-sm',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </MorphingTabsPrimitive.MorphingTabs>\n  )\n);\nMorphingTabs.displayName = 'MorphingTabs';\n"
+			}
+		],
+		"vue": [
+			{
+				"filename": "MorphingTabs.vue",
+				"language": "vue",
+				"description": "Vue 3 Morphing Tabs outer adapter wrapping @exhuma/core headless primitive.",
+				"code": "<script setup lang=\"ts\">\nimport { MorphingTabs as MorphingTabsPrimitive } from '@exhuma/core';\nimport { cn } from '@/lib/utils';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst props = withDefaults(defineProps<Props>(), {\n  class: '',\n});\n</script>\n\n<template>\n  <MorphingTabsPrimitive\n    v-bind=\"props\"\n    :class=\"cn('relative flex items-center gap-1 rounded-2xl border border-border bg-muted/40 p-1.5 shadow-sm', props.class)\"\n  >\n    <slot />\n  </MorphingTabsPrimitive>\n</template>\n"
+			}
+		],
+		"svelte": [
+			{
+				"filename": "MorphingTabs.svelte",
+				"language": "svelte",
+				"description": "Svelte 5 Morphing Tabs adapter using runes and @exhuma/core primitives.",
+				"code": "<script lang=\"ts\">\n  import { MorphingTabs as MorphingTabsPrimitive } from '@exhuma/core';\n  import { cn } from '$lib/utils';\n\n  let {\n    class: className = '',\n    children,\n    ...restProps\n  }: {\n    class?: string;\n    children?: import('svelte').Snippet;\n    [key: string]: unknown;\n  } = $props();\n</script>\n\n<MorphingTabsPrimitive\n  class={cn('relative flex items-center gap-1 rounded-2xl border border-border bg-muted/40 p-1.5 shadow-sm', className)}\n  {...restProps}\n>\n  {@render children?.()}\n</MorphingTabsPrimitive>\n"
+			}
+		],
+		"angular": [
+			{
+				"filename": "morphing-tabs.component.ts",
+				"language": "typescript",
+				"description": "Angular 18+ Standalone Morphing Tabs component.",
+				"code": "import { Component, input } from '@angular/core';\nimport { CommonModule } from '@angular/common';\n\n@Component({\n  selector: 'exhuma-morphing-tabs',\n  standalone: true,\n  imports: [CommonModule],\n  template: `\n    <div\n      class=\"relative flex items-center gap-1 rounded-2xl border border-border bg-muted/40 p-1.5 shadow-sm {{ customClass() }}\"\n    >\n      <ng-content></ng-content>\n    </div>\n  `,\n})\nexport class ExhumaMorphingTabsComponent {\n  readonly customClass = input<string>('');\n}\n"
+			}
+		],
+		"solid": [
+			{
+				"filename": "MorphingTabs.tsx",
+				"language": "tsx",
+				"description": "SolidJS Morphing Tabs adapter wrapping @exhuma/core headless primitive.",
+				"code": "import { Component, JSX, splitProps } from 'solid-js';\nimport * as MorphingTabsPrimitive from '@exhuma/core';\n\nexport interface MorphingTabsProps extends JSX.HTMLAttributes<HTMLDivElement> {\n  [key: string]: unknown;\n}\n\nexport const MorphingTabs: Component<MorphingTabsProps> = (props) => {\n  const [local, others] = splitProps(props, ['class', 'children']);\n  return (\n    <MorphingTabsPrimitive.MorphingTabs\n      class={`relative flex items-center gap-1 rounded-2xl border border-border bg-muted/40 p-1.5 shadow-sm ${local.class ?? ''}`}\n      {...others}\n    >\n      {local.children}\n    </MorphingTabsPrimitive.MorphingTabs>\n  );\n};\n"
+			}
+		],
+		"astro": [
+			{
+				"filename": "MorphingTabs.astro",
+				"language": "astro",
+				"description": "Astro Morphing Tabs component with @exhuma/core primitive.",
+				"code": "---\nimport * as MorphingTabsPrimitive from '@exhuma/core';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst { class: className = '', ...props } = Astro.props;\n---\n\n<MorphingTabsPrimitive.MorphingTabs\n  client:visible\n  className={`relative flex items-center gap-1 rounded-2xl border border-border bg-muted/40 p-1.5 shadow-sm ${className}`}\n  {...props}\n>\n  <slot />\n</MorphingTabsPrimitive.MorphingTabs>\n"
+			}
+		],
+		"blade": [
+			{
+				"filename": "morphing-tabs.blade.php",
+				"language": "php",
+				"description": "Laravel Blade component for Morphing Tabs with Alpine / data attributes.",
+				"code": "@props([])\n\n<exhuma-morphing-tabs\n    {{ $attributes->merge([\n        'class' => 'relative flex items-center gap-1 rounded-2xl border border-border bg-muted/40 p-1.5 shadow-sm block',\n    ]) }}\n>\n    {{ $slot }}\n</exhuma-morphing-tabs>\n"
+			}
+		],
+		"vanilla": [
+			{
+				"filename": "exhuma-morphing-tabs.js",
+				"language": "javascript",
+				"description": "Autonomous Vanilla JS Morphing Tabs initialization module.",
+				"code": "import { MorphingTabs } from '@exhuma/core';\n\nexport function initMorphingTabs(selector = '[data-exhuma-morphing-tabs]', options = {}) {\n  const elements = document.querySelectorAll(selector);\n  return Array.from(elements);\n}\n"
+			}
+		],
+		"wordpress": [
+			{
+				"filename": "block.json",
+				"language": "json",
+				"description": "WordPress Block API v3 definition for Morphing Tabs.",
+				"code": "{\n  \"$schema\": \"https://schemas.wp.org/trunk/block.json\",\n  \"apiVersion\": 3,\n  \"name\": \"exhuma/morphing-tabs\",\n  \"version\": \"1.0.0\",\n  \"title\": \"Exhuma Morphing Tabs\",\n  \"category\": \"design\",\n  \"icon\": \"art\",\n  \"description\": \"Dynamic active rect geometry tracking with a floating spring indicator and roving focus.\",\n  \"attributes\": {},\n  \"editorScript\": \"file:./index.js\",\n  \"viewScript\": \"exhuma-kinetic\"\n}"
+			}
+		],
+		"webcomponent": [
+			{
+				"filename": "exhuma-morphing-tabs.js",
+				"language": "javascript",
+				"description": "Universal Web Component wrapper for <exhuma-morphing-tabs>.",
+				"code": "import { MorphingTabs } from '@exhuma/core';\n\nclass ExhumaMorphingTabsElement extends HTMLElement {\n  connectedCallback() {\n    this.classList.add('exhuma-morphing-tabs');\n    this.style.display = 'block';\n  }\n}\n\nif (!customElements.get('exhuma-morphing-tabs')) {\n  customElements.define('exhuma-morphing-tabs', ExhumaMorphingTabsElement);\n}\n"
+			}
+		],
+		"react-native": [
+			{
+				"filename": "MorphingTabs.tsx",
+				"language": "tsx",
+				"description": "React Native Morphing Tabs adapter wrapping @exhuma/core touch primitive.",
+				"code": "import React from 'react';\nimport { View, StyleSheet, type ViewProps } from 'react-native';\nimport * as MorphingTabsPrimitive from '@exhuma/core';\n\nexport interface MorphingTabsProps extends ViewProps {\n  children?: React.ReactNode;\n}\n\nexport function MorphingTabs({ style, children, ...props }: MorphingTabsProps) {\n  return (\n    <View style={[styles.container, style]} {...props}>\n      {children}\n    </View>\n  );\n}\n\nconst styles = StyleSheet.create({\n  container: {\n    borderRadius: 16,\n    borderWidth: 1,\n    borderColor: '#e2e8f0',\n    backgroundColor: '#ffffff',\n    padding: 20,\n    overflow: 'hidden',\n  },\n});\n"
+			}
+		],
+		"flutter": [
+			{
+				"filename": "morphing_tabs.dart",
+				"language": "dart",
+				"description": "Flutter Morphing Tabs widget wrapping package:exhuma.",
+				"code": "import 'package:flutter/material.dart';\nimport 'package:exhuma/exhuma.dart' as exhuma;\n\nclass ExhumaMorphingTabs extends StatelessWidget {\n  final Widget child;\n\n  const ExhumaMorphingTabs({\n    super.key,\n    required this.child,\n  });\n\n  @override\n  Widget build(BuildContext context) {\n    return Container(\n      decoration: BoxDecoration(\n        borderRadius: BorderRadius.circular(16.0),\n        border: Border.all(color: Theme.of(context).dividerColor),\n        color: Theme.of(context).cardColor,\n      ),\n      padding: const EdgeInsets.all(20.0),\n      child: child,\n    );\n  }\n}\n"
+			}
+		]
+	}
 }

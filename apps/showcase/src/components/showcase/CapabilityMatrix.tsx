@@ -1,11 +1,5 @@
 import * as React from 'react';
-import {
-  IconCheck as Check,
-  IconShieldCheck as ShieldCheck,
-  IconFileCode as FileCode,
-  IconStack2 as Layers,
-  IconCpu as Cpu,
-} from '@tabler/icons-react';
+import { IconCheck as Check, IconShieldCheck as ShieldCheck, IconFileCode as FileCode, IconStack2 as Layers, IconCpu as Cpu } from '@tabler/icons-react';
 import { Badge } from '@/components/ui/badge';
 
 interface EcosystemCapability {
@@ -140,61 +134,46 @@ const CAPABILITIES: EcosystemCapability[] = [
 
 export function CapabilityMatrix() {
 	return (
-		<div className="w-full rounded-2xl border border-border bg-card shadow-sm overflow-hidden transition-colors">
-			<div className="border-b border-border bg-muted/30 p-6">
-				<div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-primary mb-1">
-					<Cpu className="h-4 w-4" />
+		<div className='border-border bg-card w-full overflow-hidden rounded-2xl border shadow-sm transition-colors'>
+			<div className='border-border bg-muted/30 border-b p-6'>
+				<div className='text-primary mb-1 flex items-center gap-2 text-xs font-bold tracking-wider uppercase'>
+					<Cpu className='h-4 w-4' />
 					<span>Universal Architecture Matrix</span>
 				</div>
-				<h3 className="text-xl font-bold tracking-tight text-foreground">
-					The 13-Ecosystem Engineering Contract
-				</h3>
-				<p className="text-xs text-muted-foreground mt-1 max-w-2xl">
+				<h3 className='text-foreground text-xl font-bold tracking-tight'>The 13-Ecosystem Engineering Contract</h3>
+				<p className='text-muted-foreground mt-1 max-w-2xl text-xs'>
 					Every Exhuma canonical component is re-authored from fundamental mathematical principles for each target framework. No polyfills, no cross-compilation overhead, no memory leaks.
 				</p>
 			</div>
 
-			<div className="overflow-x-auto">
-				<table className="w-full text-left border-collapse text-xs">
+			<div className='overflow-x-auto'>
+				<table className='w-full border-collapse text-left text-xs'>
 					<thead>
-						<tr className="border-b border-border bg-muted/20 text-muted-foreground font-mono">
-							<th className="py-3 px-4 font-semibold">Ecosystem</th>
-							<th className="py-3 px-4 font-semibold">File Format</th>
-							<th className="py-3 px-4 font-semibold">Reactivity Engine</th>
-							<th className="py-3 px-4 font-semibold">Hydration Model</th>
-							<th className="py-3 px-4 font-semibold">Memory Teardown</th>
-							<th className="py-3 px-4 font-semibold">Default Destination</th>
+						<tr className='border-border bg-muted/20 text-muted-foreground border-b font-mono'>
+							<th className='px-4 py-3 font-semibold'>Ecosystem</th>
+							<th className='px-4 py-3 font-semibold'>File Format</th>
+							<th className='px-4 py-3 font-semibold'>Reactivity Engine</th>
+							<th className='px-4 py-3 font-semibold'>Hydration Model</th>
+							<th className='px-4 py-3 font-semibold'>Memory Teardown</th>
+							<th className='px-4 py-3 font-semibold'>Default Destination</th>
 						</tr>
 					</thead>
-					<tbody className="divide-y divide-border">
+					<tbody className='divide-border divide-y'>
 						{CAPABILITIES.map((cap) => (
-							<tr
-								key={cap.id}
-								className="hover:bg-muted/40 transition-colors font-mono"
-							>
-								<td className="py-3 px-4 font-sans font-semibold text-foreground whitespace-nowrap">
-									{cap.name}
+							<tr key={cap.id} className='hover:bg-muted/40 font-mono transition-colors'>
+								<td className='text-foreground px-4 py-3 font-sans font-semibold whitespace-nowrap'>{cap.name}</td>
+								<td className='px-4 py-3 whitespace-nowrap'>
+									<span className='kbd text-primary text-[10px] font-bold'>{cap.extension}</span>
 								</td>
-								<td className="py-3 px-4 whitespace-nowrap">
-									<span className="kbd text-[10px] text-primary font-bold">
-										{cap.extension}
-									</span>
-								</td>
-								<td className="py-3 px-4 font-sans text-muted-foreground whitespace-nowrap">
-									{cap.reactivity}
-								</td>
-								<td className="py-3 px-4 font-sans text-muted-foreground whitespace-nowrap">
-									{cap.hydration}
-								</td>
-								<td className="py-3 px-4 whitespace-nowrap">
-									<div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-medium">
-										<ShieldCheck className="h-3.5 w-3.5 shrink-0" />
+								<td className='text-muted-foreground px-4 py-3 font-sans whitespace-nowrap'>{cap.reactivity}</td>
+								<td className='text-muted-foreground px-4 py-3 font-sans whitespace-nowrap'>{cap.hydration}</td>
+								<td className='px-4 py-3 whitespace-nowrap'>
+									<div className='flex items-center gap-1.5 font-medium text-emerald-600 dark:text-emerald-400'>
+										<ShieldCheck className='h-3.5 w-3.5 shrink-0' />
 										<span>{cap.teardown}</span>
 									</div>
 								</td>
-								<td className="py-3 px-4 text-muted-foreground whitespace-nowrap">
-									{cap.path}
-								</td>
+								<td className='text-muted-foreground px-4 py-3 whitespace-nowrap'>{cap.path}</td>
 							</tr>
 						))}
 					</tbody>

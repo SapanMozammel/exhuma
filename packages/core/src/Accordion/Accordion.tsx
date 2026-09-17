@@ -1,16 +1,6 @@
 'use client';
 
-import React, {
-	createContext,
-	useContext,
-	useState,
-	useCallback,
-	useId,
-	useRef,
-	type ReactNode,
-	type HTMLAttributes,
-	type ButtonHTMLAttributes,
-} from 'react';
+import React, { createContext, useContext, useState, useCallback, useId, useRef, type ReactNode, type HTMLAttributes, type ButtonHTMLAttributes } from 'react';
 
 /**
  * Exhuma Kinetic Methodology (EKM) — Accordion
@@ -69,14 +59,7 @@ export interface AccordionRootProps {
 	className?: string;
 }
 
-export const AccordionRoot: React.FC<AccordionRootProps> = ({
-	children,
-	mode = 'single',
-	defaultValue,
-	value: controlledValue,
-	onValueChange,
-	className = '',
-}) => {
+export const AccordionRoot: React.FC<AccordionRootProps> = ({ children, mode = 'single', defaultValue, value: controlledValue, onValueChange, className = '' }) => {
 	const baseId = useId();
 	const isControlled = controlledValue !== undefined;
 
@@ -177,7 +160,7 @@ export const AccordionItem: React.FC<AccordionItemProps> = ({ value, children, c
 			>
 				{/* Specular animated gradient border glow from sapan.dev */}
 				<div
-					aria-hidden="true"
+					aria-hidden='true'
 					className={`pointer-events-none absolute -inset-px rounded-[inherit] bg-[linear-gradient(135deg,rgba(99,102,241,0.6)_0%,rgba(168,85,247,0.6)_35%,rgba(99,102,241,0.6)_65%,rgba(168,85,247,0.6)_100%)] opacity-0 transition-opacity duration-500 ${
 						isOpen ? 'opacity-100' : ''
 					}`}
@@ -231,7 +214,7 @@ export const AccordionTrigger: React.FC<AccordionTriggerProps> = ({ children, cl
 
 	return (
 		<button
-			type="button"
+			type='button'
 			id={triggerId}
 			aria-expanded={isOpen}
 			aria-controls={panelId}
@@ -240,7 +223,7 @@ export const AccordionTrigger: React.FC<AccordionTriggerProps> = ({ children, cl
 			className={`exhuma-accordion-trigger flex w-full cursor-pointer items-center justify-between gap-4 px-5 py-4 text-left font-medium transition-colors select-none lg:px-7 lg:py-5 ${className}`}
 			{...props}
 		>
-			<span className="flex-1 text-base text-neutral-900 dark:text-neutral-100">{children}</span>
+			<span className='flex-1 text-base text-neutral-900 dark:text-neutral-100'>{children}</span>
 		</button>
 	);
 };
@@ -258,8 +241,8 @@ export const AccordionIcon: React.FC<AccordionIconProps> = ({ className = '', ..
 
 	return (
 		<span
-			aria-hidden="true"
-			className={`relative inline-flex aspect-square h-6 shrink-0 items-center justify-center before:absolute before:top-1/2 before:left-1/2 before:inline-flex before:h-0.5 before:w-3.5 before:origin-center before:-translate-1/2 before:rounded-full before:bg-primary before:transition-transform before:duration-300 after:absolute after:top-1/2 after:left-1/2 after:inline-flex after:h-0.5 after:w-3.5 after:origin-center after:-translate-1/2 after:rounded-full after:bg-primary after:transition-transform after:duration-300 ${
+			aria-hidden='true'
+			className={`before:bg-primary after:bg-primary relative inline-flex aspect-square h-6 shrink-0 items-center justify-center before:absolute before:top-1/2 before:left-1/2 before:inline-flex before:h-0.5 before:w-3.5 before:origin-center before:-translate-1/2 before:rounded-full before:transition-transform before:duration-300 after:absolute after:top-1/2 after:left-1/2 after:inline-flex after:h-0.5 after:w-3.5 after:origin-center after:-translate-1/2 after:rounded-full after:transition-transform after:duration-300 ${
 				isOpen ? 'before:rotate-0 after:rotate-0' : 'before:-rotate-180 after:-rotate-90'
 			} ${className}`}
 			{...props}
@@ -278,17 +261,13 @@ export const AccordionContent: React.FC<AccordionContentProps> = ({ children, cl
 	return (
 		<div
 			id={panelId}
-			role="region"
+			role='region'
 			aria-labelledby={triggerId}
-			className={`grid px-5 transition-all duration-300 ease-in-out lg:px-7 ${
-				isOpen ? 'grid-rows-[1fr] pb-4 opacity-100 lg:pb-5' : 'grid-rows-[0fr] pb-0 opacity-0'
-			} ${className}`}
+			className={`grid px-5 transition-all duration-300 ease-in-out lg:px-7 ${isOpen ? 'grid-rows-[1fr] pb-4 opacity-100 lg:pb-5' : 'grid-rows-[0fr] pb-0 opacity-0'} ${className}`}
 			{...props}
 		>
-			<div className="overflow-hidden">
-				<div className="border-t border-neutral-100 pt-4 text-sm text-neutral-600 dark:border-neutral-800 dark:text-neutral-400">
-					{children}
-				</div>
+			<div className='overflow-hidden'>
+				<div className='border-t border-neutral-100 pt-4 text-sm text-neutral-600 dark:border-neutral-800 dark:text-neutral-400'>{children}</div>
 			</div>
 		</div>
 	);

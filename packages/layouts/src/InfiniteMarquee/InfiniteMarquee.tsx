@@ -17,15 +17,7 @@ export const InfiniteMarquee: React.FC<InfiniteMarqueeProps> & {
 	Root: typeof MarqueeRoot;
 	Track: typeof MarqueeTrack;
 	Item: typeof MarqueeItem;
-} = ({
-	children,
-	speed = 40,
-	direction = 'left',
-	pauseOnHover = true,
-	gap = '1.5rem',
-	className = '',
-	style,
-}) => {
+} = ({ children, speed = 40, direction = 'left', pauseOnHover = true, gap = '1.5rem', className = '', style }) => {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const trackRef = useRef<HTMLDivElement>(null);
 	const contentRef = useRef<HTMLDivElement>(null);
@@ -62,24 +54,13 @@ export const InfiniteMarquee: React.FC<InfiniteMarqueeProps> & {
 			lastTimeRef.current = now;
 
 			// Smooth hover deceleration/acceleration factor
-			kineticFactorRef.current = dampFactor(
-				kineticFactorRef.current,
-				targetFactorRef.current,
-				12.0,
-				dt
-			);
+			kineticFactorRef.current = dampFactor(kineticFactorRef.current, targetFactorRef.current, 12.0, dt);
 
 			const effectiveSpeed = speed * kineticFactorRef.current;
 			const width = contentWidthRef.current;
 
 			if (width > 0 && effectiveSpeed > 0.01) {
-				offsetRef.current = calculateMarqueeOffset(
-					offsetRef.current,
-					dt,
-					effectiveSpeed,
-					direction,
-					width
-				);
+				offsetRef.current = calculateMarqueeOffset(offsetRef.current, dt, effectiveSpeed, direction, width);
 
 				if (trackRef.current) {
 					trackRef.current.style.transform = `translate3d(${offsetRef.current.toFixed(2)}px, 0, 0)`;
@@ -115,35 +96,21 @@ export const InfiniteMarquee: React.FC<InfiniteMarqueeProps> & {
 	const gapVal = typeof gap === 'number' ? `${gap}px` : gap;
 
 	return (
-		<div
-			ref={containerRef}
-			className={`exhuma-marquee-root relative w-full overflow-hidden select-none ${className}`}
-			style={style}
-			onMouseEnter={handleMouseEnter}
-			onMouseLeave={handleMouseLeave}
-		>
+		<div ref={containerRef} className={`exhuma-marquee-root relative w-full overflow-hidden select-none ${className}`} style={style} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
 			<div
 				ref={trackRef}
-				className="exhuma-marquee-track flex w-max will-change-transform"
+				className='exhuma-marquee-track flex w-max will-change-transform'
 				style={{
 					columnGap: gapVal,
 				}}
 			>
 				{/* Primary track measured by ResizeObserver */}
-				<div
-					ref={contentRef}
-					className="exhuma-marquee-content flex shrink-0 items-center"
-					style={{ columnGap: gapVal }}
-				>
+				<div ref={contentRef} className='exhuma-marquee-content flex shrink-0 items-center' style={{ columnGap: gapVal }}>
 					{children}
 				</div>
 
 				{/* Cloned secondary track for seamless modulo wrapping */}
-				<div
-					aria-hidden="true"
-					className="exhuma-marquee-clone flex shrink-0 items-center"
-					style={{ columnGap: gapVal }}
-				>
+				<div aria-hidden='true' className='exhuma-marquee-clone flex shrink-0 items-center' style={{ columnGap: gapVal }}>
 					{children}
 				</div>
 			</div>
@@ -152,41 +119,20 @@ export const InfiniteMarquee: React.FC<InfiniteMarqueeProps> & {
 };
 
 // Compound API Primitives
-const MarqueeRoot: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({
-	children,
-	className = '',
-	...props
-}) => (
-	<div
-		className={`exhuma-marquee-root relative w-full overflow-hidden select-none ${className}`}
-		{...props}
-	>
+const MarqueeRoot: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ children, className = '', ...props }) => (
+	<div className={`exhuma-marquee-root relative w-full overflow-hidden select-none ${className}`} {...props}>
 		{children}
 	</div>
 );
 
-const MarqueeTrack: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({
-	children,
-	className = '',
-	...props
-}) => (
-	<div
-		className={`exhuma-marquee-track flex w-max will-change-transform ${className}`}
-		{...props}
-	>
+const MarqueeTrack: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ children, className = '', ...props }) => (
+	<div className={`exhuma-marquee-track flex w-max will-change-transform ${className}`} {...props}>
 		{children}
 	</div>
 );
 
-const MarqueeItem: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({
-	children,
-	className = '',
-	...props
-}) => (
-	<div
-		className={`exhuma-marquee-item shrink-0 ${className}`}
-		{...props}
-	>
+const MarqueeItem: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ children, className = '', ...props }) => (
+	<div className={`exhuma-marquee-item shrink-0 ${className}`} {...props}>
 		{children}
 	</div>
 );

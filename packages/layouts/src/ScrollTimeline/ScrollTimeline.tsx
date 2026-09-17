@@ -20,15 +20,7 @@ export const ScrollTimeline: React.FC<ScrollTimelineProps> & {
 	Item: typeof TimelineItem;
 	Point: typeof TimelinePoint;
 	Content: typeof TimelineContent;
-} = ({
-	items = [],
-	children,
-	curveWidth = 24,
-	curveHeight = 40,
-	accentColor = 'var(--primary, #6366f1)',
-	className = '',
-	style,
-}) => {
+} = ({ items = [], children, curveWidth = 24, curveHeight = 40, accentColor = 'var(--primary, #6366f1)', className = '', style }) => {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const itemsContainerRef = useRef<HTMLDivElement>(null);
 	const activePathRef = useRef<SVGPathElement>(null);
@@ -73,10 +65,7 @@ export const ScrollTimeline: React.FC<ScrollTimelineProps> & {
 	}, [measureNodes, items]);
 
 	// Pre-calculate SVG path
-	const pathD = useMemo(
-		() => generateTimelinePath(nodeHeights, 42, curveWidth, curveHeight),
-		[nodeHeights, curveWidth, curveHeight]
-	);
+	const pathD = useMemo(() => generateTimelinePath(nodeHeights, 42, curveWidth, curveHeight), [nodeHeights, curveWidth, curveHeight]);
 
 	// Measure SVG path length
 	useEffect(() => {
@@ -102,10 +91,7 @@ export const ScrollTimeline: React.FC<ScrollTimelineProps> & {
 		const startOffset = viewportHeight * 0.5;
 
 		// Calculate normalized progress [0..1]
-		const currentProgress = Math.max(
-			0,
-			Math.min(1, (startOffset - rect.top) / (rect.height || 1))
-		);
+		const currentProgress = Math.max(0, Math.min(1, (startOffset - rect.top) / (rect.height || 1)));
 
 		// Drive SVG path dashoffset directly (Zero VDOM updates)
 		if (activePathRef.current && pathLengthRef.current > 0) {
@@ -139,17 +125,13 @@ export const ScrollTimeline: React.FC<ScrollTimelineProps> & {
 	}, [handleScroll]);
 
 	return (
-		<div
-			ref={containerRef}
-			className={`exhuma-timeline-root relative w-full ${className}`}
-			style={style}
-		>
+		<div ref={containerRef} className={`exhuma-timeline-root relative w-full ${className}`} style={style}>
 			{/* Mobile Rail (< md): straight vertical guide on left */}
-			<div className="pointer-events-none absolute top-0 bottom-0 left-4 z-0 w-0.5 md:hidden">
-				<div className="h-full w-full bg-border" />
+			<div className='pointer-events-none absolute top-0 bottom-0 left-4 z-0 w-0.5 md:hidden'>
+				<div className='bg-border h-full w-full' />
 				<div
 					ref={mobileActiveLineRef}
-					className="absolute top-0 left-0 w-full origin-top bg-primary"
+					className='bg-primary absolute top-0 left-0 w-full origin-top'
 					style={{
 						height: '100%',
 						backgroundColor: accentColor,
@@ -160,82 +142,42 @@ export const ScrollTimeline: React.FC<ScrollTimelineProps> & {
 			</div>
 
 			{/* Desktop S-Curve SVG Rail (>= md): centered serpentine line */}
-			<div
-				className="pointer-events-none absolute top-0 bottom-0 left-1/2 z-0 hidden -translate-x-1/2 overflow-visible md:block"
-				style={{ width: 400 }}
-			>
+			<div className='pointer-events-none absolute top-0 bottom-0 left-1/2 z-0 hidden -translate-x-1/2 overflow-visible md:block' style={{ width: 400 }}>
 				{nodeHeights.length > 0 && totalHeight > 0 && (
-					<svg
-						viewBox={`-200 0 400 ${totalHeight}`}
-						width="400"
-						height={totalHeight}
-						className="absolute top-0 left-0 w-full"
-						fill="none"
-						preserveAspectRatio="none"
-					>
+					<svg viewBox={`-200 0 400 ${totalHeight}`} width='400' height={totalHeight} className='absolute top-0 left-0 w-full' fill='none' preserveAspectRatio='none'>
 						{/* Inactive background track */}
-						<path
-							d={pathD}
-							stroke="currentColor"
-							className="text-border"
-							strokeWidth="2"
-							strokeLinecap="round"
-						/>
+						<path d={pathD} stroke='currentColor' className='text-border' strokeWidth='2' strokeLinecap='round' />
 						{/* Kinetic active progress beam */}
-						<path
-							ref={activePathRef}
-							d={pathD}
-							stroke={accentColor}
-							strokeWidth="2.5"
-							strokeLinecap="round"
-						/>
+						<path ref={activePathRef} d={pathD} stroke={accentColor} strokeWidth='2.5' strokeLinecap='round' />
 					</svg>
 				)}
 			</div>
 
 			{/* Timeline items container */}
-			<div ref={itemsContainerRef} className="relative z-10 flex flex-col space-y-12">
+			<div ref={itemsContainerRef} className='relative z-10 flex flex-col space-y-12'>
 				{items.length > 0
 					? items.map((item, idx) => {
 							const isLeft = checkTimelineDirection(idx);
 							return (
 								<div
 									key={item.id ?? idx}
-									className={`exhuma-timeline-item-anchor relative flex w-full items-center ${
-										isLeft
-											? 'md:flex-row-reverse md:text-right'
-											: 'md:flex-row md:text-left'
-									} pl-10 md:pl-0`}
+									className={`exhuma-timeline-item-anchor relative flex w-full items-center ${isLeft ? 'md:flex-row-reverse md:text-right' : 'md:flex-row md:text-left'} pl-10 md:pl-0`}
 								>
 									{/* Content card */}
-									<div className="w-full md:w-[44%] rounded-2xl border border-border bg-card/70 p-6 backdrop-blur-md shadow-xs">
-										{item.date && (
-											<span className="text-xs font-mono font-bold text-primary">
-												{item.date}
-											</span>
-										)}
-										<h4 className="text-base font-bold text-foreground mt-1">
-											{item.title}
-										</h4>
-										{item.subtitle && (
-											<p className="text-xs font-medium text-muted-foreground mt-0.5">
-												{item.subtitle}
-											</p>
-										)}
-										{item.description && (
-											<p className="text-xs text-muted-foreground leading-relaxed mt-2">
-												{item.description}
-											</p>
-										)}
+									<div className='border-border bg-card/70 w-full rounded-2xl border p-6 shadow-xs backdrop-blur-md md:w-[44%]'>
+										{item.date && <span className='text-primary font-mono text-xs font-bold'>{item.date}</span>}
+										<h4 className='text-foreground mt-1 text-base font-bold'>{item.title}</h4>
+										{item.subtitle && <p className='text-muted-foreground mt-0.5 text-xs font-medium'>{item.subtitle}</p>}
+										{item.description && <p className='text-muted-foreground mt-2 text-xs leading-relaxed'>{item.description}</p>}
 									</div>
 
 									{/* Node beacon point */}
-									<div className="absolute left-[-16px] md:left-1/2 md:-translate-x-1/2 flex h-8 w-8 items-center justify-center rounded-full border-2 border-primary bg-background shadow-md">
-										<div className="h-2.5 w-2.5 rounded-full bg-primary" />
+									<div className='border-primary bg-background absolute left-[-16px] flex h-8 w-8 items-center justify-center rounded-full border-2 shadow-md md:left-1/2 md:-translate-x-1/2'>
+										<div className='bg-primary h-2.5 w-2.5 rounded-full' />
 									</div>
 								</div>
 							);
-					  })
+						})
 					: children}
 			</div>
 		</div>
@@ -245,53 +187,29 @@ export const ScrollTimeline: React.FC<ScrollTimelineProps> & {
 // Compound API Primitives
 const TimelineRoot = ScrollTimeline;
 
-const TimelineTrack: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({
-	children,
-	className = '',
-	...props
-}) => (
+const TimelineTrack: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ children, className = '', ...props }) => (
 	<div className={`exhuma-timeline-track relative ${className}`} {...props}>
 		{children}
 	</div>
 );
 
-const TimelineItem: React.FC<
-	React.HTMLAttributes<HTMLDivElement> & { align?: 'left' | 'right' }
-> = ({ children, align = 'left', className = '', ...props }) => (
-	<div
-		className={`exhuma-timeline-item-anchor relative flex w-full items-center ${
-			align === 'left'
-				? 'md:flex-row-reverse md:text-right'
-				: 'md:flex-row md:text-left'
-		} pl-10 md:pl-0 ${className}`}
-		{...props}
-	>
+const TimelineItem: React.FC<React.HTMLAttributes<HTMLDivElement> & { align?: 'left' | 'right' }> = ({ children, align = 'left', className = '', ...props }) => (
+	<div className={`exhuma-timeline-item-anchor relative flex w-full items-center ${align === 'left' ? 'md:flex-row-reverse md:text-right' : 'md:flex-row md:text-left'} pl-10 md:pl-0 ${className}`} {...props}>
 		{children}
 	</div>
 );
 
-const TimelinePoint: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({
-	children,
-	className = '',
-	...props
-}) => (
+const TimelinePoint: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ children, className = '', ...props }) => (
 	<div
-		className={`exhuma-timeline-point absolute left-[-16px] md:left-1/2 md:-translate-x-1/2 flex h-8 w-8 items-center justify-center rounded-full border-2 border-primary bg-background shadow-md ${className}`}
+		className={`exhuma-timeline-point border-primary bg-background absolute left-[-16px] flex h-8 w-8 items-center justify-center rounded-full border-2 shadow-md md:left-1/2 md:-translate-x-1/2 ${className}`}
 		{...props}
 	>
-		{children || <div className="h-2.5 w-2.5 rounded-full bg-primary" />}
+		{children || <div className='bg-primary h-2.5 w-2.5 rounded-full' />}
 	</div>
 );
 
-const TimelineContent: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({
-	children,
-	className = '',
-	...props
-}) => (
-	<div
-		className={`exhuma-timeline-content w-full md:w-[44%] rounded-2xl border border-border bg-card/70 p-6 backdrop-blur-md shadow-xs ${className}`}
-		{...props}
-	>
+const TimelineContent: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ children, className = '', ...props }) => (
+	<div className={`exhuma-timeline-content border-border bg-card/70 w-full rounded-2xl border p-6 shadow-xs backdrop-blur-md md:w-[44%] ${className}`} {...props}>
 		{children}
 	</div>
 );

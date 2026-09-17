@@ -21,12 +21,7 @@ export function lerp(a: number, b: number, t: number): number {
  * Frame-rate independent exponential smoothing filter:
  * L_t = L_target - (L_target - L_current) * exp(-decay * dt)
  */
-export function exponentialSmoothing(
-	current: number,
-	target: number,
-	decay: number,
-	dt: number
-): number {
+export function exponentialSmoothing(current: number, target: number, decay: number, dt: number): number {
 	return target - (target - current) * Math.exp(-decay * dt);
 }
 
@@ -36,11 +31,7 @@ export const damp = exponentialSmoothing;
  * Normalizes a pointer coordinate relative to a bounding box dimension.
  * Returns a value in [0, 1] (or beyond if unbounded).
  */
-export function normalizeCoordinate(
-	pointerPos: number,
-	boxStart: number,
-	boxDimension: number
-): number {
+export function normalizeCoordinate(pointerPos: number, boxStart: number, boxDimension: number): number {
 	if (boxDimension <= 0) return 0;
 	return (pointerPos - boxStart) / boxDimension;
 }

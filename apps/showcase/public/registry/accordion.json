@@ -1,174 +1,154 @@
 {
-  "name": "Accordion",
-  "slug": "accordion",
-  "category": "primitives",
-  "description": "Zero-jank dynamic height disclosure using CSS Grid 0fr to 1fr interpolation with morphing plus/minus icon and animated gradient border glow.",
-  "version": "1.0.0",
-  "props": [
-    {
-      "name": "mode",
-      "label": "Expansion Mode",
-      "type": "select",
-      "defaultValue": "single",
-      "options": [
-        {
-          "label": "Single Expand",
-          "value": "single"
-        },
-        {
-          "label": "Multiple Expand",
-          "value": "multiple"
-        }
-      ],
-      "description": "Single auto-collapses other items; multiple allows independent toggles."
-    },
-    {
-      "name": "duration",
-      "label": "Transition Duration (ms)",
-      "type": "number",
-      "defaultValue": 300,
-      "min": 150,
-      "max": 600,
-      "step": 50,
-      "description": "CSS Grid height transition speed."
-    }
-  ],
-  "dependencies": {
-    "react": [
-      "@exhuma/core"
-    ],
-    "nextjs": [
-      "@exhuma/core"
-    ],
-    "vue": [
-      "@exhuma/core"
-    ],
-    "svelte": [
-      "@exhuma/core"
-    ],
-    "solid": [
-      "@exhuma/core"
-    ],
-    "angular": [
-      "@exhuma/core"
-    ],
-    "astro": [
-      "@exhuma/core"
-    ],
-    "vanilla": [
-      "@exhuma/core"
-    ],
-    "react-native": [
-      "@exhuma/core"
-    ],
-    "flutter": [
-      "exhuma"
-    ]
-  },
-  "flavors": {
-    "react": [
-      {
-        "filename": "Accordion.tsx",
-        "language": "tsx",
-        "description": "Accordion — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
-        "code": "import * as React from 'react';\nimport * as AccordionPrimitive from '@exhuma/core';\nimport { cn } from '@/lib/utils';\n\nexport interface AccordionProps extends React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Accordion> {\n  className?: string;\n}\n\nexport const Accordion = React.forwardRef<HTMLDivElement, AccordionProps>(\n  ({ className, children, ...props }, ref) => (\n    <AccordionPrimitive.Accordion\n      ref={ref}\n      className={cn(\n        'w-full space-y-3',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </AccordionPrimitive.Accordion>\n  )\n);\nAccordion.displayName = 'Accordion';\n"
-      }
-    ],
-    "nextjs": [
-      {
-        "filename": "Accordion.tsx",
-        "language": "tsx",
-        "description": "Accordion — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
-        "code": "'use client';\n\nimport * as React from 'react';\nimport * as AccordionPrimitive from '@exhuma/core';\nimport { cn } from '@/lib/utils';\n\nexport interface AccordionProps extends React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Accordion> {\n  className?: string;\n}\n\nexport const Accordion = React.forwardRef<HTMLDivElement, AccordionProps>(\n  ({ className, children, ...props }, ref) => (\n    <AccordionPrimitive.Accordion\n      ref={ref}\n      className={cn(\n        'w-full space-y-3',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </AccordionPrimitive.Accordion>\n  )\n);\nAccordion.displayName = 'Accordion';\n"
-      }
-    ],
-    "vue": [
-      {
-        "filename": "Accordion.vue",
-        "language": "vue",
-        "description": "Vue 3 Accordion outer adapter wrapping @exhuma/core headless primitive.",
-        "code": "<script setup lang=\"ts\">\nimport { Accordion as AccordionPrimitive } from '@exhuma/core';\nimport { cn } from '@/lib/utils';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst props = withDefaults(defineProps<Props>(), {\n  class: '',\n});\n</script>\n\n<template>\n  <AccordionPrimitive\n    v-bind=\"props\"\n    :class=\"cn('w-full space-y-3', props.class)\"\n  >\n    <slot />\n  </AccordionPrimitive>\n</template>\n"
-      }
-    ],
-    "svelte": [
-      {
-        "filename": "Accordion.svelte",
-        "language": "svelte",
-        "description": "Svelte 5 Accordion adapter using runes and @exhuma/core primitives.",
-        "code": "<script lang=\"ts\">\n  import { Accordion as AccordionPrimitive } from '@exhuma/core';\n  import { cn } from '$lib/utils';\n\n  let {\n    class: className = '',\n    children,\n    ...restProps\n  }: {\n    class?: string;\n    children?: import('svelte').Snippet;\n    [key: string]: unknown;\n  } = $props();\n</script>\n\n<AccordionPrimitive\n  class={cn('w-full space-y-3', className)}\n  {...restProps}\n>\n  {@render children?.()}\n</AccordionPrimitive>\n"
-      }
-    ],
-    "angular": [
-      {
-        "filename": "accordion.component.ts",
-        "language": "typescript",
-        "description": "Angular 18+ Standalone Accordion component.",
-        "code": "import { Component, input } from '@angular/core';\nimport { CommonModule } from '@angular/common';\n\n@Component({\n  selector: 'exhuma-accordion',\n  standalone: true,\n  imports: [CommonModule],\n  template: `\n    <div\n      class=\"w-full space-y-3 {{ customClass() }}\"\n    >\n      <ng-content></ng-content>\n    </div>\n  `,\n})\nexport class ExhumaAccordionComponent {\n  readonly customClass = input<string>('');\n}\n"
-      }
-    ],
-    "solid": [
-      {
-        "filename": "Accordion.tsx",
-        "language": "tsx",
-        "description": "SolidJS Accordion adapter wrapping @exhuma/core headless primitive.",
-        "code": "import { Component, JSX, splitProps } from 'solid-js';\nimport * as AccordionPrimitive from '@exhuma/core';\n\nexport interface AccordionProps extends JSX.HTMLAttributes<HTMLDivElement> {\n  [key: string]: unknown;\n}\n\nexport const Accordion: Component<AccordionProps> = (props) => {\n  const [local, others] = splitProps(props, ['class', 'children']);\n  return (\n    <AccordionPrimitive.Accordion\n      class={`w-full space-y-3 ${local.class ?? ''}`}\n      {...others}\n    >\n      {local.children}\n    </AccordionPrimitive.Accordion>\n  );\n};\n"
-      }
-    ],
-    "astro": [
-      {
-        "filename": "Accordion.astro",
-        "language": "astro",
-        "description": "Astro Accordion component with @exhuma/core primitive.",
-        "code": "---\nimport * as AccordionPrimitive from '@exhuma/core';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst { class: className = '', ...props } = Astro.props;\n---\n\n<AccordionPrimitive.Accordion\n  client:visible\n  className={`w-full space-y-3 ${className}`}\n  {...props}\n>\n  <slot />\n</AccordionPrimitive.Accordion>\n"
-      }
-    ],
-    "blade": [
-      {
-        "filename": "accordion.blade.php",
-        "language": "php",
-        "description": "Laravel Blade component for Accordion with Alpine / data attributes.",
-        "code": "@props([])\n\n<exhuma-accordion\n    {{ $attributes->merge([\n        'class' => 'w-full space-y-3 block',\n    ]) }}\n>\n    {{ $slot }}\n</exhuma-accordion>\n"
-      }
-    ],
-    "vanilla": [
-      {
-        "filename": "exhuma-accordion.js",
-        "language": "javascript",
-        "description": "Autonomous Vanilla JS Accordion initialization module.",
-        "code": "import { Accordion } from '@exhuma/core';\n\nexport function initAccordion(selector = '[data-exhuma-accordion]', options = {}) {\n  const elements = document.querySelectorAll(selector);\n  return Array.from(elements);\n}\n"
-      }
-    ],
-    "wordpress": [
-      {
-        "filename": "block.json",
-        "language": "json",
-        "description": "WordPress Block API v3 definition for Accordion.",
-        "code": "{\n  \"$schema\": \"https://schemas.wp.org/trunk/block.json\",\n  \"apiVersion\": 3,\n  \"name\": \"exhuma/accordion\",\n  \"version\": \"1.0.0\",\n  \"title\": \"Exhuma Accordion\",\n  \"category\": \"design\",\n  \"icon\": \"art\",\n  \"description\": \"Zero-jank dynamic height disclosure using CSS Grid 0fr to 1fr interpolation.\",\n  \"attributes\": {},\n  \"editorScript\": \"file:./index.js\",\n  \"viewScript\": \"exhuma-kinetic\"\n}"
-      }
-    ],
-    "webcomponent": [
-      {
-        "filename": "exhuma-accordion.js",
-        "language": "javascript",
-        "description": "Universal Web Component wrapper for <exhuma-accordion>.",
-        "code": "import { Accordion } from '@exhuma/core';\n\nclass ExhumaAccordionElement extends HTMLElement {\n  connectedCallback() {\n    this.classList.add('exhuma-accordion');\n    this.style.display = 'block';\n  }\n}\n\nif (!customElements.get('exhuma-accordion')) {\n  customElements.define('exhuma-accordion', ExhumaAccordionElement);\n}\n"
-      }
-    ],
-    "react-native": [
-      {
-        "filename": "Accordion.tsx",
-        "language": "tsx",
-        "description": "React Native Accordion adapter wrapping @exhuma/core touch primitive.",
-        "code": "import React from 'react';\nimport { View, StyleSheet, type ViewProps } from 'react-native';\nimport * as AccordionPrimitive from '@exhuma/core';\n\nexport interface AccordionProps extends ViewProps {\n  children?: React.ReactNode;\n}\n\nexport function Accordion({ style, children, ...props }: AccordionProps) {\n  return (\n    <View style={[styles.container, style]} {...props}>\n      {children}\n    </View>\n  );\n}\n\nconst styles = StyleSheet.create({\n  container: {\n    borderRadius: 16,\n    borderWidth: 1,\n    borderColor: '#e2e8f0',\n    backgroundColor: '#ffffff',\n    padding: 20,\n    overflow: 'hidden',\n  },\n});\n"
-      }
-    ],
-    "flutter": [
-      {
-        "filename": "accordion.dart",
-        "language": "dart",
-        "description": "Flutter Accordion widget wrapping package:exhuma.",
-        "code": "import 'package:flutter/material.dart';\nimport 'package:exhuma/exhuma.dart' as exhuma;\n\nclass ExhumaAccordion extends StatelessWidget {\n  final Widget child;\n\n  const ExhumaAccordion({\n    super.key,\n    required this.child,\n  });\n\n  @override\n  Widget build(BuildContext context) {\n    return Container(\n      decoration: BoxDecoration(\n        borderRadius: BorderRadius.circular(16.0),\n        border: Border.all(color: Theme.of(context).dividerColor),\n        color: Theme.of(context).cardColor,\n      ),\n      padding: const EdgeInsets.all(20.0),\n      child: child,\n    );\n  }\n}\n"
-      }
-    ]
-  }
+	"name": "Accordion",
+	"slug": "accordion",
+	"category": "primitives",
+	"description": "Zero-jank dynamic height disclosure using CSS Grid 0fr to 1fr interpolation with morphing plus/minus icon and animated gradient border glow.",
+	"version": "1.0.0",
+	"props": [
+		{
+			"name": "mode",
+			"label": "Expansion Mode",
+			"type": "select",
+			"defaultValue": "single",
+			"options": [
+				{
+					"label": "Single Expand",
+					"value": "single"
+				},
+				{
+					"label": "Multiple Expand",
+					"value": "multiple"
+				}
+			],
+			"description": "Single auto-collapses other items; multiple allows independent toggles."
+		},
+		{
+			"name": "duration",
+			"label": "Transition Duration (ms)",
+			"type": "number",
+			"defaultValue": 300,
+			"min": 150,
+			"max": 600,
+			"step": 50,
+			"description": "CSS Grid height transition speed."
+		}
+	],
+	"dependencies": {
+		"react": ["@exhuma/core"],
+		"nextjs": ["@exhuma/core"],
+		"vue": ["@exhuma/core"],
+		"svelte": ["@exhuma/core"],
+		"solid": ["@exhuma/core"],
+		"angular": ["@exhuma/core"],
+		"astro": ["@exhuma/core"],
+		"vanilla": ["@exhuma/core"],
+		"react-native": ["@exhuma/core"],
+		"flutter": ["exhuma"]
+	},
+	"flavors": {
+		"react": [
+			{
+				"filename": "Accordion.tsx",
+				"language": "tsx",
+				"description": "Accordion — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
+				"code": "import * as React from 'react';\nimport * as AccordionPrimitive from '@exhuma/core';\nimport { cn } from '@/lib/utils';\n\nexport interface AccordionProps extends React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Accordion> {\n  className?: string;\n}\n\nexport const Accordion = React.forwardRef<HTMLDivElement, AccordionProps>(\n  ({ className, children, ...props }, ref) => (\n    <AccordionPrimitive.Accordion\n      ref={ref}\n      className={cn(\n        'w-full space-y-3',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </AccordionPrimitive.Accordion>\n  )\n);\nAccordion.displayName = 'Accordion';\n"
+			}
+		],
+		"nextjs": [
+			{
+				"filename": "Accordion.tsx",
+				"language": "tsx",
+				"description": "Accordion — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
+				"code": "'use client';\n\nimport * as React from 'react';\nimport * as AccordionPrimitive from '@exhuma/core';\nimport { cn } from '@/lib/utils';\n\nexport interface AccordionProps extends React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Accordion> {\n  className?: string;\n}\n\nexport const Accordion = React.forwardRef<HTMLDivElement, AccordionProps>(\n  ({ className, children, ...props }, ref) => (\n    <AccordionPrimitive.Accordion\n      ref={ref}\n      className={cn(\n        'w-full space-y-3',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </AccordionPrimitive.Accordion>\n  )\n);\nAccordion.displayName = 'Accordion';\n"
+			}
+		],
+		"vue": [
+			{
+				"filename": "Accordion.vue",
+				"language": "vue",
+				"description": "Vue 3 Accordion outer adapter wrapping @exhuma/core headless primitive.",
+				"code": "<script setup lang=\"ts\">\nimport { Accordion as AccordionPrimitive } from '@exhuma/core';\nimport { cn } from '@/lib/utils';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst props = withDefaults(defineProps<Props>(), {\n  class: '',\n});\n</script>\n\n<template>\n  <AccordionPrimitive\n    v-bind=\"props\"\n    :class=\"cn('w-full space-y-3', props.class)\"\n  >\n    <slot />\n  </AccordionPrimitive>\n</template>\n"
+			}
+		],
+		"svelte": [
+			{
+				"filename": "Accordion.svelte",
+				"language": "svelte",
+				"description": "Svelte 5 Accordion adapter using runes and @exhuma/core primitives.",
+				"code": "<script lang=\"ts\">\n  import { Accordion as AccordionPrimitive } from '@exhuma/core';\n  import { cn } from '$lib/utils';\n\n  let {\n    class: className = '',\n    children,\n    ...restProps\n  }: {\n    class?: string;\n    children?: import('svelte').Snippet;\n    [key: string]: unknown;\n  } = $props();\n</script>\n\n<AccordionPrimitive\n  class={cn('w-full space-y-3', className)}\n  {...restProps}\n>\n  {@render children?.()}\n</AccordionPrimitive>\n"
+			}
+		],
+		"angular": [
+			{
+				"filename": "accordion.component.ts",
+				"language": "typescript",
+				"description": "Angular 18+ Standalone Accordion component.",
+				"code": "import { Component, input } from '@angular/core';\nimport { CommonModule } from '@angular/common';\n\n@Component({\n  selector: 'exhuma-accordion',\n  standalone: true,\n  imports: [CommonModule],\n  template: `\n    <div\n      class=\"w-full space-y-3 {{ customClass() }}\"\n    >\n      <ng-content></ng-content>\n    </div>\n  `,\n})\nexport class ExhumaAccordionComponent {\n  readonly customClass = input<string>('');\n}\n"
+			}
+		],
+		"solid": [
+			{
+				"filename": "Accordion.tsx",
+				"language": "tsx",
+				"description": "SolidJS Accordion adapter wrapping @exhuma/core headless primitive.",
+				"code": "import { Component, JSX, splitProps } from 'solid-js';\nimport * as AccordionPrimitive from '@exhuma/core';\n\nexport interface AccordionProps extends JSX.HTMLAttributes<HTMLDivElement> {\n  [key: string]: unknown;\n}\n\nexport const Accordion: Component<AccordionProps> = (props) => {\n  const [local, others] = splitProps(props, ['class', 'children']);\n  return (\n    <AccordionPrimitive.Accordion\n      class={`w-full space-y-3 ${local.class ?? ''}`}\n      {...others}\n    >\n      {local.children}\n    </AccordionPrimitive.Accordion>\n  );\n};\n"
+			}
+		],
+		"astro": [
+			{
+				"filename": "Accordion.astro",
+				"language": "astro",
+				"description": "Astro Accordion component with @exhuma/core primitive.",
+				"code": "---\nimport * as AccordionPrimitive from '@exhuma/core';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst { class: className = '', ...props } = Astro.props;\n---\n\n<AccordionPrimitive.Accordion\n  client:visible\n  className={`w-full space-y-3 ${className}`}\n  {...props}\n>\n  <slot />\n</AccordionPrimitive.Accordion>\n"
+			}
+		],
+		"blade": [
+			{
+				"filename": "accordion.blade.php",
+				"language": "php",
+				"description": "Laravel Blade component for Accordion with Alpine / data attributes.",
+				"code": "@props([])\n\n<exhuma-accordion\n    {{ $attributes->merge([\n        'class' => 'w-full space-y-3 block',\n    ]) }}\n>\n    {{ $slot }}\n</exhuma-accordion>\n"
+			}
+		],
+		"vanilla": [
+			{
+				"filename": "exhuma-accordion.js",
+				"language": "javascript",
+				"description": "Autonomous Vanilla JS Accordion initialization module.",
+				"code": "import { Accordion } from '@exhuma/core';\n\nexport function initAccordion(selector = '[data-exhuma-accordion]', options = {}) {\n  const elements = document.querySelectorAll(selector);\n  return Array.from(elements);\n}\n"
+			}
+		],
+		"wordpress": [
+			{
+				"filename": "block.json",
+				"language": "json",
+				"description": "WordPress Block API v3 definition for Accordion.",
+				"code": "{\n  \"$schema\": \"https://schemas.wp.org/trunk/block.json\",\n  \"apiVersion\": 3,\n  \"name\": \"exhuma/accordion\",\n  \"version\": \"1.0.0\",\n  \"title\": \"Exhuma Accordion\",\n  \"category\": \"design\",\n  \"icon\": \"art\",\n  \"description\": \"Zero-jank dynamic height disclosure using CSS Grid 0fr to 1fr interpolation.\",\n  \"attributes\": {},\n  \"editorScript\": \"file:./index.js\",\n  \"viewScript\": \"exhuma-kinetic\"\n}"
+			}
+		],
+		"webcomponent": [
+			{
+				"filename": "exhuma-accordion.js",
+				"language": "javascript",
+				"description": "Universal Web Component wrapper for <exhuma-accordion>.",
+				"code": "import { Accordion } from '@exhuma/core';\n\nclass ExhumaAccordionElement extends HTMLElement {\n  connectedCallback() {\n    this.classList.add('exhuma-accordion');\n    this.style.display = 'block';\n  }\n}\n\nif (!customElements.get('exhuma-accordion')) {\n  customElements.define('exhuma-accordion', ExhumaAccordionElement);\n}\n"
+			}
+		],
+		"react-native": [
+			{
+				"filename": "Accordion.tsx",
+				"language": "tsx",
+				"description": "React Native Accordion adapter wrapping @exhuma/core touch primitive.",
+				"code": "import React from 'react';\nimport { View, StyleSheet, type ViewProps } from 'react-native';\nimport * as AccordionPrimitive from '@exhuma/core';\n\nexport interface AccordionProps extends ViewProps {\n  children?: React.ReactNode;\n}\n\nexport function Accordion({ style, children, ...props }: AccordionProps) {\n  return (\n    <View style={[styles.container, style]} {...props}>\n      {children}\n    </View>\n  );\n}\n\nconst styles = StyleSheet.create({\n  container: {\n    borderRadius: 16,\n    borderWidth: 1,\n    borderColor: '#e2e8f0',\n    backgroundColor: '#ffffff',\n    padding: 20,\n    overflow: 'hidden',\n  },\n});\n"
+			}
+		],
+		"flutter": [
+			{
+				"filename": "accordion.dart",
+				"language": "dart",
+				"description": "Flutter Accordion widget wrapping package:exhuma.",
+				"code": "import 'package:flutter/material.dart';\nimport 'package:exhuma/exhuma.dart' as exhuma;\n\nclass ExhumaAccordion extends StatelessWidget {\n  final Widget child;\n\n  const ExhumaAccordion({\n    super.key,\n    required this.child,\n  });\n\n  @override\n  Widget build(BuildContext context) {\n    return Container(\n      decoration: BoxDecoration(\n        borderRadius: BorderRadius.circular(16.0),\n        border: Border.all(color: Theme.of(context).dividerColor),\n        color: Theme.of(context).cardColor,\n      ),\n      padding: const EdgeInsets.all(20.0),\n      child: child,\n    );\n  }\n}\n"
+			}
+		]
+	}
 }

@@ -11,17 +11,8 @@ export interface UseTiltOptions {
 	disabled?: boolean;
 }
 
-export function useTilt<T extends HTMLElement = HTMLDivElement>(
-	options: UseTiltOptions = {}
-) {
-	const {
-		maxTilt = 20,
-		glare = true,
-		scale = 1.04,
-		perspective = 1000,
-		speed = 300,
-		disabled = false,
-	} = options;
+export function useTilt<T extends HTMLElement = HTMLDivElement>(options: UseTiltOptions = {}) {
+	const { maxTilt = 20, glare = true, scale = 1.04, perspective = 1000, speed = 300, disabled = false } = options;
 
 	const elementRef = useRef<T>(null);
 	const [transform, setTransform] = useState('');
@@ -50,9 +41,7 @@ export function useTilt<T extends HTMLElement = HTMLDivElement>(
 			const rotateX = ((y - centerY) / centerY) * -maxTilt;
 			const rotateY = ((x - centerX) / centerX) * maxTilt;
 
-			setTransform(
-				`perspective(${perspective}px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) scale3d(${scale}, ${scale}, ${scale})`
-			);
+			setTransform(`perspective(${perspective}px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) scale3d(${scale}, ${scale}, ${scale})`);
 
 			if (glare) {
 				setGlareState({
@@ -67,9 +56,7 @@ export function useTilt<T extends HTMLElement = HTMLDivElement>(
 
 	const handleMouseLeave = useCallback(() => {
 		if (disabled || reducedMotion) return;
-		setTransform(
-			`perspective(${perspective}px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`
-		);
+		setTransform(`perspective(${perspective}px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`);
 		setGlareState({ opacity: 0, x: 50, y: 50 });
 	}, [disabled, reducedMotion, perspective]);
 

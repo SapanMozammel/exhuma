@@ -1,16 +1,6 @@
 'use client';
 
-import React, {
-	useRef,
-	useState,
-	useCallback,
-	useEffect,
-	useLayoutEffect,
-	createContext,
-	useContext,
-	memo,
-	type ReactNode,
-} from 'react';
+import React, { useRef, useState, useCallback, useEffect, useLayoutEffect, createContext, useContext, memo, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import { calculateFLIPDelta, generateInvertTransform, type DOMRectSnapshot } from './flip-math';
 
@@ -47,14 +37,7 @@ export const ExpandableCard: React.FC<ExpandableCardProps> & {
 	Trigger: typeof ExpandableTrigger;
 	Content: typeof ExpandableContent;
 	Close: typeof ExpandableClose;
-} = ({
-	children,
-	cardContent,
-	expandedContent,
-	className = '',
-	expandedClassName = '',
-	onOpenChange,
-}) => {
+} = ({ children, cardContent, expandedContent, className = '', expandedClassName = '', onOpenChange }) => {
 	const [isExpanded, setIsExpanded] = useState(false);
 	const triggerRef = useRef<HTMLDivElement | null>(null);
 	const firstRectRef = useRef<DOMRectSnapshot | null>(null);
@@ -82,12 +65,10 @@ export const ExpandableCard: React.FC<ExpandableCardProps> & {
 	if (cardContent && expandedContent) {
 		return (
 			<ExpandableRoot isExpanded={isExpanded} open={open} close={close} triggerRef={triggerRef} firstRectRef={firstRectRef}>
-				<ExpandableTrigger className={className}>
-					{cardContent}
-				</ExpandableTrigger>
+				<ExpandableTrigger className={className}>{cardContent}</ExpandableTrigger>
 				<ExpandableContent className={expandedClassName}>
-					<div className="relative">
-						<ExpandableClose className="absolute top-4 right-4 z-10" />
+					<div className='relative'>
+						<ExpandableClose className='absolute top-4 right-4 z-10' />
 						{expandedContent}
 					</div>
 				</ExpandableContent>
@@ -117,28 +98,19 @@ export function ExpandableRoot({
 	triggerRef: React.RefObject<HTMLDivElement | null>;
 	firstRectRef: React.MutableRefObject<DOMRectSnapshot | null>;
 }) {
-	return (
-		<ExpandableContext.Provider value={{ isExpanded, open, close, triggerRef, firstRectRef }}>
-			{children}
-		</ExpandableContext.Provider>
-	);
+	return <ExpandableContext.Provider value={{ isExpanded, open, close, triggerRef, firstRectRef }}>{children}</ExpandableContext.Provider>;
 }
 
-export const ExpandableTrigger = memo<React.HTMLAttributes<HTMLDivElement>>(({
-	children,
-	className = '',
-	onClick,
-	...props
-}) => {
+export const ExpandableTrigger = memo<React.HTMLAttributes<HTMLDivElement>>(({ children, className = '', onClick, ...props }) => {
 	const ctx = useContext(ExpandableContext);
 	if (!ctx) throw new Error('ExpandableTrigger must be used within ExpandableCard');
 
 	return (
 		<div
 			ref={ctx.triggerRef}
-			role="button"
+			role='button'
 			tabIndex={0}
-			aria-haspopup="dialog"
+			aria-haspopup='dialog'
 			aria-expanded={ctx.isExpanded}
 			onClick={(e) => {
 				ctx.open();
@@ -150,7 +122,7 @@ export const ExpandableTrigger = memo<React.HTMLAttributes<HTMLDivElement>>(({
 					ctx.open();
 				}
 			}}
-			className={`cursor-pointer select-none focus:outline-none focus-visible:ring-2 focus-visible:ring-primary ${className}`}
+			className={`focus-visible:ring-primary cursor-pointer select-none focus:outline-none focus-visible:ring-2 ${className}`}
 			{...props}
 		>
 			{children}
@@ -159,11 +131,7 @@ export const ExpandableTrigger = memo<React.HTMLAttributes<HTMLDivElement>>(({
 });
 ExpandableTrigger.displayName = 'ExpandableTrigger';
 
-export const ExpandableContent = memo<React.HTMLAttributes<HTMLDivElement>>(({
-	children,
-	className = '',
-	...props
-}) => {
+export const ExpandableContent = memo<React.HTMLAttributes<HTMLDivElement>>(({ children, className = '', ...props }) => {
 	const ctx = useContext(ExpandableContext);
 	if (!ctx) throw new Error('ExpandableContent must be used within ExpandableCard');
 
@@ -212,23 +180,12 @@ export const ExpandableContent = memo<React.HTMLAttributes<HTMLDivElement>>(({
 	if (!mounted || !ctx.isExpanded) return null;
 
 	return createPortal(
-		<div
-			className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6"
-			role="dialog"
-			aria-modal="true"
-		>
+		<div className='fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6' role='dialog' aria-modal='true'>
 			{/* Backdrop */}
-			<div
-				className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300 animate-in fade-in"
-				onClick={ctx.close}
-			/>
+			<div className='animate-in fade-in fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300' onClick={ctx.close} />
 
 			{/* Modal Container */}
-			<div
-				ref={modalRef}
-				className={`relative z-10 w-full max-w-xl overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-2xl ${className}`}
-				{...props}
-			>
+			<div ref={modalRef} className={`border-border bg-card relative z-10 w-full max-w-xl overflow-hidden rounded-2xl border p-6 shadow-2xl ${className}`} {...props}>
 				{children}
 			</div>
 		</div>,
@@ -237,40 +194,25 @@ export const ExpandableContent = memo<React.HTMLAttributes<HTMLDivElement>>(({
 });
 ExpandableContent.displayName = 'ExpandableContent';
 
-export const ExpandableClose = memo<React.ButtonHTMLAttributes<HTMLButtonElement>>(({
-	className = '',
-	onClick,
-	children,
-	...props
-}) => {
+export const ExpandableClose = memo<React.ButtonHTMLAttributes<HTMLButtonElement>>(({ className = '', onClick, children, ...props }) => {
 	const ctx = useContext(ExpandableContext);
 	if (!ctx) throw new Error('ExpandableClose must be used within ExpandableCard');
 
 	return (
 		<button
-			type="button"
-			aria-label="Close dialog"
+			type='button'
+			aria-label='Close dialog'
 			onClick={(e) => {
 				ctx.close();
 				onClick?.(e);
 			}}
-			className={`flex h-8 w-8 items-center justify-center rounded-full border border-border bg-card/80 text-muted-foreground hover:text-foreground transition-colors ${className}`}
+			className={`border-border bg-card/80 text-muted-foreground hover:text-foreground flex h-8 w-8 items-center justify-center rounded-full border transition-colors ${className}`}
 			{...props}
 		>
 			{children || (
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					width="16"
-					height="16"
-					viewBox="0 0 24 24"
-					fill="none"
-					stroke="currentColor"
-					strokeWidth="2"
-					strokeLinecap="round"
-					strokeLinejoin="round"
-				>
-					<path d="M18 6 6 18" />
-					<path d="m6 6 12 12" />
+				<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2' strokeLinecap='round' strokeLinejoin='round'>
+					<path d='M18 6 6 18' />
+					<path d='m6 6 12 12' />
 				</svg>
 			)}
 		</button>

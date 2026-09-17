@@ -21,16 +21,7 @@ export const DEFAULT_SPHERE_CHARS = '░▒▓█▀▄▌▐│─┤├┴┬�
 /**
  * Projects a spherical surface point rotated by Euler angles (rotX, rotY) onto 2D canvas coordinates.
  */
-export function projectSphericalPoint(
-	theta: number,
-	phi: number,
-	rotX: number,
-	rotY: number,
-	radius: number,
-	centerX: number,
-	centerY: number,
-	chars: string = DEFAULT_SPHERE_CHARS
-): ProjectedPoint {
+export function projectSphericalPoint(theta: number, phi: number, rotX: number, rotY: number, radius: number, centerX: number, centerY: number, chars: string = DEFAULT_SPHERE_CHARS): ProjectedPoint {
 	const cosY = Math.cos(rotY);
 	const sinY = Math.sin(rotY);
 	const cosX = Math.cos(rotX);

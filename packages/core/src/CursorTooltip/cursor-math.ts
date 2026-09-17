@@ -25,15 +25,7 @@ export function calculateElementCenter(rect: { left: number; top: number; width:
 /**
  * Clamps tooltip coordinates to ensure it stays fully visible within the browser viewport.
  */
-export function clampTooltipToViewport(
-	targetX: number,
-	targetY: number,
-	tooltipWidth: number,
-	tooltipHeight: number,
-	viewportWidth: number,
-	viewportHeight: number,
-	padding: number = 12
-): CursorPosition {
+export function clampTooltipToViewport(targetX: number, targetY: number, tooltipWidth: number, tooltipHeight: number, viewportWidth: number, viewportHeight: number, padding: number = 12): CursorPosition {
 	const maxX = Math.max(0, viewportWidth - tooltipWidth - padding);
 	const maxY = Math.max(0, viewportHeight - tooltipHeight - padding);
 

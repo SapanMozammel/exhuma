@@ -35,8 +35,7 @@ export const BLOG_POSTS: BlogPost[] = [
 	{
 		slug: 'why-copy-paste-architecture-wins',
 		title: 'Why Copy-Paste Headless Architecture Wins Over Monolithic NPM',
-		description:
-			'How shadcn/ui and Exhuma proved that owning your component source code fundamentally outscales third-party npm runtime dependencies across multi-framework teams.',
+		description: 'How shadcn/ui and Exhuma proved that owning your component source code fundamentally outscales third-party npm runtime dependencies across multi-framework teams.',
 		publishedAt: 'March 2025',
 		readTime: '6 min read',
 		featured: true,
@@ -62,8 +61,7 @@ export const BLOG_POSTS: BlogPost[] = [
 					callout: {
 						type: 'note',
 						title: 'The Shift toward Code Ownership',
-						message:
-							'When shadcn/ui popularized copy-paste component architecture, it fundamentally challenged the idea that UI components must be distributed as compiled binary npm packages.',
+						message: 'When shadcn/ui popularized copy-paste component architecture, it fundamentally challenged the idea that UI components must be distributed as compiled binary npm packages.',
 					},
 				},
 				{
@@ -101,8 +99,7 @@ npx exhuma add tilt-card --flavor=react
 	{
 		slug: 'hardware-accelerated-spring-physics',
 		title: '60 FPS Spring Physics on the GPU Compositor',
-		description:
-			'The mathematics and DOM lifecycle engineering behind Exhuma 3D Tilt Card: achieving silky-smooth kinetic responses with zero React layout thrashing.',
+		description: 'The mathematics and DOM lifecycle engineering behind Exhuma 3D Tilt Card: achieving silky-smooth kinetic responses with zero React layout thrashing.',
 		publishedAt: 'February 2025',
 		readTime: '8 min read',
 		tags: ['Performance', 'Spring Physics', 'Math'],
@@ -157,8 +154,7 @@ element.style.transform = \`perspective(1000px) rotateX(\${rotateX}deg) rotateY(
 					callout: {
 						type: 'important',
 						title: 'WCAG 2.1 Compliance',
-						message:
-							'Exhuma guarantees that vestibular disorder triggers are completely neutralized whenever prefers-reduced-motion is detected.',
+						message: 'Exhuma guarantees that vestibular disorder triggers are completely neutralized whenever prefers-reduced-motion is detected.',
 					},
 				},
 			],
@@ -167,8 +163,7 @@ element.style.transform = \`perspective(1000px) rotateX(\${rotateX}deg) rotateY(
 	{
 		slug: 'deterministic-lifecycle-cleanup',
 		title: 'Deterministic Teardown: Zero Memory Leaks Across 13 Frameworks',
-		description:
-			'How Exhuma guarantees that listeners, observers, and spring animations cleanly terminate across SPA view transitions from Svelte 5 Runes to Angular Signals and Flutter.',
+		description: 'How Exhuma guarantees that listeners, observers, and spring animations cleanly terminate across SPA view transitions from Svelte 5 Runes to Angular Signals and Flutter.',
 		publishedAt: 'January 2025',
 		readTime: '7 min read',
 		tags: ['Architecture', 'Memory Safety', 'Engine'],
@@ -224,8 +219,7 @@ void dispose() {
 				{
 					id: 'automated-audit',
 					title: 'Automated Lifecycle Verification',
-					content:
-						'Our automated CI test suite mounts each component into a headless browser harness, executes 1,000 rapid route transitions, and inspects heap snapshots to confirm zero memory accumulation.',
+					content: 'Our automated CI test suite mounts each component into a headless browser harness, executes 1,000 rapid route transitions, and inspects heap snapshots to confirm zero memory accumulation.',
 				},
 			],
 		},

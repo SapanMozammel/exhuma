@@ -1,31 +1,16 @@
 import React, { useEffect, useRef, useState } from 'react';
 import type { HorizontalScrollerProps } from '../types';
 
-export const calculateHorizontalDistance = (
-	trackWidth: number,
-	containerWidth: number,
-	extraPadding = 60
-): number => {
+export const calculateHorizontalDistance = (trackWidth: number, containerWidth: number, extraPadding = 60): number => {
 	return Math.max(0, trackWidth - containerWidth + extraPadding);
 };
 
-export const calculateSectionHeight = (
-	viewportHeight: number,
-	horizontalDistance: number,
-	speed = 0.85
-): number => {
+export const calculateSectionHeight = (viewportHeight: number, horizontalDistance: number, speed = 0.85): number => {
 	const safeSpeed = Math.max(0.1, speed);
 	return Math.round(viewportHeight + horizontalDistance / safeSpeed);
 };
 
-export const HorizontalScroller: React.FC<HorizontalScrollerProps> = ({
-	children,
-	speed = 0.85,
-	scrollContainerRef,
-	className = '',
-	trackClassName = '',
-	style,
-}) => {
+export const HorizontalScroller: React.FC<HorizontalScrollerProps> = ({ children, speed = 0.85, scrollContainerRef, className = '', trackClassName = '', style }) => {
 	const sectionRef = useRef<HTMLDivElement>(null);
 	const stickyWrapRef = useRef<HTMLDivElement>(null);
 	const trackRef = useRef<HTMLDivElement>(null);
@@ -38,9 +23,7 @@ export const HorizontalScroller: React.FC<HorizontalScrollerProps> = ({
 		const track = trackRef.current;
 		if (!section || !stickyWrap || !track || typeof window === 'undefined') return;
 
-		const prefersReducedMotion = window.matchMedia(
-			'(prefers-reduced-motion: reduce)'
-		).matches;
+		const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 		setIsReducedMotion(prefersReducedMotion);
 
 		if (prefersReducedMotion) {
@@ -52,27 +35,17 @@ export const HorizontalScroller: React.FC<HorizontalScrollerProps> = ({
 		let isIntersecting = false;
 		let isTicking = false;
 
-		const scrollTarget: HTMLElement | Window =
-			scrollContainerRef?.current ?? window;
+		const scrollTarget: HTMLElement | Window = scrollContainerRef?.current ?? window;
 
 		const recalculateDimensions = () => {
-			const viewportHeight = scrollContainerRef?.current
-				? scrollContainerRef.current.clientHeight
-				: window.innerHeight;
+			const viewportHeight = scrollContainerRef?.current ? scrollContainerRef.current.clientHeight : window.innerHeight;
 			const trackWidth = track.scrollWidth;
 			const containerWidth = stickyWrap.clientWidth;
 
-			const horizontalDistance = calculateHorizontalDistance(
-				trackWidth,
-				containerWidth
-			);
+			const horizontalDistance = calculateHorizontalDistance(trackWidth, containerWidth);
 			cachedHorizontalDistance = horizontalDistance;
 
-			const computedSectionHeight = calculateSectionHeight(
-				viewportHeight,
-				horizontalDistance,
-				speed
-			);
+			const computedSectionHeight = calculateSectionHeight(viewportHeight, horizontalDistance, speed);
 			setSectionHeight(computedSectionHeight);
 		};
 
@@ -111,10 +84,7 @@ export const HorizontalScroller: React.FC<HorizontalScrollerProps> = ({
 			const progress = Math.min(Math.max(scrolledInto / totalScrollable, 0), 1);
 			const currentTranslate = -(progress * cachedHorizontalDistance);
 
-			track.style.setProperty(
-				'--scroll-offset-x',
-				`${Number(currentTranslate.toFixed(2))}px`
-			);
+			track.style.setProperty('--scroll-offset-x', `${Number(currentTranslate.toFixed(2))}px`);
 		};
 
 		const onScroll = () => {
@@ -161,10 +131,7 @@ export const HorizontalScroller: React.FC<HorizontalScrollerProps> = ({
 
 	if (isReducedMotion) {
 		return (
-			<div
-				className={`exhuma-horizontal-scroller-fallback w-full overflow-x-auto py-8 ${className}`}
-				style={style}
-			>
+			<div className={`exhuma-horizontal-scroller-fallback w-full overflow-x-auto py-8 ${className}`} style={style}>
 				<div className={`flex gap-6 px-6 ${trackClassName}`}>{children}</div>
 			</div>
 		);
@@ -179,10 +146,7 @@ export const HorizontalScroller: React.FC<HorizontalScrollerProps> = ({
 				...style,
 			}}
 		>
-			<div
-				ref={stickyWrapRef}
-				className="sticky top-0 h-screen w-full overflow-hidden flex items-center"
-			>
+			<div ref={stickyWrapRef} className='sticky top-0 flex h-screen w-full items-center overflow-hidden'>
 				<div
 					ref={trackRef}
 					className={`flex gap-6 will-change-transform select-none ${trackClassName}`}

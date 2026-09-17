@@ -2,75 +2,36 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
-import {
-	ALL_COMPONENTS,
-	COMPONENT_REGISTRY,
-	EcosystemFlavor,
-	ECOSYSTEM_LABELS,
-	CATEGORIES,
-	UniversalComponent,
-	PropDescriptor,
-	ComponentFilePayload,
-} from '@/registry';
+import { ALL_COMPONENTS, COMPONENT_REGISTRY, EcosystemFlavor, ECOSYSTEM_LABELS, CATEGORIES, UniversalComponent, PropDescriptor, ComponentFilePayload } from '@/registry';
 import { CodeBlock } from './CodeBlock';
 
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
-  IconAdjustments as Sliders,
-  IconSparkles as Sparkles,
-  IconRefresh as RefreshCw,
-  IconStack2 as Layers,
-  IconCopy as Copy,
-  IconCheck as Check,
-  IconDeviceLaptop as Laptop,
-  IconDeviceTablet as Tablet,
-  IconDeviceMobile as Smartphone,
-  IconDeviceDesktop as Monitor,
-  IconZoomIn as ZoomIn,
-  IconZoomOut as ZoomOut,
-  IconDownload as Download,
-  IconSearch as Search,
-  IconChevronRight as ChevronRight,
-  IconLayoutGrid as Grid,
-  IconMaximize as Maximize2,
-  IconTerminal2 as Terminal,
-  IconCpu as Cpu,
+	IconAdjustments as Sliders,
+	IconSparkles as Sparkles,
+	IconRefresh as RefreshCw,
+	IconStack2 as Layers,
+	IconCopy as Copy,
+	IconCheck as Check,
+	IconDeviceLaptop as Laptop,
+	IconDeviceTablet as Tablet,
+	IconDeviceMobile as Smartphone,
+	IconDeviceDesktop as Monitor,
+	IconZoomIn as ZoomIn,
+	IconZoomOut as ZoomOut,
+	IconDownload as Download,
+	IconSearch as Search,
+	IconChevronRight as ChevronRight,
+	IconLayoutGrid as Grid,
+	IconMaximize as Maximize2,
+	IconTerminal2 as Terminal,
+	IconCpu as Cpu,
 } from '@tabler/icons-react';
 import { cn } from '@/lib/utils';
-import {
-	StackingCards,
-	HorizontalScroller,
-	TiltCard,
-	SpotlightCard,
-	BorderBeam,
-	CardSwipeStack,
-	ComparisonSlider,
-	ExpandableCard,
-} from '@exhuma/cards';
-import {
-	CssMasonry,
-	AutoGrid,
-	InfiniteMarquee,
-	BentoGrid,
-	BentoCard,
-	BentoHeader,
-	BentoContent,
-	DiamondGrid,
-	ScrollTimeline,
-	StickyParallaxScroll,
-	ParallaxLayer,
-	InteractiveGridPattern,
-} from '@exhuma/layouts';
-import {
-	MorphingTabs,
-	Accordion,
-	AnimatedSphere,
-	FloatingDock,
-	NumberTicker,
-	MagneticButton,
-	CursorTooltip,
-} from '@exhuma/core';
+import { StackingCards, HorizontalScroller, TiltCard, SpotlightCard, BorderBeam, CardSwipeStack, ComparisonSlider, ExpandableCard } from '@exhuma/cards';
+import { CssMasonry, AutoGrid, InfiniteMarquee, BentoGrid, BentoCard, BentoHeader, BentoContent, DiamondGrid, ScrollTimeline, StickyParallaxScroll, ParallaxLayer, InteractiveGridPattern } from '@exhuma/layouts';
+import { MorphingTabs, Accordion, AnimatedSphere, FloatingDock, NumberTicker, MagneticButton, CursorTooltip } from '@exhuma/core';
 
 // Presets per component
 const COMPONENT_PRESETS: Record<string, Record<string, Record<string, unknown>>> = {
@@ -110,7 +71,7 @@ const COMPONENT_PRESETS: Record<string, Record<string, Record<string, unknown>>>
 		Snappy: { springStiffness: 40 },
 		Gentle: { springStiffness: 16 },
 	},
-	'accordion': {
+	accordion: {
 		Default: { mode: 'single', duration: 300 },
 		Multiple: { mode: 'multiple', duration: 300 },
 		Fast: { mode: 'single', duration: 200 },
@@ -194,11 +155,7 @@ const COMPONENT_PRESETS: Record<string, Record<string, Record<string, unknown>>>
 
 const FLAVORS = Object.keys(ECOSYSTEM_LABELS) as EcosystemFlavor[];
 
-export function StudioWorkbench({
-	initialSlug = 'stacking-cards',
-}: {
-	initialSlug?: string;
-}) {
+export function StudioWorkbench({ initialSlug = 'stacking-cards' }: { initialSlug?: string }) {
 	const searchParams = useSearchParams();
 	const querySlug = searchParams.get('slug') || searchParams.get('component') || initialSlug;
 	const [selectedSlug, setSelectedSlug] = useState(querySlug);
@@ -292,21 +249,11 @@ export function StudioWorkbench({
 	// Filtered components for sidebar
 	const filteredComponents = useMemo(() => {
 		if (!catalogSearch.trim()) return ALL_COMPONENTS;
-		return ALL_COMPONENTS.filter((c) =>
-			c.name.toLowerCase().includes(catalogSearch.toLowerCase()) ||
-			c.category.toLowerCase().includes(catalogSearch.toLowerCase())
-		);
+		return ALL_COMPONENTS.filter((c) => c.name.toLowerCase().includes(catalogSearch.toLowerCase()) || c.category.toLowerCase().includes(catalogSearch.toLowerCase()));
 	}, [catalogSearch]);
 
 	// Viewport widths
-	const viewportWidth =
-		viewportMode === 'mobile'
-			? 'max-w-[375px]'
-			: viewportMode === 'tablet'
-			? 'max-w-[768px]'
-			: viewportMode === 'laptop'
-			? 'max-w-[1024px]'
-			: 'w-full';
+	const viewportWidth = viewportMode === 'mobile' ? 'max-w-[375px]' : viewportMode === 'tablet' ? 'max-w-[768px]' : viewportMode === 'laptop' ? 'max-w-[1024px]' : 'w-full';
 
 	// Render interactive canvas preview according to selected component
 	const renderCanvasPreview = () => {
@@ -317,50 +264,28 @@ export function StudioWorkbench({
 			const count = Number(propValues.cardCount ?? 4);
 
 			return (
-				<div
-					ref={studioStackingRef}
-					className="w-full max-w-xl mx-auto h-[500px] overflow-y-auto rounded-2xl border border-border bg-background/50 p-6 no-scrollbar relative shadow-inner"
-				>
-					<div className="text-[11px] font-mono text-muted-foreground text-center mb-6 flex items-center justify-center gap-2">
-						<span className="kbd text-[10px]">SCROLL DOWN TO TEST DYNAMIC SCALE</span>
+				<div ref={studioStackingRef} className='border-border bg-background/50 no-scrollbar relative mx-auto h-[500px] w-full max-w-xl overflow-y-auto rounded-2xl border p-6 shadow-inner'>
+					<div className='text-muted-foreground mb-6 flex items-center justify-center gap-2 text-center font-mono text-[11px]'>
+						<span className='kbd text-[10px]'>SCROLL DOWN TO TEST DYNAMIC SCALE</span>
 						<span>↓</span>
 					</div>
-					<StackingCards
-						topStart={topStart}
-						topIncrement={topIncrement}
-						minScale={minScale}
-						scaleThreshold={100}
-						scrollContainerRef={studioStackingRef}
-					>
+					<StackingCards topStart={topStart} topIncrement={topIncrement} minScale={minScale} scaleThreshold={100} scrollContainerRef={studioStackingRef}>
 						{Array.from({ length: count }).map((_, idx) => (
-							<div
-								key={idx}
-								className="rounded-2xl border border-border bg-card/95 backdrop-blur-md p-6 shadow-xl"
-							>
-								<div className="flex items-center justify-between text-xs font-mono text-muted-foreground mb-3">
-									<span className="kbd text-[10px] uppercase font-bold text-primary">
-										STACK LAYER 0{idx + 1}
-									</span>
-									<span className="text-emerald-500 font-semibold text-[11px]">
-										Dynamic Physics
-									</span>
+							<div key={idx} className='border-border bg-card/95 rounded-2xl border p-6 shadow-xl backdrop-blur-md'>
+								<div className='text-muted-foreground mb-3 flex items-center justify-between font-mono text-xs'>
+									<span className='kbd text-primary text-[10px] font-bold uppercase'>STACK LAYER 0{idx + 1}</span>
+									<span className='text-[11px] font-semibold text-emerald-500'>Dynamic Physics</span>
 								</div>
-								<h4 className="text-xl font-bold tracking-tight text-foreground">
-									Autonomous Stacking Card
-								</h4>
-								<p className="text-xs text-muted-foreground mt-2 leading-relaxed">
-									Card stacks with dynamic mathematical scale decay. Zero layout thrashing or parent scroll locking.
-								</p>
-								<div className="mt-6 pt-4 border-t border-border flex items-center justify-between text-xs font-mono text-muted-foreground">
+								<h4 className='text-foreground text-xl font-bold tracking-tight'>Autonomous Stacking Card</h4>
+								<p className='text-muted-foreground mt-2 text-xs leading-relaxed'>Card stacks with dynamic mathematical scale decay. Zero layout thrashing or parent scroll locking.</p>
+								<div className='border-border text-muted-foreground mt-6 flex items-center justify-between border-t pt-4 font-mono text-xs'>
 									<span>Offset: {topIncrement}px</span>
 									<span>Layer: #{idx + 1}</span>
 								</div>
 							</div>
 						))}
 					</StackingCards>
-					<div className="h-[280px] flex items-center justify-center text-xs font-mono text-muted-foreground">
-						Terminal scroll reached — reverse scaling applied
-					</div>
+					<div className='text-muted-foreground flex h-[280px] items-center justify-center font-mono text-xs'>Terminal scroll reached — reverse scaling applied</div>
 				</div>
 			);
 		}
@@ -371,34 +296,20 @@ export function StudioWorkbench({
 			const itemWidth = Number(propValues.itemWidth ?? 280);
 
 			return (
-				<div
-					ref={studioHorizontalRef}
-					className="w-full h-[500px] overflow-y-auto rounded-2xl border border-border bg-background/50 relative no-scrollbar shadow-inner"
-				>
-					<div className="sticky top-4 z-20 text-[11px] font-mono text-muted-foreground text-center mb-2 flex items-center justify-center gap-2 pointer-events-none">
-						<span className="kbd text-[10px] bg-card/90 shadow">VERTICAL SCROLL → HORIZONTAL RAIL</span>
+				<div ref={studioHorizontalRef} className='border-border bg-background/50 no-scrollbar relative h-[500px] w-full overflow-y-auto rounded-2xl border shadow-inner'>
+					<div className='text-muted-foreground pointer-events-none sticky top-4 z-20 mb-2 flex items-center justify-center gap-2 text-center font-mono text-[11px]'>
+						<span className='kbd bg-card/90 text-[10px] shadow'>VERTICAL SCROLL → HORIZONTAL RAIL</span>
 						<span>↓</span>
 					</div>
-					<HorizontalScroller
-						speed={speed}
-						scrollContainerRef={studioHorizontalRef}
-					>
+					<HorizontalScroller speed={speed} scrollContainerRef={studioHorizontalRef}>
 						{Array.from({ length: 6 }).map((_, idx) => (
-							<div
-								key={idx}
-								className="shrink-0 rounded-2xl border border-border bg-card p-6 shadow-lg transition-all hover:border-primary/50"
-								style={{ width: `${itemWidth}px` }}
-							>
-								<div className="flex items-center justify-between text-xs font-mono text-muted-foreground mb-2">
-									<span className="kbd text-[10px] text-primary">RAIL ITEM #{idx + 1}</span>
-									<span className="text-[10px]">Momentum Rail</span>
+							<div key={idx} className='border-border bg-card hover:border-primary/50 shrink-0 rounded-2xl border p-6 shadow-lg transition-all' style={{ width: `${itemWidth}px` }}>
+								<div className='text-muted-foreground mb-2 flex items-center justify-between font-mono text-xs'>
+									<span className='kbd text-primary text-[10px]'>RAIL ITEM #{idx + 1}</span>
+									<span className='text-[10px]'>Momentum Rail</span>
 								</div>
-								<h4 className="text-base font-bold text-foreground mt-1">
-									Momentum Scroller
-								</h4>
-								<p className="text-xs text-muted-foreground mt-1 leading-relaxed">
-									Dynamic translation mapped to scroll progress via GPU-decoupled CSS variable.
-								</p>
+								<h4 className='text-foreground mt-1 text-base font-bold'>Momentum Scroller</h4>
+								<p className='text-muted-foreground mt-1 text-xs leading-relaxed'>Dynamic translation mapped to scroll progress via GPU-decoupled CSS variable.</p>
 							</div>
 						))}
 					</HorizontalScroller>
@@ -408,28 +319,24 @@ export function StudioWorkbench({
 
 		if (selectedSlug === 'tilt-card') {
 			return (
-				<div className="flex items-center justify-center p-8">
+				<div className='flex items-center justify-center p-8'>
 					<TiltCard
 						maxTilt={Number(propValues.maxTilt ?? 15)}
 						perspective={Number(propValues.perspective ?? 1000)}
 						glare={Boolean(propValues.glare ?? true)}
-						className="w-full max-w-md bg-card p-8 border border-border shadow-2xl cursor-pointer"
+						className='bg-card border-border w-full max-w-md cursor-pointer border p-8 shadow-2xl'
 					>
-						<div className="flex items-center justify-between mb-4">
-							<span className="kbd text-[10px] text-primary font-bold">3D PERSPECTIVE</span>
-							<span className="text-xs font-mono text-muted-foreground">
-								Max Tilt: {Number(propValues.maxTilt ?? 15)}°
-							</span>
+						<div className='mb-4 flex items-center justify-between'>
+							<span className='kbd text-primary text-[10px] font-bold'>3D PERSPECTIVE</span>
+							<span className='text-muted-foreground font-mono text-xs'>Max Tilt: {Number(propValues.maxTilt ?? 15)}°</span>
 						</div>
-						<h4 className="text-2xl font-black text-foreground tracking-tight">
-							Tactile 3D Tilt Card
-						</h4>
-						<p className="text-xs text-muted-foreground mt-2 leading-relaxed">
+						<h4 className='text-foreground text-2xl font-black tracking-tight'>Tactile 3D Tilt Card</h4>
+						<p className='text-muted-foreground mt-2 text-xs leading-relaxed'>
 							Perspective: {Number(propValues.perspective ?? 1000)}px | Glare: {Boolean(propValues.glare ?? true) ? 'Active' : 'Disabled'}
 						</p>
-						<div className="mt-6 pt-4 border-t border-border flex items-center justify-between text-xs font-mono text-muted-foreground">
+						<div className='border-border text-muted-foreground mt-6 flex items-center justify-between border-t pt-4 font-mono text-xs'>
 							<span>Physics: Spring Math</span>
-							<span className="text-emerald-500 font-semibold">60 FPS Native</span>
+							<span className='font-semibold text-emerald-500'>60 FPS Native</span>
 						</div>
 					</TiltCard>
 				</div>
@@ -438,23 +345,15 @@ export function StudioWorkbench({
 
 		if (selectedSlug === 'css-masonry') {
 			return (
-				<CssMasonry
-					columns={Number(propValues.columns ?? 3)}
-					gap={Number(propValues.gap ?? 16)}
-					className="w-full p-6"
-				>
+				<CssMasonry columns={Number(propValues.columns ?? 3)} gap={Number(propValues.gap ?? 16)} className='w-full p-6'>
 					{[140, 200, 160, 240, 180, 260].map((h, idx) => (
-						<div
-							key={idx}
-							className="rounded-2xl border border-border bg-card p-5 shadow-sm mb-4 break-inside-avoid transition-all hover:border-input"
-							style={{ height: `${h}px` }}
-						>
-							<div className="flex items-center justify-between text-xs font-mono text-muted-foreground mb-1">
-								<span className="kbd text-[10px] text-primary">TILE 0{idx + 1}</span>
+						<div key={idx} className='border-border bg-card hover:border-input mb-4 break-inside-avoid rounded-2xl border p-5 shadow-sm transition-all' style={{ height: `${h}px` }}>
+							<div className='text-muted-foreground mb-1 flex items-center justify-between font-mono text-xs'>
+								<span className='kbd text-primary text-[10px]'>TILE 0{idx + 1}</span>
 								<span>{h}px</span>
 							</div>
-							<div className="text-sm font-bold text-foreground mt-2">Dynamic Masonry</div>
-							<div className="text-xs text-muted-foreground mt-1">CSS-First Flow</div>
+							<div className='text-foreground mt-2 text-sm font-bold'>Dynamic Masonry</div>
+							<div className='text-muted-foreground mt-1 text-xs'>CSS-First Flow</div>
 						</div>
 					))}
 				</CssMasonry>
@@ -463,19 +362,12 @@ export function StudioWorkbench({
 
 		if (selectedSlug === 'auto-grid') {
 			return (
-				<AutoGrid
-					minItemWidth={Number(propValues.minItemWidth ?? 200)}
-					gap={Number(propValues.gap ?? 16)}
-					className="w-full p-6"
-				>
+				<AutoGrid minItemWidth={Number(propValues.minItemWidth ?? 200)} gap={Number(propValues.gap ?? 16)} className='w-full p-6'>
 					{Array.from({ length: 6 }).map((_, idx) => (
-						<div
-							key={idx}
-							className="rounded-2xl border border-border bg-card p-5 shadow-sm transition-all hover:border-input"
-						>
-							<span className="kbd text-[10px] text-primary">GRID #{idx + 1}</span>
-							<div className="text-sm font-bold text-foreground mt-2">Auto Responsive</div>
-							<div className="text-xs text-muted-foreground mt-1">MinMax Width Flow</div>
+						<div key={idx} className='border-border bg-card hover:border-input rounded-2xl border p-5 shadow-sm transition-all'>
+							<span className='kbd text-primary text-[10px]'>GRID #{idx + 1}</span>
+							<div className='text-foreground mt-2 text-sm font-bold'>Auto Responsive</div>
+							<div className='text-muted-foreground mt-1 text-xs'>MinMax Width Flow</div>
 						</div>
 					))}
 				</AutoGrid>
@@ -489,23 +381,15 @@ export function StudioWorkbench({
 			const borderColor = String(propValues.borderColor ?? 'rgba(99, 102, 241, 0.5)');
 
 			return (
-				<div className="w-full max-w-md mx-auto p-4">
-					<SpotlightCard
-						radius={radius}
-						color={color}
-						opacity={opacity}
-						borderColor={borderColor}
-						className="p-8 shadow-2xl"
-					>
-						<div className="flex flex-col gap-3">
-							<span className="kbd text-[10px] text-primary">STUDIO PREVIEW</span>
-							<h4 className="text-xl font-bold tracking-tight text-foreground">Spotlight Card</h4>
-							<p className="text-xs text-muted-foreground leading-relaxed">
-								Interactive pointer tracking with sub-pixel radial border mask. Radius: {radius}px.
-							</p>
-							<div className="mt-4 pt-3 border-t border-border/50 flex items-center justify-between text-xs font-mono text-muted-foreground">
+				<div className='mx-auto w-full max-w-md p-4'>
+					<SpotlightCard radius={radius} color={color} opacity={opacity} borderColor={borderColor} className='p-8 shadow-2xl'>
+						<div className='flex flex-col gap-3'>
+							<span className='kbd text-primary text-[10px]'>STUDIO PREVIEW</span>
+							<h4 className='text-foreground text-xl font-bold tracking-tight'>Spotlight Card</h4>
+							<p className='text-muted-foreground text-xs leading-relaxed'>Interactive pointer tracking with sub-pixel radial border mask. Radius: {radius}px.</p>
+							<div className='border-border/50 text-muted-foreground mt-4 flex items-center justify-between border-t pt-3 font-mono text-xs'>
 								<span>Glow: {Math.round(opacity * 100)}%</span>
-								<span className="text-emerald-500 font-semibold">120Hz rAF</span>
+								<span className='font-semibold text-emerald-500'>120Hz rAF</span>
 							</div>
 						</div>
 					</SpotlightCard>
@@ -515,25 +399,31 @@ export function StudioWorkbench({
 
 		if (selectedSlug === 'morphing-tabs') {
 			return (
-				<div className="w-full max-w-md mx-auto p-4">
-					<MorphingTabs.Root defaultValue="dashboard">
-						<MorphingTabs.List className="w-full justify-between">
+				<div className='mx-auto w-full max-w-md p-4'>
+					<MorphingTabs.Root defaultValue='dashboard'>
+						<MorphingTabs.List className='w-full justify-between'>
 							<MorphingTabs.Indicator />
-							<MorphingTabs.Trigger value="dashboard" className="flex-1">Dashboard</MorphingTabs.Trigger>
-							<MorphingTabs.Trigger value="analytics" className="flex-1">Analytics</MorphingTabs.Trigger>
-							<MorphingTabs.Trigger value="settings" className="flex-1">Settings</MorphingTabs.Trigger>
+							<MorphingTabs.Trigger value='dashboard' className='flex-1'>
+								Dashboard
+							</MorphingTabs.Trigger>
+							<MorphingTabs.Trigger value='analytics' className='flex-1'>
+								Analytics
+							</MorphingTabs.Trigger>
+							<MorphingTabs.Trigger value='settings' className='flex-1'>
+								Settings
+							</MorphingTabs.Trigger>
 						</MorphingTabs.List>
-						<MorphingTabs.Content value="dashboard" className="rounded-xl border border-border bg-card p-6 shadow-sm text-sm">
-							<div className="font-bold text-foreground mb-1">Dashboard Metric Stream</div>
-							<div className="text-muted-foreground text-xs">Real-time dynamic system state with zero-jank pill transitions.</div>
+						<MorphingTabs.Content value='dashboard' className='border-border bg-card rounded-xl border p-6 text-sm shadow-sm'>
+							<div className='text-foreground mb-1 font-bold'>Dashboard Metric Stream</div>
+							<div className='text-muted-foreground text-xs'>Real-time dynamic system state with zero-jank pill transitions.</div>
 						</MorphingTabs.Content>
-						<MorphingTabs.Content value="analytics" className="rounded-xl border border-border bg-card p-6 shadow-sm text-sm">
-							<div className="font-bold text-foreground mb-1">Kinetic Analytics Engine</div>
-							<div className="text-muted-foreground text-xs">Hardware accelerated measurements and analytical spring ODE.</div>
+						<MorphingTabs.Content value='analytics' className='border-border bg-card rounded-xl border p-6 text-sm shadow-sm'>
+							<div className='text-foreground mb-1 font-bold'>Kinetic Analytics Engine</div>
+							<div className='text-muted-foreground text-xs'>Hardware accelerated measurements and analytical spring ODE.</div>
 						</MorphingTabs.Content>
-						<MorphingTabs.Content value="settings" className="rounded-xl border border-border bg-card p-6 shadow-sm text-sm">
-							<div className="font-bold text-foreground mb-1">Global Configuration</div>
-							<div className="text-muted-foreground text-xs">WAI-ARIA roving keyboard navigation enabled.</div>
+						<MorphingTabs.Content value='settings' className='border-border bg-card rounded-xl border p-6 text-sm shadow-sm'>
+							<div className='text-foreground mb-1 font-bold'>Global Configuration</div>
+							<div className='text-muted-foreground text-xs'>WAI-ARIA roving keyboard navigation enabled.</div>
 						</MorphingTabs.Content>
 					</MorphingTabs.Root>
 				</div>
@@ -544,25 +434,21 @@ export function StudioWorkbench({
 			const mode = (propValues.mode === 'multiple' ? 'multiple' : 'single') as 'single' | 'multiple';
 
 			return (
-				<div className="w-full max-w-md mx-auto p-4">
-					<Accordion.Root mode={mode} defaultValue="s-1">
-						<Accordion.Item value="s-1">
+				<div className='mx-auto w-full max-w-md p-4'>
+					<Accordion.Root mode={mode} defaultValue='s-1'>
+						<Accordion.Item value='s-1'>
 							<Accordion.Trigger>
 								<span>Dynamic Height Interpolation</span>
 								<Accordion.Icon />
 							</Accordion.Trigger>
-							<Accordion.Content>
-								Using modern CSS Grid (0fr to 1fr) with zero layout reflows and zero-dependency morphing icon.
-							</Accordion.Content>
+							<Accordion.Content>Using modern CSS Grid (0fr to 1fr) with zero layout reflows and zero-dependency morphing icon.</Accordion.Content>
 						</Accordion.Item>
-						<Accordion.Item value="s-2">
+						<Accordion.Item value='s-2'>
 							<Accordion.Trigger>
 								<span>WAI-ARIA Accessibility Standards</span>
 								<Accordion.Icon />
 							</Accordion.Trigger>
-							<Accordion.Content>
-								Full roving arrow keys, aria-expanded, aria-controls, and single/multiple expansion mode.
-							</Accordion.Content>
+							<Accordion.Content>Full roving arrow keys, aria-expanded, aria-controls, and single/multiple expansion mode.</Accordion.Content>
 						</Accordion.Item>
 					</Accordion.Root>
 				</div>
@@ -574,21 +460,12 @@ export function StudioWorkbench({
 			const pauseOnHover = Boolean(propValues.pauseOnHover ?? true);
 
 			return (
-				<div className="w-full max-w-2xl mx-auto py-8">
-					<InfiniteMarquee speed={speed} pauseOnHover={pauseOnHover} gap="1.5rem">
-						{[
-							'120Hz ProMotion',
-							'Zero External Animation Deps',
-							'Pure rAF Translation',
-							'Modulo Wrapping',
-							'13 Ecosystems',
-						].map((item, idx) => (
-							<div
-								key={idx}
-								className="flex items-center gap-2 rounded-2xl border border-border bg-card/80 px-6 py-4 text-xs font-semibold backdrop-blur-md shadow-xs"
-							>
-								<span className="h-2 w-2 rounded-full bg-primary" />
-								<span className="text-foreground">{item}</span>
+				<div className='mx-auto w-full max-w-2xl py-8'>
+					<InfiniteMarquee speed={speed} pauseOnHover={pauseOnHover} gap='1.5rem'>
+						{['120Hz ProMotion', 'Zero External Animation Deps', 'Pure rAF Translation', 'Modulo Wrapping', '13 Ecosystems'].map((item, idx) => (
+							<div key={idx} className='border-border bg-card/80 flex items-center gap-2 rounded-2xl border px-6 py-4 text-xs font-semibold shadow-xs backdrop-blur-md'>
+								<span className='bg-primary h-2 w-2 rounded-full' />
+								<span className='text-foreground'>{item}</span>
 							</div>
 						))}
 					</InfiniteMarquee>
@@ -599,25 +476,21 @@ export function StudioWorkbench({
 		if (selectedSlug === 'bento-grid') {
 			const cols = Number(propValues.cols ?? 3);
 			return (
-				<div className="w-full max-w-2xl mx-auto p-4">
-					<BentoGrid cols={cols} gap="1rem">
+				<div className='mx-auto w-full max-w-2xl p-4'>
+					<BentoGrid cols={cols} gap='1rem'>
 						<BentoCard colSpan={2}>
 							<BentoHeader>
-								<span className="kbd text-[10px] text-primary">ANALYTICAL KINETICS</span>
-								<h4 className="text-base font-bold text-foreground">Continuous Math Engine</h4>
+								<span className='kbd text-primary text-[10px]'>ANALYTICAL KINETICS</span>
+								<h4 className='text-foreground text-base font-bold'>Continuous Math Engine</h4>
 							</BentoHeader>
-							<BentoContent>
-								Hardware-accelerated CSS custom properties driven directly by rAF loops.
-							</BentoContent>
+							<BentoContent>Hardware-accelerated CSS custom properties driven directly by rAF loops.</BentoContent>
 						</BentoCard>
 						<BentoCard colSpan={1}>
 							<BentoHeader>
-								<span className="kbd text-[10px] text-emerald-500">BIG-OMEGA</span>
-								<h4 className="text-base font-bold text-foreground">Ω(120Hz)</h4>
+								<span className='kbd text-[10px] text-emerald-500'>BIG-OMEGA</span>
+								<h4 className='text-foreground text-base font-bold'>Ω(120Hz)</h4>
 							</BentoHeader>
-							<BentoContent>
-								Guaranteed lower-bound execution.
-							</BentoContent>
+							<BentoContent>Guaranteed lower-bound execution.</BentoContent>
 						</BentoCard>
 					</BentoGrid>
 				</div>
@@ -626,14 +499,14 @@ export function StudioWorkbench({
 
 		if (selectedSlug === 'diamond-grid') {
 			return (
-				<div className="w-full max-w-xl mx-auto p-4">
-					<DiamondGrid gap="0.75vw">
+				<div className='mx-auto w-full max-w-xl p-4'>
+					<DiamondGrid gap='0.75vw'>
 						{Array.from({ length: 16 }).map((_, idx) => (
 							<div
 								key={idx}
-								className="aspect-square w-12 sm:w-16 rounded-2xl border border-border bg-card/80 backdrop-blur-md flex flex-col items-center justify-center p-2 text-center shadow-md hover:border-primary transition-all duration-300 hover:scale-105"
+								className='border-border bg-card/80 hover:border-primary flex aspect-square w-12 flex-col items-center justify-center rounded-2xl border p-2 text-center shadow-md backdrop-blur-md transition-all duration-300 hover:scale-105 sm:w-16'
 							>
-								<span className="text-[10px] font-mono font-bold text-primary">#{idx + 1}</span>
+								<span className='text-primary font-mono text-[10px] font-bold'>#{idx + 1}</span>
 							</div>
 						))}
 					</DiamondGrid>
@@ -643,7 +516,7 @@ export function StudioWorkbench({
 
 		if (selectedSlug === 'scroll-timeline') {
 			return (
-				<div className="w-full max-w-md mx-auto h-[460px] overflow-y-auto rounded-2xl border border-border bg-background/50 p-6 no-scrollbar relative shadow-inner">
+				<div className='border-border bg-background/50 no-scrollbar relative mx-auto h-[460px] w-full max-w-md overflow-y-auto rounded-2xl border p-6 shadow-inner'>
 					<ScrollTimeline
 						items={[
 							{
@@ -664,18 +537,16 @@ export function StudioWorkbench({
 
 		if (selectedSlug === 'sticky-parallax') {
 			return (
-				<div className="w-full max-w-md mx-auto h-[460px] overflow-y-auto rounded-2xl border border-border bg-background/50 relative no-scrollbar shadow-inner">
-					<StickyParallaxScroll trackHeight="800px">
-						<div className="relative w-full h-full flex items-center justify-center">
+				<div className='border-border bg-background/50 no-scrollbar relative mx-auto h-[460px] w-full max-w-md overflow-y-auto rounded-2xl border shadow-inner'>
+					<StickyParallaxScroll trackHeight='800px'>
+						<div className='relative flex h-full w-full items-center justify-center'>
 							<ParallaxLayer speed={-0.4}>
-								<div className="text-4xl font-extrabold text-foreground/20 select-none">
-									BACKGROUND
-								</div>
+								<div className='text-foreground/20 text-4xl font-extrabold select-none'>BACKGROUND</div>
 							</ParallaxLayer>
 							<ParallaxLayer speed={0.8}>
-								<div className="rounded-2xl border border-primary/40 bg-card p-6 shadow-2xl backdrop-blur-md text-center">
-									<span className="kbd text-[10px] text-primary">PARALLAX</span>
-									<h4 className="text-lg font-bold text-foreground mt-1">Differential Layers</h4>
+								<div className='border-primary/40 bg-card rounded-2xl border p-6 text-center shadow-2xl backdrop-blur-md'>
+									<span className='kbd text-primary text-[10px]'>PARALLAX</span>
+									<h4 className='text-foreground mt-1 text-lg font-bold'>Differential Layers</h4>
 								</div>
 							</ParallaxLayer>
 						</div>
@@ -689,12 +560,10 @@ export function StudioWorkbench({
 			const duration = Number(propValues.duration ?? 8);
 			const borderWidth = Number(propValues.borderWidth ?? 2);
 			return (
-				<div className="relative flex h-64 w-full max-w-sm mx-auto flex-col items-center justify-center overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-xl">
-					<span className="kbd text-[10px] text-primary">PERIMETER TRACE</span>
-					<h4 className="text-xl font-bold text-foreground mt-2">Border Beam</h4>
-					<p className="text-xs text-muted-foreground text-center mt-1">
-						Hardware-accelerated conic perimeter trace with zero GC pauses.
-					</p>
+				<div className='border-border bg-card relative mx-auto flex h-64 w-full max-w-sm flex-col items-center justify-center overflow-hidden rounded-2xl border p-6 shadow-xl'>
+					<span className='kbd text-primary text-[10px]'>PERIMETER TRACE</span>
+					<h4 className='text-foreground mt-2 text-xl font-bold'>Border Beam</h4>
+					<p className='text-muted-foreground mt-1 text-center text-xs'>Hardware-accelerated conic perimeter trace with zero GC pauses.</p>
 					<BorderBeam size={size} duration={duration} borderWidth={borderWidth} />
 				</div>
 			);
@@ -705,13 +574,8 @@ export function StudioWorkbench({
 			const speed = Number(propValues.speed ?? 1.0);
 			const radiusScale = Number(propValues.radiusScale ?? 0.475);
 			return (
-				<div className="flex flex-col items-center justify-center p-4">
-					<AnimatedSphere
-						color={color}
-						speed={speed}
-						radiusScale={radiusScale}
-						className="w-64 h-64 rounded-2xl border border-border bg-black/40 backdrop-blur-md shadow-2xl"
-					/>
+				<div className='flex flex-col items-center justify-center p-4'>
+					<AnimatedSphere color={color} speed={speed} radiusScale={radiusScale} className='border-border h-64 w-64 rounded-2xl border bg-black/40 shadow-2xl backdrop-blur-md' />
 				</div>
 			);
 		}
@@ -721,18 +585,18 @@ export function StudioWorkbench({
 			const maxMagnification = Number(propValues.maxMagnification ?? 0.6);
 			const influenceRadius = Number(propValues.influenceRadius ?? 70);
 			return (
-				<div className="w-full max-w-md mx-auto flex flex-col items-center justify-center py-12">
-					<p className="text-xs text-muted-foreground mb-6">Hover over icons to test Gaussian proximity curve</p>
+				<div className='mx-auto flex w-full max-w-md flex-col items-center justify-center py-12'>
+					<p className='text-muted-foreground mb-6 text-xs'>Hover over icons to test Gaussian proximity curve</p>
 					<FloatingDock
 						baseSize={baseSize}
 						maxMagnification={maxMagnification}
 						influenceRadius={influenceRadius}
 						items={[
-							{ title: 'Terminal', icon: <Terminal className="h-5 w-5" /> },
-							{ title: 'Kinetics', icon: <Sliders className="h-5 w-5" /> },
-							{ title: 'Hardware', icon: <Cpu className="h-5 w-5" /> },
-							{ title: 'Shaders', icon: <Sparkles className="h-5 w-5" /> },
-							{ title: 'Security', icon: <Layers className="h-5 w-5" /> },
+							{ title: 'Terminal', icon: <Terminal className='h-5 w-5' /> },
+							{ title: 'Kinetics', icon: <Sliders className='h-5 w-5' /> },
+							{ title: 'Hardware', icon: <Cpu className='h-5 w-5' /> },
+							{ title: 'Shaders', icon: <Sparkles className='h-5 w-5' /> },
+							{ title: 'Security', icon: <Layers className='h-5 w-5' /> },
 						]}
 					/>
 				</div>
@@ -743,19 +607,12 @@ export function StudioWorkbench({
 			const width = Number(propValues.width ?? 32);
 			const height = Number(propValues.height ?? 32);
 			return (
-				<div className="relative flex h-[380px] w-full max-w-xl mx-auto flex-col items-center justify-center overflow-hidden rounded-2xl border border-border bg-background p-8 shadow-inner">
-					<InteractiveGridPattern
-						width={width}
-						height={height}
-						squares={[24, 16]}
-						className="opacity-70 [mask-image:radial-gradient(400px_circle_at_center,white,transparent)]"
-					/>
-					<div className="z-10 flex flex-col items-center text-center">
-						<span className="kbd text-[10px] text-primary">VECTOR KINETICS</span>
-						<h4 className="text-xl font-bold text-foreground mt-1">Interactive Grid</h4>
-						<p className="text-xs text-muted-foreground max-w-xs mt-1">
-							Hover over grid squares to trigger hardware-accelerated kinetic active states.
-						</p>
+				<div className='border-border bg-background relative mx-auto flex h-[380px] w-full max-w-xl flex-col items-center justify-center overflow-hidden rounded-2xl border p-8 shadow-inner'>
+					<InteractiveGridPattern width={width} height={height} squares={[24, 16]} className='[mask-image:radial-gradient(400px_circle_at_center,white,transparent)] opacity-70' />
+					<div className='z-10 flex flex-col items-center text-center'>
+						<span className='kbd text-primary text-[10px]'>VECTOR KINETICS</span>
+						<h4 className='text-foreground mt-1 text-xl font-bold'>Interactive Grid</h4>
+						<p className='text-muted-foreground mt-1 max-w-xs text-xs'>Hover over grid squares to trigger hardware-accelerated kinetic active states.</p>
 					</div>
 				</div>
 			);
@@ -765,14 +622,12 @@ export function StudioWorkbench({
 			const value = Number(propValues.value ?? 1000);
 			const decimalPlaces = Number(propValues.decimalPlaces ?? 0);
 			return (
-				<div className="flex flex-col items-center justify-center p-8 rounded-2xl border border-border bg-card shadow-lg text-center max-w-sm mx-auto">
-					<span className="kbd text-[10px] text-primary mb-2">ANALYTICAL EASING (rAF)</span>
-					<div className="text-6xl font-black tracking-tight text-foreground font-mono">
+				<div className='border-border bg-card mx-auto flex max-w-sm flex-col items-center justify-center rounded-2xl border p-8 text-center shadow-lg'>
+					<span className='kbd text-primary mb-2 text-[10px]'>ANALYTICAL EASING (rAF)</span>
+					<div className='text-foreground font-mono text-6xl font-black tracking-tight'>
 						$<NumberTicker value={value} decimalPlaces={decimalPlaces} />
 					</div>
-					<p className="text-xs text-muted-foreground mt-3">
-						Continuous ease-out exponential ticker with zero Framer Motion dependencies.
-					</p>
+					<p className='text-muted-foreground mt-3 text-xs'>Continuous ease-out exponential ticker with zero Framer Motion dependencies.</p>
 				</div>
 			);
 		}
@@ -782,16 +637,16 @@ export function StudioWorkbench({
 			const radius = Number(propValues.radius ?? 120);
 			const springDamping = Number(propValues.springDamping ?? 18);
 			return (
-				<div className="flex flex-col items-center justify-center p-12">
-					<p className="text-xs text-muted-foreground mb-6">Move cursor near button to feel inverted magnetic pull field</p>
+				<div className='flex flex-col items-center justify-center p-12'>
+					<p className='text-muted-foreground mb-6 text-xs'>Move cursor near button to feel inverted magnetic pull field</p>
 					<MagneticButton
 						strength={strength}
 						radius={radius}
 						springDamping={springDamping}
-						className="rounded-2xl border border-primary/50 bg-primary/10 px-8 py-4 font-bold text-foreground backdrop-blur-md shadow-xl hover:bg-primary/20 transition-colors"
+						className='border-primary/50 bg-primary/10 text-foreground hover:bg-primary/20 rounded-2xl border px-8 py-4 font-bold shadow-xl backdrop-blur-md transition-colors'
 					>
-						<span className="flex items-center gap-2">
-							<Sparkles className="h-4 w-4 text-primary" />
+						<span className='flex items-center gap-2'>
+							<Sparkles className='text-primary h-4 w-4' />
 							<span>Magnetic Attraction</span>
 						</span>
 					</MagneticButton>
@@ -803,8 +658,8 @@ export function StudioWorkbench({
 			const thresholdDistance = Number(propValues.thresholdDistance ?? 120);
 			const maxRotation = Number(propValues.maxRotation ?? 20);
 			return (
-				<div className="w-full max-w-sm mx-auto py-8 flex flex-col items-center">
-					<p className="text-xs text-muted-foreground mb-4">Drag card left or right to dismiss with momentum fling</p>
+				<div className='mx-auto flex w-full max-w-sm flex-col items-center py-8'>
+					<p className='text-muted-foreground mb-4 text-xs'>Drag card left or right to dismiss with momentum fling</p>
 					<CardSwipeStack
 						thresholdDistance={thresholdDistance}
 						maxRotation={maxRotation}
@@ -814,11 +669,11 @@ export function StudioWorkbench({
 							{ id: 3, title: 'Direct GPU Pipeline', tag: 'KINETICS', desc: 'Direct translate3d writes bypassing virtual DOM reconciliation.' },
 						]}
 						renderCard={(item) => (
-							<div className="rounded-2xl border border-border bg-card p-6 shadow-2xl backdrop-blur-md">
-								<span className="kbd text-[10px] text-primary">{item.tag}</span>
-								<h4 className="text-lg font-bold text-foreground mt-2">{item.title}</h4>
-								<p className="text-xs text-muted-foreground mt-1">{item.desc}</p>
-								<div className="mt-4 pt-3 border-t border-border flex items-center justify-between text-[10px] text-muted-foreground font-mono">
+							<div className='border-border bg-card rounded-2xl border p-6 shadow-2xl backdrop-blur-md'>
+								<span className='kbd text-primary text-[10px]'>{item.tag}</span>
+								<h4 className='text-foreground mt-2 text-lg font-bold'>{item.title}</h4>
+								<p className='text-muted-foreground mt-1 text-xs'>{item.desc}</p>
+								<div className='border-border text-muted-foreground mt-4 flex items-center justify-between border-t pt-3 font-mono text-[10px]'>
 									<span>← SWIPE LEFT</span>
 									<span>SWIPE RIGHT →</span>
 								</div>
@@ -832,25 +687,25 @@ export function StudioWorkbench({
 		if (selectedSlug === 'comparison-slider') {
 			const defaultPosition = Number(propValues.defaultPosition ?? 0.5);
 			return (
-				<div className="w-full max-w-md mx-auto py-4">
+				<div className='mx-auto w-full max-w-md py-4'>
 					<ComparisonSlider
-						aspectRatio="16/10"
+						aspectRatio='16/10'
 						defaultPosition={defaultPosition}
 						before={
-							<div className="w-full h-full bg-linear-to-br from-indigo-950 via-purple-950 to-slate-900 p-6 flex flex-col justify-between text-white">
-								<span className="kbd text-[10px] bg-white/20 text-white self-start">ORIGINAL MOCKUP</span>
+							<div className='flex h-full w-full flex-col justify-between bg-linear-to-br from-indigo-950 via-purple-950 to-slate-900 p-6 text-white'>
+								<span className='kbd self-start bg-white/20 text-[10px] text-white'>ORIGINAL MOCKUP</span>
 								<div>
-									<h4 className="text-xl font-bold">Static Canvas</h4>
-									<p className="text-xs opacity-70">Unaccelerated design view</p>
+									<h4 className='text-xl font-bold'>Static Canvas</h4>
+									<p className='text-xs opacity-70'>Unaccelerated design view</p>
 								</div>
 							</div>
 						}
 						after={
-							<div className="w-full h-full bg-linear-to-br from-emerald-950 via-teal-950 to-slate-900 p-6 flex flex-col justify-between text-white">
-								<span className="kbd text-[10px] bg-emerald-500/30 text-emerald-300 self-start">EXHUMA KINETIC ENGINE</span>
+							<div className='flex h-full w-full flex-col justify-between bg-linear-to-br from-emerald-950 via-teal-950 to-slate-900 p-6 text-white'>
+								<span className='kbd self-start bg-emerald-500/30 text-[10px] text-emerald-300'>EXHUMA KINETIC ENGINE</span>
 								<div>
-									<h4 className="text-xl font-bold">120Hz ProMotion</h4>
-									<p className="text-xs opacity-70">Analytical physics active</p>
+									<h4 className='text-xl font-bold'>120Hz ProMotion</h4>
+									<p className='text-xs opacity-70'>Analytical physics active</p>
 								</div>
 							</div>
 						}
@@ -861,25 +716,23 @@ export function StudioWorkbench({
 
 		if (selectedSlug === 'expandable-card') {
 			return (
-				<div className="w-full max-w-sm mx-auto py-4">
+				<div className='mx-auto w-full max-w-sm py-4'>
 					<ExpandableCard
 						cardContent={
-							<div className="rounded-2xl border border-border bg-card p-6 shadow-lg transition-all hover:border-primary/50">
-								<span className="kbd text-[10px] text-primary">CLICK TO EXPAND</span>
-								<h4 className="text-lg font-bold text-foreground mt-2">FLIP Morphing Architecture</h4>
-								<p className="text-xs text-muted-foreground mt-1">Mathematical geometry snapshot with zero Framer Motion.</p>
+							<div className='border-border bg-card hover:border-primary/50 rounded-2xl border p-6 shadow-lg transition-all'>
+								<span className='kbd text-primary text-[10px]'>CLICK TO EXPAND</span>
+								<h4 className='text-foreground mt-2 text-lg font-bold'>FLIP Morphing Architecture</h4>
+								<p className='text-muted-foreground mt-1 text-xs'>Mathematical geometry snapshot with zero Framer Motion.</p>
 							</div>
 						}
 						expandedContent={
-							<div className="space-y-4">
-								<span className="kbd text-[10px] text-primary">MODAL DIALOG (FLIP INVERTED)</span>
-								<h3 className="text-2xl font-black text-foreground">Hardware-Accelerated Dialog</h3>
-								<p className="text-sm text-muted-foreground leading-relaxed">
+							<div className='space-y-4'>
+								<span className='kbd text-primary text-[10px]'>MODAL DIALOG (FLIP INVERTED)</span>
+								<h3 className='text-foreground text-2xl font-black'>Hardware-Accelerated Dialog</h3>
+								<p className='text-muted-foreground text-sm leading-relaxed'>
 									The card morphs smoothly from its trigger bounding rect into a centered dialog snapshot using analytical FLIP transformation matrices.
 								</p>
-								<div className="rounded-xl border border-border bg-background p-4 text-xs font-mono text-muted-foreground">
-									Press ESC or click backdrop to close
-								</div>
+								<div className='border-border bg-background text-muted-foreground rounded-xl border p-4 font-mono text-xs'>Press ESC or click backdrop to close</div>
 							</div>
 						}
 					/>
@@ -890,17 +743,15 @@ export function StudioWorkbench({
 		if (selectedSlug === 'cursor-tooltip') {
 			const springDamping = Number(propValues.springDamping ?? 22);
 			return (
-				<div className="flex flex-col items-center justify-center p-12">
+				<div className='flex flex-col items-center justify-center p-12'>
 					<CursorTooltip
 						springDamping={springDamping}
-						content="Exhuma Exponential Cursor Smoothing"
-						className="rounded-2xl border border-border bg-card/80 p-8 shadow-xl text-center cursor-pointer hover:border-primary transition-colors"
+						content='Exhuma Exponential Cursor Smoothing'
+						className='border-border bg-card/80 hover:border-primary cursor-pointer rounded-2xl border p-8 text-center shadow-xl transition-colors'
 					>
-						<span className="kbd text-[10px] text-primary mb-2 inline-block">HOVER OVER CARD</span>
-						<h4 className="text-xl font-bold text-foreground">Interactive Viewport Target</h4>
-						<p className="text-xs text-muted-foreground mt-1">
-							Hover cursor anywhere over this card to activate the magnetic trailing tooltip.
-						</p>
+						<span className='kbd text-primary mb-2 inline-block text-[10px]'>HOVER OVER CARD</span>
+						<h4 className='text-foreground text-xl font-bold'>Interactive Viewport Target</h4>
+						<p className='text-muted-foreground mt-1 text-xs'>Hover cursor anywhere over this card to activate the magnetic trailing tooltip.</p>
 					</CursorTooltip>
 				</div>
 			);
@@ -910,44 +761,42 @@ export function StudioWorkbench({
 	};
 
 	return (
-		<div className="w-full space-y-6">
+		<div className='w-full space-y-6'>
 			{/* Xcode/Figma Top Toolbar */}
-			<div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 rounded-2xl border border-border bg-card p-4 shadow-sm transition-colors">
+			<div className='border-border bg-card flex flex-col justify-between gap-4 rounded-2xl border p-4 shadow-sm transition-colors lg:flex-row lg:items-center'>
 				{/* Breadcrumb & Component Info */}
-				<div className="flex items-center gap-3">
-					<div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-xs">
-						<Sliders className="h-4 w-4" />
+				<div className='flex items-center gap-3'>
+					<div className='bg-primary text-primary-foreground flex h-9 w-9 items-center justify-center rounded-xl shadow-xs'>
+						<Sliders className='h-4 w-4' />
 					</div>
 					<div>
-						<div className="flex items-center gap-1.5 text-xs text-muted-foreground font-mono">
+						<div className='text-muted-foreground flex items-center gap-1.5 font-mono text-xs'>
 							<span>Studio Workbench</span>
-							<ChevronRight className="h-3 w-3" />
-							<span className="text-foreground font-bold">{component.name}</span>
+							<ChevronRight className='h-3 w-3' />
+							<span className='text-foreground font-bold'>{component.name}</span>
 						</div>
-						<div className="flex items-center gap-2 mt-0.5">
-							<Badge variant="ecosystem" className="text-[10px] uppercase font-bold text-primary">
+						<div className='mt-0.5 flex items-center gap-2'>
+							<Badge variant='ecosystem' className='text-primary text-[10px] font-bold uppercase'>
 								{component.category}
 							</Badge>
-							<span className="text-xs text-muted-foreground">· 13 Native Idioms</span>
+							<span className='text-muted-foreground text-xs'>· 13 Native Idioms</span>
 						</div>
 					</div>
 				</div>
 
 				{/* Presets Selector Bar */}
 				{Object.keys(presets).length > 0 && (
-					<div className="flex items-center gap-2">
-						<span className="text-xs text-muted-foreground font-mono font-medium">Presets:</span>
-						<div className="flex items-center gap-1 bg-muted/60 p-1 rounded-lg border border-border">
+					<div className='flex items-center gap-2'>
+						<span className='text-muted-foreground font-mono text-xs font-medium'>Presets:</span>
+						<div className='bg-muted/60 border-border flex items-center gap-1 rounded-lg border p-1'>
 							{Object.keys(presets).map((pName) => (
 								<button
 									key={pName}
-									type="button"
+									type='button'
 									onClick={() => applyPreset(pName)}
 									className={cn(
-										'px-2.5 py-1 text-xs rounded-md font-medium transition-all cursor-pointer',
-										activePreset === pName
-											? 'bg-background text-foreground font-bold shadow-xs'
-											: 'text-muted-foreground hover:text-foreground'
+										'cursor-pointer rounded-md px-2.5 py-1 text-xs font-medium transition-all',
+										activePreset === pName ? 'bg-background text-foreground font-bold shadow-xs' : 'text-muted-foreground hover:text-foreground'
 									)}
 								>
 									{pName}
@@ -958,98 +807,65 @@ export function StudioWorkbench({
 				)}
 
 				{/* Right: Quick CLI & Reset */}
-				<div className="flex items-center gap-2.5">
-					<div className="flex items-center gap-2 rounded-lg border border-border bg-muted/40 px-3 py-1.5 font-mono text-xs text-foreground">
-						<Terminal className="h-3.5 w-3.5 text-primary shrink-0" />
-						<span className="text-muted-foreground text-[11px] truncate max-w-[180px] sm:max-w-none">
-							{cliCommand}
-						</span>
-						<button
-							type="button"
-							onClick={copyCli}
-							className="text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-							title="Copy CLI command"
-						>
-							{copiedCli ? (
-								<Check className="h-3.5 w-3.5 text-emerald-500" />
-							) : (
-								<Copy className="h-3.5 w-3.5" />
-							)}
+				<div className='flex items-center gap-2.5'>
+					<div className='border-border bg-muted/40 text-foreground flex items-center gap-2 rounded-lg border px-3 py-1.5 font-mono text-xs'>
+						<Terminal className='text-primary h-3.5 w-3.5 shrink-0' />
+						<span className='text-muted-foreground max-w-[180px] truncate text-[11px] sm:max-w-none'>{cliCommand}</span>
+						<button type='button' onClick={copyCli} className='text-muted-foreground hover:text-foreground cursor-pointer transition-colors' title='Copy CLI command'>
+							{copiedCli ? <Check className='h-3.5 w-3.5 text-emerald-500' /> : <Copy className='h-3.5 w-3.5' />}
 						</button>
 					</div>
 
-					<Button
-						variant="outline"
-						size="sm"
-						onClick={resetProps}
-						className="gap-1.5 text-xs cursor-pointer"
-						title="Reset all properties"
-					>
-						<RefreshCw className="h-3.5 w-3.5" />
-						<span className="hidden sm:inline">Reset</span>
+					<Button variant='outline' size='sm' onClick={resetProps} className='cursor-pointer gap-1.5 text-xs' title='Reset all properties'>
+						<RefreshCw className='h-3.5 w-3.5' />
+						<span className='hidden sm:inline'>Reset</span>
 					</Button>
 				</div>
 			</div>
 
 			{/* Three-Panel Xcode/Figma IDE Stage */}
-			<div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+			<div className='grid grid-cols-1 items-start gap-6 lg:grid-cols-12'>
 				{/* 1. Left Component Tree (3 cols) */}
-				<div className="lg:col-span-3 rounded-2xl border border-border bg-card p-4 shadow-sm space-y-4">
-					<div className="flex items-center justify-between border-b border-border pb-3">
-						<div className="flex items-center gap-2">
-							<Layers className="h-4 w-4 text-primary" />
-							<span className="font-bold text-xs uppercase tracking-wider text-foreground font-mono">
-								Components
-							</span>
+				<div className='border-border bg-card space-y-4 rounded-2xl border p-4 shadow-sm lg:col-span-3'>
+					<div className='border-border flex items-center justify-between border-b pb-3'>
+						<div className='flex items-center gap-2'>
+							<Layers className='text-primary h-4 w-4' />
+							<span className='text-foreground font-mono text-xs font-bold tracking-wider uppercase'>Components</span>
 						</div>
-						<span className="kbd text-[9px]">{ALL_COMPONENTS.length} CANONICAL</span>
+						<span className='kbd text-[9px]'>{ALL_COMPONENTS.length} CANONICAL</span>
 					</div>
 
 					{/* Search input */}
-					<div className="relative">
-						<Search className="absolute left-2.5 top-2.5 h-3.5 w-3.5 text-muted-foreground" />
+					<div className='relative'>
+						<Search className='text-muted-foreground absolute top-2.5 left-2.5 h-3.5 w-3.5' />
 						<input
-							type="text"
+							type='text'
 							value={catalogSearch}
 							onChange={(e) => setCatalogSearch(e.target.value)}
-							placeholder="Filter components..."
-							className="w-full rounded-lg border border-input bg-background pl-8 pr-3 py-1.5 text-xs text-foreground placeholder:text-muted-foreground outline-none focus:ring-1 focus:ring-ring"
+							placeholder='Filter components...'
+							className='border-input bg-background text-foreground placeholder:text-muted-foreground focus:ring-ring w-full rounded-lg border py-1.5 pr-3 pl-8 text-xs outline-none focus:ring-1'
 						/>
 					</div>
 
 					{/* Component Tree Items */}
-					<div className="space-y-1 max-h-[520px] overflow-y-auto pr-1">
+					<div className='max-h-[520px] space-y-1 overflow-y-auto pr-1'>
 						{filteredComponents.map((comp) => {
 							const isSelected = comp.slug === selectedSlug;
 							return (
 								<button
 									key={comp.slug}
-									type="button"
+									type='button'
 									onClick={() => handleSelectComponent(comp.slug)}
 									className={cn(
-										'flex w-full items-center justify-between rounded-xl px-3.5 py-2.5 text-left text-xs transition-all cursor-pointer',
-										isSelected
-											? 'bg-primary text-primary-foreground font-bold shadow-xs'
-											: 'text-muted-foreground hover:bg-accent hover:text-foreground'
+										'flex w-full cursor-pointer items-center justify-between rounded-xl px-3.5 py-2.5 text-left text-xs transition-all',
+										isSelected ? 'bg-primary text-primary-foreground font-bold shadow-xs' : 'text-muted-foreground hover:bg-accent hover:text-foreground'
 									)}
 								>
 									<div>
-										<div className="truncate font-semibold">{comp.name}</div>
-										<div
-											className={cn(
-												'text-[10px] capitalize font-mono',
-												isSelected ? 'text-primary-foreground/80' : 'text-muted-foreground'
-											)}
-										>
-											{comp.category}
-										</div>
+										<div className='truncate font-semibold'>{comp.name}</div>
+										<div className={cn('font-mono text-[10px] capitalize', isSelected ? 'text-primary-foreground/80' : 'text-muted-foreground')}>{comp.category}</div>
 									</div>
-									<ChevronRight
-										className={cn(
-											'h-3.5 w-3.5 shrink-0 transition-transform',
-											isSelected ? 'opacity-100 translate-x-0.5' : 'opacity-40'
-										)}
-									/>
+									<ChevronRight className={cn('h-3.5 w-3.5 shrink-0 transition-transform', isSelected ? 'translate-x-0.5 opacity-100' : 'opacity-40')} />
 								</button>
 							);
 						})}
@@ -1057,98 +873,72 @@ export function StudioWorkbench({
 				</div>
 
 				{/* 2. Center Stage Viewport (6 cols) */}
-				<div className="lg:col-span-6 rounded-2xl border border-border bg-card shadow-sm overflow-hidden flex flex-col">
+				<div className='border-border bg-card flex flex-col overflow-hidden rounded-2xl border shadow-sm lg:col-span-6'>
 					{/* Responsive Device Toolbar */}
-					<div className="flex items-center justify-between border-b border-border bg-muted/30 px-4 py-2 text-xs">
+					<div className='border-border bg-muted/30 flex items-center justify-between border-b px-4 py-2 text-xs'>
 						{/* Device Frames */}
-						<div className="flex items-center gap-1 bg-muted/60 p-1 rounded-lg border border-border/50">
+						<div className='bg-muted/60 border-border/50 flex items-center gap-1 rounded-lg border p-1'>
 							<button
-								type="button"
+								type='button'
 								onClick={() => setViewportMode('desktop')}
 								className={cn(
-									'flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs transition-all cursor-pointer',
-									viewportMode === 'desktop'
-										? 'bg-background text-foreground shadow-xs font-bold'
-										: 'text-muted-foreground hover:text-foreground'
+									'flex cursor-pointer items-center gap-1.5 rounded-md px-2.5 py-1 text-xs transition-all',
+									viewportMode === 'desktop' ? 'bg-background text-foreground font-bold shadow-xs' : 'text-muted-foreground hover:text-foreground'
 								)}
-								title="Desktop (100%)"
+								title='Desktop (100%)'
 							>
-								<Monitor className="h-3.5 w-3.5" />
-								<span className="hidden sm:inline">Desktop</span>
+								<Monitor className='h-3.5 w-3.5' />
+								<span className='hidden sm:inline'>Desktop</span>
 							</button>
 							<button
-								type="button"
+								type='button'
 								onClick={() => setViewportMode('laptop')}
 								className={cn(
-									'flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs transition-all cursor-pointer',
-									viewportMode === 'laptop'
-										? 'bg-background text-foreground shadow-xs font-bold'
-										: 'text-muted-foreground hover:text-foreground'
+									'flex cursor-pointer items-center gap-1.5 rounded-md px-2.5 py-1 text-xs transition-all',
+									viewportMode === 'laptop' ? 'bg-background text-foreground font-bold shadow-xs' : 'text-muted-foreground hover:text-foreground'
 								)}
-								title="Laptop (1024px)"
+								title='Laptop (1024px)'
 							>
-								<Laptop className="h-3.5 w-3.5" />
-								<span className="hidden sm:inline">Laptop</span>
+								<Laptop className='h-3.5 w-3.5' />
+								<span className='hidden sm:inline'>Laptop</span>
 							</button>
 							<button
-								type="button"
+								type='button'
 								onClick={() => setViewportMode('tablet')}
 								className={cn(
-									'flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs transition-all cursor-pointer',
-									viewportMode === 'tablet'
-										? 'bg-background text-foreground shadow-xs font-bold'
-										: 'text-muted-foreground hover:text-foreground'
+									'flex cursor-pointer items-center gap-1.5 rounded-md px-2.5 py-1 text-xs transition-all',
+									viewportMode === 'tablet' ? 'bg-background text-foreground font-bold shadow-xs' : 'text-muted-foreground hover:text-foreground'
 								)}
-								title="Tablet (768px)"
+								title='Tablet (768px)'
 							>
-								<Tablet className="h-3.5 w-3.5" />
-								<span className="hidden sm:inline">Tablet</span>
+								<Tablet className='h-3.5 w-3.5' />
+								<span className='hidden sm:inline'>Tablet</span>
 							</button>
 							<button
-								type="button"
+								type='button'
 								onClick={() => setViewportMode('mobile')}
 								className={cn(
-									'flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs transition-all cursor-pointer',
-									viewportMode === 'mobile'
-										? 'bg-background text-foreground shadow-xs font-bold'
-										: 'text-muted-foreground hover:text-foreground'
+									'flex cursor-pointer items-center gap-1.5 rounded-md px-2.5 py-1 text-xs transition-all',
+									viewportMode === 'mobile' ? 'bg-background text-foreground font-bold shadow-xs' : 'text-muted-foreground hover:text-foreground'
 								)}
-								title="Mobile (375px)"
+								title='Mobile (375px)'
 							>
-								<Smartphone className="h-3.5 w-3.5" />
-								<span className="hidden sm:inline">Mobile</span>
+								<Smartphone className='h-3.5 w-3.5' />
+								<span className='hidden sm:inline'>Mobile</span>
 							</button>
 						</div>
 
 						{/* Zoom & Canvas Texture */}
-						<div className="flex items-center gap-3 text-muted-foreground font-mono text-[11px]">
-							<span className="kbd text-[9px]">
-								{viewportMode === 'mobile'
-									? '375 × 667 px'
-									: viewportMode === 'tablet'
-									? '768 × 1024 px'
-									: viewportMode === 'laptop'
-									? '1024 × 768 px'
-									: 'Fluid 100%'}
-							</span>
+						<div className='text-muted-foreground flex items-center gap-3 font-mono text-[11px]'>
+							<span className='kbd text-[9px]'>{viewportMode === 'mobile' ? '375 × 667 px' : viewportMode === 'tablet' ? '768 × 1024 px' : viewportMode === 'laptop' ? '1024 × 768 px' : 'Fluid 100%'}</span>
 
-							<div className="hidden sm:flex items-center gap-1">
-								<button
-									type="button"
-									onClick={() => setZoomScale((z) => Math.max(50, z - 25))}
-									className="p-1 rounded hover:bg-accent hover:text-foreground cursor-pointer"
-									title="Zoom out"
-								>
-									<ZoomOut className="h-3.5 w-3.5" />
+							<div className='hidden items-center gap-1 sm:flex'>
+								<button type='button' onClick={() => setZoomScale((z) => Math.max(50, z - 25))} className='hover:bg-accent hover:text-foreground cursor-pointer rounded p-1' title='Zoom out'>
+									<ZoomOut className='h-3.5 w-3.5' />
 								</button>
-								<span className="w-8 text-center">{zoomScale}%</span>
-								<button
-									type="button"
-									onClick={() => setZoomScale((z) => Math.min(150, z + 25))}
-									className="p-1 rounded hover:bg-accent hover:text-foreground cursor-pointer"
-									title="Zoom in"
-								>
-									<ZoomIn className="h-3.5 w-3.5" />
+								<span className='w-8 text-center'>{zoomScale}%</span>
+								<button type='button' onClick={() => setZoomScale((z) => Math.min(150, z + 25))} className='hover:bg-accent hover:text-foreground cursor-pointer rounded p-1' title='Zoom in'>
+									<ZoomIn className='h-3.5 w-3.5' />
 								</button>
 							</div>
 						</div>
@@ -1157,7 +947,7 @@ export function StudioWorkbench({
 					{/* Dot-Grid Canvas Viewport */}
 					<div
 						className={cn(
-							'p-6 sm:p-10 min-h-[480px] flex items-center justify-center overflow-auto transition-colors',
+							'flex min-h-[480px] items-center justify-center overflow-auto p-6 transition-colors sm:p-10',
 							canvasGrid === 'dots' ? 'bg-dot-grid' : canvasGrid === 'dense' ? 'bg-dot-grid-dense' : 'bg-background'
 						)}
 					>
@@ -1174,58 +964,42 @@ export function StudioWorkbench({
 				</div>
 
 				{/* 3. Right Property Inspector (3 cols) */}
-				<div className="lg:col-span-3 rounded-2xl border border-border bg-card p-4 shadow-sm space-y-4">
-					<div className="flex items-center justify-between border-b border-border pb-3">
-						<div className="flex items-center gap-2">
-							<Sliders className="h-4 w-4 text-primary" />
-							<span className="font-bold text-xs uppercase tracking-wider text-foreground font-mono">
-								Property Inspector
-							</span>
+				<div className='border-border bg-card space-y-4 rounded-2xl border p-4 shadow-sm lg:col-span-3'>
+					<div className='border-border flex items-center justify-between border-b pb-3'>
+						<div className='flex items-center gap-2'>
+							<Sliders className='text-primary h-4 w-4' />
+							<span className='text-foreground font-mono text-xs font-bold tracking-wider uppercase'>Property Inspector</span>
 						</div>
-						<span className="kbd text-[9px]">{component.props.length} PROPS</span>
+						<span className='kbd text-[9px]'>{component.props.length} PROPS</span>
 					</div>
 
 					{/* Prop Controls List */}
-					<div className="space-y-4 max-h-[520px] overflow-y-auto pr-1">
+					<div className='max-h-[520px] space-y-4 overflow-y-auto pr-1'>
 						{component.props.map((propDef) => {
 							const val = propValues[propDef.name] ?? propDef.defaultValue;
 
 							return (
-								<div key={propDef.name} className="space-y-1.5 rounded-xl border border-border/60 bg-muted/20 p-3">
-									<div className="flex items-center justify-between text-xs">
-										<label
-											htmlFor={`prop-${propDef.name}`}
-											className="font-mono text-foreground font-semibold text-[11px]"
-										>
+								<div key={propDef.name} className='border-border/60 bg-muted/20 space-y-1.5 rounded-xl border p-3'>
+									<div className='flex items-center justify-between text-xs'>
+										<label htmlFor={`prop-${propDef.name}`} className='text-foreground font-mono text-[11px] font-semibold'>
 											{propDef.name}
 										</label>
-										<span className="kbd text-[10px]">
-											{String(val)}
-										</span>
+										<span className='kbd text-[10px]'>{String(val)}</span>
 									</div>
 
-									{propDef.description && (
-										<p className="text-[10px] text-muted-foreground leading-tight">
-											{propDef.description}
-										</p>
-									)}
+									{propDef.description && <p className='text-muted-foreground text-[10px] leading-tight'>{propDef.description}</p>}
 
 									{/* Render Control based on type */}
 									{propDef.type === 'boolean' ? (
-										<div className="flex items-center gap-2 pt-1">
+										<div className='flex items-center gap-2 pt-1'>
 											<input
-												type="checkbox"
+												type='checkbox'
 												id={`prop-${propDef.name}`}
 												checked={Boolean(val)}
-												onChange={(e) =>
-													handlePropChange(propDef.name, e.target.checked)
-												}
-												className="rounded border-border accent-primary cursor-pointer h-4 w-4"
+												onChange={(e) => handlePropChange(propDef.name, e.target.checked)}
+												className='border-border accent-primary h-4 w-4 cursor-pointer rounded'
 											/>
-											<label
-												htmlFor={`prop-${propDef.name}`}
-												className="text-xs text-muted-foreground cursor-pointer"
-											>
+											<label htmlFor={`prop-${propDef.name}`} className='text-muted-foreground cursor-pointer text-xs'>
 												{val ? 'Enabled' : 'Disabled'}
 											</label>
 										</div>
@@ -1233,10 +1007,8 @@ export function StudioWorkbench({
 										<select
 											id={`prop-${propDef.name}`}
 											value={String(val)}
-											onChange={(e) =>
-												handlePropChange(propDef.name, e.target.value)
-											}
-											className="w-full rounded-md border border-input bg-background px-2.5 py-1.5 text-xs text-foreground outline-none focus:ring-1 focus:ring-ring"
+											onChange={(e) => handlePropChange(propDef.name, e.target.value)}
+											className='border-input bg-background text-foreground focus:ring-ring w-full rounded-md border px-2.5 py-1.5 text-xs outline-none focus:ring-1'
 										>
 											{propDef.options.map((opt) => (
 												<option key={opt.value} value={opt.value}>
@@ -1246,29 +1018,25 @@ export function StudioWorkbench({
 										</select>
 									) : (
 										/* Slider + Numerical Input Sync */
-										<div className="flex items-center gap-2 pt-1">
+										<div className='flex items-center gap-2 pt-1'>
 											<input
-												type="range"
+												type='range'
 												id={`prop-${propDef.name}`}
 												min={propDef.min ?? 0}
 												max={propDef.max ?? 100}
 												step={propDef.step ?? 1}
 												value={Number(val)}
-												onChange={(e) =>
-													handlePropChange(propDef.name, Number(e.target.value))
-												}
-												className="flex-1 accent-primary h-1.5 cursor-pointer"
+												onChange={(e) => handlePropChange(propDef.name, Number(e.target.value))}
+												className='accent-primary h-1.5 flex-1 cursor-pointer'
 											/>
 											<input
-												type="number"
+												type='number'
 												min={propDef.min ?? 0}
 												max={propDef.max ?? 100}
 												step={propDef.step ?? 1}
 												value={Number(val)}
-												onChange={(e) =>
-													handlePropChange(propDef.name, Number(e.target.value))
-												}
-												className="w-14 rounded border border-input bg-background px-1.5 py-0.5 font-mono text-[11px] text-foreground text-right"
+												onChange={(e) => handlePropChange(propDef.name, Number(e.target.value))}
+												className='border-input bg-background text-foreground w-14 rounded border px-1.5 py-0.5 text-right font-mono text-[11px]'
 											/>
 										</div>
 									)}
@@ -1280,49 +1048,45 @@ export function StudioWorkbench({
 			</div>
 
 			{/* Bottom Synchronizer: 13 Ecosystems Code Viewer */}
-			<div className="rounded-2xl border border-border bg-card shadow-sm overflow-hidden">
+			<div className='border-border bg-card overflow-hidden rounded-2xl border shadow-sm'>
 				{/* Top bar */}
-				<div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 border-b border-border bg-muted/30 px-4 py-3">
-					<div className="flex items-center gap-2">
-						<Sparkles className="h-4 w-4 text-primary" />
-						<span className="font-bold text-xs text-foreground font-mono">
-							Universal Code Synchronizer
-						</span>
-						<Badge variant="ecosystem" className="text-[10px]">
+				<div className='border-border bg-muted/30 flex flex-col items-stretch justify-between gap-3 border-b px-4 py-3 md:flex-row md:items-center'>
+					<div className='flex items-center gap-2'>
+						<Sparkles className='text-primary h-4 w-4' />
+						<span className='text-foreground font-mono text-xs font-bold'>Universal Code Synchronizer</span>
+						<Badge variant='ecosystem' className='text-[10px]'>
 							{selectedFlavor}
 						</Badge>
 					</div>
 
-					<div className="flex items-center gap-2">
+					<div className='flex items-center gap-2'>
 						<button
-							type="button"
+							type='button'
 							onClick={downloadFile}
-							className="inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-3 py-1.5 text-xs font-medium text-foreground hover:bg-accent transition-colors cursor-pointer"
-							title="Download component source"
+							className='border-border bg-background text-foreground hover:bg-accent inline-flex cursor-pointer items-center gap-1.5 rounded-md border px-3 py-1.5 text-xs font-medium transition-colors'
+							title='Download component source'
 						>
-							<Download className="h-3.5 w-3.5" />
+							<Download className='h-3.5 w-3.5' />
 							<span>Download Source</span>
 						</button>
 					</div>
 				</div>
 
 				{/* 13 Ecosystem Selector Pills */}
-				<div className="border-b border-border bg-background/50 px-4 py-2.5 overflow-x-auto flex items-center gap-1.5">
+				<div className='border-border bg-background/50 flex items-center gap-1.5 overflow-x-auto border-b px-4 py-2.5'>
 					{FLAVORS.map((flavor) => {
 						const isSelected = selectedFlavor === flavor;
 						return (
 							<button
 								key={flavor}
-								type="button"
+								type='button'
 								onClick={() => {
 									setSelectedFlavor(flavor);
 									setSelectedFileIdx(0);
 								}}
 								className={cn(
-									'whitespace-nowrap rounded-lg border px-3 py-1.5 text-xs font-mono transition-all cursor-pointer',
-									isSelected
-										? 'border-primary bg-primary text-primary-foreground font-bold shadow-xs'
-										: 'border-border bg-card text-muted-foreground hover:border-input hover:text-foreground'
+									'cursor-pointer rounded-lg border px-3 py-1.5 font-mono text-xs whitespace-nowrap transition-all',
+									isSelected ? 'border-primary bg-primary text-primary-foreground font-bold shadow-xs' : 'border-border bg-card text-muted-foreground hover:border-input hover:text-foreground'
 								)}
 							>
 								{ECOSYSTEM_LABELS[flavor]}
@@ -1333,20 +1097,16 @@ export function StudioWorkbench({
 
 				{/* Multi-File Tabs (for WordPress Gutenberg, etc.) */}
 				{generatedFiles.length > 1 && (
-					<div className="flex items-center gap-1.5 border-b border-border bg-muted/20 px-4 py-2">
-						<span className="text-[10px] text-muted-foreground font-mono mr-2">
-							Generated Files ({generatedFiles.length}):
-						</span>
+					<div className='border-border bg-muted/20 flex items-center gap-1.5 border-b px-4 py-2'>
+						<span className='text-muted-foreground mr-2 font-mono text-[10px]'>Generated Files ({generatedFiles.length}):</span>
 						{generatedFiles.map((file, idx) => (
 							<button
 								key={file.filename}
-								type="button"
+								type='button'
 								onClick={() => setSelectedFileIdx(idx)}
 								className={cn(
-									'rounded-md px-3 py-1 text-xs font-mono transition-colors cursor-pointer',
-									selectedFileIdx === idx
-										? 'bg-accent text-accent-foreground font-bold shadow-xs'
-										: 'text-muted-foreground hover:text-foreground'
+									'cursor-pointer rounded-md px-3 py-1 font-mono text-xs transition-colors',
+									selectedFileIdx === idx ? 'bg-accent text-accent-foreground font-bold shadow-xs' : 'text-muted-foreground hover:text-foreground'
 								)}
 							>
 								{file.filename}
@@ -1356,7 +1116,7 @@ export function StudioWorkbench({
 				)}
 
 				{/* CodeBlock Display */}
-				<div className="p-4 bg-muted/10">
+				<div className='bg-muted/10 p-4'>
 					<CodeBlock
 						code={activeFile.code}
 						filename={activeFile.filename}
@@ -1364,14 +1124,14 @@ export function StudioWorkbench({
 							activeFile.filename.endsWith('.dart')
 								? 'dart'
 								: activeFile.filename.endsWith('.php')
-								? 'php'
-								: activeFile.filename.endsWith('.vue')
-								? 'vue'
-								: activeFile.filename.endsWith('.svelte')
-								? 'svelte'
-								: activeFile.filename.endsWith('.json')
-								? 'json'
-								: 'tsx'
+									? 'php'
+									: activeFile.filename.endsWith('.vue')
+										? 'vue'
+										: activeFile.filename.endsWith('.svelte')
+											? 'svelte'
+											: activeFile.filename.endsWith('.json')
+												? 'json'
+												: 'tsx'
 						}
 					/>
 				</div>

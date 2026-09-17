@@ -5,39 +5,11 @@ export { CssMasonry } from './Masonry/CssMasonry';
 export { MacyMasonry } from './Masonry/MacyMasonry';
 
 // Wave 2: Responsive Layout Engines & Momentum
-export {
-	InfiniteMarquee,
-	MarqueeRoot,
-	MarqueeTrack,
-	MarqueeItem,
-} from './InfiniteMarquee/InfiniteMarquee';
-export {
-	BentoGrid,
-	BentoCard,
-	BentoHeader,
-	BentoContent,
-	BentoVisual,
-} from './BentoGrid/BentoGrid';
-export {
-	DiamondGrid,
-	DiamondColumn,
-	DiamondItem,
-} from './DiamondGrid/DiamondGrid';
-export {
-	ScrollTimeline,
-	TimelineRoot,
-	TimelineTrack,
-	TimelineItem,
-	TimelinePoint,
-	TimelineContent,
-} from './ScrollTimeline/ScrollTimeline';
-export {
-	StickyParallaxScroll,
-	ParallaxRoot,
-	ParallaxSticky,
-	ParallaxLayer,
-	ParallaxContent,
-} from './StickyParallax/StickyParallax';
+export { InfiniteMarquee, MarqueeRoot, MarqueeTrack, MarqueeItem } from './InfiniteMarquee/InfiniteMarquee';
+export { BentoGrid, BentoCard, BentoHeader, BentoContent, BentoVisual } from './BentoGrid/BentoGrid';
+export { DiamondGrid, DiamondColumn, DiamondItem } from './DiamondGrid/DiamondGrid';
+export { ScrollTimeline, TimelineRoot, TimelineTrack, TimelineItem, TimelinePoint, TimelineContent } from './ScrollTimeline/ScrollTimeline';
+export { StickyParallaxScroll, ParallaxRoot, ParallaxSticky, ParallaxLayer, ParallaxContent } from './StickyParallax/StickyParallax';
 export { InteractiveGridPattern } from './InteractiveGrid/InteractiveGridPattern';
 
 // Mathematical Kernels
@@ -59,5 +31,3 @@ export type {
 	StickyParallaxLayerProps,
 	InteractiveGridPatternProps,
 } from './types';
-
-

@@ -1,17 +1,6 @@
 'use client';
 
-import React, {
-	createContext,
-	useContext,
-	useState,
-	useRef,
-	useEffect,
-	useCallback,
-	useId,
-	type ReactNode,
-	type HTMLAttributes,
-	type ButtonHTMLAttributes,
-} from 'react';
+import React, { createContext, useContext, useState, useRef, useEffect, useCallback, useId, type ReactNode, type HTMLAttributes, type ButtonHTMLAttributes } from 'react';
 import { solveCriticallyDampedSpring } from '../physics/spring';
 
 /**
@@ -51,13 +40,7 @@ export interface TabsRootProps {
 	className?: string;
 }
 
-export const TabsRoot: React.FC<TabsRootProps> = ({
-	children,
-	defaultValue,
-	value: controlledValue,
-	onValueChange,
-	className = '',
-}) => {
+export const TabsRoot: React.FC<TabsRootProps> = ({ children, defaultValue, value: controlledValue, onValueChange, className = '' }) => {
 	const baseId = useId();
 	const [uncontrolledValue, setUncontrolledValue] = useState<string>(defaultValue || '');
 	const isControlled = controlledValue !== undefined;
@@ -161,8 +144,8 @@ export const TabsList: React.FC<TabsListProps> = ({ children, className = '', ..
 
 	return (
 		<div
-			role="tablist"
-			aria-orientation="horizontal"
+			role='tablist'
+			aria-orientation='horizontal'
 			onKeyDown={handleKeyDown}
 			className={`exhuma-tabs-list relative flex items-center gap-1 rounded-xl bg-neutral-100 p-1 dark:bg-neutral-900 ${className}`}
 			{...props}
@@ -188,31 +171,34 @@ export const TabsIndicator: React.FC<TabsIndicatorProps> = ({ className = '', st
 	const rafIdRef = useRef<number | null>(null);
 	const lastTimeRef = useRef<number>(0);
 
-	const updateSpring = useCallback((timestamp: number) => {
-		if (!indicatorRef.current || !activeRect) return;
+	const updateSpring = useCallback(
+		(timestamp: number) => {
+			if (!indicatorRef.current || !activeRect) return;
 
-		const dt = lastTimeRef.current ? (timestamp - lastTimeRef.current) / 1000 : 0.016;
-		lastTimeRef.current = timestamp;
+			const dt = lastTimeRef.current ? (timestamp - lastTimeRef.current) / 1000 : 0.016;
+			lastTimeRef.current = timestamp;
 
-		const springX = solveCriticallyDampedSpring(currentX.current, activeRect.x, velX.current, dt, { omega: 26 });
-		const springW = solveCriticallyDampedSpring(currentW.current, activeRect.width, velW.current, dt, { omega: 26 });
+			const springX = solveCriticallyDampedSpring(currentX.current, activeRect.x, velX.current, dt, { omega: 26 });
+			const springW = solveCriticallyDampedSpring(currentW.current, activeRect.width, velW.current, dt, { omega: 26 });
 
-		currentX.current = springX.position;
-		velX.current = springX.velocity;
-		currentW.current = springW.position;
-		velW.current = springW.velocity;
+			currentX.current = springX.position;
+			velX.current = springX.velocity;
+			currentW.current = springW.position;
+			velW.current = springW.velocity;
 
-		indicatorRef.current.style.transform = `translate3d(${currentX.current.toFixed(2)}px, ${activeRect.y}px, 0)`;
-		indicatorRef.current.style.width = `${currentW.current.toFixed(2)}px`;
-		indicatorRef.current.style.height = `${activeRect.height}px`;
+			indicatorRef.current.style.transform = `translate3d(${currentX.current.toFixed(2)}px, ${activeRect.y}px, 0)`;
+			indicatorRef.current.style.width = `${currentW.current.toFixed(2)}px`;
+			indicatorRef.current.style.height = `${activeRect.height}px`;
 
-		if (!springX.isSettled || !springW.isSettled) {
-			rafIdRef.current = requestAnimationFrame(updateSpring);
-		} else {
-			rafIdRef.current = null;
-			lastTimeRef.current = 0;
-		}
-	}, [activeRect]);
+			if (!springX.isSettled || !springW.isSettled) {
+				rafIdRef.current = requestAnimationFrame(updateSpring);
+			} else {
+				rafIdRef.current = null;
+				lastTimeRef.current = 0;
+			}
+		},
+		[activeRect]
+	);
 
 	useEffect(() => {
 		if (!activeRect) return;
@@ -247,7 +233,7 @@ export const TabsIndicator: React.FC<TabsIndicatorProps> = ({ className = '', st
 	return (
 		<div
 			ref={indicatorRef}
-			aria-hidden="true"
+			aria-hidden='true'
 			className={`exhuma-tabs-indicator pointer-events-none absolute top-0 left-0 rounded-lg bg-white shadow-sm dark:bg-neutral-800 ${className}`}
 			style={{
 				willChange: 'transform, width',
@@ -280,14 +266,14 @@ export const TabsTrigger: React.FC<TabsTriggerProps> = ({ value, children, class
 	return (
 		<button
 			ref={triggerRef}
-			role="tab"
+			role='tab'
 			id={id}
 			aria-selected={isSelected}
 			aria-controls={panelId}
 			tabIndex={isSelected ? 0 : -1}
-			type="button"
+			type='button'
 			onClick={() => onValueChange(value)}
-			className={`exhuma-tabs-trigger relative z-10 inline-flex items-center justify-center rounded-lg px-3 py-1.5 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${
+			className={`exhuma-tabs-trigger focus-visible:ring-primary relative z-10 inline-flex items-center justify-center rounded-lg px-3 py-1.5 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:outline-none ${
 				isSelected ? 'text-neutral-900 dark:text-white' : 'text-neutral-500 hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-200'
 			} ${className}`}
 			{...props}
@@ -313,14 +299,7 @@ export const TabsContent: React.FC<TabsContentProps> = ({ value, children, class
 	if (!isSelected) return null;
 
 	return (
-		<div
-			role="tabpanel"
-			id={id}
-			aria-labelledby={triggerId}
-			tabIndex={0}
-			className={`exhuma-tabs-content mt-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary ${className}`}
-			{...props}
-		>
+		<div role='tabpanel' id={id} aria-labelledby={triggerId} tabIndex={0} className={`exhuma-tabs-content focus-visible:ring-primary mt-3 focus-visible:ring-2 focus-visible:outline-none ${className}`} {...props}>
 			{children}
 		</div>
 	);

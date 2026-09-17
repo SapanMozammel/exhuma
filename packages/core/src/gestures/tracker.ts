@@ -1,14 +1,7 @@
 'use client';
 
 import { useRef, useCallback, useEffect } from 'react';
-import {
-	GestureState,
-	GestureEvent,
-	VelocityRingBuffer,
-	checkGestureSlop,
-	SlopConfig,
-	VelocityVector,
-} from './fsm';
+import { GestureState, GestureEvent, VelocityRingBuffer, checkGestureSlop, SlopConfig, VelocityVector } from './fsm';
 
 export interface GestureTrackerOptions {
 	primaryAxis?: 'x' | 'y';

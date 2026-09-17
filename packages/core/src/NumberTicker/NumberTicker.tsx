@@ -21,18 +21,7 @@ export interface NumberTickerProps extends React.HTMLAttributes<HTMLSpanElement>
  * - Closed-form analytical easeOutExpo function (ZERO Framer Motion).
  * - Battery-friendly IntersectionObserver trigger.
  */
-export const NumberTicker = memo<NumberTickerProps>(({
-	value,
-	initialValue = 0,
-	duration = 1.5,
-	decimalPlaces = 0,
-	prefix = '',
-	suffix = '',
-	triggerOnScroll = true,
-	className = '',
-	style,
-	...props
-}) => {
+export const NumberTicker = memo<NumberTickerProps>(({ value, initialValue = 0, duration = 1.5, decimalPlaces = 0, prefix = '', suffix = '', triggerOnScroll = true, className = '', style, ...props }) => {
 	const spanRef = useRef<HTMLSpanElement>(null);
 	const rafIdRef = useRef<number | null>(null);
 	const startTimeRef = useRef<number | null>(null);
@@ -60,12 +49,7 @@ export const NumberTicker = memo<NumberTickerProps>(({
 			}
 
 			const elapsed = (now - startTimeRef.current) / 1000;
-			const { value: currentVal, isComplete } = calculateTickerValue(
-				initialValue,
-				value,
-				elapsed,
-				duration
-			);
+			const { value: currentVal, isComplete } = calculateTickerValue(initialValue, value, elapsed, duration);
 
 			if (spanRef.current) {
 				spanRef.current.textContent = formatNumber(currentVal);
@@ -114,12 +98,7 @@ export const NumberTicker = memo<NumberTickerProps>(({
 	}, [triggerOnScroll, startTicker, formatNumber, initialValue]);
 
 	return (
-		<span
-			ref={spanRef}
-			className={`exhuma-number-ticker font-mono tabular-nums tracking-tight ${className}`}
-			style={style}
-			{...props}
-		>
+		<span ref={spanRef} className={`exhuma-number-ticker font-mono tracking-tight tabular-nums ${className}`} style={style} {...props}>
 			{formatNumber(initialValue)}
 		</span>
 	);

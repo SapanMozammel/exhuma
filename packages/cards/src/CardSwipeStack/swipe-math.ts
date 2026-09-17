@@ -55,11 +55,7 @@ export class SwipeVelocityRingBuffer {
 /**
  * Calculates card rotation angle in degrees coupled to horizontal displacement.
  */
-export function calculateCardRotation(
-	dx: number,
-	maxRotation: number = 22,
-	threshold: number = 180
-): number {
+export function calculateCardRotation(dx: number, maxRotation: number = 22, threshold: number = 180): number {
 	const ratio = Math.max(-1, Math.min(1, dx / threshold));
 	return ratio * maxRotation;
 }
@@ -67,12 +63,7 @@ export function calculateCardRotation(
 /**
  * Evaluates whether a gesture qualifies as a dismiss swipe based on distance or velocity.
  */
-export function evaluateSwipeDecision(
-	dx: number,
-	velocity: number,
-	thresholdDistance: number = 120,
-	thresholdVelocity: number = 550
-): SwipeDecision {
+export function evaluateSwipeDecision(dx: number, velocity: number, thresholdDistance: number = 120, thresholdVelocity: number = 550): SwipeDecision {
 	if (dx > thresholdDistance || velocity > thresholdVelocity) {
 		return { isDismissed: true, direction: 'right' };
 	}
@@ -85,12 +76,7 @@ export function evaluateSwipeDecision(
 /**
  * Calculates scale and translation for background cards in stack during drag progress.
  */
-export function calculateStackedCardTransform(
-	index: number,
-	progress: number,
-	scaleStep: number = 0.05,
-	offsetStep: number = 12
-): { scale: number; translateY: number; opacity: number } {
+export function calculateStackedCardTransform(index: number, progress: number, scaleStep: number = 0.05, offsetStep: number = 12): { scale: number; translateY: number; opacity: number } {
 	// Base values at rest
 	const baseScale = Math.max(0.7, 1 - index * scaleStep);
 	const baseOffset = index * offsetStep;

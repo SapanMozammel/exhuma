@@ -14,11 +14,7 @@ export interface SpotlightCoordinates {
 /**
  * Computes exact normalized coordinates relative to element bounding rect.
  */
-export function calculateSpotlightCoordinates(
-	clientX: number,
-	clientY: number,
-	rect: DOMRect | { left: number; top: number; width: number; height: number }
-): SpotlightCoordinates {
+export function calculateSpotlightCoordinates(clientX: number, clientY: number, rect: DOMRect | { left: number; top: number; width: number; height: number }): SpotlightCoordinates {
 	const x = clientX - rect.left;
 	const y = clientY - rect.top;
 
@@ -39,12 +35,6 @@ export function calculateSpotlightCoordinates(
 /**
  * Constructs the radial illumination gradient string.
  */
-export function generateSpotlightStyle(
-	x: number,
-	y: number,
-	radius: number,
-	color: string,
-	opacity: number
-): string {
+export function generateSpotlightStyle(x: number, y: number, radius: number, color: string, opacity: number): string {
 	return `radial-gradient(${radius}px circle at ${x}px ${y}px, ${color} 0%, transparent 100%)`;
 }

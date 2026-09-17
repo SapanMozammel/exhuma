@@ -22,12 +22,7 @@ export const StickyParallaxScroll: React.FC<StickyParallaxProps> & {
 	Sticky: typeof ParallaxSticky;
 	Layer: typeof ParallaxLayer;
 	Content: typeof ParallaxContent;
-} = ({
-	children,
-	trackHeight = '250vh',
-	className = '',
-	style,
-}) => {
+} = ({ children, trackHeight = '250vh', className = '', style }) => {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const layersRef = useRef<Map<HTMLElement, number>>(new Map());
 	const rafIdRef = useRef<number | null>(null);
@@ -79,25 +74,14 @@ export const StickyParallaxScroll: React.FC<StickyParallaxProps> & {
 
 	return (
 		<ParallaxContext.Provider value={{ registerLayer }}>
-			<div
-				ref={containerRef}
-				className={`exhuma-parallax-root relative w-full ${className}`}
-				style={{ height: trackHeight, ...style }}
-			>
-				<div className="sticky top-0 h-screen w-full overflow-hidden flex items-center justify-center">
-					{children}
-				</div>
+			<div ref={containerRef} className={`exhuma-parallax-root relative w-full ${className}`} style={{ height: trackHeight, ...style }}>
+				<div className='sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden'>{children}</div>
 			</div>
 		</ParallaxContext.Provider>
 	);
 };
 
-export const ParallaxLayer: React.FC<StickyParallaxLayerProps> = ({
-	children,
-	speed = 0.5,
-	className = '',
-	style,
-}) => {
+export const ParallaxLayer: React.FC<StickyParallaxLayerProps> = ({ children, speed = 0.5, className = '', style }) => {
 	const layerRef = useRef<HTMLDivElement>(null);
 	const context = useContext(ParallaxContext);
 
@@ -108,11 +92,7 @@ export const ParallaxLayer: React.FC<StickyParallaxLayerProps> = ({
 	}, [context, speed]);
 
 	return (
-		<div
-			ref={layerRef}
-			className={`exhuma-parallax-layer will-change-transform ${className}`}
-			style={style}
-		>
+		<div ref={layerRef} className={`exhuma-parallax-layer will-change-transform ${className}`} style={style}>
 			{children}
 		</div>
 	);
@@ -120,24 +100,13 @@ export const ParallaxLayer: React.FC<StickyParallaxLayerProps> = ({
 
 export const ParallaxRoot = StickyParallaxScroll;
 
-export const ParallaxSticky: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({
-	children,
-	className = '',
-	...props
-}) => (
-	<div
-		className={`sticky top-0 h-screen w-full overflow-hidden flex items-center justify-center ${className}`}
-		{...props}
-	>
+export const ParallaxSticky: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ children, className = '', ...props }) => (
+	<div className={`sticky top-0 flex h-screen w-full items-center justify-center overflow-hidden ${className}`} {...props}>
 		{children}
 	</div>
 );
 
-export const ParallaxContent: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({
-	children,
-	className = '',
-	...props
-}) => (
+export const ParallaxContent: React.FC<React.HTMLAttributes<HTMLDivElement>> = ({ children, className = '', ...props }) => (
 	<div className={`relative z-10 ${className}`} {...props}>
 		{children}
 	</div>

@@ -24,10 +24,7 @@ export interface FLIPDelta {
 /**
  * Computes FLIP inverse delta transformation between First and Last rectangles.
  */
-export function calculateFLIPDelta(
-	first: DOMRectSnapshot,
-	last: DOMRectSnapshot
-): FLIPDelta {
+export function calculateFLIPDelta(first: DOMRectSnapshot, last: DOMRectSnapshot): FLIPDelta {
 	const dx = first.left - last.left;
 	const dy = first.top - last.top;
 	const scaleX = last.width > 0 ? first.width / last.width : 1;

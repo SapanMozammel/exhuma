@@ -22,4 +22,3 @@ export * from './MagneticButton/MagneticButton';
 export * from './MagneticButton/magnetic-math';
 export * from './CursorTooltip/CursorTooltip';
 export * from './CursorTooltip/cursor-math';
-

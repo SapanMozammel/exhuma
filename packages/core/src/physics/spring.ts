@@ -31,13 +31,7 @@ export interface SpringConfig {
  * Uses the exact analytical solution:
  * x(t) = target + (x0 - target + (v0 + omega * (x0 - target)) * t) * e^(-omega * t)
  */
-export function solveCriticallyDampedSpring(
-	current: number,
-	target: number,
-	velocity: number,
-	dt: number,
-	config: SpringConfig = {}
-): SpringState {
+export function solveCriticallyDampedSpring(current: number, target: number, velocity: number, dt: number, config: SpringConfig = {}): SpringState {
 	const omega = config.omega ?? 20;
 	const epsilon = config.epsilon ?? 0.001;
 	const velocityEpsilon = config.velocityEpsilon ?? 0.001;

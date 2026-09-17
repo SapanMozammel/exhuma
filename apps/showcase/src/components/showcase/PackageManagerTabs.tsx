@@ -1,11 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import {
-  IconCheck as Check,
-  IconCopy as Copy,
-  IconTerminal2 as Terminal,
-} from '@tabler/icons-react';
+import { IconCheck as Check, IconCopy as Copy, IconTerminal2 as Terminal } from '@tabler/icons-react';
 import { cn } from '@/lib/utils';
 
 type PackageManager = 'pnpm dlx' | 'npx' | 'bunx' | 'yarn dlx';
@@ -15,12 +11,8 @@ interface PackageManagerTabsProps {
 	className?: string;
 }
 
-export function PackageManagerTabs({
-	command = 'exhuma add stacking-cards',
-	className,
-}: PackageManagerTabsProps) {
-	const [activeManager, setActiveManager] =
-		React.useState<PackageManager>('pnpm dlx');
+export function PackageManagerTabs({ command = 'exhuma add stacking-cards', className }: PackageManagerTabsProps) {
+	const [activeManager, setActiveManager] = React.useState<PackageManager>('pnpm dlx');
 	const [copied, setCopied] = React.useState(false);
 
 	const fullCommand = `${activeManager} ${command}`;
@@ -39,24 +31,17 @@ export function PackageManagerTabs({
 	];
 
 	return (
-		<div
-			className={cn(
-				'flex flex-col sm:flex-row items-stretch sm:items-center rounded-xl border border-border bg-card p-1.5 shadow-sm max-w-xl transition-all',
-				className
-			)}
-		>
+		<div className={cn('border-border bg-card flex max-w-xl flex-col items-stretch rounded-xl border p-1.5 shadow-sm transition-all sm:flex-row sm:items-center', className)}>
 			{/* Manager Selector Segment */}
-			<div className="flex items-center gap-1 bg-muted/60 p-1 rounded-lg border border-border/50 shrink-0">
+			<div className='bg-muted/60 border-border/50 flex shrink-0 items-center gap-1 rounded-lg border p-1'>
 				{managers.map((m) => (
 					<button
 						key={m.id}
-						type="button"
+						type='button'
 						onClick={() => setActiveManager(m.id)}
 						className={cn(
-							'px-2.5 py-1 text-xs font-mono font-medium rounded-md transition-all cursor-pointer',
-							activeManager === m.id
-								? 'bg-background text-foreground shadow-xs font-semibold'
-								: 'text-muted-foreground hover:text-foreground'
+							'cursor-pointer rounded-md px-2.5 py-1 font-mono text-xs font-medium transition-all',
+							activeManager === m.id ? 'bg-background text-foreground font-semibold shadow-xs' : 'text-muted-foreground hover:text-foreground'
 						)}
 					>
 						{m.label}
@@ -65,24 +50,18 @@ export function PackageManagerTabs({
 			</div>
 
 			{/* Command Display with Prompt & Copy */}
-			<div className="flex flex-1 items-center justify-between pl-3 pr-1 py-1 sm:py-0 mt-1 sm:mt-0 font-mono text-xs overflow-hidden">
-				<div className="flex items-center gap-2 truncate text-muted-foreground select-all">
-					<Terminal className="h-3.5 w-3.5 text-primary shrink-0" />
-					<span className="text-foreground font-medium truncate">
-						{fullCommand}
-					</span>
+			<div className='mt-1 flex flex-1 items-center justify-between overflow-hidden py-1 pr-1 pl-3 font-mono text-xs sm:mt-0 sm:py-0'>
+				<div className='text-muted-foreground flex items-center gap-2 truncate select-all'>
+					<Terminal className='text-primary h-3.5 w-3.5 shrink-0' />
+					<span className='text-foreground truncate font-medium'>{fullCommand}</span>
 				</div>
 				<button
-					type="button"
+					type='button'
 					onClick={copyToClipboard}
-					className="ml-2 inline-flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-md border border-border bg-background text-foreground shadow-xs hover:bg-accent active:scale-95 transition-all"
-					title="Copy command"
+					className='border-border bg-background text-foreground hover:bg-accent ml-2 inline-flex h-7 w-7 shrink-0 cursor-pointer items-center justify-center rounded-md border shadow-xs transition-all active:scale-95'
+					title='Copy command'
 				>
-					{copied ? (
-						<Check className="h-3.5 w-3.5 text-emerald-500" />
-					) : (
-						<Copy className="h-3.5 w-3.5 text-muted-foreground" />
-					)}
+					{copied ? <Check className='h-3.5 w-3.5 text-emerald-500' /> : <Copy className='text-muted-foreground h-3.5 w-3.5' />}
 				</button>
 			</div>
 		</div>

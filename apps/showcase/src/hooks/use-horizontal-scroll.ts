@@ -8,9 +8,7 @@ export interface UseHorizontalScrollOptions {
 	disabled?: boolean;
 }
 
-export function useHorizontalScroll<T extends HTMLElement = HTMLDivElement>(
-	options: UseHorizontalScrollOptions = {}
-) {
+export function useHorizontalScroll<T extends HTMLElement = HTMLDivElement>(options: UseHorizontalScrollOptions = {}) {
 	const { speed = 1.0, disabled = false } = options;
 	const containerRef = useRef<T>(null);
 

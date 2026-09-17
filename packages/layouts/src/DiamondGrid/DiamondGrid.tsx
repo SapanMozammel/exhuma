@@ -15,34 +15,23 @@ export const DiamondGrid: React.FC<DiamondGridProps> & {
 	Grid: typeof DiamondGridRoot;
 	Column: typeof DiamondColumn;
 	Item: typeof DiamondItem;
-} = ({
-	children,
-	gap = '0.75vw',
-	className = '',
-	style,
-}) => {
+} = ({ children, gap = '0.75vw', className = '', style }) => {
 	const childrenArray = useMemo(() => Children.toArray(children), [children]);
 	const totalItems = childrenArray.length;
 
 	const config = useMemo(() => getDiamondLayoutConfig(totalItems), [totalItems]);
-	const columnGroups = useMemo(
-		() => partitionDiamondItems(childrenArray, config),
-		[childrenArray, config]
-	);
+	const columnGroups = useMemo(() => partitionDiamondItems(childrenArray, config), [childrenArray, config]);
 
-	const gridTemplateColumns = useMemo(
-		() => `repeat(${config.columns}, minmax(0, 1fr))`,
-		[config.columns]
-	);
+	const gridTemplateColumns = useMemo(() => `repeat(${config.columns}, minmax(0, 1fr))`, [config.columns]);
 
 	const gapVal = typeof gap === 'number' ? `${gap}px` : gap;
 
 	return (
 		<div className={`exhuma-diamond-grid flex w-full flex-col gap-4 ${className}`} style={style}>
 			{/* Mobile layout: standard 4-column compact grid (< md) */}
-			<div className="grid grid-cols-2 sm:grid-cols-4 gap-3 md:hidden">
+			<div className='grid grid-cols-2 gap-3 sm:grid-cols-4 md:hidden'>
 				{childrenArray.map((item, index) => (
-					<div key={`diamond-mobile-${index}`} className="flex justify-center items-center">
+					<div key={`diamond-mobile-${index}`} className='flex items-center justify-center'>
 						{item}
 					</div>
 				))}
@@ -50,22 +39,16 @@ export const DiamondGrid: React.FC<DiamondGridProps> & {
 
 			{/* Large screens: Rhombic Diamond pattern (>= md) */}
 			<div
-				className="hidden w-full md:grid items-center justify-center"
+				className='hidden w-full items-center justify-center md:grid'
 				style={{
 					gridTemplateColumns,
 					gap: gapVal,
 				}}
 			>
 				{columnGroups.map((columnItems, columnIndex) => (
-					<DiamondColumn
-						key={`diamond-col-${columnIndex}`}
-						columnIndex={columnIndex}
-						gap={gapVal}
-					>
+					<DiamondColumn key={`diamond-col-${columnIndex}`} columnIndex={columnIndex} gap={gapVal}>
 						{columnItems.map((group) => (
-							<DiamondItem key={`item-${group.index}`}>
-								{group.item}
-							</DiamondItem>
+							<DiamondItem key={`item-${group.index}`}>{group.item}</DiamondItem>
 						))}
 					</DiamondColumn>
 				))}
@@ -94,11 +77,7 @@ export const DiamondColumn: React.FC<{
 export const DiamondItem: React.FC<{
 	children: ReactNode;
 	className?: string;
-}> = ({ children, className = '' }) => (
-	<div className={`exhuma-diamond-item ${className}`}>
-		{children}
-	</div>
-);
+}> = ({ children, className = '' }) => <div className={`exhuma-diamond-item ${className}`}>{children}</div>;
 
 const DiamondGridRoot = DiamondGrid;
 

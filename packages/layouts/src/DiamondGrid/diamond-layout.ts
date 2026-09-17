@@ -40,10 +40,7 @@ export interface DiamondGroup<T> {
 /**
  * Partitions a list of items into rhombic column groups.
  */
-export function partitionDiamondItems<T>(
-	items: T[],
-	config: DiamondLayoutConfig
-): DiamondGroup<T>[][] {
+export function partitionDiamondItems<T>(items: T[], config: DiamondLayoutConfig): DiamondGroup<T>[][] {
 	const columns: DiamondGroup<T>[][] = Array.from({ length: config.columns }, () => []);
 	const displayedItems = items.slice(0, config.maxItems);
 	let itemIndex = 0;
@@ -56,11 +53,7 @@ export function partitionDiamondItems<T>(
 		return columns;
 	}
 
-	for (
-		let columnIndex = 0;
-		columnIndex < config.pattern.length && itemIndex < displayedItems.length;
-		columnIndex++
-	) {
+	for (let columnIndex = 0; columnIndex < config.pattern.length && itemIndex < displayedItems.length; columnIndex++) {
 		const itemsInColumn = config.pattern[columnIndex];
 		for (let i = 0; i < itemsInColumn && itemIndex < displayedItems.length; i++) {
 			columns[columnIndex].push({ item: displayedItems[itemIndex], index: itemIndex });

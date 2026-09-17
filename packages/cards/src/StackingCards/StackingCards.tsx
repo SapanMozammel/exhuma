@@ -1,21 +1,11 @@
-import React, {
-	Children,
-	isValidElement,
-	useEffect,
-	useRef,
-} from 'react';
+import React, { Children, isValidElement, useEffect, useRef } from 'react';
 import type { StackingCardsProps } from '../types';
 
 /**
  * Calculates progressive target scale values across stack layers.
  * The top cards scale down gracefully towards minScale as deeper cards scroll into view.
  */
-export const calculateScaleValue = (
-	index: number,
-	totalScalingSections: number,
-	minScale: number,
-	targetScale = 1.0
-): number => {
+export const calculateScaleValue = (index: number, totalScalingSections: number, minScale: number, targetScale = 1.0): number => {
 	if (totalScalingSections <= 1) return targetScale;
 	const progress = index / (totalScalingSections - 1);
 	const scale = minScale + progress * (targetScale - minScale);
@@ -41,17 +31,7 @@ export const generateDefaultScaleValues = (count: number, minScale = 0.94): numb
 	return values;
 };
 
-export const StackingCards: React.FC<StackingCardsProps> = ({
-	children,
-	topStart = 90,
-	topIncrement = 24,
-	minScale = 0.94,
-	scaleThreshold = 120,
-	scrollContainerRef,
-	enabled = true,
-	className = '',
-	style,
-}) => {
+export const StackingCards: React.FC<StackingCardsProps> = ({ children, topStart = 90, topIncrement = 24, minScale = 0.94, scaleThreshold = 120, scrollContainerRef, enabled = true, className = '', style }) => {
 	const wrapperRef = useRef<HTMLDivElement>(null);
 	const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
 
@@ -62,9 +42,7 @@ export const StackingCards: React.FC<StackingCardsProps> = ({
 		const wrapper = wrapperRef.current;
 		if (!wrapper || typeof window === 'undefined' || !enabled) return;
 
-		const prefersReducedMotion = window.matchMedia(
-			'(prefers-reduced-motion: reduce)'
-		).matches;
+		const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 		if (prefersReducedMotion) {
 			cardRefs.current.forEach((card, index) => {
@@ -78,8 +56,7 @@ export const StackingCards: React.FC<StackingCardsProps> = ({
 
 		let rafId: number | undefined;
 
-		const scrollTarget: HTMLElement | Window =
-			scrollContainerRef?.current ?? window;
+		const scrollTarget: HTMLElement | Window = scrollContainerRef?.current ?? window;
 
 		const updateStackEffect = () => {
 			const totalCards = cardRefs.current.length;
@@ -89,8 +66,7 @@ export const StackingCards: React.FC<StackingCardsProps> = ({
 			const lastCard = cardRefs.current[lastIndex];
 			if (!lastCard) return;
 
-			const containerRect =
-				scrollContainerRef?.current?.getBoundingClientRect() ?? null;
+			const containerRect = scrollContainerRef?.current?.getBoundingClientRect() ?? null;
 			const containerTop = containerRect ? containerRect.top : 0;
 
 			const lastRect = lastCard.getBoundingClientRect();
@@ -107,10 +83,7 @@ export const StackingCards: React.FC<StackingCardsProps> = ({
 
 				let scaleProgress = 0;
 				if (sectionTop <= animationRange) {
-					scaleProgress = Math.max(
-						0,
-						Math.min(1, (animationRange - sectionTop) / scaleThreshold)
-					);
+					scaleProgress = Math.max(0, Math.min(1, (animationRange - sectionTop) / scaleThreshold));
 				}
 
 				const startScale = 1.0;
@@ -118,19 +91,12 @@ export const StackingCards: React.FC<StackingCardsProps> = ({
 				let currentScale = startScale + scaleProgress * (targetScale - startScale);
 
 				// Reverse scale calculation when the stack reaches terminal scroll
-				const reverseAnimationRange =
-					index === lastIndex
-						? sectionStickyTop - topStart
-						: sectionStickyTop;
+				const reverseAnimationRange = index === lastIndex ? sectionStickyTop - topStart : sectionStickyTop;
 
 				const denominator = reverseAnimationRange - topStart;
 				if (denominator > 0 && lastSectionTop < reverseAnimationRange) {
-					const reverseScaleProgress = Math.max(
-						0,
-						Math.min(1, (reverseAnimationRange - lastSectionTop) / denominator)
-					);
-					currentScale =
-						targetScale + reverseScaleProgress * (minScale - targetScale);
+					const reverseScaleProgress = Math.max(0, Math.min(1, (reverseAnimationRange - lastSectionTop) / denominator));
+					currentScale = targetScale + reverseScaleProgress * (minScale - targetScale);
 				}
 
 				card.style.transform = `scale(${Number(currentScale.toFixed(5))})`;
@@ -157,22 +123,10 @@ export const StackingCards: React.FC<StackingCardsProps> = ({
 			window.removeEventListener('resize', handleScroll);
 			if (rafId !== undefined) cancelAnimationFrame(rafId);
 		};
-	}, [
-		topStart,
-		topIncrement,
-		minScale,
-		scaleThreshold,
-		scrollContainerRef,
-		enabled,
-		childArray.length,
-	]);
+	}, [topStart, topIncrement, minScale, scaleThreshold, scrollContainerRef, enabled, childArray.length]);
 
 	return (
-		<div
-			ref={wrapperRef}
-			className={`exhuma-stacking-cards-wrapper relative flex flex-col gap-6 w-full ${className}`}
-			style={style}
-		>
+		<div ref={wrapperRef} className={`exhuma-stacking-cards-wrapper relative flex w-full flex-col gap-6 ${className}`} style={style}>
 			{childArray.map((child, index) => {
 				const stickyTop = topStart + index * topIncrement;
 				return (
@@ -181,7 +135,7 @@ export const StackingCards: React.FC<StackingCardsProps> = ({
 						ref={(el) => {
 							cardRefs.current[index] = el;
 						}}
-						className="sticky w-full will-change-transform"
+						className='sticky w-full will-change-transform'
 						style={{
 							top: `${stickyTop}px`,
 							zIndex: index + 1,

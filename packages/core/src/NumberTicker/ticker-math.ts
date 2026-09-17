@@ -21,12 +21,7 @@ export function easeOutExpo(progress: number): number {
 /**
  * Calculates current interpolated numerical value at time t.
  */
-export function calculateTickerValue(
-	startValue: number,
-	targetValue: number,
-	elapsedSeconds: number,
-	durationSeconds: number
-): { value: number; isComplete: boolean } {
+export function calculateTickerValue(startValue: number, targetValue: number, elapsedSeconds: number, durationSeconds: number): { value: number; isComplete: boolean } {
 	if (durationSeconds <= 0 || elapsedSeconds >= durationSeconds) {
 		return { value: targetValue, isComplete: true };
 	}

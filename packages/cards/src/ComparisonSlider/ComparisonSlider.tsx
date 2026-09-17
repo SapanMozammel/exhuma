@@ -22,51 +22,51 @@ export interface ComparisonSliderProps {
  * - Zero external animation libraries (Zero Framer Motion).
  * - Full WAI-ARIA slider accessibility contract with keyboard step navigation.
  */
-export const ComparisonSlider = memo<ComparisonSliderProps>(({
-	before,
-	after,
-	defaultPosition = 0.5,
-	step = 0.05,
-	className = '',
-	handleClassName = '',
-	aspectRatio = '16/9',
-	onPositionChange,
-}) => {
+export const ComparisonSlider = memo<ComparisonSliderProps>(({ before, after, defaultPosition = 0.5, step = 0.05, className = '', handleClassName = '', aspectRatio = '16/9', onPositionChange }) => {
 	const [position, setPosition] = useState<number>(defaultPosition);
 	const containerRef = useRef<HTMLDivElement>(null);
 	const isDraggingRef = useRef<boolean>(false);
 
-	const updatePosition = useCallback((newPos: number) => {
-		const clamped = Math.max(0, Math.min(1, newPos));
-		setPosition(clamped);
-		onPositionChange?.(clamped);
-	}, [onPositionChange]);
+	const updatePosition = useCallback(
+		(newPos: number) => {
+			const clamped = Math.max(0, Math.min(1, newPos));
+			setPosition(clamped);
+			onPositionChange?.(clamped);
+		},
+		[onPositionChange]
+	);
 
-	const handlePointerDown = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
-		isDraggingRef.current = true;
-		const container = containerRef.current;
-		if (!container) return;
+	const handlePointerDown = useCallback(
+		(e: React.PointerEvent<HTMLDivElement>) => {
+			isDraggingRef.current = true;
+			const container = containerRef.current;
+			if (!container) return;
 
-		const rect = container.getBoundingClientRect();
-		const newPos = calculateSplitPosition(e.clientX, rect.left, rect.width);
-		updatePosition(newPos);
+			const rect = container.getBoundingClientRect();
+			const newPos = calculateSplitPosition(e.clientX, rect.left, rect.width);
+			updatePosition(newPos);
 
-		try {
-			(e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
-		} catch {
-			// Ignore if not supported
-		}
-	}, [updatePosition]);
+			try {
+				(e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+			} catch {
+				// Ignore if not supported
+			}
+		},
+		[updatePosition]
+	);
 
-	const handlePointerMove = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
-		if (!isDraggingRef.current) return;
-		const container = containerRef.current;
-		if (!container) return;
+	const handlePointerMove = useCallback(
+		(e: React.PointerEvent<HTMLDivElement>) => {
+			if (!isDraggingRef.current) return;
+			const container = containerRef.current;
+			if (!container) return;
 
-		const rect = container.getBoundingClientRect();
-		const newPos = calculateSplitPosition(e.clientX, rect.left, rect.width);
-		updatePosition(newPos);
-	}, [updatePosition]);
+			const rect = container.getBoundingClientRect();
+			const newPos = calculateSplitPosition(e.clientX, rect.left, rect.width);
+			updatePosition(newPos);
+		},
+		[updatePosition]
+	);
 
 	const handlePointerUp = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
 		if (!isDraggingRef.current) return;
@@ -78,27 +78,30 @@ export const ComparisonSlider = memo<ComparisonSliderProps>(({
 		}
 	}, []);
 
-	const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLDivElement>) => {
-		let delta = 0;
-		if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
-			delta = -step;
-		} else if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
-			delta = step;
-		} else if (e.key === 'Home') {
-			updatePosition(0);
-			e.preventDefault();
-			return;
-		} else if (e.key === 'End') {
-			updatePosition(1);
-			e.preventDefault();
-			return;
-		}
+	const handleKeyDown = useCallback(
+		(e: React.KeyboardEvent<HTMLDivElement>) => {
+			let delta = 0;
+			if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
+				delta = -step;
+			} else if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
+				delta = step;
+			} else if (e.key === 'Home') {
+				updatePosition(0);
+				e.preventDefault();
+				return;
+			} else if (e.key === 'End') {
+				updatePosition(1);
+				e.preventDefault();
+				return;
+			}
 
-		if (delta !== 0) {
-			e.preventDefault();
-			updatePosition(stepSliderPosition(position, delta));
-		}
-	}, [position, step, updatePosition]);
+			if (delta !== 0) {
+				e.preventDefault();
+				updatePosition(stepSliderPosition(position, delta));
+			}
+		},
+		[position, step, updatePosition]
+	);
 
 	const clipPathStyle = generateClipPath(position);
 	const handlePercentage = (position * 100).toFixed(2);
@@ -106,9 +109,9 @@ export const ComparisonSlider = memo<ComparisonSliderProps>(({
 	return (
 		<div
 			ref={containerRef}
-			role="slider"
+			role='slider'
 			tabIndex={0}
-			aria-label="Image comparison slider"
+			aria-label='Image comparison slider'
 			aria-valuenow={Math.round(position * 100)}
 			aria-valuemin={0}
 			aria-valuemax={100}
@@ -117,47 +120,27 @@ export const ComparisonSlider = memo<ComparisonSliderProps>(({
 			onPointerUp={handlePointerUp}
 			onPointerCancel={handlePointerUp}
 			onKeyDown={handleKeyDown}
-			className={`relative overflow-hidden select-none cursor-ew-resize rounded-2xl border border-border focus:outline-none focus-visible:ring-2 focus-visible:ring-primary ${className}`}
+			className={`border-border focus-visible:ring-primary relative cursor-ew-resize overflow-hidden rounded-2xl border select-none focus:outline-none focus-visible:ring-2 ${className}`}
 			style={{ aspectRatio }}
 		>
 			{/* After Layer (Background - full width) */}
-			<div className="absolute inset-0 w-full h-full pointer-events-none">
-				{after}
-			</div>
+			<div className='pointer-events-none absolute inset-0 h-full w-full'>{after}</div>
 
 			{/* Before Layer (Foreground - clipped by polygon) */}
-			<div
-				className="absolute inset-0 w-full h-full pointer-events-none will-change-[clip-path]"
-				style={{ clipPath: clipPathStyle }}
-			>
+			<div className='pointer-events-none absolute inset-0 h-full w-full will-change-[clip-path]' style={{ clipPath: clipPathStyle }}>
 				{before}
 			</div>
 
 			{/* Divider Line & Handle */}
-			<div
-				className="absolute top-0 bottom-0 pointer-events-none z-10 flex items-center justify-center -translate-x-1/2 will-change-[left]"
-				style={{ left: `${handlePercentage}%` }}
-			>
+			<div className='pointer-events-none absolute top-0 bottom-0 z-10 flex -translate-x-1/2 items-center justify-center will-change-[left]' style={{ left: `${handlePercentage}%` }}>
 				{/* Vertical Divider Rail */}
-				<div className="w-0.5 h-full bg-white shadow-[0_0_10px_rgba(0,0,0,0.5)]" />
+				<div className='h-full w-0.5 bg-white shadow-[0_0_10px_rgba(0,0,0,0.5)]' />
 
 				{/* Center Handle Button */}
-				<div
-					className={`absolute flex h-8 w-8 items-center justify-center rounded-full border border-border bg-background shadow-lg text-muted-foreground ${handleClassName}`}
-				>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						width="14"
-						height="14"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="currentColor"
-						strokeWidth="2.5"
-						strokeLinecap="round"
-						strokeLinejoin="round"
-					>
-						<path d="m9 18-6-6 6-6" />
-						<path d="m15 6 6 6-6 6" />
+				<div className={`border-border bg-background text-muted-foreground absolute flex h-8 w-8 items-center justify-center rounded-full border shadow-lg ${handleClassName}`}>
+					<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2.5' strokeLinecap='round' strokeLinejoin='round'>
+						<path d='m9 18-6-6 6-6' />
+						<path d='m15 6 6 6-6 6' />
 					</svg>
 				</div>
 			</div>

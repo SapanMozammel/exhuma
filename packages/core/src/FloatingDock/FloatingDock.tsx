@@ -44,15 +44,7 @@ export const FloatingDock: React.FC<FloatingDockProps> & {
 	Item: typeof DockItem;
 	Icon: typeof DockIcon;
 	Label: typeof DockLabel;
-} = ({
-	items = [],
-	children,
-	baseSize = 44,
-	maxMagnification = 0.6,
-	influenceRadius = 70,
-	className = '',
-	style,
-}) => {
+} = ({ items = [], children, baseSize = 44, maxMagnification = 0.6, influenceRadius = 70, className = '', style }) => {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const pointerX = useRef<number>(-9999);
 	const [isHovered, setIsHovered] = useState<boolean>(false);
@@ -85,12 +77,15 @@ export const FloatingDock: React.FC<FloatingDockProps> & {
 		rafIdRef.current = null;
 	}, [baseSize, influenceRadius, maxMagnification]);
 
-	const handlePointerMove = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
-		pointerX.current = e.clientX;
-		if (rafIdRef.current === null) {
-			rafIdRef.current = requestAnimationFrame(updateScales);
-		}
-	}, [updateScales]);
+	const handlePointerMove = useCallback(
+		(e: React.PointerEvent<HTMLDivElement>) => {
+			pointerX.current = e.clientX;
+			if (rafIdRef.current === null) {
+				rafIdRef.current = requestAnimationFrame(updateScales);
+			}
+		},
+		[updateScales]
+	);
 
 	const handlePointerEnter = useCallback(() => {
 		setIsHovered(true);
@@ -120,15 +115,15 @@ export const FloatingDock: React.FC<FloatingDockProps> & {
 				onPointerEnter={handlePointerEnter}
 				onPointerMove={handlePointerMove}
 				onPointerLeave={handlePointerLeave}
-				className={`exhuma-dock-root inline-flex items-center gap-3 rounded-3xl border border-border bg-card/70 px-4 py-3 shadow-2xl backdrop-blur-xl ${className}`}
+				className={`exhuma-dock-root border-border bg-card/70 inline-flex items-center gap-3 rounded-3xl border px-4 py-3 shadow-2xl backdrop-blur-xl ${className}`}
 				style={style}
 			>
 				{items.length > 0
 					? items.map((item, idx) => (
 							<DockItem key={idx} title={item.title} href={item.href} onClick={item.onClick}>
-								<div className="flex items-center justify-center">{item.icon}</div>
+								<div className='flex items-center justify-center'>{item.icon}</div>
 							</DockItem>
-					  ))
+						))
 					: children}
 			</div>
 		</DockContext.Provider>
@@ -157,7 +152,7 @@ export const DockItem: React.FC<{
 			onMouseEnter={() => setHovered(true)}
 			onMouseLeave={() => setHovered(false)}
 			onClick={onClick}
-			className={`exhuma-dock-item relative flex items-center justify-center rounded-2xl border border-border/80 bg-background/80 shadow-md transition-shadow hover:shadow-xl will-change-transform ${className}`}
+			className={`exhuma-dock-item border-border/80 bg-background/80 relative flex items-center justify-center rounded-2xl border shadow-md transition-shadow will-change-transform hover:shadow-xl ${className}`}
 			style={{
 				width: `${ctx?.baseSize ?? 44}px`,
 				height: `${ctx?.baseSize ?? 44}px`,
@@ -165,17 +160,17 @@ export const DockItem: React.FC<{
 		>
 			{/* Hover tooltip label */}
 			{title && hovered && (
-				<div className="pointer-events-none absolute -top-9 z-20 whitespace-nowrap rounded-md border border-border bg-card/95 px-2.5 py-1 text-[10px] font-semibold text-foreground shadow-lg backdrop-blur-md">
+				<div className='border-border bg-card/95 text-foreground pointer-events-none absolute -top-9 z-20 rounded-md border px-2.5 py-1 text-[10px] font-semibold whitespace-nowrap shadow-lg backdrop-blur-md'>
 					{title}
 				</div>
 			)}
-			<div className="relative z-10 flex items-center justify-center">{children}</div>
+			<div className='relative z-10 flex items-center justify-center'>{children}</div>
 		</div>
 	);
 
 	if (href) {
 		return (
-			<a href={href} className="inline-block outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-2xl">
+			<a href={href} className='focus-visible:ring-primary inline-block rounded-2xl outline-none focus-visible:ring-2'>
 				{content}
 			</a>
 		);
@@ -185,12 +180,8 @@ export const DockItem: React.FC<{
 };
 
 const DockRoot = FloatingDock;
-const DockIcon: React.FC<{ children: ReactNode; className?: string }> = ({ children, className = '' }) => (
-	<div className={`exhuma-dock-icon flex items-center justify-center ${className}`}>{children}</div>
-);
-const DockLabel: React.FC<{ children: ReactNode; className?: string }> = ({ children, className = '' }) => (
-	<div className={`exhuma-dock-label text-xs font-semibold ${className}`}>{children}</div>
-);
+const DockIcon: React.FC<{ children: ReactNode; className?: string }> = ({ children, className = '' }) => <div className={`exhuma-dock-icon flex items-center justify-center ${className}`}>{children}</div>;
+const DockLabel: React.FC<{ children: ReactNode; className?: string }> = ({ children, className = '' }) => <div className={`exhuma-dock-label text-xs font-semibold ${className}`}>{children}</div>;
 
 FloatingDock.Root = DockRoot;
 FloatingDock.Item = DockItem;
