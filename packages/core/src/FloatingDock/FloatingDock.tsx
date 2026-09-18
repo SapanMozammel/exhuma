@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useRef, useState, useCallback, useEffect, createContext, useContext, type ReactNode } from 'react';
-import { calculateGaussianScale } from './dock-math';
+import { calculateDockItemSize } from './dock-math';
 
 export interface FloatingDockItemData {
 	title: string;
@@ -61,18 +61,13 @@ export const FloatingDock: React.FC<FloatingDockProps> & {
 	const updateScales = useCallback(() => {
 		const mouseX = pointerX.current;
 		for (const el of itemsRef.current) {
-			if (mouseX === -9999) {
-				el.style.transform = 'scale(1)';
-				el.style.width = `${baseSize}px`;
-				el.style.height = `${baseSize}px`;
-				continue;
-			}
 			const rect = el.getBoundingClientRect();
 			const itemCenter = rect.left + rect.width / 2;
-			const distance = Math.abs(mouseX - itemCenter);
-			const scale = calculateGaussianScale(distance, influenceRadius, maxMagnification);
-
-			el.style.transform = `scale(${scale.toFixed(3)})`;
+			const size = mouseX === -9999
+				? baseSize
+				: calculateDockItemSize(Math.abs(mouseX - itemCenter), baseSize, influenceRadius, maxMagnification);
+			el.style.width = `${size.toFixed(2)}px`;
+			el.style.height = `${size.toFixed(2)}px`;
 		}
 		rafIdRef.current = null;
 	}, [baseSize, influenceRadius, maxMagnification]);
@@ -119,8 +114,8 @@ export const FloatingDock: React.FC<FloatingDockProps> & {
 				style={style}
 			>
 				{items.length > 0
-					? items.map((item, idx) => (
-							<DockItem key={idx} title={item.title} href={item.href} onClick={item.onClick}>
+					? items.map((item) => (
+							<DockItem key={item.title} title={item.title} href={item.href} onClick={item.onClick}>
 								<div className='flex items-center justify-center'>{item.icon}</div>
 							</DockItem>
 						))
@@ -149,8 +144,8 @@ export const DockItem: React.FC<{
 	const content = (
 		<div
 			ref={itemRef}
-			onMouseEnter={() => setHovered(true)}
-			onMouseLeave={() => setHovered(false)}
+			onPointerEnter={() => setHovered(true)}
+			onPointerLeave={() => setHovered(false)}
 			onClick={onClick}
 			className={`exhuma-dock-item border-border/80 bg-background/80 relative flex items-center justify-center rounded-2xl border shadow-md transition-shadow will-change-transform hover:shadow-xl ${className}`}
 			style={{

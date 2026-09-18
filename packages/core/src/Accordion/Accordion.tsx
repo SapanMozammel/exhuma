@@ -243,7 +243,7 @@ export const AccordionIcon: React.FC<AccordionIconProps> = ({ className = '', ..
 		<span
 			aria-hidden='true'
 			className={`before:bg-primary after:bg-primary relative inline-flex aspect-square h-6 shrink-0 items-center justify-center before:absolute before:top-1/2 before:left-1/2 before:inline-flex before:h-0.5 before:w-3.5 before:origin-center before:-translate-1/2 before:rounded-full before:transition-transform before:duration-300 after:absolute after:top-1/2 after:left-1/2 after:inline-flex after:h-0.5 after:w-3.5 after:origin-center after:-translate-1/2 after:rounded-full after:transition-transform after:duration-300 ${
-				isOpen ? 'before:rotate-0 after:rotate-0' : 'before:-rotate-180 after:-rotate-90'
+				isOpen ? 'before:rotate-0 after:rotate-0' : 'before:rotate-0 after:-rotate-90'
 			} ${className}`}
 			{...props}
 		/>

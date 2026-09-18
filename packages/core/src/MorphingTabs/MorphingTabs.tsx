@@ -138,7 +138,12 @@ export const TabsList: React.FC<TabsListProps> = ({ children, className = '', ..
 		}
 
 		if (nextIndex !== currentIndex && triggers[nextIndex]) {
-			onValueChange(triggers[nextIndex]);
+			const nextVal = triggers[nextIndex]!;
+			onValueChange(nextVal);
+			// Move keyboard focus to the newly activated trigger (WAI-ARIA tab pattern requirement)
+			const nextTrigger = e.currentTarget.querySelector<HTMLButtonElement>(`[data-value="${nextVal}"]`) ??
+				(e.currentTarget.querySelectorAll<HTMLButtonElement>('[role="tab"]')[nextIndex] ?? null);
+			nextTrigger?.focus();
 		}
 	};
 
@@ -162,6 +167,9 @@ export interface TabsIndicatorProps extends HTMLAttributes<HTMLDivElement> {
 export const TabsIndicator: React.FC<TabsIndicatorProps> = ({ className = '', style, ...props }) => {
 	const { activeRect } = useTabsContext();
 	const indicatorRef = useRef<HTMLDivElement>(null);
+	// Keep activeRect in a ref so updateSpring never needs to be recreated
+	const activeRectRef = useRef(activeRect);
+	activeRectRef.current = activeRect;
 
 	// Kinetic spring state
 	const currentX = useRef(0);
@@ -171,34 +179,33 @@ export const TabsIndicator: React.FC<TabsIndicatorProps> = ({ className = '', st
 	const rafIdRef = useRef<number | null>(null);
 	const lastTimeRef = useRef<number>(0);
 
-	const updateSpring = useCallback(
-		(timestamp: number) => {
-			if (!indicatorRef.current || !activeRect) return;
+	// Stable callback — no deps, reads from refs only (issue #4 fix)
+	const updateSpring = useCallback((timestamp: number) => {
+		const rect = activeRectRef.current;
+		if (!indicatorRef.current || !rect) return;
 
-			const dt = lastTimeRef.current ? (timestamp - lastTimeRef.current) / 1000 : 0.016;
-			lastTimeRef.current = timestamp;
+		const dt = lastTimeRef.current ? (timestamp - lastTimeRef.current) / 1000 : 0.016;
+		lastTimeRef.current = timestamp;
 
-			const springX = solveCriticallyDampedSpring(currentX.current, activeRect.x, velX.current, dt, { omega: 26 });
-			const springW = solveCriticallyDampedSpring(currentW.current, activeRect.width, velW.current, dt, { omega: 26 });
+		const springX = solveCriticallyDampedSpring(currentX.current, rect.x, velX.current, dt, { omega: 26 });
+		const springW = solveCriticallyDampedSpring(currentW.current, rect.width, velW.current, dt, { omega: 26 });
 
-			currentX.current = springX.position;
-			velX.current = springX.velocity;
-			currentW.current = springW.position;
-			velW.current = springW.velocity;
+		currentX.current = springX.position;
+		velX.current = springX.velocity;
+		currentW.current = springW.position;
+		velW.current = springW.velocity;
 
-			indicatorRef.current.style.transform = `translate3d(${currentX.current.toFixed(2)}px, ${activeRect.y}px, 0)`;
-			indicatorRef.current.style.width = `${currentW.current.toFixed(2)}px`;
-			indicatorRef.current.style.height = `${activeRect.height}px`;
+		indicatorRef.current.style.transform = `translate3d(${currentX.current.toFixed(2)}px, ${rect.y}px, 0)`;
+		indicatorRef.current.style.width = `${currentW.current.toFixed(2)}px`;
+		indicatorRef.current.style.height = `${rect.height}px`;
 
-			if (!springX.isSettled || !springW.isSettled) {
-				rafIdRef.current = requestAnimationFrame(updateSpring);
-			} else {
-				rafIdRef.current = null;
-				lastTimeRef.current = 0;
-			}
-		},
-		[activeRect]
-	);
+		if (!springX.isSettled || !springW.isSettled) {
+			rafIdRef.current = requestAnimationFrame(updateSpring);
+		} else {
+			rafIdRef.current = null;
+			lastTimeRef.current = 0;
+		}
+	}, []); // eslint-disable-line react-hooks/exhaustive-deps
 
 	useEffect(() => {
 		if (!activeRect) return;
@@ -227,6 +234,7 @@ export const TabsIndicator: React.FC<TabsIndicatorProps> = ({ className = '', st
 			}
 		};
 	}, [activeRect, updateSpring]);
+
 
 	if (!activeRect) return null;
 
@@ -268,6 +276,7 @@ export const TabsTrigger: React.FC<TabsTriggerProps> = ({ value, children, class
 			ref={triggerRef}
 			role='tab'
 			id={id}
+			data-value={value}
 			aria-selected={isSelected}
 			aria-controls={panelId}
 			tabIndex={isSelected ? 0 : -1}

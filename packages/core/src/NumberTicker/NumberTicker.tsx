@@ -69,6 +69,13 @@ export const NumberTicker = memo<NumberTickerProps>(({ value, initialValue = 0, 
 		const el = spanRef.current;
 		if (!el) return;
 
+		// Reset so a new animation can start for this value
+		hasStartedRef.current = false;
+		if (rafIdRef.current !== null) {
+			cancelAnimationFrame(rafIdRef.current);
+			rafIdRef.current = null;
+		}
+
 		// Initial display
 		el.textContent = formatNumber(initialValue);
 
@@ -95,7 +102,7 @@ export const NumberTicker = memo<NumberTickerProps>(({ value, initialValue = 0, 
 				cancelAnimationFrame(rafIdRef.current);
 			}
 		};
-	}, [triggerOnScroll, startTicker, formatNumber, initialValue]);
+	}, [triggerOnScroll, startTicker, formatNumber, initialValue, value]);
 
 	return (
 		<span ref={spanRef} className={`exhuma-number-ticker font-mono tracking-tight tabular-nums ${className}`} style={style} {...props}>
