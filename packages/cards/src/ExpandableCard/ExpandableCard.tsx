@@ -143,16 +143,15 @@ export const ExpandableContent = memo<React.HTMLAttributes<HTMLDivElement>>(({ c
 	}, []);
 
 	// Keyboard Escape handler
+	const { isExpanded, close } = ctx;
 	useEffect(() => {
-		if (!ctx.isExpanded) return;
+		if (!isExpanded) return;
 		const onKeyDown = (e: KeyboardEvent) => {
-			if (e.key === 'Escape') {
-				ctx.close();
-			}
+			if (e.key === 'Escape') close();
 		};
 		window.addEventListener('keydown', onKeyDown);
 		return () => window.removeEventListener('keydown', onKeyDown);
-	}, [ctx]);
+	}, [isExpanded, close]);
 
 	// FLIP animation execution
 	useLayoutEffect(() => {

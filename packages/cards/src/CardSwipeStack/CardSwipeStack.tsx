@@ -158,7 +158,12 @@ export function CardSwipeStack<T>({ items, renderCard, onSwipe, thresholdDistanc
 		if (!isDraggingRef.current) return;
 		currentPosRef.current = { x: e.clientX, y: e.clientY };
 		ringBufferRef.current.push(e.clientX, e.clientY, performance.now());
-		updateDOM();
+		if (rafIdRef.current === null) {
+			rafIdRef.current = requestAnimationFrame(() => {
+				updateDOM();
+				rafIdRef.current = null;
+			});
+		}
 	};
 
 	const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {

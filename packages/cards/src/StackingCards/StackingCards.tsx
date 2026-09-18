@@ -123,7 +123,7 @@ export const StackingCards: React.FC<StackingCardsProps> = ({ children, topStart
 			window.removeEventListener('resize', handleScroll);
 			if (rafId !== undefined) cancelAnimationFrame(rafId);
 		};
-	}, [topStart, topIncrement, minScale, scaleThreshold, scrollContainerRef, enabled, childArray.length]);
+	}, [topStart, topIncrement, minScale, scaleThreshold, scrollContainerRef, enabled, childArray.length, scaleValues]);
 
 	return (
 		<div ref={wrapperRef} className={`exhuma-stacking-cards-wrapper relative flex w-full flex-col gap-6 ${className}`} style={style}>
