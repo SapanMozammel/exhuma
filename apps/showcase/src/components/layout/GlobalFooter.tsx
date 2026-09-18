@@ -5,6 +5,7 @@ import { ExhumaLogo } from '@/components/brand/ExhumaLogo';
 import { ECOSYSTEM_LABELS, EcosystemFlavor } from '@/registry';
 
 const GITHUB_URL = 'https://github.com/SapanMozammel/exhuma';
+export const APP_VERSION = '0.1.0';
 
 const LINK_GROUPS = [
 	{
@@ -13,7 +14,7 @@ const LINK_GROUPS = [
 			{ label: 'Docs', href: '/docs' },
 			{ label: 'Components', href: '/docs/components' },
 			{ label: 'Ecosystems', href: '/docs/ecosystems' },
-			{ label: 'Studio', href: '/studio' },
+			// { label: 'Studio', href: '/studio' }, // Consolidated into /docs/components/[slug]
 		],
 	},
 	{
@@ -28,22 +29,13 @@ const LINK_GROUPS = [
 	{
 		title: 'Community',
 		links: [
-			{ label: 'Showcase', href: '/showcase' },
-			{ label: 'Blog', href: '/blog' },
+			// { label: 'Showcase', href: '/showcase' }, // Temporarily disabled
+			// { label: 'Blog', href: '/blog' }, // Temporarily disabled
 			{ label: 'GitHub', href: GITHUB_URL, external: true },
 			{ label: 'npm', href: 'https://npmjs.com/package/exhuma', external: true },
 		],
 	},
 ] as const;
-
-function StatusDot() {
-	return (
-		<span className='relative flex h-2 w-2'>
-			<span className='absolute inline-flex size-full animate-ping rounded-full bg-emerald-500 opacity-75' />
-			<span className='relative inline-flex h-2 w-2 rounded-full bg-emerald-500' />
-		</span>
-	);
-}
 
 export function GlobalFooter() {
 	const flavors = Object.keys(ECOSYSTEM_LABELS) as EcosystemFlavor[];
@@ -71,9 +63,9 @@ export function GlobalFooter() {
 				<div className='space-y-3'>
 					<div className='flex items-start gap-1.5'>
 						<ExhumaLogo size={20} className='text-foreground -mr-0.5 shrink-0' />
-						<div className='flex items-start gap-0.5'>
+						<div className='flex items-center gap-1.5'>
 							<span className='font-display text-foreground text-base leading-none font-extrabold tracking-tight'>Exhuma</span>
-							<sup className='text-muted-foreground/80 text-4xs leading-none font-bold tracking-wider uppercase'>Beta</sup>
+							<span className='border-border/70 bg-muted/60 text-muted-foreground text-4xs rounded-sm border px-1.5 py-0.5 font-mono font-medium'>v{APP_VERSION}</span>
 						</div>
 					</div>
 					<p className='text-muted-foreground text-2xs leading-relaxed'>
@@ -112,11 +104,10 @@ export function GlobalFooter() {
 			{/* Bottom Bar: Operational Status & Shortcuts */}
 			<div className='border-border border-t'>
 				<div className='container-fluid text-muted-foreground text-2xs flex flex-col items-center justify-between gap-3 py-4 md:flex-row'>
-					<div className='flex flex-wrap items-center justify-center gap-3 text-center'>
-						<StatusDot />
-						<span>All 13 Framework Contracts Operational</span>
+					<div className='flex flex-wrap items-center justify-center gap-2 text-center'>
+						<span>MIT License © {new Date().getFullYear()} Sapan Mozammel</span>
 						<span>·</span>
-						<span>MIT License © {new Date().getFullYear()} Exhuma Authors</span>
+						<span className='font-mono'>v{APP_VERSION}</span>
 					</div>
 
 					<div className='flex items-center gap-3'>

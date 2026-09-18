@@ -44,7 +44,7 @@ export const scrollTimelineComponent: UniversalComponent = {
 		accentColor: '#6366f1',
 	},
 	dependencies: CORE_COMPONENT_DEPENDENCIES,
-	generateCode: (flavor: EcosystemFlavor, props: Record<string, unknown>, _options?: { eject?: boolean }): ComponentFilePayload[] => {
+	generateCode: (flavor: EcosystemFlavor, props: Record<string, unknown>, options?: { eject?: boolean }): ComponentFilePayload[] => {
 		return generateOuterLayerFiles(
 			{
 				id: 'scroll-timeline',
@@ -57,7 +57,8 @@ export const scrollTimelineComponent: UniversalComponent = {
 				defaultTailwindClass: 'relative max-w-4xl mx-auto py-16 px-4',
 			},
 			flavor,
-			props
+			props,
+			options
 		);
 	},
 };

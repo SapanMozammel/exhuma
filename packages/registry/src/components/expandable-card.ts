@@ -25,7 +25,7 @@ export const expandableCardComponent: UniversalComponent = {
 		duration: 360,
 	},
 	dependencies: CORE_COMPONENT_DEPENDENCIES,
-	generateCode: (flavor: EcosystemFlavor, props: Record<string, unknown>, _options?: { eject?: boolean }): ComponentFilePayload[] => {
+	generateCode: (flavor: EcosystemFlavor, props: Record<string, unknown>, options?: { eject?: boolean }): ComponentFilePayload[] => {
 		return generateOuterLayerFiles(
 			{
 				id: 'expandable-card',
@@ -38,7 +38,8 @@ export const expandableCardComponent: UniversalComponent = {
 				defaultTailwindClass: 'relative overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-sm transition-shadow hover:shadow-md cursor-pointer',
 			},
 			flavor,
-			props
+			props,
+			options
 		);
 	},
 };

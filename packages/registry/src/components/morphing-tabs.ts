@@ -25,7 +25,7 @@ export const morphingTabsComponent: UniversalComponent = {
 		springStiffness: 26,
 	},
 	dependencies: CORE_COMPONENT_DEPENDENCIES,
-	generateCode: (flavor: EcosystemFlavor, props: Record<string, unknown>, _options?: { eject?: boolean }): ComponentFilePayload[] => {
+	generateCode: (flavor: EcosystemFlavor, props: Record<string, unknown>, options?: { eject?: boolean }): ComponentFilePayload[] => {
 		return generateOuterLayerFiles(
 			{
 				id: 'morphing-tabs',
@@ -38,7 +38,8 @@ export const morphingTabsComponent: UniversalComponent = {
 				defaultTailwindClass: 'relative flex items-center gap-1 rounded-2xl border border-border bg-muted/40 p-1.5 shadow-sm',
 			},
 			flavor,
-			props
+			props,
+			options
 		);
 	},
 };

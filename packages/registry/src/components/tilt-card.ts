@@ -44,7 +44,7 @@ export const tiltCardComponent: UniversalComponent = {
 		glare: true,
 	},
 	dependencies: CORE_COMPONENT_DEPENDENCIES,
-	generateCode: (flavor: EcosystemFlavor, props: Record<string, unknown>, _options?: { eject?: boolean }): ComponentFilePayload[] => {
+	generateCode: (flavor: EcosystemFlavor, props: Record<string, unknown>, options?: { eject?: boolean }): ComponentFilePayload[] => {
 		return generateOuterLayerFiles(
 			{
 				id: 'tilt-card',
@@ -57,7 +57,8 @@ export const tiltCardComponent: UniversalComponent = {
 				defaultTailwindClass: 'relative overflow-hidden rounded-2xl border border-border bg-card p-6 shadow-sm transition-shadow hover:shadow-md will-change-transform',
 			},
 			flavor,
-			props
+			props,
+			options
 		);
 	},
 };

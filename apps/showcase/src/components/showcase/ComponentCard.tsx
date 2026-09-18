@@ -46,15 +46,15 @@ export function ComponentCard({ slug, name, category, description, className }: 
 				{/* Header: Category Badge & Studio Link */}
 				<div className='mb-3.5 flex items-center justify-between gap-2'>
 					<span className='kbd border-border bg-background/90 text-foreground text-3xs font-mono font-bold tracking-wider uppercase'>{category}</span>
-					<Link href={`/studio?slug=${slug}`} className='text-muted-foreground group-hover:text-foreground text-2xs inline-flex items-center gap-1 font-mono transition-colors'>
-						<span>Studio</span>
+					<Link href={`/docs/components/${slug}`} className='text-muted-foreground group-hover:text-foreground text-2xs inline-flex items-center gap-1 font-mono transition-colors'>
+						<span>Explore</span>
 						<ArrowUpRight className='h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5' />
 					</Link>
 				</div>
 
 				{/* Title & Description */}
-				<Link href={`/studio?slug=${slug}`} className='block'>
-					<h4 className='text-foreground text-base font-bold tracking-tight transition-colors sm:text-lg'>{name}</h4>
+				<Link href={`/docs/components/${slug}`} className='block'>
+					<h3 className='text-foreground text-base font-bold tracking-tight transition-colors sm:text-lg'>{name}</h3>
 					<p className='text-muted-foreground mt-2 line-clamp-2 text-xs leading-relaxed'>{description}</p>
 				</Link>
 			</div>

@@ -47,7 +47,7 @@ export const magneticButtonComponent: UniversalComponent = {
 		springDamping: 18,
 	},
 	dependencies: CORE_COMPONENT_DEPENDENCIES,
-	generateCode: (flavor: EcosystemFlavor, props: Record<string, unknown>, _options?: { eject?: boolean }): ComponentFilePayload[] => {
+	generateCode: (flavor: EcosystemFlavor, props: Record<string, unknown>, options?: { eject?: boolean }): ComponentFilePayload[] => {
 		return generateOuterLayerFiles(
 			{
 				id: 'magnetic-button',
@@ -61,7 +61,8 @@ export const magneticButtonComponent: UniversalComponent = {
 					'relative inline-flex items-center justify-center rounded-xl bg-primary px-6 py-3 font-semibold text-primary-foreground shadow-md transition-shadow hover:shadow-lg cursor-pointer will-change-transform',
 			},
 			flavor,
-			props
+			props,
+			options
 		);
 	},
 };

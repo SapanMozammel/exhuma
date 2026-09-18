@@ -130,10 +130,10 @@ export default function ShowcasePage() {
 					<p className='text-muted-foreground text-base leading-relaxed sm:text-lg'>Discover production applications, design systems, and developer tools built with Exhuma universal component architecture.</p>
 				</div>
 
-				<Link href='/studio'>
+				<Link href='/docs/components'>
 					<Button className='shrink-0 gap-2 shadow-sm'>
 						<Sliders className='h-4 w-4' />
-						<span>Open Studio Workbench</span>
+						<span>Interactive Playground</span>
 					</Button>
 				</Link>
 			</div>
@@ -206,8 +206,8 @@ export default function ShowcasePage() {
 
 						{/* Action Buttons */}
 						<div className='border-border relative mt-6 flex items-center justify-between gap-2 border-t pt-6'>
-							<Link href={`/studio?slug=${project.demoSlug}`} className='text-primary flex items-center gap-1 text-xs font-semibold hover:underline'>
-								<span>Inspect in Studio</span>
+							<Link href={`/docs/components/${project.demoSlug}`} className='text-primary flex items-center gap-1 text-xs font-semibold hover:underline'>
+								<span>Interactive Playground</span>
 								<ExternalLink className='h-3 w-3' />
 							</Link>
 

@@ -54,7 +54,7 @@
 				"filename": "CardSwipeStack.tsx",
 				"language": "tsx",
 				"description": "Card Swipe Stack — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
-				"code": "import * as React from 'react';\nimport * as CardSwipeStackPrimitive from '@exhuma/core';\nimport { cn } from '@/lib/utils';\n\nexport interface CardSwipeStackProps extends React.ComponentPropsWithoutRef<typeof CardSwipeStackPrimitive.CardSwipeStack> {\n  className?: string;\n}\n\nexport const CardSwipeStack = React.forwardRef<HTMLDivElement, CardSwipeStackProps>(\n  ({ className, children, ...props }, ref) => (\n    <CardSwipeStackPrimitive.CardSwipeStack\n      ref={ref}\n      className={cn(\n        'relative flex items-center justify-center min-h-[420px] w-full',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </CardSwipeStackPrimitive.CardSwipeStack>\n  )\n);\nCardSwipeStack.displayName = 'CardSwipeStack';\n"
+				"code": "import * as React from 'react';\nimport * as CardSwipeStackPrimitive from '@exhuma/core';\nimport { cn } from '@/lib/utils';\n\nexport interface CardSwipeStackProps extends React.ComponentPropsWithoutRef<typeof CardSwipeStackPrimitive.CardSwipeStack> {\n  className?: string;\n}\n\nexport const CardSwipeStack = React.forwardRef<HTMLDivElement, CardSwipeStackProps>(\n  ({ className, children, ...props }, ref) => (\n    <CardSwipeStackPrimitive.CardSwipeStack\n      ref={ref}\n      className={cn(\n        'relative flex items-center justify-center min-h-[26.25rem] w-full',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </CardSwipeStackPrimitive.CardSwipeStack>\n  )\n);\nCardSwipeStack.displayName = 'CardSwipeStack';\n"
 			}
 		],
 		"nextjs": [
@@ -62,7 +62,7 @@
 				"filename": "CardSwipeStack.tsx",
 				"language": "tsx",
 				"description": "Card Swipe Stack — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
-				"code": "'use client';\n\nimport * as React from 'react';\nimport * as CardSwipeStackPrimitive from '@exhuma/core';\nimport { cn } from '@/lib/utils';\n\nexport interface CardSwipeStackProps extends React.ComponentPropsWithoutRef<typeof CardSwipeStackPrimitive.CardSwipeStack> {\n  className?: string;\n}\n\nexport const CardSwipeStack = React.forwardRef<HTMLDivElement, CardSwipeStackProps>(\n  ({ className, children, ...props }, ref) => (\n    <CardSwipeStackPrimitive.CardSwipeStack\n      ref={ref}\n      className={cn(\n        'relative flex items-center justify-center min-h-[420px] w-full',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </CardSwipeStackPrimitive.CardSwipeStack>\n  )\n);\nCardSwipeStack.displayName = 'CardSwipeStack';\n"
+				"code": "'use client';\n\nimport * as React from 'react';\nimport * as CardSwipeStackPrimitive from '@exhuma/core';\nimport { cn } from '@/lib/utils';\n\nexport interface CardSwipeStackProps extends React.ComponentPropsWithoutRef<typeof CardSwipeStackPrimitive.CardSwipeStack> {\n  className?: string;\n}\n\nexport const CardSwipeStack = React.forwardRef<HTMLDivElement, CardSwipeStackProps>(\n  ({ className, children, ...props }, ref) => (\n    <CardSwipeStackPrimitive.CardSwipeStack\n      ref={ref}\n      className={cn(\n        'relative flex items-center justify-center min-h-[26.25rem] w-full',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </CardSwipeStackPrimitive.CardSwipeStack>\n  )\n);\nCardSwipeStack.displayName = 'CardSwipeStack';\n"
 			}
 		],
 		"vue": [
@@ -70,7 +70,7 @@
 				"filename": "CardSwipeStack.vue",
 				"language": "vue",
 				"description": "Vue 3 Card Swipe Stack outer adapter wrapping @exhuma/core headless primitive.",
-				"code": "<script setup lang=\"ts\">\nimport { CardSwipeStack as CardSwipeStackPrimitive } from '@exhuma/core';\nimport { cn } from '@/lib/utils';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst props = withDefaults(defineProps<Props>(), {\n  class: '',\n});\n</script>\n\n<template>\n  <CardSwipeStackPrimitive\n    v-bind=\"props\"\n    :class=\"cn('relative flex items-center justify-center min-h-[420px] w-full', props.class)\"\n  >\n    <slot />\n  </CardSwipeStackPrimitive>\n</template>\n"
+				"code": "<script setup lang=\"ts\">\nimport { CardSwipeStack as CardSwipeStackPrimitive } from '@exhuma/core';\nimport { cn } from '@/lib/utils';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst props = withDefaults(defineProps<Props>(), {\n  class: '',\n});\n</script>\n\n<template>\n  <CardSwipeStackPrimitive\n    v-bind=\"props\"\n    :class=\"cn('relative flex items-center justify-center min-h-[26.25rem] w-full', props.class)\"\n  >\n    <slot />\n  </CardSwipeStackPrimitive>\n</template>\n"
 			}
 		],
 		"svelte": [
@@ -78,7 +78,7 @@
 				"filename": "CardSwipeStack.svelte",
 				"language": "svelte",
 				"description": "Svelte 5 Card Swipe Stack adapter using runes and @exhuma/core primitives.",
-				"code": "<script lang=\"ts\">\n  import { CardSwipeStack as CardSwipeStackPrimitive } from '@exhuma/core';\n  import { cn } from '$lib/utils';\n\n  let {\n    class: className = '',\n    children,\n    ...restProps\n  }: {\n    class?: string;\n    children?: import('svelte').Snippet;\n    [key: string]: unknown;\n  } = $props();\n</script>\n\n<CardSwipeStackPrimitive\n  class={cn('relative flex items-center justify-center min-h-[420px] w-full', className)}\n  {...restProps}\n>\n  {@render children?.()}\n</CardSwipeStackPrimitive>\n"
+				"code": "<script lang=\"ts\">\n  import { CardSwipeStack as CardSwipeStackPrimitive } from '@exhuma/core';\n  import { cn } from '$lib/utils';\n\n  let {\n    class: className = '',\n    children,\n    ...restProps\n  }: {\n    class?: string;\n    children?: import('svelte').Snippet;\n    [key: string]: unknown;\n  } = $props();\n</script>\n\n<CardSwipeStackPrimitive\n  class={cn('relative flex items-center justify-center min-h-[26.25rem] w-full', className)}\n  {...restProps}\n>\n  {@render children?.()}\n</CardSwipeStackPrimitive>\n"
 			}
 		],
 		"angular": [
@@ -86,7 +86,7 @@
 				"filename": "card-swipe-stack.component.ts",
 				"language": "typescript",
 				"description": "Angular 18+ Standalone Card Swipe Stack component.",
-				"code": "import { Component, input } from '@angular/core';\nimport { CommonModule } from '@angular/common';\n\n@Component({\n  selector: 'exhuma-card-swipe-stack',\n  standalone: true,\n  imports: [CommonModule],\n  template: `\n    <div\n      class=\"relative flex items-center justify-center min-h-[420px] w-full {{ customClass() }}\"\n    >\n      <ng-content></ng-content>\n    </div>\n  `,\n})\nexport class ExhumaCardSwipeStackComponent {\n  readonly customClass = input<string>('');\n}\n"
+				"code": "import { Component, input } from '@angular/core';\nimport { CommonModule } from '@angular/common';\n\n@Component({\n  selector: 'exhuma-card-swipe-stack',\n  standalone: true,\n  imports: [CommonModule],\n  template: `\n    <div\n      class=\"relative flex items-center justify-center min-h-[26.25rem] w-full {{ customClass() }}\"\n    >\n      <ng-content></ng-content>\n    </div>\n  `,\n})\nexport class ExhumaCardSwipeStackComponent {\n  readonly customClass = input<string>('');\n}\n"
 			}
 		],
 		"solid": [
@@ -94,7 +94,7 @@
 				"filename": "CardSwipeStack.tsx",
 				"language": "tsx",
 				"description": "SolidJS Card Swipe Stack adapter wrapping @exhuma/core headless primitive.",
-				"code": "import { Component, JSX, splitProps } from 'solid-js';\nimport * as CardSwipeStackPrimitive from '@exhuma/core';\n\nexport interface CardSwipeStackProps extends JSX.HTMLAttributes<HTMLDivElement> {\n  [key: string]: unknown;\n}\n\nexport const CardSwipeStack: Component<CardSwipeStackProps> = (props) => {\n  const [local, others] = splitProps(props, ['class', 'children']);\n  return (\n    <CardSwipeStackPrimitive.CardSwipeStack\n      class={`relative flex items-center justify-center min-h-[420px] w-full ${local.class ?? ''}`}\n      {...others}\n    >\n      {local.children}\n    </CardSwipeStackPrimitive.CardSwipeStack>\n  );\n};\n"
+				"code": "import { Component, JSX, splitProps } from 'solid-js';\nimport * as CardSwipeStackPrimitive from '@exhuma/core';\n\nexport interface CardSwipeStackProps extends JSX.HTMLAttributes<HTMLDivElement> {\n  [key: string]: unknown;\n}\n\nexport const CardSwipeStack: Component<CardSwipeStackProps> = (props) => {\n  const [local, others] = splitProps(props, ['class', 'children']);\n  return (\n    <CardSwipeStackPrimitive.CardSwipeStack\n      class={`relative flex items-center justify-center min-h-[26.25rem] w-full ${local.class ?? ''}`}\n      {...others}\n    >\n      {local.children}\n    </CardSwipeStackPrimitive.CardSwipeStack>\n  );\n};\n"
 			}
 		],
 		"astro": [
@@ -102,7 +102,7 @@
 				"filename": "CardSwipeStack.astro",
 				"language": "astro",
 				"description": "Astro Card Swipe Stack component with @exhuma/core primitive.",
-				"code": "---\nimport * as CardSwipeStackPrimitive from '@exhuma/core';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst { class: className = '', ...props } = Astro.props;\n---\n\n<CardSwipeStackPrimitive.CardSwipeStack\n  client:visible\n  className={`relative flex items-center justify-center min-h-[420px] w-full ${className}`}\n  {...props}\n>\n  <slot />\n</CardSwipeStackPrimitive.CardSwipeStack>\n"
+				"code": "---\nimport * as CardSwipeStackPrimitive from '@exhuma/core';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst { class: className = '', ...props } = Astro.props;\n---\n\n<CardSwipeStackPrimitive.CardSwipeStack\n  client:visible\n  className={`relative flex items-center justify-center min-h-[26.25rem] w-full ${className}`}\n  {...props}\n>\n  <slot />\n</CardSwipeStackPrimitive.CardSwipeStack>\n"
 			}
 		],
 		"blade": [
@@ -110,7 +110,7 @@
 				"filename": "card-swipe-stack.blade.php",
 				"language": "php",
 				"description": "Laravel Blade component for Card Swipe Stack with Alpine / data attributes.",
-				"code": "@props([])\n\n<exhuma-card-swipe-stack\n    {{ $attributes->merge([\n        'class' => 'relative flex items-center justify-center min-h-[420px] w-full block',\n    ]) }}\n>\n    {{ $slot }}\n</exhuma-card-swipe-stack>\n"
+				"code": "@props([])\n\n<exhuma-card-swipe-stack\n    {{ $attributes->merge([\n        'class' => 'relative flex items-center justify-center min-h-[26.25rem] w-full block',\n    ]) }}\n>\n    {{ $slot }}\n</exhuma-card-swipe-stack>\n"
 			}
 		],
 		"vanilla": [

@@ -47,7 +47,7 @@ export const cardSwipeStackComponent: UniversalComponent = {
 		scaleStep: 0.05,
 	},
 	dependencies: CORE_COMPONENT_DEPENDENCIES,
-	generateCode: (flavor: EcosystemFlavor, props: Record<string, unknown>, _options?: { eject?: boolean }): ComponentFilePayload[] => {
+	generateCode: (flavor: EcosystemFlavor, props: Record<string, unknown>, options?: { eject?: boolean }): ComponentFilePayload[] => {
 		return generateOuterLayerFiles(
 			{
 				id: 'card-swipe-stack',
@@ -60,7 +60,8 @@ export const cardSwipeStackComponent: UniversalComponent = {
 				defaultTailwindClass: 'relative flex items-center justify-center min-h-[26.25rem] w-full',
 			},
 			flavor,
-			props
+			props,
+			options
 		);
 	},
 };

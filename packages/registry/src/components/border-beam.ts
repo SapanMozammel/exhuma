@@ -63,7 +63,7 @@ export const borderBeamComponent: UniversalComponent = {
 		colorTo: '#9c40ff',
 	},
 	dependencies: CORE_COMPONENT_DEPENDENCIES,
-	generateCode: (flavor: EcosystemFlavor, props: Record<string, unknown>, _options?: { eject?: boolean }): ComponentFilePayload[] => {
+	generateCode: (flavor: EcosystemFlavor, props: Record<string, unknown>, options?: { eject?: boolean }): ComponentFilePayload[] => {
 		return generateOuterLayerFiles(
 			{
 				id: 'border-beam',
@@ -76,7 +76,8 @@ export const borderBeamComponent: UniversalComponent = {
 				defaultTailwindClass: 'pointer-events-none absolute inset-0 rounded-[inherit]',
 			},
 			flavor,
-			props
+			props,
+			options
 		);
 	},
 };

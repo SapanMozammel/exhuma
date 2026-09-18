@@ -1,13 +1,21 @@
 import React from 'react';
-import Link from 'next/link';
-import { IconArrowRight as ArrowRight, IconCpu as Cpu, IconShieldCheck as ShieldCheck, IconCheck as Check } from '@tabler/icons-react';
+import type { Metadata } from 'next';
 import { CodeBlock } from '@/components/showcase/CodeBlock';
-import { Callout } from '@/components/layout/Callout';
-import { DocsToc } from '@/components/layout/DocsToc';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
+import { DocsPage } from '@/components/docs/DocsPage';
+import { DocsPageHeader } from '@/components/docs/DocsPageHeader';
+import { DocsSection, DocsProse } from '@/components/docs/DocsSection';
+import { DocsSpecCard } from '@/components/docs/DocsSpecCard';
+import { getDocsSection } from '@/components/docs/docs-nav';
+import { ECOSYSTEM_COUNT } from '@/components/docs/docs-stats';
 
-const tocItems = [
+const HREF = '/docs/ecosystems';
+
+export const metadata: Metadata = {
+	title: 'Ecosystem Contracts',
+	description: 'How each Exhuma component is re-authored natively for React, Vue, Svelte, Angular, Solid, Astro, Blade, Vanilla JS, WordPress, Web Components, React Native, and Flutter.',
+};
+
+const toc = [
 	{ id: 'contract-standards', title: 'Universal Engineering Standards' },
 	{ id: 'react-nextjs', title: 'React 18/19 & Next.js 15' },
 	{ id: 'vue-svelte', title: 'Vue 3 & Svelte 5' },
@@ -18,63 +26,43 @@ const tocItems = [
 	{ id: 'mobile-native', title: 'React Native & Flutter' },
 ];
 
+const code = 'text-foreground font-mono';
+
+const STANDARDS = [
+	{ title: 'Zero CSS Leakage', body: 'Scoped styles or unique class prefixes prevent collision with host applications.' },
+	{ title: 'Teardown Safety', body: 'Every event listener and requestAnimationFrame handle is properly canceled during unmount or destroy.' },
+	{ title: 'Idiomatic Reactivity', body: "Uses the framework's first-class state primitives (Runes, Signals, Composition, StatefulWidget)." },
+	{ title: 'Zero Runtime Overhead', body: 'No proprietary middleman library. Pure self-contained component source code.' },
+];
+
 export default function EcosystemsDocPage() {
 	return (
-		<div className='flex gap-10'>
-			<div className='max-w-3xl min-w-0 flex-1 space-y-8'>
-				{/* Breadcrumb & Title */}
-				<div>
-					<div className='text-muted-foreground mb-2 flex items-center gap-2 font-mono text-xs'>
-						<Link href='/docs' className='hover:text-foreground transition-colors'>
-							Documentation
-						</Link>
-						<span>/</span>
-						<span className='text-foreground font-semibold'>Ecosystems</span>
-					</div>
-					<h1 className='text-foreground text-3xl font-extrabold tracking-tight sm:text-4xl'>The 13 Ecosystem Contracts</h1>
-					<p className='text-muted-foreground mt-2 text-sm leading-relaxed sm:text-base'>
-						Exhuma avoids polyfills or cross-compilation abstraction layers. Every canonical component is re-authored from fundamental mathematical models into the native idioms of each target platform.
-					</p>
+		<DocsPage href={HREF} toc={toc}>
+			<DocsPageHeader
+				eyebrow={[{ label: getDocsSection(HREF) }]}
+				title={`The ${ECOSYSTEM_COUNT} Ecosystem Contracts`}
+				description='Exhuma avoids polyfills or cross-compilation abstraction layers. Every canonical component is re-authored from fundamental mathematical models into the native idioms of each target platform.'
+				meta={[`${ECOSYSTEM_COUNT} native targets`, 'No polyfills']}
+			/>
+
+			<DocsSection id='contract-standards' index={1} label='Standards' title='Universal Engineering Standards'>
+				<DocsProse>Every implementation across the {ECOSYSTEM_COUNT} supported ecosystems must satisfy four non-negotiable guarantees:</DocsProse>
+				<div className='grid grid-cols-1 gap-3 sm:grid-cols-2'>
+					{STANDARDS.map((standard, i) => (
+						<DocsSpecCard key={standard.title} tag={`Guarantee ${String(i + 1).padStart(2, '0')}`} title={standard.title}>
+							{standard.body}
+						</DocsSpecCard>
+					))}
 				</div>
+			</DocsSection>
 
-				{/* 1. Standards */}
-				<section id='contract-standards' className='border-border space-y-3 border-t pt-4'>
-					<h2 className='text-foreground text-xl font-bold tracking-tight'>1. Universal Engineering Standards</h2>
-					<p className='text-muted-foreground text-xs leading-relaxed sm:text-sm'>Every implementation across the 13 supported ecosystems must satisfy four non-negotiable guarantees:</p>
-
-					<div className='grid grid-cols-1 gap-3 pt-1 sm:grid-cols-2'>
-						<div className='border-border bg-card rounded-xl border p-4'>
-							<div className='text-foreground mb-1 text-xs font-semibold'>1. Zero CSS Leakage</div>
-							<p className='text-muted-foreground text-2xs leading-relaxed'>Scoped styles or unique class prefixes prevent collision with host applications.</p>
-						</div>
-						<div className='border-border bg-card rounded-xl border p-4'>
-							<div className='text-foreground mb-1 text-xs font-semibold'>2. Teardown Safety</div>
-							<p className='text-muted-foreground text-2xs leading-relaxed'>Every event listener and requestAnimationFrame handle is properly canceled during unmount or destroy.</p>
-						</div>
-						<div className='border-border bg-card rounded-xl border p-4'>
-							<div className='text-foreground mb-1 text-xs font-semibold'>3. Idiomatic Reactivity</div>
-							<p className='text-muted-foreground text-2xs leading-relaxed'>Uses the framework&apos;s first-class state primitives (Runes, Signals, Composition, StatefulWidget).</p>
-						</div>
-						<div className='border-border bg-card rounded-xl border p-4'>
-							<div className='text-foreground mb-1 text-xs font-semibold'>4. Zero Runtime Overhead</div>
-							<p className='text-muted-foreground text-2xs leading-relaxed'>No proprietary middleman library. Pure self-contained component source code.</p>
-						</div>
-					</div>
-				</section>
-
-				{/* 2. React & Next.js */}
-				<section id='react-nextjs' className='border-border space-y-3 border-t pt-4'>
-					<div className='flex items-center gap-2'>
-						<Badge variant='outline'>Web</Badge>
-						<h2 className='text-foreground text-xl font-bold tracking-tight'>React 18/19 & Next.js 15</h2>
-					</div>
-					<p className='text-muted-foreground text-xs leading-relaxed sm:text-sm'>
-						Next.js components include the <code>&quot;use client&quot;</code> directive to seamlessly support the React Server Components (RSC) App Router. They utilize <code>useRef</code> for direct DOM
-						manipulation to maintain 60 FPS animation performance without triggering React re-render cycles.
-					</p>
-
-					<CodeBlock
-						code={`'use client';
+			<DocsSection id='react-nextjs' index={2} label='Web' title='React 18/19 & Next.js 15'>
+				<DocsProse>
+					Next.js components include the <code className={code}>&quot;use client&quot;</code> directive to seamlessly support the React Server Components (RSC) App Router. They utilize{' '}
+					<code className={code}>useRef</code> for direct DOM manipulation to maintain 60 FPS animation performance without triggering React re-render cycles.
+				</DocsProse>
+				<CodeBlock
+					code={`'use client';
 
 import React, { useRef, useEffect } from 'react';
 
@@ -91,24 +79,19 @@ export function TiltCard({ children, maxTilt = 20 }: TiltCardProps) {
 
   return <div ref={cardRef}>{children}</div>;
 }`}
-						language='tsx'
-						filename='TiltCard.tsx'
-					/>
-				</section>
+					language='tsx'
+					filename='TiltCard.tsx'
+				/>
+			</DocsSection>
 
-				{/* 3. Vue 3 & Svelte 5 */}
-				<section id='vue-svelte' className='border-border space-y-3 border-t pt-4'>
-					<div className='flex items-center gap-2'>
-						<Badge variant='outline'>Modern Reactive</Badge>
-						<h2 className='text-foreground text-xl font-bold tracking-tight'>Vue 3 & Svelte 5</h2>
-					</div>
-					<p className='text-muted-foreground text-xs leading-relaxed sm:text-sm'>
-						Vue 3 uses the <code>&lt;script setup lang=&quot;ts&quot;&gt;</code> Composition API with <code>onBeforeUnmount</code> cleanup. Svelte 5 leverages the newest <strong>Runes</strong> system (
-						<code>$state</code>, <code>$derived</code>, and <code>$effect</code>) with destructor return cleanup.
-					</p>
-
-					<CodeBlock
-						code={`<script lang="ts">
+			<DocsSection id='vue-svelte' index={3} label='Modern Reactive' title='Vue 3 & Svelte 5'>
+				<DocsProse>
+					Vue 3 uses the <code className={code}>&lt;script setup lang=&quot;ts&quot;&gt;</code> Composition API with <code className={code}>onBeforeUnmount</code> cleanup. Svelte 5 leverages the newest{' '}
+					<strong className='text-foreground'>Runes</strong> system (<code className={code}>$state</code>, <code className={code}>$derived</code>, and <code className={code}>$effect</code>) with destructor
+					return cleanup.
+				</DocsProse>
+				<CodeBlock
+					code={`<script lang="ts">
   let { children, maxTilt = 20 } = $props();
   let cardElement: HTMLDivElement | undefined = $state();
 
@@ -124,88 +107,46 @@ export function TiltCard({ children, maxTilt = 20 }: TiltCardProps) {
 <div bind:this={cardElement}>
   {@render children?.()}
 </div>`}
-						language='svelte'
-						filename='TiltCard.svelte'
-					/>
-				</section>
+					language='svelte'
+					filename='TiltCard.svelte'
+				/>
+			</DocsSection>
 
-				{/* 4. Angular & SolidJS */}
-				<section id='angular-solid' className='border-border space-y-3 border-t pt-4'>
-					<div className='flex items-center gap-2'>
-						<Badge variant='outline'>Enterprise & Performance</Badge>
-						<h2 className='text-foreground text-xl font-bold tracking-tight'>Angular 18+ & SolidJS</h2>
-					</div>
-					<p className='text-muted-foreground text-xs leading-relaxed sm:text-sm'>
-						Angular components use <strong>Standalone Components</strong> with modern Signals (<code>input()</code> and <code>effect()</code>) and <code>ngOnDestroy</code> lifecycle safety. SolidJS utilizes
-						fine-grained primitives (<code>createSignal</code>, <code>createEffect</code>, <code>onCleanup</code>).
-					</p>
-				</section>
+			<DocsSection id='angular-solid' index={4} label='Enterprise & Performance' title='Angular 18+ & SolidJS'>
+				<DocsProse>
+					Angular components use <strong className='text-foreground'>Standalone Components</strong> with modern Signals (<code className={code}>input()</code> and <code className={code}>effect()</code>) and{' '}
+					<code className={code}>ngOnDestroy</code> lifecycle safety. SolidJS utilizes fine-grained primitives (<code className={code}>createSignal</code>, <code className={code}>createEffect</code>,{' '}
+					<code className={code}>onCleanup</code>).
+				</DocsProse>
+			</DocsSection>
 
-				{/* 5. Astro & Laravel Blade */}
-				<section id='astro-blade' className='border-border space-y-3 border-t pt-4'>
-					<div className='flex items-center gap-2'>
-						<Badge variant='outline'>Server First</Badge>
-						<h2 className='text-foreground text-xl font-bold tracking-tight'>Astro & Laravel Blade</h2>
-					</div>
-					<p className='text-muted-foreground text-xs leading-relaxed sm:text-sm'>
-						Astro components render zero runtime client JavaScript by default or mount via client directives. Laravel Blade components output standard PHP component templates integrating with Alpine.js or
-						scoped inline JS.
-					</p>
-				</section>
+			<DocsSection id='astro-blade' index={5} label='Server First' title='Astro & Laravel Blade'>
+				<DocsProse>
+					Astro components render zero runtime client JavaScript by default or mount via client directives. Laravel Blade components output standard PHP component templates integrating with Alpine.js or scoped
+					inline JS.
+				</DocsProse>
+			</DocsSection>
 
-				{/* 6. Vanilla & Web Components */}
-				<section id='vanilla-webcomponents' className='border-border space-y-3 border-t pt-4'>
-					<div className='flex items-center gap-2'>
-						<Badge variant='outline'>Universal Standards</Badge>
-						<h2 className='text-foreground text-xl font-bold tracking-tight'>Vanilla JS & Web Components</h2>
-					</div>
-					<p className='text-muted-foreground text-xs leading-relaxed sm:text-sm'>
-						Vanilla JS outputs clean ES modules exposing factory functions (<code>createTiltCard(element, options)</code>) with an explicit <code>destroy()</code> method. Web Components extend{' '}
-						<code>HTMLElement</code> with Custom Elements v1 and <code>disconnectedCallback()</code>.
-					</p>
-				</section>
+			<DocsSection id='vanilla-webcomponents' index={6} label='Universal Standards' title='Vanilla JS & Web Components'>
+				<DocsProse>
+					Vanilla JS outputs clean ES modules exposing factory functions (<code className={code}>createTiltCard(element, options)</code>) with an explicit <code className={code}>destroy()</code> method. Web
+					Components extend <code className={code}>HTMLElement</code> with Custom Elements v1 and <code className={code}>disconnectedCallback()</code>.
+				</DocsProse>
+			</DocsSection>
 
-				{/* 7. WordPress Gutenberg */}
-				<section id='wordpress' className='border-border space-y-3 border-t pt-4'>
-					<div className='flex items-center gap-2'>
-						<Badge variant='outline'>CMS</Badge>
-						<h2 className='text-foreground text-xl font-bold tracking-tight'>WordPress Gutenberg Blocks</h2>
-					</div>
-					<p className='text-muted-foreground text-xs leading-relaxed sm:text-sm'>
-						Outputs full Gutenberg block definitions: <code>block.json</code> metadata, React <code>edit.tsx</code> for the WP Admin editor canvas, <code>save.tsx</code> for database serialization, and{' '}
-						<code>render.php</code> for server-side dynamic rendering.
-					</p>
-				</section>
+			<DocsSection id='wordpress' index={7} label='CMS' title='WordPress Gutenberg Blocks'>
+				<DocsProse>
+					Outputs full Gutenberg block definitions: <code className={code}>block.json</code> metadata, React <code className={code}>edit.tsx</code> for the WP Admin editor canvas,{' '}
+					<code className={code}>save.tsx</code> for database serialization, and <code className={code}>render.php</code> for server-side dynamic rendering.
+				</DocsProse>
+			</DocsSection>
 
-				{/* 8. Mobile Native */}
-				<section id='mobile-native' className='border-border space-y-3 border-t pt-4'>
-					<div className='flex items-center gap-2'>
-						<Badge variant='outline'>Mobile Native</Badge>
-						<h2 className='text-foreground text-xl font-bold tracking-tight'>React Native & Flutter</h2>
-					</div>
-					<p className='text-muted-foreground text-xs leading-relaxed sm:text-sm'>
-						React Native components use <code>Animated</code> with <code>PanResponder</code> driving the native UI thread. Flutter components output Dart <code>StatefulWidget</code> classes calculating 3D
-						perspective transforms with <code>Matrix4</code> and <code>Transform</code>.
-					</p>
-				</section>
-
-				{/* Next Steps */}
-				<section className='border-border flex flex-col items-center justify-between gap-4 border-t pt-6 sm:flex-row'>
-					<Link href='/docs/cli'>
-						<Button variant='outline' className='gap-2'>
-							<span>← CLI Reference</span>
-						</Button>
-					</Link>
-					<Link href='/studio'>
-						<Button className='gap-2'>
-							<span>Explore Studio Playground</span>
-							<ArrowRight className='h-4 w-4' />
-						</Button>
-					</Link>
-				</section>
-			</div>
-
-			<DocsToc items={tocItems} />
-		</div>
+			<DocsSection id='mobile-native' index={8} label='Mobile Native' title='React Native & Flutter'>
+				<DocsProse>
+					React Native components use <code className={code}>Animated</code> with <code className={code}>PanResponder</code> driving the native UI thread. Flutter components output Dart{' '}
+					<code className={code}>StatefulWidget</code> classes calculating 3D perspective transforms with <code className={code}>Matrix4</code> and <code className={code}>Transform</code>.
+				</DocsProse>
+			</DocsSection>
+		</DocsPage>
 	);
 }

@@ -58,7 +58,7 @@ export const stackingCardsComponent: UniversalComponent = {
 		minScale: 0.94,
 	},
 	dependencies: CORE_COMPONENT_DEPENDENCIES,
-	generateCode: (flavor: EcosystemFlavor, props: Record<string, unknown>, _options?: { eject?: boolean }): ComponentFilePayload[] => {
+	generateCode: (flavor: EcosystemFlavor, props: Record<string, unknown>, options?: { eject?: boolean }): ComponentFilePayload[] => {
 		return generateOuterLayerFiles(
 			{
 				id: 'stacking-cards',
@@ -71,7 +71,8 @@ export const stackingCardsComponent: UniversalComponent = {
 				defaultTailwindClass: 'relative flex flex-col gap-8 w-full max-w-2xl mx-auto',
 			},
 			flavor,
-			props
+			props,
+			options
 		);
 	},
 };

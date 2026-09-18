@@ -47,7 +47,7 @@ export const floatingDockComponent: UniversalComponent = {
 		influenceRadius: 70,
 	},
 	dependencies: CORE_COMPONENT_DEPENDENCIES,
-	generateCode: (flavor: EcosystemFlavor, props: Record<string, unknown>, _options?: { eject?: boolean }): ComponentFilePayload[] => {
+	generateCode: (flavor: EcosystemFlavor, props: Record<string, unknown>, options?: { eject?: boolean }): ComponentFilePayload[] => {
 		return generateOuterLayerFiles(
 			{
 				id: 'floating-dock',
@@ -60,7 +60,8 @@ export const floatingDockComponent: UniversalComponent = {
 				defaultTailwindClass: 'mx-auto flex h-16 items-end gap-3 rounded-2xl border border-border bg-card/80 px-4 pb-3 shadow-lg backdrop-blur-md',
 			},
 			flavor,
-			props
+			props,
+			options
 		);
 	},
 };

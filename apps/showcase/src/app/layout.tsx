@@ -5,7 +5,9 @@ import '@/styles/global.scss';
 import { Providers } from '@/providers';
 import { GlobalHeader } from '@/components/layout/GlobalHeader';
 import { GlobalFooter } from '@/components/layout/GlobalFooter';
+import { FooterVisibility } from '@/components/layout/FooterVisibility';
 import { CommandPalette } from '@/components/command/CommandPalette';
+import { ECOSYSTEM_LABELS } from '@/registry';
 
 const bricolageGrotesque = Bricolage_Grotesque({
 	subsets: ['latin'],
@@ -15,7 +17,7 @@ const bricolageGrotesque = Bricolage_Grotesque({
 });
 
 export const metadata: Metadata = {
-	title: 'Exhuma — Universal Component Architecture for 13 Ecosystems',
+	title: `Exhuma — Universal Component Architecture for ${Object.keys(ECOSYSTEM_LABELS).length} Ecosystems`,
 	description:
 		'Autonomous tactile interactions, masonry layout engines, and production-ready routing architecture adapted natively for React, Next.js, Vue, Svelte, Angular, Solid, Astro, Blade, Vanilla, WordPress, Web Components, React Native, and Flutter.',
 };
@@ -28,7 +30,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 					<div className='relative flex min-h-screen flex-col'>
 						<GlobalHeader />
 						<main className='flex-1'>{children}</main>
-						<GlobalFooter />
+						<FooterVisibility>
+							<GlobalFooter />
+						</FooterVisibility>
 						<CommandPalette />
 					</div>
 				</Providers>

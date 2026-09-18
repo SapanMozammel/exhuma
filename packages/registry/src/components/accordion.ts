@@ -37,7 +37,7 @@ export const accordionComponent: UniversalComponent = {
 		duration: 300,
 	},
 	dependencies: CORE_COMPONENT_DEPENDENCIES,
-	generateCode: (flavor: EcosystemFlavor, props: Record<string, unknown>, _options?: { eject?: boolean }): ComponentFilePayload[] => {
+	generateCode: (flavor: EcosystemFlavor, props: Record<string, unknown>, options?: { eject?: boolean }): ComponentFilePayload[] => {
 		return generateOuterLayerFiles(
 			{
 				id: 'accordion',
@@ -50,7 +50,8 @@ export const accordionComponent: UniversalComponent = {
 				defaultTailwindClass: 'w-full space-y-3',
 			},
 			flavor,
-			props
+			props,
+			options
 		);
 	},
 };

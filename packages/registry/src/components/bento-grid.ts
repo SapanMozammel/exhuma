@@ -33,7 +33,7 @@ export const bentoGridComponent: UniversalComponent = {
 		gap: '1.5rem',
 	},
 	dependencies: CORE_COMPONENT_DEPENDENCIES,
-	generateCode: (flavor: EcosystemFlavor, props: Record<string, unknown>, _options?: { eject?: boolean }): ComponentFilePayload[] => {
+	generateCode: (flavor: EcosystemFlavor, props: Record<string, unknown>, options?: { eject?: boolean }): ComponentFilePayload[] => {
 		return generateOuterLayerFiles(
 			{
 				id: 'bento-grid',
@@ -46,7 +46,8 @@ export const bentoGridComponent: UniversalComponent = {
 				defaultTailwindClass: 'grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[22rem] max-w-7xl mx-auto w-full',
 			},
 			flavor,
-			props
+			props,
+			options
 		);
 	},
 };

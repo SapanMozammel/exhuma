@@ -166,7 +166,7 @@ export const ScrollTimeline: React.FC<ScrollTimelineProps> & {
 									{/* Content card */}
 									<div className='border-border bg-card/70 w-full rounded-2xl border p-6 shadow-xs backdrop-blur-md md:w-[44%]'>
 										{item.date && <span className='text-primary font-mono text-xs font-bold'>{item.date}</span>}
-										<h4 className='text-foreground mt-1 text-base font-bold'>{item.title}</h4>
+										<h3 className='text-foreground mt-1 text-base font-bold'>{item.title}</h3>
 										{item.subtitle && <p className='text-muted-foreground mt-0.5 text-xs font-medium'>{item.subtitle}</p>}
 										{item.description && <p className='text-muted-foreground mt-2 text-xs leading-relaxed'>{item.description}</p>}
 									</div>

@@ -44,7 +44,7 @@ export const animatedSphereComponent: UniversalComponent = {
 		radiusScale: 0.475,
 	},
 	dependencies: CORE_COMPONENT_DEPENDENCIES,
-	generateCode: (flavor: EcosystemFlavor, props: Record<string, unknown>, _options?: { eject?: boolean }): ComponentFilePayload[] => {
+	generateCode: (flavor: EcosystemFlavor, props: Record<string, unknown>, options?: { eject?: boolean }): ComponentFilePayload[] => {
 		return generateOuterLayerFiles(
 			{
 				id: 'animated-sphere',
@@ -57,7 +57,8 @@ export const animatedSphereComponent: UniversalComponent = {
 				defaultTailwindClass: 'relative flex items-center justify-center overflow-hidden rounded-2xl bg-card border border-border p-4 shadow-sm',
 			},
 			flavor,
-			props
+			props,
+			options
 		);
 	},
 };

@@ -22,7 +22,7 @@ export const diamondGridComponent: UniversalComponent = {
 		gap: '0.75vw',
 	},
 	dependencies: CORE_COMPONENT_DEPENDENCIES,
-	generateCode: (flavor: EcosystemFlavor, props: Record<string, unknown>, _options?: { eject?: boolean }): ComponentFilePayload[] => {
+	generateCode: (flavor: EcosystemFlavor, props: Record<string, unknown>, options?: { eject?: boolean }): ComponentFilePayload[] => {
 		return generateOuterLayerFiles(
 			{
 				id: 'diamond-grid',
@@ -35,7 +35,8 @@ export const diamondGridComponent: UniversalComponent = {
 				defaultTailwindClass: 'flex items-center justify-center w-full max-w-6xl mx-auto py-12 overflow-hidden',
 			},
 			flavor,
-			props
+			props,
+			options
 		);
 	},
 };

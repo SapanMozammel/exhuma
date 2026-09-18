@@ -25,10 +25,29 @@ export function GlobalHeader() {
 	const pathname = usePathname();
 	const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
 	const [bannerDismissed, setBannerDismissed] = React.useState(false);
+	const stickyHeaderRef = React.useRef<HTMLDivElement>(null);
 
 	React.useEffect(() => {
 		setMobileMenuOpen(false);
 	}, [pathname]);
+
+	// Publish the sticky header's real height as --header-height so sticky rails
+	// and anchor jumps sit exactly below it. It changes when the banner is
+	// dismissed or wraps, so it's measured rather than hardcoded.
+	React.useEffect(() => {
+		const header = stickyHeaderRef.current;
+		if (!header) return;
+		const root = document.documentElement;
+		const observer = new ResizeObserver(() => {
+			const rootFontSize = parseFloat(getComputedStyle(root).fontSize) || 16;
+			root.style.setProperty('--header-height', `${header.getBoundingClientRect().height / rootFontSize}rem`);
+		});
+		observer.observe(header);
+		return () => {
+			observer.disconnect();
+			root.style.removeProperty('--header-height');
+		};
+	}, []);
 
 	React.useEffect(() => {
 		try {
@@ -52,9 +71,9 @@ export function GlobalHeader() {
 	const navLinks = [
 		{ href: '/docs', label: 'Docs', icon: BookOpen },
 		{ href: '/docs/components', label: 'Components', icon: Layers },
-		{ href: '/showcase', label: 'Showcase', icon: Sparkles },
-		{ href: '/blog', label: 'Blog', icon: BookOpen },
-		{ href: '/studio', label: 'Studio', icon: Sliders },
+		// { href: '/showcase', label: 'Showcase', icon: Sparkles },
+		// { href: '/blog', label: 'Blog', icon: BookOpen },
+		// { href: '/studio', label: 'Studio', icon: Sliders }, // Studio consolidated into /docs/components/[slug]
 	];
 
 	const triggerCommandPalette = () => {
@@ -69,11 +88,11 @@ export function GlobalHeader() {
 	const isLinkActive = (href: string) => (href === '/docs' ? pathname === '/docs' || (pathname.startsWith('/docs/') && !pathname.startsWith('/docs/components')) : pathname.startsWith(href));
 
 	return (
-		<div className='sticky top-0 z-40 w-full'>
+		<div ref={stickyHeaderRef} className='sticky top-0 z-40 w-full'>
 			{/* Top Announcement Banner (shadcn / Vercel style) */}
 			{!bannerDismissed && (
 				<div className='border-border bg-muted text-2xs relative border-b py-1.5 pr-10 pl-4 text-center font-medium transition-colors'>
-					<Link href='https://github.com/SapanMozammel/exhuma' target='_blank' rel='noreferrer' className='text-muted-foreground hover:text-foreground group inline transition-colors'>
+					<Link href='https://github.com/SapanMozammel/exhuma' target='_blank' rel='noreferrer' className='text-foreground/80 hover:text-foreground group inline transition-colors'>
 						<Star className='-mt-0.5 mr-1.5 inline-block h-3 w-3 fill-emerald-500/20 align-middle text-emerald-500' />
 						<span>Free &amp; open source, built for every frontend stack.</span> <span className='text-foreground font-semibold'>Star Exhuma on GitHub</span>{' '}
 						<ArrowRight className='text-primary -mt-0.5 ml-0.5 inline-block h-3 w-3 align-middle transition-transform group-hover:translate-x-0.5' />
@@ -98,7 +117,7 @@ export function GlobalHeader() {
 							<ExhumaLogo size={24} className='text-foreground -mr-0.5 shrink-0' />
 							<div className='flex items-start gap-0.5'>
 								<span className='font-display text-foreground group-hover:text-foreground/80 text-base leading-none font-extrabold tracking-tight transition-colors'>Exhuma</span>
-								<sup className='text-muted-foreground/80 text-4xs hidden leading-none font-bold tracking-wider uppercase sm:inline-block'>Beta</sup>
+								<sup className='text-muted-foreground text-4xs hidden leading-none font-bold tracking-wider uppercase sm:inline-block'>Beta</sup>
 							</div>
 						</Link>
 
@@ -134,7 +153,7 @@ export function GlobalHeader() {
 							<Search className='h-4 w-4 shrink-0' />
 							<span className='hidden text-xs whitespace-nowrap md:inline lg:hidden'>Search...</span>
 							<span className='hidden text-xs whitespace-nowrap lg:inline'>Search docs & components...</span>
-							<span className='ml-2 hidden text-xs font-semibold text-emerald-600 md:inline dark:text-emerald-400'>⌘K</span>
+							<span className='ml-2 hidden text-xs font-semibold text-emerald-700 md:inline dark:text-emerald-400'>⌘K</span>
 						</button>
 
 						{/* Theme Switcher */}

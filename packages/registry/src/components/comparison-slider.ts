@@ -36,7 +36,7 @@ export const comparisonSliderComponent: UniversalComponent = {
 		step: 0.05,
 	},
 	dependencies: CORE_COMPONENT_DEPENDENCIES,
-	generateCode: (flavor: EcosystemFlavor, props: Record<string, unknown>, _options?: { eject?: boolean }): ComponentFilePayload[] => {
+	generateCode: (flavor: EcosystemFlavor, props: Record<string, unknown>, options?: { eject?: boolean }): ComponentFilePayload[] => {
 		return generateOuterLayerFiles(
 			{
 				id: 'comparison-slider',
@@ -49,7 +49,8 @@ export const comparisonSliderComponent: UniversalComponent = {
 				defaultTailwindClass: 'relative overflow-hidden rounded-2xl border border-border select-none w-full max-w-2xl mx-auto',
 			},
 			flavor,
-			props
+			props,
+			options
 		);
 	},
 };

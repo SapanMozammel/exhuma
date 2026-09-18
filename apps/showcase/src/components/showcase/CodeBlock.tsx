@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { IconCheck as Check, IconCopy as Copy, IconTerminal2 as Terminal } from '@tabler/icons-react';
 import { cn } from '@/lib/utils';
+import { WindowDots } from '@/components/docs/DocsWindow';
 
 interface CodeBlockProps {
 	code: string;
@@ -39,8 +40,8 @@ export function CodeBlock({ code, language = 'tsx', filename, showLineNumbers = 
 				const html = await codeToHtml(code, {
 					lang,
 					themes: {
-						light: 'github-light',
-						dark: 'github-dark',
+						light: 'github-light-default',
+						dark: 'github-dark-default',
 					},
 				});
 
@@ -72,14 +73,10 @@ export function CodeBlock({ code, language = 'tsx', filename, showLineNumbers = 
 		<div className={cn('border-border bg-card relative overflow-hidden rounded-xl border font-mono text-xs shadow-sm transition-colors', className)}>
 			{/* Code Header Bar */}
 			<div className='border-border bg-muted/40 flex items-center justify-between border-b px-4 py-2 text-xs'>
-				<div className='flex items-center gap-2'>
-					<div className='flex gap-1.5 opacity-70'>
-						<div className='h-2.5 w-2.5 rounded-full bg-rose-500/80' />
-						<div className='h-2.5 w-2.5 rounded-full bg-amber-500/80' />
-						<div className='h-2.5 w-2.5 rounded-full bg-emerald-500/80' />
-					</div>
+				<div className='flex min-w-0 items-center gap-2'>
+					<WindowDots />
 					{filename ? (
-						<span className='text-foreground ml-1.5 font-sans text-xs font-medium tracking-tight'>{filename}</span>
+						<span className='text-foreground ml-1.5 truncate font-sans text-xs font-medium tracking-tight'>{filename}</span>
 					) : (
 						<span className='text-muted-foreground text-2xs ml-1.5 flex items-center gap-1.5'>
 							<Terminal className='h-3 w-3 shrink-0' />
@@ -88,7 +85,7 @@ export function CodeBlock({ code, language = 'tsx', filename, showLineNumbers = 
 					)}
 				</div>
 
-				<div className='flex items-center gap-2'>
+				<div className='flex shrink-0 items-center gap-2'>
 					<span className='kbd text-3xs font-semibold uppercase'>{language}</span>
 					<button
 						type='button'
@@ -101,7 +98,7 @@ export function CodeBlock({ code, language = 'tsx', filename, showLineNumbers = 
 						{copied ? (
 							<>
 								<Check className='h-3.5 w-3.5 text-emerald-500' />
-								<span className='font-semibold text-emerald-500'>Copied</span>
+								<span className='font-semibold text-emerald-700 dark:text-emerald-400'>Copied</span>
 							</>
 						) : (
 							<>
@@ -114,7 +111,7 @@ export function CodeBlock({ code, language = 'tsx', filename, showLineNumbers = 
 			</div>
 
 			{/* Code Content Viewport */}
-			<div className='max-h-[31.25rem] overflow-auto p-4 text-xs leading-relaxed'>
+			<div className='max-h-125 overflow-auto p-4 text-xs leading-relaxed'>
 				{highlightedHtml ? (
 					<div dangerouslySetInnerHTML={{ __html: highlightedHtml }} className='shiki-container' />
 				) : (

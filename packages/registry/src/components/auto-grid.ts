@@ -36,7 +36,7 @@ export const autoGridComponent: UniversalComponent = {
 		gap: 24,
 	},
 	dependencies: CORE_COMPONENT_DEPENDENCIES,
-	generateCode: (flavor: EcosystemFlavor, props: Record<string, unknown>, _options?: { eject?: boolean }): ComponentFilePayload[] => {
+	generateCode: (flavor: EcosystemFlavor, props: Record<string, unknown>, options?: { eject?: boolean }): ComponentFilePayload[] => {
 		return generateOuterLayerFiles(
 			{
 				id: 'auto-grid',
@@ -49,7 +49,8 @@ export const autoGridComponent: UniversalComponent = {
 				defaultTailwindClass: 'grid grid-cols-[repeat(auto-fill,minmax(min(100%,280px),1fr))] gap-6 w-full',
 			},
 			flavor,
-			props
+			props,
+			options
 		);
 	},
 };

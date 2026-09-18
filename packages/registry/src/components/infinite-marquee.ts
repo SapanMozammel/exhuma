@@ -53,7 +53,7 @@ export const infiniteMarqueeComponent: UniversalComponent = {
 		gap: '1.5rem',
 	},
 	dependencies: CORE_COMPONENT_DEPENDENCIES,
-	generateCode: (flavor: EcosystemFlavor, props: Record<string, unknown>, _options?: { eject?: boolean }): ComponentFilePayload[] => {
+	generateCode: (flavor: EcosystemFlavor, props: Record<string, unknown>, options?: { eject?: boolean }): ComponentFilePayload[] => {
 		return generateOuterLayerFiles(
 			{
 				id: 'infinite-marquee',
@@ -66,7 +66,8 @@ export const infiniteMarqueeComponent: UniversalComponent = {
 				defaultTailwindClass: 'relative flex overflow-hidden select-none w-full py-4 [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]',
 			},
 			flavor,
-			props
+			props,
+			options
 		);
 	},
 };

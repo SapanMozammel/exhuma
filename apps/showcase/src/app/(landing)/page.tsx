@@ -104,10 +104,10 @@ export default function HomePage() {
 									<ArrowRight className='h-4 w-4 shrink-0' />
 								</Button>
 							</Link>
-							<Link href='/studio'>
+							<Link href='/docs/components'>
 								<Button variant='outline' size='lg' className='border-border/80 bg-card/60 hover:border-foreground/40 hover:bg-card/90 gap-2 backdrop-blur-sm'>
 									<Sliders className='text-foreground/70 h-4 w-4 shrink-0' />
-									<span>Open Studio</span>
+									<span>Explore Playground</span>
 								</Button>
 							</Link>
 						</div>
@@ -262,10 +262,10 @@ export default function HomePage() {
 						</p>
 					</div>
 
-					<Link href='/studio'>
+					<Link href='/docs/components'>
 						<Button variant='outline' size='sm' className='border-border/80 bg-card/60 hover:border-foreground/40 gap-1.5 shadow-xs'>
 							<Sliders className='text-foreground/70 h-3.5 w-3.5' />
-							<span>Open Studio Playground</span>
+							<span>Open Playground</span>
 						</Button>
 					</Link>
 				</Reveal>
@@ -336,10 +336,10 @@ export default function HomePage() {
 								Pull a single primitive into your project and read the source code. If it earns its place, take the rest — it all belongs to you either way.
 							</p>
 							<div className='mt-8 flex flex-wrap items-center justify-center gap-3.5'>
-								<Link href='/studio'>
+								<Link href='/docs/components'>
 									<Button size='lg' className='bg-foreground text-background hover:bg-foreground/90 gap-2 border-none font-bold shadow-lg shadow-black/10 transition-all hover:scale-105 active:scale-95'>
 										<Sliders className='h-4 w-4 shrink-0' />
-										<span>Launch Studio</span>
+										<span>Explore Components</span>
 									</Button>
 								</Link>
 								<Link href='/docs'>

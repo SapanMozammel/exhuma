@@ -25,7 +25,7 @@ export const cursorTooltipComponent: UniversalComponent = {
 		springDamping: 22,
 	},
 	dependencies: CORE_COMPONENT_DEPENDENCIES,
-	generateCode: (flavor: EcosystemFlavor, props: Record<string, unknown>, _options?: { eject?: boolean }): ComponentFilePayload[] => {
+	generateCode: (flavor: EcosystemFlavor, props: Record<string, unknown>, options?: { eject?: boolean }): ComponentFilePayload[] => {
 		return generateOuterLayerFiles(
 			{
 				id: 'cursor-tooltip',
@@ -38,7 +38,8 @@ export const cursorTooltipComponent: UniversalComponent = {
 				defaultTailwindClass: 'relative inline-block cursor-pointer',
 			},
 			flavor,
-			props
+			props,
+			options
 		);
 	},
 };

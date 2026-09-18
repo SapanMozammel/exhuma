@@ -22,7 +22,7 @@ export const stickyParallaxComponent: UniversalComponent = {
 		trackHeight: '250vh',
 	},
 	dependencies: CORE_COMPONENT_DEPENDENCIES,
-	generateCode: (flavor: EcosystemFlavor, props: Record<string, unknown>, _options?: { eject?: boolean }): ComponentFilePayload[] => {
+	generateCode: (flavor: EcosystemFlavor, props: Record<string, unknown>, options?: { eject?: boolean }): ComponentFilePayload[] => {
 		return generateOuterLayerFiles(
 			{
 				id: 'sticky-parallax',
@@ -35,7 +35,8 @@ export const stickyParallaxComponent: UniversalComponent = {
 				defaultTailwindClass: 'relative w-full overflow-hidden',
 			},
 			flavor,
-			props
+			props,
+			options
 		);
 	},
 };

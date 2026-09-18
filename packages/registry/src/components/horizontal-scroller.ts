@@ -44,7 +44,7 @@ export const horizontalScrollerComponent: UniversalComponent = {
 		showFadeEdges: true,
 	},
 	dependencies: CORE_COMPONENT_DEPENDENCIES,
-	generateCode: (flavor: EcosystemFlavor, props: Record<string, unknown>, _options?: { eject?: boolean }): ComponentFilePayload[] => {
+	generateCode: (flavor: EcosystemFlavor, props: Record<string, unknown>, options?: { eject?: boolean }): ComponentFilePayload[] => {
 		return generateOuterLayerFiles(
 			{
 				id: 'horizontal-scroller',
@@ -57,7 +57,8 @@ export const horizontalScrollerComponent: UniversalComponent = {
 				defaultTailwindClass: 'relative overflow-hidden w-full py-8',
 			},
 			flavor,
-			props
+			props,
+			options
 		);
 	},
 };

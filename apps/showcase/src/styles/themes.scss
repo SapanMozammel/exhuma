@@ -23,10 +23,16 @@
 	--radius: 0.625rem;
 
 	--dot-grid-color: rgba(0, 0, 0, 0.07);
+	--dot-grid-color-studio: rgba(0, 0, 0, 0.12);
 	--canvas-bg: #f8fafc;
 	--keycap-bg: #f4f4f5;
 	--keycap-border: #d4d4d8;
 	--keycap-text: #52525b;
+
+	/* Height of the sticky header (announcement banner + nav bar). GlobalHeader
+	   overwrites this with the measured value at runtime, because dismissing the
+	   banner changes it. This default matches the server render (banner shown). */
+	--header-height: 5.4375rem;
 }
 
 .dark {
@@ -51,6 +57,7 @@
 	--ring: 240 4.9% 83.9%;
 
 	--dot-grid-color: rgba(255, 255, 255, 0.08);
+	--dot-grid-color-studio: rgba(255, 255, 255, 0.12);
 	--canvas-bg: #0c0d10;
 	--keycap-bg: #18181b;
 	--keycap-border: #3f3f46;
@@ -86,6 +93,11 @@
 	--text-2xs: 0.6875rem; /* 11px */
 	--text-3xs: 0.625rem; /* 10px */
 	--text-4xs: 0.5625rem; /* 9px */
+
+	/* Header-aware offsets for sticky rails: `top-header` sits flush under the
+	   sticky header; `top-header-offset` adds the docs content's 1.5rem top padding. */
+	--spacing-header: var(--header-height);
+	--spacing-header-offset: calc(var(--header-height) + 1.5rem);
 
 	/* Exhuma Brand Colors */
 	--color-exhuma-50: #f4f4f5;

@@ -202,7 +202,8 @@ export function CommandPalette() {
 				href: '/docs/lifecycle',
 				description: 'Zero memory leaks, listener detaching, and observer disconnection contracts.',
 				badges: ['Safety', 'Garbage Collection', 'Verified'],
-			},
+			}
+			/*
 			{
 				id: 'page-showcase',
 				title: 'Community Showcase',
@@ -223,32 +224,19 @@ export function CommandPalette() {
 				description: 'Essays on kinetic spring math, copy-paste architecture, and multi-framework design.',
 				badges: ['Articles', 'Journal'],
 			}
+			*/
 		);
-
-		// 4. Blog Articles
-		BLOG_POSTS.forEach((post) => {
-			list.push({
-				id: `blog-${post.slug}`,
-				title: post.title,
-				subtitle: `Article · ${post.readTime}`,
-				category: 'docs',
-				icon: BookOpen,
-				href: `/blog/${post.slug}`,
-				description: post.description,
-				badges: post.tags,
-			});
-		});
 
 		// 4. Studio Actions
 		list.push(
 			{
 				id: 'action-studio',
-				title: 'Open Studio Workbench',
-				subtitle: 'Visual Parameter IDE',
+				title: 'Explore Components & Playgrounds',
+				subtitle: 'Visual Parameter Workbench',
 				category: 'actions',
 				icon: Sliders,
-				href: '/studio',
-				description: 'Figma & Xcode-style visual inspector with real-time code synthesis across all 13 platforms.',
+				href: '/docs/components',
+				description: 'Visual inspector with real-time code synthesis across all 13 platforms.',
 			},
 			{
 				id: 'action-cli-init',

@@ -149,7 +149,7 @@ export interface BorderBeamProps {
 	 */
 	borderWidth?: number;
 	/**
-	 * Starting anchor point in degrees.
+	 * Point on the beam that rides the border path, as a percentage of the beam's length (0–100).
 	 * Default: 90
 	 */
 	anchor?: number;

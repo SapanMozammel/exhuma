@@ -21,6 +21,12 @@
 	background-size: 16px 16px;
 }
 
+@utility bg-dot-grid-studio {
+	background-color: var(--canvas-bg);
+	background-image: radial-gradient(circle, var(--dot-grid-color-studio) 1.25px, transparent 1.25px);
+	background-size: 20px 20px;
+}
+
 // ── Keycap Utility ──────────────────────────────────────────────
 @utility kbd {
 	display: inline-flex;
@@ -64,6 +70,35 @@
 // which is what otherwise forces horizontal scroll on small screens.
 @utility grid-cols-auto-fit-* {
 	grid-template-columns: repeat(auto-fit, minmax(min(--spacing(--value(integer)), 100%), 1fr));
+}
+
+// ── Header-Aware Sticky Rails ──────────────────────────────────
+// A sticky rail taller than the viewport never fully sticks: its lower half
+// stays unreachable until the page ends. Capping it to the space below the
+// header and scrolling it internally keeps every item reachable.
+@utility h-below-header {
+	height: calc(100svh - var(--header-height));
+}
+
+// Anchor jumps (TOC links, #hash URLs) land on the same line the sticky TOC
+// sits on, instead of under the sticky header. Below md the docs mobile nav bar
+// (h-12) is stuck under the header too, so it's cleared as well.
+@utility anchor-offset {
+	--docs-subnav-height: 3rem;
+
+	@variant md {
+		--docs-subnav-height: 0rem;
+	}
+
+	& [id] {
+		scroll-margin-top: calc(var(--header-height) + var(--docs-subnav-height) + 1.5rem);
+	}
+}
+
+// ── Radial Fade Mask ───────────────────────────────────────────
+// Fades a decorative pattern out from the center (used by grid backdrops).
+@utility mask-radial-fade {
+	mask-image: radial-gradient(25rem circle at center, white, transparent);
 }
 
 // ── No Scrollbar Utility ───────────────────────────────────────

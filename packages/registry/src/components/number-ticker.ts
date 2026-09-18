@@ -52,7 +52,7 @@ export const numberTickerComponent: UniversalComponent = {
 		decimalPlaces: 0,
 	},
 	dependencies: CORE_COMPONENT_DEPENDENCIES,
-	generateCode: (flavor: EcosystemFlavor, props: Record<string, unknown>, _options?: { eject?: boolean }): ComponentFilePayload[] => {
+	generateCode: (flavor: EcosystemFlavor, props: Record<string, unknown>, options?: { eject?: boolean }): ComponentFilePayload[] => {
 		return generateOuterLayerFiles(
 			{
 				id: 'number-ticker',
@@ -65,7 +65,8 @@ export const numberTickerComponent: UniversalComponent = {
 				defaultTailwindClass: 'inline-block tabular-nums font-bold tracking-tight text-foreground',
 			},
 			flavor,
-			props
+			props,
+			options
 		);
 	},
 };

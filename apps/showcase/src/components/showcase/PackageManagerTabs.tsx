@@ -17,10 +17,14 @@ export function PackageManagerTabs({ command = 'exhuma add tilt-card', className
 
 	const fullCommand = `${activeManager} ${command}`;
 
-	const copyToClipboard = () => {
-		navigator.clipboard.writeText(fullCommand);
-		setCopied(true);
-		setTimeout(() => setCopied(false), 2000);
+	const copyToClipboard = async () => {
+		try {
+			await navigator.clipboard.writeText(fullCommand);
+			setCopied(true);
+			setTimeout(() => setCopied(false), 2000);
+		} catch {
+			setCopied(false);
+		}
 	};
 
 	const managers: { id: PackageManager; label: string }[] = [
@@ -81,12 +85,16 @@ export default PackageManagerTabs;
 export function StepCodeBlock({ code }: { code: string }) {
 	const [copied, setCopied] = React.useState(false);
 
-	const copyToClipboard = (e: React.MouseEvent) => {
+	const copyToClipboard = async (e: React.MouseEvent) => {
 		e.preventDefault();
 		e.stopPropagation();
-		navigator.clipboard.writeText(code);
-		setCopied(true);
-		setTimeout(() => setCopied(false), 2000);
+		try {
+			await navigator.clipboard.writeText(code);
+			setCopied(true);
+			setTimeout(() => setCopied(false), 2000);
+		} catch {
+			setCopied(false);
+		}
 	};
 
 	return (

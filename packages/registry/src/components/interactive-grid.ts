@@ -36,7 +36,7 @@ export const interactiveGridComponent: UniversalComponent = {
 		height: 40,
 	},
 	dependencies: CORE_COMPONENT_DEPENDENCIES,
-	generateCode: (flavor: EcosystemFlavor, props: Record<string, unknown>, _options?: { eject?: boolean }): ComponentFilePayload[] => {
+	generateCode: (flavor: EcosystemFlavor, props: Record<string, unknown>, options?: { eject?: boolean }): ComponentFilePayload[] => {
 		return generateOuterLayerFiles(
 			{
 				id: 'interactive-grid',
@@ -49,7 +49,8 @@ export const interactiveGridComponent: UniversalComponent = {
 				defaultTailwindClass: 'absolute inset-0 h-full w-full stroke-gray-400/30 [mask-image:radial-gradient(600px_circle_at_center,white,transparent)]',
 			},
 			flavor,
-			props
+			props,
+			options
 		);
 	},
 };

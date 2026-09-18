@@ -36,7 +36,7 @@ export const cssMasonryComponent: UniversalComponent = {
 		gap: 16,
 	},
 	dependencies: CORE_COMPONENT_DEPENDENCIES,
-	generateCode: (flavor: EcosystemFlavor, props: Record<string, unknown>, _options?: { eject?: boolean }): ComponentFilePayload[] => {
+	generateCode: (flavor: EcosystemFlavor, props: Record<string, unknown>, options?: { eject?: boolean }): ComponentFilePayload[] => {
 		return generateOuterLayerFiles(
 			{
 				id: 'css-masonry',
@@ -49,7 +49,8 @@ export const cssMasonryComponent: UniversalComponent = {
 				defaultTailwindClass: 'columns-1 sm:columns-2 md:columns-3 gap-4 [column-fill:_balance] w-full space-y-4',
 			},
 			flavor,
-			props
+			props,
+			options
 		);
 	},
 };
