@@ -52,7 +52,8 @@ export default function InstallationPage() {
 						Utility-first CSS framework configured in your project for responsive layouts and borders.
 					</DocsSpecCard>
 					<DocsSpecCard tag='Theming' title='CSS Variables'>
-						Semantic theme tokens (<code className='text-foreground font-mono'>--background</code>, <code className='text-foreground font-mono'>--card</code>, <code className='text-foreground font-mono'>--border</code>) for seamless dark mode.
+						Semantic theme tokens (<code className='text-foreground font-mono'>--background</code>, <code className='text-foreground font-mono'>--card</code>,{' '}
+						<code className='text-foreground font-mono'>--border</code>) for seamless dark mode.
 					</DocsSpecCard>
 					<DocsSpecCard tag='Utilities' title='clsx'>
 						Used directly across components for conditional class merging without overhead.

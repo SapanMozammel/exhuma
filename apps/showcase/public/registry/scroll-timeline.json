@@ -1,174 +1,154 @@
 {
-  "name": "Scroll Timeline",
-  "slug": "scroll-timeline",
-  "category": "layouts",
-  "description": "Organic serpentine cubic bezier SVG timeline with pure native rAF progress beam and zero external animation libraries.",
-  "version": "1.0.0",
-  "props": [
-    {
-      "name": "curveWidth",
-      "label": "Curve Swing (px)",
-      "type": "number",
-      "defaultValue": 24,
-      "min": 10,
-      "max": 60,
-      "step": 2,
-      "description": "Horizontal amplitude of bezier swing."
-    },
-    {
-      "name": "curveHeight",
-      "label": "Curve Height (px)",
-      "type": "number",
-      "defaultValue": 40,
-      "min": 20,
-      "max": 80,
-      "step": 5,
-      "description": "Vertical transition height of bezier curves."
-    },
-    {
-      "name": "accentColor",
-      "label": "Accent Color",
-      "type": "string",
-      "defaultValue": "#6366f1",
-      "description": "Color of the active kinetic progress beam."
-    }
-  ],
-  "dependencies": {
-    "react": [
-      "@exhuma/core"
-    ],
-    "nextjs": [
-      "@exhuma/core"
-    ],
-    "vue": [
-      "@exhuma/core"
-    ],
-    "svelte": [
-      "@exhuma/core"
-    ],
-    "solid": [
-      "@exhuma/core"
-    ],
-    "angular": [
-      "@exhuma/core"
-    ],
-    "astro": [
-      "@exhuma/core"
-    ],
-    "vanilla": [
-      "@exhuma/core"
-    ],
-    "react-native": [
-      "@exhuma/core"
-    ],
-    "flutter": [
-      "exhuma"
-    ]
-  },
-  "flavors": {
-    "react": [
-      {
-        "filename": "ScrollTimeline.tsx",
-        "language": "tsx",
-        "description": "Scroll Timeline — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
-        "code": "import * as React from 'react';\nimport * as ScrollTimelinePrimitive from '@exhuma/core';\nimport { clsx } from 'clsx';\n\nexport interface ScrollTimelineProps extends React.ComponentPropsWithoutRef<typeof ScrollTimelinePrimitive.ScrollTimeline> {\n  className?: string;\n}\n\nexport const ScrollTimeline = React.forwardRef<HTMLDivElement, ScrollTimelineProps>(\n  ({ className, children, ...props }, ref) => (\n    <ScrollTimelinePrimitive.ScrollTimeline\n      ref={ref}\n      className={clsx(\n        'relative max-w-4xl mx-auto py-16 px-4',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </ScrollTimelinePrimitive.ScrollTimeline>\n  )\n);\nScrollTimeline.displayName = 'ScrollTimeline';\n"
-      }
-    ],
-    "nextjs": [
-      {
-        "filename": "ScrollTimeline.tsx",
-        "language": "tsx",
-        "description": "Scroll Timeline — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
-        "code": "'use client';\n\nimport * as React from 'react';\nimport * as ScrollTimelinePrimitive from '@exhuma/core';\nimport { clsx } from 'clsx';\n\nexport interface ScrollTimelineProps extends React.ComponentPropsWithoutRef<typeof ScrollTimelinePrimitive.ScrollTimeline> {\n  className?: string;\n}\n\nexport const ScrollTimeline = React.forwardRef<HTMLDivElement, ScrollTimelineProps>(\n  ({ className, children, ...props }, ref) => (\n    <ScrollTimelinePrimitive.ScrollTimeline\n      ref={ref}\n      className={clsx(\n        'relative max-w-4xl mx-auto py-16 px-4',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </ScrollTimelinePrimitive.ScrollTimeline>\n  )\n);\nScrollTimeline.displayName = 'ScrollTimeline';\n"
-      }
-    ],
-    "vue": [
-      {
-        "filename": "ScrollTimeline.vue",
-        "language": "vue",
-        "description": "Vue 3 Scroll Timeline outer adapter wrapping @exhuma/core headless primitive.",
-        "code": "<script setup lang=\"ts\">\nimport { ScrollTimeline as ScrollTimelinePrimitive } from '@exhuma/core';\nimport { clsx } from 'clsx';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst props = withDefaults(defineProps<Props>(), {\n  class: '',\n});\n</script>\n\n<template>\n  <ScrollTimelinePrimitive\n    v-bind=\"props\"\n    :class=\"clsx('relative max-w-4xl mx-auto py-16 px-4', props.class)\"\n  >\n    <slot />\n  </ScrollTimelinePrimitive>\n</template>\n"
-      }
-    ],
-    "svelte": [
-      {
-        "filename": "ScrollTimeline.svelte",
-        "language": "svelte",
-        "description": "Svelte 5 Scroll Timeline adapter using runes and @exhuma/core primitives.",
-        "code": "<script lang=\"ts\">\n  import { ScrollTimeline as ScrollTimelinePrimitive } from '@exhuma/core';\n  import { clsx } from 'clsx';\n\n  let {\n    class: className = '',\n    children,\n    ...restProps\n  }: {\n    class?: string;\n    children?: import('svelte').Snippet;\n    [key: string]: unknown;\n  } = $props();\n</script>\n\n<ScrollTimelinePrimitive\n  class={clsx('relative max-w-4xl mx-auto py-16 px-4', className)}\n  {...restProps}\n>\n  {@render children?.()}\n</ScrollTimelinePrimitive>\n"
-      }
-    ],
-    "angular": [
-      {
-        "filename": "scroll-timeline.component.ts",
-        "language": "typescript",
-        "description": "Angular 18+ Standalone Scroll Timeline component.",
-        "code": "import { Component, input } from '@angular/core';\nimport { CommonModule } from '@angular/common';\n\n@Component({\n  selector: 'exhuma-scroll-timeline',\n  standalone: true,\n  imports: [CommonModule],\n  template: `\n    <div\n      class=\"relative max-w-4xl mx-auto py-16 px-4 {{ customClass() }}\"\n    >\n      <ng-content></ng-content>\n    </div>\n  `,\n})\nexport class ExhumaScrollTimelineComponent {\n  readonly customClass = input<string>('');\n}\n"
-      }
-    ],
-    "solid": [
-      {
-        "filename": "ScrollTimeline.tsx",
-        "language": "tsx",
-        "description": "SolidJS Scroll Timeline adapter wrapping @exhuma/core headless primitive.",
-        "code": "import { Component, JSX, splitProps } from 'solid-js';\nimport * as ScrollTimelinePrimitive from '@exhuma/core';\n\nexport interface ScrollTimelineProps extends JSX.HTMLAttributes<HTMLDivElement> {\n  [key: string]: unknown;\n}\n\nexport const ScrollTimeline: Component<ScrollTimelineProps> = (props) => {\n  const [local, others] = splitProps(props, ['class', 'children']);\n  return (\n    <ScrollTimelinePrimitive.ScrollTimeline\n      class={`relative max-w-4xl mx-auto py-16 px-4 ${local.class ?? ''}`}\n      {...others}\n    >\n      {local.children}\n    </ScrollTimelinePrimitive.ScrollTimeline>\n  );\n};\n"
-      }
-    ],
-    "astro": [
-      {
-        "filename": "ScrollTimeline.astro",
-        "language": "astro",
-        "description": "Astro Scroll Timeline component with @exhuma/core primitive.",
-        "code": "---\nimport * as ScrollTimelinePrimitive from '@exhuma/core';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst { class: className = '', ...props } = Astro.props;\n---\n\n<ScrollTimelinePrimitive.ScrollTimeline\n  client:visible\n  className={`relative max-w-4xl mx-auto py-16 px-4 ${className}`}\n  {...props}\n>\n  <slot />\n</ScrollTimelinePrimitive.ScrollTimeline>\n"
-      }
-    ],
-    "blade": [
-      {
-        "filename": "scroll-timeline.blade.php",
-        "language": "php",
-        "description": "Laravel Blade component for Scroll Timeline with Alpine / data attributes.",
-        "code": "@props([])\n\n<exhuma-scroll-timeline\n    {{ $attributes->merge([\n        'class' => 'relative max-w-4xl mx-auto py-16 px-4 block',\n    ]) }}\n>\n    {{ $slot }}\n</exhuma-scroll-timeline>\n"
-      }
-    ],
-    "vanilla": [
-      {
-        "filename": "exhuma-scroll-timeline.js",
-        "language": "javascript",
-        "description": "Autonomous Vanilla JS Scroll Timeline initialization module.",
-        "code": "import { ScrollTimeline } from '@exhuma/core';\n\nexport function initScrollTimeline(selector = '[data-exhuma-scroll-timeline]', options = {}) {\n  const elements = document.querySelectorAll(selector);\n  return Array.from(elements);\n}\n"
-      }
-    ],
-    "wordpress": [
-      {
-        "filename": "block.json",
-        "language": "json",
-        "description": "WordPress Block API v3 definition for Scroll Timeline.",
-        "code": "{\n  \"$schema\": \"https://schemas.wp.org/trunk/block.json\",\n  \"apiVersion\": 3,\n  \"name\": \"exhuma/scroll-timeline\",\n  \"version\": \"1.0.0\",\n  \"title\": \"Exhuma Scroll Timeline\",\n  \"category\": \"design\",\n  \"icon\": \"art\",\n  \"description\": \"Organic serpentine cubic bezier SVG timeline with pure native rAF progress beam.\",\n  \"attributes\": {},\n  \"editorScript\": \"file:./index.js\",\n  \"viewScript\": \"exhuma-kinetic\"\n}"
-      }
-    ],
-    "webcomponent": [
-      {
-        "filename": "exhuma-scroll-timeline.js",
-        "language": "javascript",
-        "description": "Universal Web Component wrapper for <exhuma-scroll-timeline>.",
-        "code": "import { ScrollTimeline } from '@exhuma/core';\n\nclass ExhumaScrollTimelineElement extends HTMLElement {\n  connectedCallback() {\n    this.classList.add('exhuma-scroll-timeline');\n    this.style.display = 'block';\n  }\n}\n\nif (!customElements.get('exhuma-scroll-timeline')) {\n  customElements.define('exhuma-scroll-timeline', ExhumaScrollTimelineElement);\n}\n"
-      }
-    ],
-    "react-native": [
-      {
-        "filename": "ScrollTimeline.tsx",
-        "language": "tsx",
-        "description": "React Native Scroll Timeline adapter wrapping @exhuma/core touch primitive.",
-        "code": "import React from 'react';\nimport { View, StyleSheet, type ViewProps } from 'react-native';\nimport * as ScrollTimelinePrimitive from '@exhuma/core';\n\nexport interface ScrollTimelineProps extends ViewProps {\n  children?: React.ReactNode;\n}\n\nexport function ScrollTimeline({ style, children, ...props }: ScrollTimelineProps) {\n  return (\n    <View style={[styles.container, style]} {...props}>\n      {children}\n    </View>\n  );\n}\n\nconst styles = StyleSheet.create({\n  container: {\n    borderRadius: 16,\n    borderWidth: 1,\n    borderColor: '#e2e8f0',\n    backgroundColor: '#ffffff',\n    padding: 20,\n    overflow: 'hidden',\n  },\n});\n"
-      }
-    ],
-    "flutter": [
-      {
-        "filename": "scroll_timeline.dart",
-        "language": "dart",
-        "description": "Flutter Scroll Timeline widget wrapping package:exhuma.",
-        "code": "import 'package:flutter/material.dart';\nimport 'package:exhuma/exhuma.dart' as exhuma;\n\nclass ExhumaScrollTimeline extends StatelessWidget {\n  final Widget child;\n\n  const ExhumaScrollTimeline({\n    super.key,\n    required this.child,\n  });\n\n  @override\n  Widget build(BuildContext context) {\n    return Container(\n      decoration: BoxDecoration(\n        borderRadius: BorderRadius.circular(16.0),\n        border: Border.all(color: Theme.of(context).dividerColor),\n        color: Theme.of(context).cardColor,\n      ),\n      padding: const EdgeInsets.all(20.0),\n      child: child,\n    );\n  }\n}\n"
-      }
-    ]
-  }
+	"name": "Scroll Timeline",
+	"slug": "scroll-timeline",
+	"category": "layouts",
+	"description": "Organic serpentine cubic bezier SVG timeline with pure native rAF progress beam and zero external animation libraries.",
+	"version": "1.0.0",
+	"props": [
+		{
+			"name": "curveWidth",
+			"label": "Curve Swing (px)",
+			"type": "number",
+			"defaultValue": 24,
+			"min": 10,
+			"max": 60,
+			"step": 2,
+			"description": "Horizontal amplitude of bezier swing."
+		},
+		{
+			"name": "curveHeight",
+			"label": "Curve Height (px)",
+			"type": "number",
+			"defaultValue": 40,
+			"min": 20,
+			"max": 80,
+			"step": 5,
+			"description": "Vertical transition height of bezier curves."
+		},
+		{
+			"name": "accentColor",
+			"label": "Accent Color",
+			"type": "string",
+			"defaultValue": "#6366f1",
+			"description": "Color of the active kinetic progress beam."
+		}
+	],
+	"dependencies": {
+		"react": ["@exhuma/core"],
+		"nextjs": ["@exhuma/core"],
+		"vue": ["@exhuma/core"],
+		"svelte": ["@exhuma/core"],
+		"solid": ["@exhuma/core"],
+		"angular": ["@exhuma/core"],
+		"astro": ["@exhuma/core"],
+		"vanilla": ["@exhuma/core"],
+		"react-native": ["@exhuma/core"],
+		"flutter": ["exhuma"]
+	},
+	"flavors": {
+		"react": [
+			{
+				"filename": "ScrollTimeline.tsx",
+				"language": "tsx",
+				"description": "Scroll Timeline — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
+				"code": "import * as React from 'react';\nimport * as ScrollTimelinePrimitive from '@exhuma/core';\nimport { clsx } from 'clsx';\n\nexport interface ScrollTimelineProps extends React.ComponentPropsWithoutRef<typeof ScrollTimelinePrimitive.ScrollTimeline> {\n  className?: string;\n}\n\nexport const ScrollTimeline = React.forwardRef<HTMLDivElement, ScrollTimelineProps>(\n  ({ className, children, ...props }, ref) => (\n    <ScrollTimelinePrimitive.ScrollTimeline\n      ref={ref}\n      className={clsx(\n        'relative max-w-4xl mx-auto py-16 px-4',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </ScrollTimelinePrimitive.ScrollTimeline>\n  )\n);\nScrollTimeline.displayName = 'ScrollTimeline';\n"
+			}
+		],
+		"nextjs": [
+			{
+				"filename": "ScrollTimeline.tsx",
+				"language": "tsx",
+				"description": "Scroll Timeline — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
+				"code": "'use client';\n\nimport * as React from 'react';\nimport * as ScrollTimelinePrimitive from '@exhuma/core';\nimport { clsx } from 'clsx';\n\nexport interface ScrollTimelineProps extends React.ComponentPropsWithoutRef<typeof ScrollTimelinePrimitive.ScrollTimeline> {\n  className?: string;\n}\n\nexport const ScrollTimeline = React.forwardRef<HTMLDivElement, ScrollTimelineProps>(\n  ({ className, children, ...props }, ref) => (\n    <ScrollTimelinePrimitive.ScrollTimeline\n      ref={ref}\n      className={clsx(\n        'relative max-w-4xl mx-auto py-16 px-4',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </ScrollTimelinePrimitive.ScrollTimeline>\n  )\n);\nScrollTimeline.displayName = 'ScrollTimeline';\n"
+			}
+		],
+		"vue": [
+			{
+				"filename": "ScrollTimeline.vue",
+				"language": "vue",
+				"description": "Vue 3 Scroll Timeline outer adapter wrapping @exhuma/core headless primitive.",
+				"code": "<script setup lang=\"ts\">\nimport { ScrollTimeline as ScrollTimelinePrimitive } from '@exhuma/core';\nimport { clsx } from 'clsx';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst props = withDefaults(defineProps<Props>(), {\n  class: '',\n});\n</script>\n\n<template>\n  <ScrollTimelinePrimitive\n    v-bind=\"props\"\n    :class=\"clsx('relative max-w-4xl mx-auto py-16 px-4', props.class)\"\n  >\n    <slot />\n  </ScrollTimelinePrimitive>\n</template>\n"
+			}
+		],
+		"svelte": [
+			{
+				"filename": "ScrollTimeline.svelte",
+				"language": "svelte",
+				"description": "Svelte 5 Scroll Timeline adapter using runes and @exhuma/core primitives.",
+				"code": "<script lang=\"ts\">\n  import { ScrollTimeline as ScrollTimelinePrimitive } from '@exhuma/core';\n  import { clsx } from 'clsx';\n\n  let {\n    class: className = '',\n    children,\n    ...restProps\n  }: {\n    class?: string;\n    children?: import('svelte').Snippet;\n    [key: string]: unknown;\n  } = $props();\n</script>\n\n<ScrollTimelinePrimitive\n  class={clsx('relative max-w-4xl mx-auto py-16 px-4', className)}\n  {...restProps}\n>\n  {@render children?.()}\n</ScrollTimelinePrimitive>\n"
+			}
+		],
+		"angular": [
+			{
+				"filename": "scroll-timeline.component.ts",
+				"language": "typescript",
+				"description": "Angular 18+ Standalone Scroll Timeline component.",
+				"code": "import { Component, input } from '@angular/core';\nimport { CommonModule } from '@angular/common';\n\n@Component({\n  selector: 'exhuma-scroll-timeline',\n  standalone: true,\n  imports: [CommonModule],\n  template: `\n    <div\n      class=\"relative max-w-4xl mx-auto py-16 px-4 {{ customClass() }}\"\n    >\n      <ng-content></ng-content>\n    </div>\n  `,\n})\nexport class ExhumaScrollTimelineComponent {\n  readonly customClass = input<string>('');\n}\n"
+			}
+		],
+		"solid": [
+			{
+				"filename": "ScrollTimeline.tsx",
+				"language": "tsx",
+				"description": "SolidJS Scroll Timeline adapter wrapping @exhuma/core headless primitive.",
+				"code": "import { Component, JSX, splitProps } from 'solid-js';\nimport * as ScrollTimelinePrimitive from '@exhuma/core';\n\nexport interface ScrollTimelineProps extends JSX.HTMLAttributes<HTMLDivElement> {\n  [key: string]: unknown;\n}\n\nexport const ScrollTimeline: Component<ScrollTimelineProps> = (props) => {\n  const [local, others] = splitProps(props, ['class', 'children']);\n  return (\n    <ScrollTimelinePrimitive.ScrollTimeline\n      class={`relative max-w-4xl mx-auto py-16 px-4 ${local.class ?? ''}`}\n      {...others}\n    >\n      {local.children}\n    </ScrollTimelinePrimitive.ScrollTimeline>\n  );\n};\n"
+			}
+		],
+		"astro": [
+			{
+				"filename": "ScrollTimeline.astro",
+				"language": "astro",
+				"description": "Astro Scroll Timeline component with @exhuma/core primitive.",
+				"code": "---\nimport * as ScrollTimelinePrimitive from '@exhuma/core';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst { class: className = '', ...props } = Astro.props;\n---\n\n<ScrollTimelinePrimitive.ScrollTimeline\n  client:visible\n  className={`relative max-w-4xl mx-auto py-16 px-4 ${className}`}\n  {...props}\n>\n  <slot />\n</ScrollTimelinePrimitive.ScrollTimeline>\n"
+			}
+		],
+		"blade": [
+			{
+				"filename": "scroll-timeline.blade.php",
+				"language": "php",
+				"description": "Laravel Blade component for Scroll Timeline with Alpine / data attributes.",
+				"code": "@props([])\n\n<exhuma-scroll-timeline\n    {{ $attributes->merge([\n        'class' => 'relative max-w-4xl mx-auto py-16 px-4 block',\n    ]) }}\n>\n    {{ $slot }}\n</exhuma-scroll-timeline>\n"
+			}
+		],
+		"vanilla": [
+			{
+				"filename": "exhuma-scroll-timeline.js",
+				"language": "javascript",
+				"description": "Autonomous Vanilla JS Scroll Timeline initialization module.",
+				"code": "import { ScrollTimeline } from '@exhuma/core';\n\nexport function initScrollTimeline(selector = '[data-exhuma-scroll-timeline]', options = {}) {\n  const elements = document.querySelectorAll(selector);\n  return Array.from(elements);\n}\n"
+			}
+		],
+		"wordpress": [
+			{
+				"filename": "block.json",
+				"language": "json",
+				"description": "WordPress Block API v3 definition for Scroll Timeline.",
+				"code": "{\n  \"$schema\": \"https://schemas.wp.org/trunk/block.json\",\n  \"apiVersion\": 3,\n  \"name\": \"exhuma/scroll-timeline\",\n  \"version\": \"1.0.0\",\n  \"title\": \"Exhuma Scroll Timeline\",\n  \"category\": \"design\",\n  \"icon\": \"art\",\n  \"description\": \"Organic serpentine cubic bezier SVG timeline with pure native rAF progress beam.\",\n  \"attributes\": {},\n  \"editorScript\": \"file:./index.js\",\n  \"viewScript\": \"exhuma-kinetic\"\n}"
+			}
+		],
+		"webcomponent": [
+			{
+				"filename": "exhuma-scroll-timeline.js",
+				"language": "javascript",
+				"description": "Universal Web Component wrapper for <exhuma-scroll-timeline>.",
+				"code": "import { ScrollTimeline } from '@exhuma/core';\n\nclass ExhumaScrollTimelineElement extends HTMLElement {\n  connectedCallback() {\n    this.classList.add('exhuma-scroll-timeline');\n    this.style.display = 'block';\n  }\n}\n\nif (!customElements.get('exhuma-scroll-timeline')) {\n  customElements.define('exhuma-scroll-timeline', ExhumaScrollTimelineElement);\n}\n"
+			}
+		],
+		"react-native": [
+			{
+				"filename": "ScrollTimeline.tsx",
+				"language": "tsx",
+				"description": "React Native Scroll Timeline adapter wrapping @exhuma/core touch primitive.",
+				"code": "import React from 'react';\nimport { View, StyleSheet, type ViewProps } from 'react-native';\nimport * as ScrollTimelinePrimitive from '@exhuma/core';\n\nexport interface ScrollTimelineProps extends ViewProps {\n  children?: React.ReactNode;\n}\n\nexport function ScrollTimeline({ style, children, ...props }: ScrollTimelineProps) {\n  return (\n    <View style={[styles.container, style]} {...props}>\n      {children}\n    </View>\n  );\n}\n\nconst styles = StyleSheet.create({\n  container: {\n    borderRadius: 16,\n    borderWidth: 1,\n    borderColor: '#e2e8f0',\n    backgroundColor: '#ffffff',\n    padding: 20,\n    overflow: 'hidden',\n  },\n});\n"
+			}
+		],
+		"flutter": [
+			{
+				"filename": "scroll_timeline.dart",
+				"language": "dart",
+				"description": "Flutter Scroll Timeline widget wrapping package:exhuma.",
+				"code": "import 'package:flutter/material.dart';\nimport 'package:exhuma/exhuma.dart' as exhuma;\n\nclass ExhumaScrollTimeline extends StatelessWidget {\n  final Widget child;\n\n  const ExhumaScrollTimeline({\n    super.key,\n    required this.child,\n  });\n\n  @override\n  Widget build(BuildContext context) {\n    return Container(\n      decoration: BoxDecoration(\n        borderRadius: BorderRadius.circular(16.0),\n        border: Border.all(color: Theme.of(context).dividerColor),\n        color: Theme.of(context).cardColor,\n      ),\n      padding: const EdgeInsets.all(20.0),\n      child: child,\n    );\n  }\n}\n"
+			}
+		]
+	}
 }

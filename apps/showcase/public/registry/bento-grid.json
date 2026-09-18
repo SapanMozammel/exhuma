@@ -1,164 +1,144 @@
 {
-  "name": "Bento Grid",
-  "slug": "bento-grid",
-  "category": "layouts",
-  "description": "Fluid responsive layout engine with dense auto-flow, asymmetric card spans, and subtle kinetic hover glow.",
-  "version": "1.0.0",
-  "props": [
-    {
-      "name": "cols",
-      "label": "Columns",
-      "type": "number",
-      "defaultValue": 3,
-      "min": 1,
-      "max": 6,
-      "step": 1,
-      "description": "Maximum column count for desktop screens."
-    },
-    {
-      "name": "gap",
-      "label": "Grid Gap",
-      "type": "string",
-      "defaultValue": "1.5rem",
-      "description": "Spacing between bento tiles."
-    }
-  ],
-  "dependencies": {
-    "react": [
-      "@exhuma/core"
-    ],
-    "nextjs": [
-      "@exhuma/core"
-    ],
-    "vue": [
-      "@exhuma/core"
-    ],
-    "svelte": [
-      "@exhuma/core"
-    ],
-    "solid": [
-      "@exhuma/core"
-    ],
-    "angular": [
-      "@exhuma/core"
-    ],
-    "astro": [
-      "@exhuma/core"
-    ],
-    "vanilla": [
-      "@exhuma/core"
-    ],
-    "react-native": [
-      "@exhuma/core"
-    ],
-    "flutter": [
-      "exhuma"
-    ]
-  },
-  "flavors": {
-    "react": [
-      {
-        "filename": "BentoGrid.tsx",
-        "language": "tsx",
-        "description": "Bento Grid — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
-        "code": "import * as React from 'react';\nimport * as BentoGridPrimitive from '@exhuma/core';\nimport { clsx } from 'clsx';\n\nexport interface BentoGridProps extends React.ComponentPropsWithoutRef<typeof BentoGridPrimitive.BentoGrid> {\n  className?: string;\n}\n\nexport const BentoGrid = React.forwardRef<HTMLDivElement, BentoGridProps>(\n  ({ className, children, ...props }, ref) => (\n    <BentoGridPrimitive.BentoGrid\n      ref={ref}\n      className={clsx(\n        'grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[22rem] max-w-7xl mx-auto w-full',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </BentoGridPrimitive.BentoGrid>\n  )\n);\nBentoGrid.displayName = 'BentoGrid';\n"
-      }
-    ],
-    "nextjs": [
-      {
-        "filename": "BentoGrid.tsx",
-        "language": "tsx",
-        "description": "Bento Grid — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
-        "code": "'use client';\n\nimport * as React from 'react';\nimport * as BentoGridPrimitive from '@exhuma/core';\nimport { clsx } from 'clsx';\n\nexport interface BentoGridProps extends React.ComponentPropsWithoutRef<typeof BentoGridPrimitive.BentoGrid> {\n  className?: string;\n}\n\nexport const BentoGrid = React.forwardRef<HTMLDivElement, BentoGridProps>(\n  ({ className, children, ...props }, ref) => (\n    <BentoGridPrimitive.BentoGrid\n      ref={ref}\n      className={clsx(\n        'grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[22rem] max-w-7xl mx-auto w-full',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </BentoGridPrimitive.BentoGrid>\n  )\n);\nBentoGrid.displayName = 'BentoGrid';\n"
-      }
-    ],
-    "vue": [
-      {
-        "filename": "BentoGrid.vue",
-        "language": "vue",
-        "description": "Vue 3 Bento Grid outer adapter wrapping @exhuma/core headless primitive.",
-        "code": "<script setup lang=\"ts\">\nimport { BentoGrid as BentoGridPrimitive } from '@exhuma/core';\nimport { clsx } from 'clsx';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst props = withDefaults(defineProps<Props>(), {\n  class: '',\n});\n</script>\n\n<template>\n  <BentoGridPrimitive\n    v-bind=\"props\"\n    :class=\"clsx('grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[22rem] max-w-7xl mx-auto w-full', props.class)\"\n  >\n    <slot />\n  </BentoGridPrimitive>\n</template>\n"
-      }
-    ],
-    "svelte": [
-      {
-        "filename": "BentoGrid.svelte",
-        "language": "svelte",
-        "description": "Svelte 5 Bento Grid adapter using runes and @exhuma/core primitives.",
-        "code": "<script lang=\"ts\">\n  import { BentoGrid as BentoGridPrimitive } from '@exhuma/core';\n  import { clsx } from 'clsx';\n\n  let {\n    class: className = '',\n    children,\n    ...restProps\n  }: {\n    class?: string;\n    children?: import('svelte').Snippet;\n    [key: string]: unknown;\n  } = $props();\n</script>\n\n<BentoGridPrimitive\n  class={clsx('grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[22rem] max-w-7xl mx-auto w-full', className)}\n  {...restProps}\n>\n  {@render children?.()}\n</BentoGridPrimitive>\n"
-      }
-    ],
-    "angular": [
-      {
-        "filename": "bento-grid.component.ts",
-        "language": "typescript",
-        "description": "Angular 18+ Standalone Bento Grid component.",
-        "code": "import { Component, input } from '@angular/core';\nimport { CommonModule } from '@angular/common';\n\n@Component({\n  selector: 'exhuma-bento-grid',\n  standalone: true,\n  imports: [CommonModule],\n  template: `\n    <div\n      class=\"grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[22rem] max-w-7xl mx-auto w-full {{ customClass() }}\"\n    >\n      <ng-content></ng-content>\n    </div>\n  `,\n})\nexport class ExhumaBentoGridComponent {\n  readonly customClass = input<string>('');\n}\n"
-      }
-    ],
-    "solid": [
-      {
-        "filename": "BentoGrid.tsx",
-        "language": "tsx",
-        "description": "SolidJS Bento Grid adapter wrapping @exhuma/core headless primitive.",
-        "code": "import { Component, JSX, splitProps } from 'solid-js';\nimport * as BentoGridPrimitive from '@exhuma/core';\n\nexport interface BentoGridProps extends JSX.HTMLAttributes<HTMLDivElement> {\n  [key: string]: unknown;\n}\n\nexport const BentoGrid: Component<BentoGridProps> = (props) => {\n  const [local, others] = splitProps(props, ['class', 'children']);\n  return (\n    <BentoGridPrimitive.BentoGrid\n      class={`grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[22rem] max-w-7xl mx-auto w-full ${local.class ?? ''}`}\n      {...others}\n    >\n      {local.children}\n    </BentoGridPrimitive.BentoGrid>\n  );\n};\n"
-      }
-    ],
-    "astro": [
-      {
-        "filename": "BentoGrid.astro",
-        "language": "astro",
-        "description": "Astro Bento Grid component with @exhuma/core primitive.",
-        "code": "---\nimport * as BentoGridPrimitive from '@exhuma/core';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst { class: className = '', ...props } = Astro.props;\n---\n\n<BentoGridPrimitive.BentoGrid\n  client:visible\n  className={`grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[22rem] max-w-7xl mx-auto w-full ${className}`}\n  {...props}\n>\n  <slot />\n</BentoGridPrimitive.BentoGrid>\n"
-      }
-    ],
-    "blade": [
-      {
-        "filename": "bento-grid.blade.php",
-        "language": "php",
-        "description": "Laravel Blade component for Bento Grid with Alpine / data attributes.",
-        "code": "@props([])\n\n<exhuma-bento-grid\n    {{ $attributes->merge([\n        'class' => 'grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[22rem] max-w-7xl mx-auto w-full block',\n    ]) }}\n>\n    {{ $slot }}\n</exhuma-bento-grid>\n"
-      }
-    ],
-    "vanilla": [
-      {
-        "filename": "exhuma-bento-grid.js",
-        "language": "javascript",
-        "description": "Autonomous Vanilla JS Bento Grid initialization module.",
-        "code": "import { BentoGrid } from '@exhuma/core';\n\nexport function initBentoGrid(selector = '[data-exhuma-bento-grid]', options = {}) {\n  const elements = document.querySelectorAll(selector);\n  return Array.from(elements);\n}\n"
-      }
-    ],
-    "wordpress": [
-      {
-        "filename": "block.json",
-        "language": "json",
-        "description": "WordPress Block API v3 definition for Bento Grid.",
-        "code": "{\n  \"$schema\": \"https://schemas.wp.org/trunk/block.json\",\n  \"apiVersion\": 3,\n  \"name\": \"exhuma/bento-grid\",\n  \"version\": \"1.0.0\",\n  \"title\": \"Exhuma Bento Grid\",\n  \"category\": \"design\",\n  \"icon\": \"art\",\n  \"description\": \"Fluid responsive layout engine with dense auto-flow and asymmetric spans.\",\n  \"attributes\": {},\n  \"editorScript\": \"file:./index.js\",\n  \"viewScript\": \"exhuma-kinetic\"\n}"
-      }
-    ],
-    "webcomponent": [
-      {
-        "filename": "exhuma-bento-grid.js",
-        "language": "javascript",
-        "description": "Universal Web Component wrapper for <exhuma-bento-grid>.",
-        "code": "import { BentoGrid } from '@exhuma/core';\n\nclass ExhumaBentoGridElement extends HTMLElement {\n  connectedCallback() {\n    this.classList.add('exhuma-bento-grid');\n    this.style.display = 'block';\n  }\n}\n\nif (!customElements.get('exhuma-bento-grid')) {\n  customElements.define('exhuma-bento-grid', ExhumaBentoGridElement);\n}\n"
-      }
-    ],
-    "react-native": [
-      {
-        "filename": "BentoGrid.tsx",
-        "language": "tsx",
-        "description": "React Native Bento Grid adapter wrapping @exhuma/core touch primitive.",
-        "code": "import React from 'react';\nimport { View, StyleSheet, type ViewProps } from 'react-native';\nimport * as BentoGridPrimitive from '@exhuma/core';\n\nexport interface BentoGridProps extends ViewProps {\n  children?: React.ReactNode;\n}\n\nexport function BentoGrid({ style, children, ...props }: BentoGridProps) {\n  return (\n    <View style={[styles.container, style]} {...props}>\n      {children}\n    </View>\n  );\n}\n\nconst styles = StyleSheet.create({\n  container: {\n    borderRadius: 16,\n    borderWidth: 1,\n    borderColor: '#e2e8f0',\n    backgroundColor: '#ffffff',\n    padding: 20,\n    overflow: 'hidden',\n  },\n});\n"
-      }
-    ],
-    "flutter": [
-      {
-        "filename": "bento_grid.dart",
-        "language": "dart",
-        "description": "Flutter Bento Grid widget wrapping package:exhuma.",
-        "code": "import 'package:flutter/material.dart';\nimport 'package:exhuma/exhuma.dart' as exhuma;\n\nclass ExhumaBentoGrid extends StatelessWidget {\n  final Widget child;\n\n  const ExhumaBentoGrid({\n    super.key,\n    required this.child,\n  });\n\n  @override\n  Widget build(BuildContext context) {\n    return Container(\n      decoration: BoxDecoration(\n        borderRadius: BorderRadius.circular(16.0),\n        border: Border.all(color: Theme.of(context).dividerColor),\n        color: Theme.of(context).cardColor,\n      ),\n      padding: const EdgeInsets.all(20.0),\n      child: child,\n    );\n  }\n}\n"
-      }
-    ]
-  }
+	"name": "Bento Grid",
+	"slug": "bento-grid",
+	"category": "layouts",
+	"description": "Fluid responsive layout engine with dense auto-flow, asymmetric card spans, and subtle kinetic hover glow.",
+	"version": "1.0.0",
+	"props": [
+		{
+			"name": "cols",
+			"label": "Columns",
+			"type": "number",
+			"defaultValue": 3,
+			"min": 1,
+			"max": 6,
+			"step": 1,
+			"description": "Maximum column count for desktop screens."
+		},
+		{
+			"name": "gap",
+			"label": "Grid Gap",
+			"type": "string",
+			"defaultValue": "1.5rem",
+			"description": "Spacing between bento tiles."
+		}
+	],
+	"dependencies": {
+		"react": ["@exhuma/core"],
+		"nextjs": ["@exhuma/core"],
+		"vue": ["@exhuma/core"],
+		"svelte": ["@exhuma/core"],
+		"solid": ["@exhuma/core"],
+		"angular": ["@exhuma/core"],
+		"astro": ["@exhuma/core"],
+		"vanilla": ["@exhuma/core"],
+		"react-native": ["@exhuma/core"],
+		"flutter": ["exhuma"]
+	},
+	"flavors": {
+		"react": [
+			{
+				"filename": "BentoGrid.tsx",
+				"language": "tsx",
+				"description": "Bento Grid — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
+				"code": "import * as React from 'react';\nimport * as BentoGridPrimitive from '@exhuma/core';\nimport { clsx } from 'clsx';\n\nexport interface BentoGridProps extends React.ComponentPropsWithoutRef<typeof BentoGridPrimitive.BentoGrid> {\n  className?: string;\n}\n\nexport const BentoGrid = React.forwardRef<HTMLDivElement, BentoGridProps>(\n  ({ className, children, ...props }, ref) => (\n    <BentoGridPrimitive.BentoGrid\n      ref={ref}\n      className={clsx(\n        'grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[22rem] max-w-7xl mx-auto w-full',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </BentoGridPrimitive.BentoGrid>\n  )\n);\nBentoGrid.displayName = 'BentoGrid';\n"
+			}
+		],
+		"nextjs": [
+			{
+				"filename": "BentoGrid.tsx",
+				"language": "tsx",
+				"description": "Bento Grid — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
+				"code": "'use client';\n\nimport * as React from 'react';\nimport * as BentoGridPrimitive from '@exhuma/core';\nimport { clsx } from 'clsx';\n\nexport interface BentoGridProps extends React.ComponentPropsWithoutRef<typeof BentoGridPrimitive.BentoGrid> {\n  className?: string;\n}\n\nexport const BentoGrid = React.forwardRef<HTMLDivElement, BentoGridProps>(\n  ({ className, children, ...props }, ref) => (\n    <BentoGridPrimitive.BentoGrid\n      ref={ref}\n      className={clsx(\n        'grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[22rem] max-w-7xl mx-auto w-full',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </BentoGridPrimitive.BentoGrid>\n  )\n);\nBentoGrid.displayName = 'BentoGrid';\n"
+			}
+		],
+		"vue": [
+			{
+				"filename": "BentoGrid.vue",
+				"language": "vue",
+				"description": "Vue 3 Bento Grid outer adapter wrapping @exhuma/core headless primitive.",
+				"code": "<script setup lang=\"ts\">\nimport { BentoGrid as BentoGridPrimitive } from '@exhuma/core';\nimport { clsx } from 'clsx';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst props = withDefaults(defineProps<Props>(), {\n  class: '',\n});\n</script>\n\n<template>\n  <BentoGridPrimitive\n    v-bind=\"props\"\n    :class=\"clsx('grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[22rem] max-w-7xl mx-auto w-full', props.class)\"\n  >\n    <slot />\n  </BentoGridPrimitive>\n</template>\n"
+			}
+		],
+		"svelte": [
+			{
+				"filename": "BentoGrid.svelte",
+				"language": "svelte",
+				"description": "Svelte 5 Bento Grid adapter using runes and @exhuma/core primitives.",
+				"code": "<script lang=\"ts\">\n  import { BentoGrid as BentoGridPrimitive } from '@exhuma/core';\n  import { clsx } from 'clsx';\n\n  let {\n    class: className = '',\n    children,\n    ...restProps\n  }: {\n    class?: string;\n    children?: import('svelte').Snippet;\n    [key: string]: unknown;\n  } = $props();\n</script>\n\n<BentoGridPrimitive\n  class={clsx('grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[22rem] max-w-7xl mx-auto w-full', className)}\n  {...restProps}\n>\n  {@render children?.()}\n</BentoGridPrimitive>\n"
+			}
+		],
+		"angular": [
+			{
+				"filename": "bento-grid.component.ts",
+				"language": "typescript",
+				"description": "Angular 18+ Standalone Bento Grid component.",
+				"code": "import { Component, input } from '@angular/core';\nimport { CommonModule } from '@angular/common';\n\n@Component({\n  selector: 'exhuma-bento-grid',\n  standalone: true,\n  imports: [CommonModule],\n  template: `\n    <div\n      class=\"grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[22rem] max-w-7xl mx-auto w-full {{ customClass() }}\"\n    >\n      <ng-content></ng-content>\n    </div>\n  `,\n})\nexport class ExhumaBentoGridComponent {\n  readonly customClass = input<string>('');\n}\n"
+			}
+		],
+		"solid": [
+			{
+				"filename": "BentoGrid.tsx",
+				"language": "tsx",
+				"description": "SolidJS Bento Grid adapter wrapping @exhuma/core headless primitive.",
+				"code": "import { Component, JSX, splitProps } from 'solid-js';\nimport * as BentoGridPrimitive from '@exhuma/core';\n\nexport interface BentoGridProps extends JSX.HTMLAttributes<HTMLDivElement> {\n  [key: string]: unknown;\n}\n\nexport const BentoGrid: Component<BentoGridProps> = (props) => {\n  const [local, others] = splitProps(props, ['class', 'children']);\n  return (\n    <BentoGridPrimitive.BentoGrid\n      class={`grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[22rem] max-w-7xl mx-auto w-full ${local.class ?? ''}`}\n      {...others}\n    >\n      {local.children}\n    </BentoGridPrimitive.BentoGrid>\n  );\n};\n"
+			}
+		],
+		"astro": [
+			{
+				"filename": "BentoGrid.astro",
+				"language": "astro",
+				"description": "Astro Bento Grid component with @exhuma/core primitive.",
+				"code": "---\nimport * as BentoGridPrimitive from '@exhuma/core';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst { class: className = '', ...props } = Astro.props;\n---\n\n<BentoGridPrimitive.BentoGrid\n  client:visible\n  className={`grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[22rem] max-w-7xl mx-auto w-full ${className}`}\n  {...props}\n>\n  <slot />\n</BentoGridPrimitive.BentoGrid>\n"
+			}
+		],
+		"blade": [
+			{
+				"filename": "bento-grid.blade.php",
+				"language": "php",
+				"description": "Laravel Blade component for Bento Grid with Alpine / data attributes.",
+				"code": "@props([])\n\n<exhuma-bento-grid\n    {{ $attributes->merge([\n        'class' => 'grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[22rem] max-w-7xl mx-auto w-full block',\n    ]) }}\n>\n    {{ $slot }}\n</exhuma-bento-grid>\n"
+			}
+		],
+		"vanilla": [
+			{
+				"filename": "exhuma-bento-grid.js",
+				"language": "javascript",
+				"description": "Autonomous Vanilla JS Bento Grid initialization module.",
+				"code": "import { BentoGrid } from '@exhuma/core';\n\nexport function initBentoGrid(selector = '[data-exhuma-bento-grid]', options = {}) {\n  const elements = document.querySelectorAll(selector);\n  return Array.from(elements);\n}\n"
+			}
+		],
+		"wordpress": [
+			{
+				"filename": "block.json",
+				"language": "json",
+				"description": "WordPress Block API v3 definition for Bento Grid.",
+				"code": "{\n  \"$schema\": \"https://schemas.wp.org/trunk/block.json\",\n  \"apiVersion\": 3,\n  \"name\": \"exhuma/bento-grid\",\n  \"version\": \"1.0.0\",\n  \"title\": \"Exhuma Bento Grid\",\n  \"category\": \"design\",\n  \"icon\": \"art\",\n  \"description\": \"Fluid responsive layout engine with dense auto-flow and asymmetric spans.\",\n  \"attributes\": {},\n  \"editorScript\": \"file:./index.js\",\n  \"viewScript\": \"exhuma-kinetic\"\n}"
+			}
+		],
+		"webcomponent": [
+			{
+				"filename": "exhuma-bento-grid.js",
+				"language": "javascript",
+				"description": "Universal Web Component wrapper for <exhuma-bento-grid>.",
+				"code": "import { BentoGrid } from '@exhuma/core';\n\nclass ExhumaBentoGridElement extends HTMLElement {\n  connectedCallback() {\n    this.classList.add('exhuma-bento-grid');\n    this.style.display = 'block';\n  }\n}\n\nif (!customElements.get('exhuma-bento-grid')) {\n  customElements.define('exhuma-bento-grid', ExhumaBentoGridElement);\n}\n"
+			}
+		],
+		"react-native": [
+			{
+				"filename": "BentoGrid.tsx",
+				"language": "tsx",
+				"description": "React Native Bento Grid adapter wrapping @exhuma/core touch primitive.",
+				"code": "import React from 'react';\nimport { View, StyleSheet, type ViewProps } from 'react-native';\nimport * as BentoGridPrimitive from '@exhuma/core';\n\nexport interface BentoGridProps extends ViewProps {\n  children?: React.ReactNode;\n}\n\nexport function BentoGrid({ style, children, ...props }: BentoGridProps) {\n  return (\n    <View style={[styles.container, style]} {...props}>\n      {children}\n    </View>\n  );\n}\n\nconst styles = StyleSheet.create({\n  container: {\n    borderRadius: 16,\n    borderWidth: 1,\n    borderColor: '#e2e8f0',\n    backgroundColor: '#ffffff',\n    padding: 20,\n    overflow: 'hidden',\n  },\n});\n"
+			}
+		],
+		"flutter": [
+			{
+				"filename": "bento_grid.dart",
+				"language": "dart",
+				"description": "Flutter Bento Grid widget wrapping package:exhuma.",
+				"code": "import 'package:flutter/material.dart';\nimport 'package:exhuma/exhuma.dart' as exhuma;\n\nclass ExhumaBentoGrid extends StatelessWidget {\n  final Widget child;\n\n  const ExhumaBentoGrid({\n    super.key,\n    required this.child,\n  });\n\n  @override\n  Widget build(BuildContext context) {\n    return Container(\n      decoration: BoxDecoration(\n        borderRadius: BorderRadius.circular(16.0),\n        border: Border.all(color: Theme.of(context).dividerColor),\n        color: Theme.of(context).cardColor,\n      ),\n      padding: const EdgeInsets.all(20.0),\n      child: child,\n    );\n  }\n}\n"
+			}
+		]
+	}
 }

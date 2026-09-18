@@ -1,157 +1,137 @@
 {
-  "name": "Cursor Tooltip",
-  "slug": "cursor-tooltip",
-  "category": "primitives",
-  "description": "Tactile cursor-following tooltip with continuous exponential lerp tracking, boundary viewport collision clamping, and zero Framer Motion dependencies.",
-  "version": "1.0.0",
-  "props": [
-    {
-      "name": "springDamping",
-      "label": "Spring Damping",
-      "type": "number",
-      "defaultValue": 22,
-      "min": 5,
-      "max": 40,
-      "step": 1,
-      "description": "Exponential smoothing factor for trailing cursor physics."
-    }
-  ],
-  "dependencies": {
-    "react": [
-      "@exhuma/core"
-    ],
-    "nextjs": [
-      "@exhuma/core"
-    ],
-    "vue": [
-      "@exhuma/core"
-    ],
-    "svelte": [
-      "@exhuma/core"
-    ],
-    "solid": [
-      "@exhuma/core"
-    ],
-    "angular": [
-      "@exhuma/core"
-    ],
-    "astro": [
-      "@exhuma/core"
-    ],
-    "vanilla": [
-      "@exhuma/core"
-    ],
-    "react-native": [
-      "@exhuma/core"
-    ],
-    "flutter": [
-      "exhuma"
-    ]
-  },
-  "flavors": {
-    "react": [
-      {
-        "filename": "CursorTooltip.tsx",
-        "language": "tsx",
-        "description": "Cursor Tooltip — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
-        "code": "import * as React from 'react';\nimport * as CursorTooltipPrimitive from '@exhuma/core';\nimport { clsx } from 'clsx';\n\nexport interface CursorTooltipProps extends React.ComponentPropsWithoutRef<typeof CursorTooltipPrimitive.CursorTooltip> {\n  className?: string;\n}\n\nexport const CursorTooltip = React.forwardRef<HTMLDivElement, CursorTooltipProps>(\n  ({ className, children, ...props }, ref) => (\n    <CursorTooltipPrimitive.CursorTooltip\n      ref={ref}\n      className={clsx(\n        'relative inline-block cursor-pointer',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </CursorTooltipPrimitive.CursorTooltip>\n  )\n);\nCursorTooltip.displayName = 'CursorTooltip';\n"
-      }
-    ],
-    "nextjs": [
-      {
-        "filename": "CursorTooltip.tsx",
-        "language": "tsx",
-        "description": "Cursor Tooltip — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
-        "code": "'use client';\n\nimport * as React from 'react';\nimport * as CursorTooltipPrimitive from '@exhuma/core';\nimport { clsx } from 'clsx';\n\nexport interface CursorTooltipProps extends React.ComponentPropsWithoutRef<typeof CursorTooltipPrimitive.CursorTooltip> {\n  className?: string;\n}\n\nexport const CursorTooltip = React.forwardRef<HTMLDivElement, CursorTooltipProps>(\n  ({ className, children, ...props }, ref) => (\n    <CursorTooltipPrimitive.CursorTooltip\n      ref={ref}\n      className={clsx(\n        'relative inline-block cursor-pointer',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </CursorTooltipPrimitive.CursorTooltip>\n  )\n);\nCursorTooltip.displayName = 'CursorTooltip';\n"
-      }
-    ],
-    "vue": [
-      {
-        "filename": "CursorTooltip.vue",
-        "language": "vue",
-        "description": "Vue 3 Cursor Tooltip outer adapter wrapping @exhuma/core headless primitive.",
-        "code": "<script setup lang=\"ts\">\nimport { CursorTooltip as CursorTooltipPrimitive } from '@exhuma/core';\nimport { clsx } from 'clsx';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst props = withDefaults(defineProps<Props>(), {\n  class: '',\n});\n</script>\n\n<template>\n  <CursorTooltipPrimitive\n    v-bind=\"props\"\n    :class=\"clsx('relative inline-block cursor-pointer', props.class)\"\n  >\n    <slot />\n  </CursorTooltipPrimitive>\n</template>\n"
-      }
-    ],
-    "svelte": [
-      {
-        "filename": "CursorTooltip.svelte",
-        "language": "svelte",
-        "description": "Svelte 5 Cursor Tooltip adapter using runes and @exhuma/core primitives.",
-        "code": "<script lang=\"ts\">\n  import { CursorTooltip as CursorTooltipPrimitive } from '@exhuma/core';\n  import { clsx } from 'clsx';\n\n  let {\n    class: className = '',\n    children,\n    ...restProps\n  }: {\n    class?: string;\n    children?: import('svelte').Snippet;\n    [key: string]: unknown;\n  } = $props();\n</script>\n\n<CursorTooltipPrimitive\n  class={clsx('relative inline-block cursor-pointer', className)}\n  {...restProps}\n>\n  {@render children?.()}\n</CursorTooltipPrimitive>\n"
-      }
-    ],
-    "angular": [
-      {
-        "filename": "cursor-tooltip.component.ts",
-        "language": "typescript",
-        "description": "Angular 18+ Standalone Cursor Tooltip component.",
-        "code": "import { Component, input } from '@angular/core';\nimport { CommonModule } from '@angular/common';\n\n@Component({\n  selector: 'exhuma-cursor-tooltip',\n  standalone: true,\n  imports: [CommonModule],\n  template: `\n    <div\n      class=\"relative inline-block cursor-pointer {{ customClass() }}\"\n    >\n      <ng-content></ng-content>\n    </div>\n  `,\n})\nexport class ExhumaCursorTooltipComponent {\n  readonly customClass = input<string>('');\n}\n"
-      }
-    ],
-    "solid": [
-      {
-        "filename": "CursorTooltip.tsx",
-        "language": "tsx",
-        "description": "SolidJS Cursor Tooltip adapter wrapping @exhuma/core headless primitive.",
-        "code": "import { Component, JSX, splitProps } from 'solid-js';\nimport * as CursorTooltipPrimitive from '@exhuma/core';\n\nexport interface CursorTooltipProps extends JSX.HTMLAttributes<HTMLDivElement> {\n  [key: string]: unknown;\n}\n\nexport const CursorTooltip: Component<CursorTooltipProps> = (props) => {\n  const [local, others] = splitProps(props, ['class', 'children']);\n  return (\n    <CursorTooltipPrimitive.CursorTooltip\n      class={`relative inline-block cursor-pointer ${local.class ?? ''}`}\n      {...others}\n    >\n      {local.children}\n    </CursorTooltipPrimitive.CursorTooltip>\n  );\n};\n"
-      }
-    ],
-    "astro": [
-      {
-        "filename": "CursorTooltip.astro",
-        "language": "astro",
-        "description": "Astro Cursor Tooltip component with @exhuma/core primitive.",
-        "code": "---\nimport * as CursorTooltipPrimitive from '@exhuma/core';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst { class: className = '', ...props } = Astro.props;\n---\n\n<CursorTooltipPrimitive.CursorTooltip\n  client:visible\n  className={`relative inline-block cursor-pointer ${className}`}\n  {...props}\n>\n  <slot />\n</CursorTooltipPrimitive.CursorTooltip>\n"
-      }
-    ],
-    "blade": [
-      {
-        "filename": "cursor-tooltip.blade.php",
-        "language": "php",
-        "description": "Laravel Blade component for Cursor Tooltip with Alpine / data attributes.",
-        "code": "@props([])\n\n<exhuma-cursor-tooltip\n    {{ $attributes->merge([\n        'class' => 'relative inline-block cursor-pointer block',\n    ]) }}\n>\n    {{ $slot }}\n</exhuma-cursor-tooltip>\n"
-      }
-    ],
-    "vanilla": [
-      {
-        "filename": "exhuma-cursor-tooltip.js",
-        "language": "javascript",
-        "description": "Autonomous Vanilla JS Cursor Tooltip initialization module.",
-        "code": "import { CursorTooltip } from '@exhuma/core';\n\nexport function initCursorTooltip(selector = '[data-exhuma-cursor-tooltip]', options = {}) {\n  const elements = document.querySelectorAll(selector);\n  return Array.from(elements);\n}\n"
-      }
-    ],
-    "wordpress": [
-      {
-        "filename": "block.json",
-        "language": "json",
-        "description": "WordPress Block API v3 definition for Cursor Tooltip.",
-        "code": "{\n  \"$schema\": \"https://schemas.wp.org/trunk/block.json\",\n  \"apiVersion\": 3,\n  \"name\": \"exhuma/cursor-tooltip\",\n  \"version\": \"1.0.0\",\n  \"title\": \"Exhuma Cursor Tooltip\",\n  \"category\": \"design\",\n  \"icon\": \"art\",\n  \"description\": \"Tactile cursor-following tooltip with continuous exponential lerp tracking.\",\n  \"attributes\": {},\n  \"editorScript\": \"file:./index.js\",\n  \"viewScript\": \"exhuma-kinetic\"\n}"
-      }
-    ],
-    "webcomponent": [
-      {
-        "filename": "exhuma-cursor-tooltip.js",
-        "language": "javascript",
-        "description": "Universal Web Component wrapper for <exhuma-cursor-tooltip>.",
-        "code": "import { CursorTooltip } from '@exhuma/core';\n\nclass ExhumaCursorTooltipElement extends HTMLElement {\n  connectedCallback() {\n    this.classList.add('exhuma-cursor-tooltip');\n    this.style.display = 'block';\n  }\n}\n\nif (!customElements.get('exhuma-cursor-tooltip')) {\n  customElements.define('exhuma-cursor-tooltip', ExhumaCursorTooltipElement);\n}\n"
-      }
-    ],
-    "react-native": [
-      {
-        "filename": "CursorTooltip.tsx",
-        "language": "tsx",
-        "description": "React Native Cursor Tooltip adapter wrapping @exhuma/core touch primitive.",
-        "code": "import React from 'react';\nimport { View, StyleSheet, type ViewProps } from 'react-native';\nimport * as CursorTooltipPrimitive from '@exhuma/core';\n\nexport interface CursorTooltipProps extends ViewProps {\n  children?: React.ReactNode;\n}\n\nexport function CursorTooltip({ style, children, ...props }: CursorTooltipProps) {\n  return (\n    <View style={[styles.container, style]} {...props}>\n      {children}\n    </View>\n  );\n}\n\nconst styles = StyleSheet.create({\n  container: {\n    borderRadius: 16,\n    borderWidth: 1,\n    borderColor: '#e2e8f0',\n    backgroundColor: '#ffffff',\n    padding: 20,\n    overflow: 'hidden',\n  },\n});\n"
-      }
-    ],
-    "flutter": [
-      {
-        "filename": "cursor_tooltip.dart",
-        "language": "dart",
-        "description": "Flutter Cursor Tooltip widget wrapping package:exhuma.",
-        "code": "import 'package:flutter/material.dart';\nimport 'package:exhuma/exhuma.dart' as exhuma;\n\nclass ExhumaCursorTooltip extends StatelessWidget {\n  final Widget child;\n\n  const ExhumaCursorTooltip({\n    super.key,\n    required this.child,\n  });\n\n  @override\n  Widget build(BuildContext context) {\n    return Container(\n      decoration: BoxDecoration(\n        borderRadius: BorderRadius.circular(16.0),\n        border: Border.all(color: Theme.of(context).dividerColor),\n        color: Theme.of(context).cardColor,\n      ),\n      padding: const EdgeInsets.all(20.0),\n      child: child,\n    );\n  }\n}\n"
-      }
-    ]
-  }
+	"name": "Cursor Tooltip",
+	"slug": "cursor-tooltip",
+	"category": "primitives",
+	"description": "Tactile cursor-following tooltip with continuous exponential lerp tracking, boundary viewport collision clamping, and zero Framer Motion dependencies.",
+	"version": "1.0.0",
+	"props": [
+		{
+			"name": "springDamping",
+			"label": "Spring Damping",
+			"type": "number",
+			"defaultValue": 22,
+			"min": 5,
+			"max": 40,
+			"step": 1,
+			"description": "Exponential smoothing factor for trailing cursor physics."
+		}
+	],
+	"dependencies": {
+		"react": ["@exhuma/core"],
+		"nextjs": ["@exhuma/core"],
+		"vue": ["@exhuma/core"],
+		"svelte": ["@exhuma/core"],
+		"solid": ["@exhuma/core"],
+		"angular": ["@exhuma/core"],
+		"astro": ["@exhuma/core"],
+		"vanilla": ["@exhuma/core"],
+		"react-native": ["@exhuma/core"],
+		"flutter": ["exhuma"]
+	},
+	"flavors": {
+		"react": [
+			{
+				"filename": "CursorTooltip.tsx",
+				"language": "tsx",
+				"description": "Cursor Tooltip — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
+				"code": "import * as React from 'react';\nimport * as CursorTooltipPrimitive from '@exhuma/core';\nimport { clsx } from 'clsx';\n\nexport interface CursorTooltipProps extends React.ComponentPropsWithoutRef<typeof CursorTooltipPrimitive.CursorTooltip> {\n  className?: string;\n}\n\nexport const CursorTooltip = React.forwardRef<HTMLDivElement, CursorTooltipProps>(\n  ({ className, children, ...props }, ref) => (\n    <CursorTooltipPrimitive.CursorTooltip\n      ref={ref}\n      className={clsx(\n        'relative inline-block cursor-pointer',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </CursorTooltipPrimitive.CursorTooltip>\n  )\n);\nCursorTooltip.displayName = 'CursorTooltip';\n"
+			}
+		],
+		"nextjs": [
+			{
+				"filename": "CursorTooltip.tsx",
+				"language": "tsx",
+				"description": "Cursor Tooltip — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
+				"code": "'use client';\n\nimport * as React from 'react';\nimport * as CursorTooltipPrimitive from '@exhuma/core';\nimport { clsx } from 'clsx';\n\nexport interface CursorTooltipProps extends React.ComponentPropsWithoutRef<typeof CursorTooltipPrimitive.CursorTooltip> {\n  className?: string;\n}\n\nexport const CursorTooltip = React.forwardRef<HTMLDivElement, CursorTooltipProps>(\n  ({ className, children, ...props }, ref) => (\n    <CursorTooltipPrimitive.CursorTooltip\n      ref={ref}\n      className={clsx(\n        'relative inline-block cursor-pointer',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </CursorTooltipPrimitive.CursorTooltip>\n  )\n);\nCursorTooltip.displayName = 'CursorTooltip';\n"
+			}
+		],
+		"vue": [
+			{
+				"filename": "CursorTooltip.vue",
+				"language": "vue",
+				"description": "Vue 3 Cursor Tooltip outer adapter wrapping @exhuma/core headless primitive.",
+				"code": "<script setup lang=\"ts\">\nimport { CursorTooltip as CursorTooltipPrimitive } from '@exhuma/core';\nimport { clsx } from 'clsx';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst props = withDefaults(defineProps<Props>(), {\n  class: '',\n});\n</script>\n\n<template>\n  <CursorTooltipPrimitive\n    v-bind=\"props\"\n    :class=\"clsx('relative inline-block cursor-pointer', props.class)\"\n  >\n    <slot />\n  </CursorTooltipPrimitive>\n</template>\n"
+			}
+		],
+		"svelte": [
+			{
+				"filename": "CursorTooltip.svelte",
+				"language": "svelte",
+				"description": "Svelte 5 Cursor Tooltip adapter using runes and @exhuma/core primitives.",
+				"code": "<script lang=\"ts\">\n  import { CursorTooltip as CursorTooltipPrimitive } from '@exhuma/core';\n  import { clsx } from 'clsx';\n\n  let {\n    class: className = '',\n    children,\n    ...restProps\n  }: {\n    class?: string;\n    children?: import('svelte').Snippet;\n    [key: string]: unknown;\n  } = $props();\n</script>\n\n<CursorTooltipPrimitive\n  class={clsx('relative inline-block cursor-pointer', className)}\n  {...restProps}\n>\n  {@render children?.()}\n</CursorTooltipPrimitive>\n"
+			}
+		],
+		"angular": [
+			{
+				"filename": "cursor-tooltip.component.ts",
+				"language": "typescript",
+				"description": "Angular 18+ Standalone Cursor Tooltip component.",
+				"code": "import { Component, input } from '@angular/core';\nimport { CommonModule } from '@angular/common';\n\n@Component({\n  selector: 'exhuma-cursor-tooltip',\n  standalone: true,\n  imports: [CommonModule],\n  template: `\n    <div\n      class=\"relative inline-block cursor-pointer {{ customClass() }}\"\n    >\n      <ng-content></ng-content>\n    </div>\n  `,\n})\nexport class ExhumaCursorTooltipComponent {\n  readonly customClass = input<string>('');\n}\n"
+			}
+		],
+		"solid": [
+			{
+				"filename": "CursorTooltip.tsx",
+				"language": "tsx",
+				"description": "SolidJS Cursor Tooltip adapter wrapping @exhuma/core headless primitive.",
+				"code": "import { Component, JSX, splitProps } from 'solid-js';\nimport * as CursorTooltipPrimitive from '@exhuma/core';\n\nexport interface CursorTooltipProps extends JSX.HTMLAttributes<HTMLDivElement> {\n  [key: string]: unknown;\n}\n\nexport const CursorTooltip: Component<CursorTooltipProps> = (props) => {\n  const [local, others] = splitProps(props, ['class', 'children']);\n  return (\n    <CursorTooltipPrimitive.CursorTooltip\n      class={`relative inline-block cursor-pointer ${local.class ?? ''}`}\n      {...others}\n    >\n      {local.children}\n    </CursorTooltipPrimitive.CursorTooltip>\n  );\n};\n"
+			}
+		],
+		"astro": [
+			{
+				"filename": "CursorTooltip.astro",
+				"language": "astro",
+				"description": "Astro Cursor Tooltip component with @exhuma/core primitive.",
+				"code": "---\nimport * as CursorTooltipPrimitive from '@exhuma/core';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst { class: className = '', ...props } = Astro.props;\n---\n\n<CursorTooltipPrimitive.CursorTooltip\n  client:visible\n  className={`relative inline-block cursor-pointer ${className}`}\n  {...props}\n>\n  <slot />\n</CursorTooltipPrimitive.CursorTooltip>\n"
+			}
+		],
+		"blade": [
+			{
+				"filename": "cursor-tooltip.blade.php",
+				"language": "php",
+				"description": "Laravel Blade component for Cursor Tooltip with Alpine / data attributes.",
+				"code": "@props([])\n\n<exhuma-cursor-tooltip\n    {{ $attributes->merge([\n        'class' => 'relative inline-block cursor-pointer block',\n    ]) }}\n>\n    {{ $slot }}\n</exhuma-cursor-tooltip>\n"
+			}
+		],
+		"vanilla": [
+			{
+				"filename": "exhuma-cursor-tooltip.js",
+				"language": "javascript",
+				"description": "Autonomous Vanilla JS Cursor Tooltip initialization module.",
+				"code": "import { CursorTooltip } from '@exhuma/core';\n\nexport function initCursorTooltip(selector = '[data-exhuma-cursor-tooltip]', options = {}) {\n  const elements = document.querySelectorAll(selector);\n  return Array.from(elements);\n}\n"
+			}
+		],
+		"wordpress": [
+			{
+				"filename": "block.json",
+				"language": "json",
+				"description": "WordPress Block API v3 definition for Cursor Tooltip.",
+				"code": "{\n  \"$schema\": \"https://schemas.wp.org/trunk/block.json\",\n  \"apiVersion\": 3,\n  \"name\": \"exhuma/cursor-tooltip\",\n  \"version\": \"1.0.0\",\n  \"title\": \"Exhuma Cursor Tooltip\",\n  \"category\": \"design\",\n  \"icon\": \"art\",\n  \"description\": \"Tactile cursor-following tooltip with continuous exponential lerp tracking.\",\n  \"attributes\": {},\n  \"editorScript\": \"file:./index.js\",\n  \"viewScript\": \"exhuma-kinetic\"\n}"
+			}
+		],
+		"webcomponent": [
+			{
+				"filename": "exhuma-cursor-tooltip.js",
+				"language": "javascript",
+				"description": "Universal Web Component wrapper for <exhuma-cursor-tooltip>.",
+				"code": "import { CursorTooltip } from '@exhuma/core';\n\nclass ExhumaCursorTooltipElement extends HTMLElement {\n  connectedCallback() {\n    this.classList.add('exhuma-cursor-tooltip');\n    this.style.display = 'block';\n  }\n}\n\nif (!customElements.get('exhuma-cursor-tooltip')) {\n  customElements.define('exhuma-cursor-tooltip', ExhumaCursorTooltipElement);\n}\n"
+			}
+		],
+		"react-native": [
+			{
+				"filename": "CursorTooltip.tsx",
+				"language": "tsx",
+				"description": "React Native Cursor Tooltip adapter wrapping @exhuma/core touch primitive.",
+				"code": "import React from 'react';\nimport { View, StyleSheet, type ViewProps } from 'react-native';\nimport * as CursorTooltipPrimitive from '@exhuma/core';\n\nexport interface CursorTooltipProps extends ViewProps {\n  children?: React.ReactNode;\n}\n\nexport function CursorTooltip({ style, children, ...props }: CursorTooltipProps) {\n  return (\n    <View style={[styles.container, style]} {...props}>\n      {children}\n    </View>\n  );\n}\n\nconst styles = StyleSheet.create({\n  container: {\n    borderRadius: 16,\n    borderWidth: 1,\n    borderColor: '#e2e8f0',\n    backgroundColor: '#ffffff',\n    padding: 20,\n    overflow: 'hidden',\n  },\n});\n"
+			}
+		],
+		"flutter": [
+			{
+				"filename": "cursor_tooltip.dart",
+				"language": "dart",
+				"description": "Flutter Cursor Tooltip widget wrapping package:exhuma.",
+				"code": "import 'package:flutter/material.dart';\nimport 'package:exhuma/exhuma.dart' as exhuma;\n\nclass ExhumaCursorTooltip extends StatelessWidget {\n  final Widget child;\n\n  const ExhumaCursorTooltip({\n    super.key,\n    required this.child,\n  });\n\n  @override\n  Widget build(BuildContext context) {\n    return Container(\n      decoration: BoxDecoration(\n        borderRadius: BorderRadius.circular(16.0),\n        border: Border.all(color: Theme.of(context).dividerColor),\n        color: Theme.of(context).cardColor,\n      ),\n      padding: const EdgeInsets.all(20.0),\n      child: child,\n    );\n  }\n}\n"
+			}
+		]
+	}
 }

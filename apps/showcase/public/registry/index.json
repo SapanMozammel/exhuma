@@ -1,1854 +1,1072 @@
 {
-  "$schema": "https://exhuma.dev/schema/registry-index.json",
-  "version": "1.0.0",
-  "generatedAt": "2026-09-18T15:55:28.935Z",
-  "components": [
-    {
-      "name": "Stacking Cards",
-      "slug": "stacking-cards",
-      "category": "cards",
-      "description": "Layered 3D sticky stack cards with progressive scroll depth scale decay and reverse scaling exit mechanics.",
-      "version": "1.0.0",
-      "props": [
-        {
-          "name": "topStart",
-          "label": "Top Start (px)",
-          "type": "number",
-          "defaultValue": 90,
-          "min": 40,
-          "max": 200,
-          "step": 10,
-          "description": "Offset in pixels from top of viewport for the first sticky card."
-        },
-        {
-          "name": "topIncrement",
-          "label": "Top Increment (px)",
-          "type": "number",
-          "defaultValue": 24,
-          "min": 8,
-          "max": 64,
-          "step": 4,
-          "description": "Vertical stacking offset in pixels for each subsequent card."
-        },
-        {
-          "name": "scaleThreshold",
-          "label": "Scale Threshold (px)",
-          "type": "number",
-          "defaultValue": 120,
-          "min": 50,
-          "max": 400,
-          "step": 10,
-          "description": "Scroll distance threshold over which progressive scaling activates."
-        },
-        {
-          "name": "minScale",
-          "label": "Minimum Scale",
-          "type": "number",
-          "defaultValue": 0.94,
-          "min": 0.8,
-          "max": 0.99,
-          "step": 0.01,
-          "description": "Minimum scale applied to the base card in the stack."
-        }
-      ],
-      "dependencies": {
-        "react": [
-          "@exhuma/core"
-        ],
-        "nextjs": [
-          "@exhuma/core"
-        ],
-        "vue": [
-          "@exhuma/core"
-        ],
-        "svelte": [
-          "@exhuma/core"
-        ],
-        "solid": [
-          "@exhuma/core"
-        ],
-        "angular": [
-          "@exhuma/core"
-        ],
-        "astro": [
-          "@exhuma/core"
-        ],
-        "vanilla": [
-          "@exhuma/core"
-        ],
-        "react-native": [
-          "@exhuma/core"
-        ],
-        "flutter": [
-          "exhuma"
-        ]
-      },
-      "flavors": [
-        "react",
-        "nextjs",
-        "vue",
-        "svelte",
-        "angular",
-        "solid",
-        "astro",
-        "blade",
-        "vanilla",
-        "wordpress",
-        "webcomponent",
-        "react-native",
-        "flutter"
-      ]
-    },
-    {
-      "name": "Horizontal Scroller",
-      "slug": "horizontal-scroller",
-      "category": "cards",
-      "description": "Dynamic canvas track that smoothly maps vertical page scroll to horizontal card translation via GPU-accelerated CSS custom properties.",
-      "version": "1.0.0",
-      "props": [
-        {
-          "name": "speed",
-          "label": "Scroll Speed Multiplier",
-          "type": "number",
-          "defaultValue": 0.85,
-          "min": 0.2,
-          "max": 2,
-          "step": 0.05,
-          "description": "Scroll speed multiplier mapping vertical page scroll to horizontal translation distance."
-        },
-        {
-          "name": "itemGap",
-          "label": "Item Gap (px)",
-          "type": "number",
-          "defaultValue": 20,
-          "min": 8,
-          "max": 48,
-          "step": 4,
-          "description": "Gap in pixels between horizontal track cards."
-        },
-        {
-          "name": "showFadeEdges",
-          "label": "Fade Edges",
-          "type": "boolean",
-          "defaultValue": true,
-          "description": "Show subtle gradient mask at horizontal boundaries."
-        }
-      ],
-      "dependencies": {
-        "react": [
-          "@exhuma/core"
-        ],
-        "nextjs": [
-          "@exhuma/core"
-        ],
-        "vue": [
-          "@exhuma/core"
-        ],
-        "svelte": [
-          "@exhuma/core"
-        ],
-        "solid": [
-          "@exhuma/core"
-        ],
-        "angular": [
-          "@exhuma/core"
-        ],
-        "astro": [
-          "@exhuma/core"
-        ],
-        "vanilla": [
-          "@exhuma/core"
-        ],
-        "react-native": [
-          "@exhuma/core"
-        ],
-        "flutter": [
-          "exhuma"
-        ]
-      },
-      "flavors": [
-        "react",
-        "nextjs",
-        "vue",
-        "svelte",
-        "angular",
-        "solid",
-        "astro",
-        "blade",
-        "vanilla",
-        "wordpress",
-        "webcomponent",
-        "react-native",
-        "flutter"
-      ]
-    },
-    {
-      "name": "CSS Masonry",
-      "slug": "css-masonry",
-      "category": "layouts",
-      "description": "Pure CSS multi-column responsive masonry layout with zero external JavaScript runtime overhead.",
-      "version": "1.0.0",
-      "props": [
-        {
-          "name": "columns",
-          "label": "Desktop Columns",
-          "type": "number",
-          "defaultValue": 3,
-          "min": 1,
-          "max": 6,
-          "step": 1,
-          "description": "Number of columns on desktop viewports."
-        },
-        {
-          "name": "gap",
-          "label": "Column Gap (px)",
-          "type": "number",
-          "defaultValue": 16,
-          "min": 8,
-          "max": 48,
-          "step": 4,
-          "description": "Gap between masonry columns and items."
-        }
-      ],
-      "dependencies": {
-        "react": [
-          "@exhuma/core"
-        ],
-        "nextjs": [
-          "@exhuma/core"
-        ],
-        "vue": [
-          "@exhuma/core"
-        ],
-        "svelte": [
-          "@exhuma/core"
-        ],
-        "solid": [
-          "@exhuma/core"
-        ],
-        "angular": [
-          "@exhuma/core"
-        ],
-        "astro": [
-          "@exhuma/core"
-        ],
-        "vanilla": [
-          "@exhuma/core"
-        ],
-        "react-native": [
-          "@exhuma/core"
-        ],
-        "flutter": [
-          "exhuma"
-        ]
-      },
-      "flavors": [
-        "react",
-        "nextjs",
-        "vue",
-        "svelte",
-        "angular",
-        "solid",
-        "astro",
-        "blade",
-        "vanilla",
-        "wordpress",
-        "webcomponent",
-        "react-native",
-        "flutter"
-      ]
-    },
-    {
-      "name": "Auto Grid",
-      "slug": "auto-grid",
-      "category": "layouts",
-      "description": "Responsive CSS Grid with auto-fit / auto-fill minmax repeat tracks with zero media queries.",
-      "version": "1.0.0",
-      "props": [
-        {
-          "name": "minItemWidth",
-          "label": "Min Width (px)",
-          "type": "number",
-          "defaultValue": 280,
-          "min": 150,
-          "max": 450,
-          "step": 10,
-          "description": "Minimum width of each grid column before wrapping to the next line."
-        },
-        {
-          "name": "gap",
-          "label": "Grid Gap (px)",
-          "type": "number",
-          "defaultValue": 24,
-          "min": 8,
-          "max": 48,
-          "step": 4,
-          "description": "Gap between grid items."
-        }
-      ],
-      "dependencies": {
-        "react": [
-          "@exhuma/core"
-        ],
-        "nextjs": [
-          "@exhuma/core"
-        ],
-        "vue": [
-          "@exhuma/core"
-        ],
-        "svelte": [
-          "@exhuma/core"
-        ],
-        "solid": [
-          "@exhuma/core"
-        ],
-        "angular": [
-          "@exhuma/core"
-        ],
-        "astro": [
-          "@exhuma/core"
-        ],
-        "vanilla": [
-          "@exhuma/core"
-        ],
-        "react-native": [
-          "@exhuma/core"
-        ],
-        "flutter": [
-          "exhuma"
-        ]
-      },
-      "flavors": [
-        "react",
-        "nextjs",
-        "vue",
-        "svelte",
-        "angular",
-        "solid",
-        "astro",
-        "blade",
-        "vanilla",
-        "wordpress",
-        "webcomponent",
-        "react-native",
-        "flutter"
-      ]
-    },
-    {
-      "name": "Tilt Card",
-      "slug": "tilt-card",
-      "category": "cards",
-      "description": "Interactive 3D mouse-tracking card tilt with dynamic glare effect and smooth spring reset.",
-      "version": "1.0.0",
-      "props": [
-        {
-          "name": "maxTilt",
-          "label": "Max Tilt (deg)",
-          "type": "number",
-          "defaultValue": 15,
-          "min": 5,
-          "max": 35,
-          "step": 1,
-          "description": "Maximum tilt rotation in degrees."
-        },
-        {
-          "name": "perspective",
-          "label": "Perspective (px)",
-          "type": "number",
-          "defaultValue": 1000,
-          "min": 500,
-          "max": 2000,
-          "step": 100,
-          "description": "3D perspective depth in pixels."
-        },
-        {
-          "name": "glare",
-          "label": "Enable Glare",
-          "type": "boolean",
-          "defaultValue": true,
-          "description": "Dynamic glare reflection tracking mouse position."
-        }
-      ],
-      "dependencies": {
-        "react": [
-          "@exhuma/core"
-        ],
-        "nextjs": [
-          "@exhuma/core"
-        ],
-        "vue": [
-          "@exhuma/core"
-        ],
-        "svelte": [
-          "@exhuma/core"
-        ],
-        "solid": [
-          "@exhuma/core"
-        ],
-        "angular": [
-          "@exhuma/core"
-        ],
-        "astro": [
-          "@exhuma/core"
-        ],
-        "vanilla": [
-          "@exhuma/core"
-        ],
-        "react-native": [
-          "@exhuma/core"
-        ],
-        "flutter": [
-          "exhuma"
-        ]
-      },
-      "flavors": [
-        "react",
-        "nextjs",
-        "vue",
-        "svelte",
-        "angular",
-        "solid",
-        "astro",
-        "blade",
-        "vanilla",
-        "wordpress",
-        "webcomponent",
-        "react-native",
-        "flutter"
-      ]
-    },
-    {
-      "name": "Spotlight Card",
-      "slug": "spotlight-card",
-      "category": "cards",
-      "description": "Dynamic 2D spatial coordinate tracking with sub-pixel radial border illumination mask and smooth exponential smoothing.",
-      "version": "1.0.0",
-      "props": [
-        {
-          "name": "radius",
-          "label": "Spotlight Radius (px)",
-          "type": "number",
-          "defaultValue": 350,
-          "min": 150,
-          "max": 600,
-          "step": 25,
-          "description": "Radius of the radial spotlight illumination in pixels."
-        },
-        {
-          "name": "color",
-          "label": "Spotlight Color",
-          "type": "string",
-          "defaultValue": "rgba(99, 102, 241, 0.25)",
-          "description": "Background radial sheen color (CSS color string)."
-        },
-        {
-          "name": "opacity",
-          "label": "Glow Opacity",
-          "type": "number",
-          "defaultValue": 0.8,
-          "min": 0.1,
-          "max": 1,
-          "step": 0.05,
-          "description": "Opacity of the spotlight when active."
-        },
-        {
-          "name": "borderColor",
-          "label": "Border Glow Color",
-          "type": "string",
-          "defaultValue": "rgba(99, 102, 241, 0.5)",
-          "description": "Color of the illuminated border edge."
-        }
-      ],
-      "dependencies": {
-        "react": [
-          "@exhuma/core"
-        ],
-        "nextjs": [
-          "@exhuma/core"
-        ],
-        "vue": [
-          "@exhuma/core"
-        ],
-        "svelte": [
-          "@exhuma/core"
-        ],
-        "solid": [
-          "@exhuma/core"
-        ],
-        "angular": [
-          "@exhuma/core"
-        ],
-        "astro": [
-          "@exhuma/core"
-        ],
-        "vanilla": [
-          "@exhuma/core"
-        ],
-        "react-native": [
-          "@exhuma/core"
-        ],
-        "flutter": [
-          "exhuma"
-        ]
-      },
-      "flavors": [
-        "react",
-        "nextjs",
-        "vue",
-        "svelte",
-        "angular",
-        "solid",
-        "astro",
-        "blade",
-        "vanilla",
-        "wordpress",
-        "webcomponent",
-        "react-native",
-        "flutter"
-      ]
-    },
-    {
-      "name": "Morphing Tabs",
-      "slug": "morphing-tabs",
-      "category": "navigation",
-      "description": "Dynamic active rect geometry tracking with a floating spring indicator and roving focus keyboard navigation.",
-      "version": "1.0.0",
-      "props": [
-        {
-          "name": "springStiffness",
-          "label": "Spring Stiffness (omega)",
-          "type": "number",
-          "defaultValue": 26,
-          "min": 10,
-          "max": 50,
-          "step": 2,
-          "description": "Stiffness of the critically damped spring pill."
-        }
-      ],
-      "dependencies": {
-        "react": [
-          "@exhuma/core"
-        ],
-        "nextjs": [
-          "@exhuma/core"
-        ],
-        "vue": [
-          "@exhuma/core"
-        ],
-        "svelte": [
-          "@exhuma/core"
-        ],
-        "solid": [
-          "@exhuma/core"
-        ],
-        "angular": [
-          "@exhuma/core"
-        ],
-        "astro": [
-          "@exhuma/core"
-        ],
-        "vanilla": [
-          "@exhuma/core"
-        ],
-        "react-native": [
-          "@exhuma/core"
-        ],
-        "flutter": [
-          "exhuma"
-        ]
-      },
-      "flavors": [
-        "react",
-        "nextjs",
-        "vue",
-        "svelte",
-        "angular",
-        "solid",
-        "astro",
-        "blade",
-        "vanilla",
-        "wordpress",
-        "webcomponent",
-        "react-native",
-        "flutter"
-      ]
-    },
-    {
-      "name": "Accordion",
-      "slug": "accordion",
-      "category": "primitives",
-      "description": "Zero-jank dynamic height disclosure using CSS Grid 0fr to 1fr interpolation with morphing plus/minus icon and animated gradient border glow.",
-      "version": "1.0.0",
-      "props": [
-        {
-          "name": "mode",
-          "label": "Expansion Mode",
-          "type": "select",
-          "defaultValue": "single",
-          "options": [
-            {
-              "label": "Single Expand",
-              "value": "single"
-            },
-            {
-              "label": "Multiple Expand",
-              "value": "multiple"
-            }
-          ],
-          "description": "Single auto-collapses other items; multiple allows independent toggles."
-        },
-        {
-          "name": "duration",
-          "label": "Transition Duration (ms)",
-          "type": "number",
-          "defaultValue": 300,
-          "min": 150,
-          "max": 600,
-          "step": 50,
-          "description": "CSS Grid height transition speed."
-        }
-      ],
-      "dependencies": {
-        "react": [
-          "@exhuma/core"
-        ],
-        "nextjs": [
-          "@exhuma/core"
-        ],
-        "vue": [
-          "@exhuma/core"
-        ],
-        "svelte": [
-          "@exhuma/core"
-        ],
-        "solid": [
-          "@exhuma/core"
-        ],
-        "angular": [
-          "@exhuma/core"
-        ],
-        "astro": [
-          "@exhuma/core"
-        ],
-        "vanilla": [
-          "@exhuma/core"
-        ],
-        "react-native": [
-          "@exhuma/core"
-        ],
-        "flutter": [
-          "exhuma"
-        ]
-      },
-      "flavors": [
-        "react",
-        "nextjs",
-        "vue",
-        "svelte",
-        "angular",
-        "solid",
-        "astro",
-        "blade",
-        "vanilla",
-        "wordpress",
-        "webcomponent",
-        "react-native",
-        "flutter"
-      ]
-    },
-    {
-      "name": "Infinite Marquee",
-      "slug": "infinite-marquee",
-      "category": "layouts",
-      "description": "High-performance rAF continuous translation loop with modulo wrap, exponential hover damping, and zero external animation libraries.",
-      "version": "1.0.0",
-      "props": [
-        {
-          "name": "speed",
-          "label": "Scroll Speed (px/s)",
-          "type": "number",
-          "defaultValue": 40,
-          "min": 10,
-          "max": 200,
-          "step": 5,
-          "description": "Scroll speed in pixels per second."
-        },
-        {
-          "name": "direction",
-          "label": "Direction",
-          "type": "select",
-          "defaultValue": "left",
-          "options": [
-            {
-              "label": "Left",
-              "value": "left"
-            },
-            {
-              "label": "Right",
-              "value": "right"
-            }
-          ],
-          "description": "Direction of marquee translation."
-        },
-        {
-          "name": "pauseOnHover",
-          "label": "Pause On Hover",
-          "type": "boolean",
-          "defaultValue": true,
-          "description": "Smoothly decelerate to zero when hovered."
-        },
-        {
-          "name": "gap",
-          "label": "Item Gap",
-          "type": "string",
-          "defaultValue": "1.5rem",
-          "description": "Spacing between items and repeated tracks."
-        }
-      ],
-      "dependencies": {
-        "react": [
-          "@exhuma/core"
-        ],
-        "nextjs": [
-          "@exhuma/core"
-        ],
-        "vue": [
-          "@exhuma/core"
-        ],
-        "svelte": [
-          "@exhuma/core"
-        ],
-        "solid": [
-          "@exhuma/core"
-        ],
-        "angular": [
-          "@exhuma/core"
-        ],
-        "astro": [
-          "@exhuma/core"
-        ],
-        "vanilla": [
-          "@exhuma/core"
-        ],
-        "react-native": [
-          "@exhuma/core"
-        ],
-        "flutter": [
-          "exhuma"
-        ]
-      },
-      "flavors": [
-        "react",
-        "nextjs",
-        "vue",
-        "svelte",
-        "angular",
-        "solid",
-        "astro",
-        "blade",
-        "vanilla",
-        "wordpress",
-        "webcomponent",
-        "react-native",
-        "flutter"
-      ]
-    },
-    {
-      "name": "Bento Grid",
-      "slug": "bento-grid",
-      "category": "layouts",
-      "description": "Fluid responsive layout engine with dense auto-flow, asymmetric card spans, and subtle kinetic hover glow.",
-      "version": "1.0.0",
-      "props": [
-        {
-          "name": "cols",
-          "label": "Columns",
-          "type": "number",
-          "defaultValue": 3,
-          "min": 1,
-          "max": 6,
-          "step": 1,
-          "description": "Maximum column count for desktop screens."
-        },
-        {
-          "name": "gap",
-          "label": "Grid Gap",
-          "type": "string",
-          "defaultValue": "1.5rem",
-          "description": "Spacing between bento tiles."
-        }
-      ],
-      "dependencies": {
-        "react": [
-          "@exhuma/core"
-        ],
-        "nextjs": [
-          "@exhuma/core"
-        ],
-        "vue": [
-          "@exhuma/core"
-        ],
-        "svelte": [
-          "@exhuma/core"
-        ],
-        "solid": [
-          "@exhuma/core"
-        ],
-        "angular": [
-          "@exhuma/core"
-        ],
-        "astro": [
-          "@exhuma/core"
-        ],
-        "vanilla": [
-          "@exhuma/core"
-        ],
-        "react-native": [
-          "@exhuma/core"
-        ],
-        "flutter": [
-          "exhuma"
-        ]
-      },
-      "flavors": [
-        "react",
-        "nextjs",
-        "vue",
-        "svelte",
-        "angular",
-        "solid",
-        "astro",
-        "blade",
-        "vanilla",
-        "wordpress",
-        "webcomponent",
-        "react-native",
-        "flutter"
-      ]
-    },
-    {
-      "name": "Diamond Grid",
-      "slug": "diamond-grid",
-      "category": "layouts",
-      "description": "Rhombic symmetrical diamond column distribution [1, 2, 3, 4, 3, 2, 1] with responsive mobile collapse.",
-      "version": "1.0.0",
-      "props": [
-        {
-          "name": "gap",
-          "label": "Column Gap",
-          "type": "string",
-          "defaultValue": "0.75vw",
-          "description": "Spacing between diamond columns and elements."
-        }
-      ],
-      "dependencies": {
-        "react": [
-          "@exhuma/core"
-        ],
-        "nextjs": [
-          "@exhuma/core"
-        ],
-        "vue": [
-          "@exhuma/core"
-        ],
-        "svelte": [
-          "@exhuma/core"
-        ],
-        "solid": [
-          "@exhuma/core"
-        ],
-        "angular": [
-          "@exhuma/core"
-        ],
-        "astro": [
-          "@exhuma/core"
-        ],
-        "vanilla": [
-          "@exhuma/core"
-        ],
-        "react-native": [
-          "@exhuma/core"
-        ],
-        "flutter": [
-          "exhuma"
-        ]
-      },
-      "flavors": [
-        "react",
-        "nextjs",
-        "vue",
-        "svelte",
-        "angular",
-        "solid",
-        "astro",
-        "blade",
-        "vanilla",
-        "wordpress",
-        "webcomponent",
-        "react-native",
-        "flutter"
-      ]
-    },
-    {
-      "name": "Scroll Timeline",
-      "slug": "scroll-timeline",
-      "category": "layouts",
-      "description": "Organic serpentine cubic bezier SVG timeline with pure native rAF progress beam and zero external animation libraries.",
-      "version": "1.0.0",
-      "props": [
-        {
-          "name": "curveWidth",
-          "label": "Curve Swing (px)",
-          "type": "number",
-          "defaultValue": 24,
-          "min": 10,
-          "max": 60,
-          "step": 2,
-          "description": "Horizontal amplitude of bezier swing."
-        },
-        {
-          "name": "curveHeight",
-          "label": "Curve Height (px)",
-          "type": "number",
-          "defaultValue": 40,
-          "min": 20,
-          "max": 80,
-          "step": 5,
-          "description": "Vertical transition height of bezier curves."
-        },
-        {
-          "name": "accentColor",
-          "label": "Accent Color",
-          "type": "string",
-          "defaultValue": "#6366f1",
-          "description": "Color of the active kinetic progress beam."
-        }
-      ],
-      "dependencies": {
-        "react": [
-          "@exhuma/core"
-        ],
-        "nextjs": [
-          "@exhuma/core"
-        ],
-        "vue": [
-          "@exhuma/core"
-        ],
-        "svelte": [
-          "@exhuma/core"
-        ],
-        "solid": [
-          "@exhuma/core"
-        ],
-        "angular": [
-          "@exhuma/core"
-        ],
-        "astro": [
-          "@exhuma/core"
-        ],
-        "vanilla": [
-          "@exhuma/core"
-        ],
-        "react-native": [
-          "@exhuma/core"
-        ],
-        "flutter": [
-          "exhuma"
-        ]
-      },
-      "flavors": [
-        "react",
-        "nextjs",
-        "vue",
-        "svelte",
-        "angular",
-        "solid",
-        "astro",
-        "blade",
-        "vanilla",
-        "wordpress",
-        "webcomponent",
-        "react-native",
-        "flutter"
-      ]
-    },
-    {
-      "name": "Sticky Parallax Scroll",
-      "slug": "sticky-parallax",
-      "category": "layouts",
-      "description": "Sticky viewport rail with multi-speed differential layer transformations driven by scroll delta.",
-      "version": "1.0.0",
-      "props": [
-        {
-          "name": "trackHeight",
-          "label": "Track Height",
-          "type": "string",
-          "defaultValue": "250vh",
-          "description": "Total scroll track height controlling scroll duration."
-        }
-      ],
-      "dependencies": {
-        "react": [
-          "@exhuma/core"
-        ],
-        "nextjs": [
-          "@exhuma/core"
-        ],
-        "vue": [
-          "@exhuma/core"
-        ],
-        "svelte": [
-          "@exhuma/core"
-        ],
-        "solid": [
-          "@exhuma/core"
-        ],
-        "angular": [
-          "@exhuma/core"
-        ],
-        "astro": [
-          "@exhuma/core"
-        ],
-        "vanilla": [
-          "@exhuma/core"
-        ],
-        "react-native": [
-          "@exhuma/core"
-        ],
-        "flutter": [
-          "exhuma"
-        ]
-      },
-      "flavors": [
-        "react",
-        "nextjs",
-        "vue",
-        "svelte",
-        "angular",
-        "solid",
-        "astro",
-        "blade",
-        "vanilla",
-        "wordpress",
-        "webcomponent",
-        "react-native",
-        "flutter"
-      ]
-    },
-    {
-      "name": "Border Beam",
-      "slug": "border-beam",
-      "category": "cards",
-      "description": "Zero-runtime CSS conic perimeter laser trace with hardware mask clipping and sub-pixel compositing.",
-      "version": "1.0.0",
-      "props": [
-        {
-          "name": "size",
-          "label": "Beam Length (px)",
-          "type": "number",
-          "defaultValue": 250,
-          "min": 100,
-          "max": 600,
-          "step": 25,
-          "description": "Length/size of the perimeter laser trace."
-        },
-        {
-          "name": "duration",
-          "label": "Duration (s)",
-          "type": "number",
-          "defaultValue": 12,
-          "min": 2,
-          "max": 30,
-          "step": 1,
-          "description": "Loop duration for one full border sweep."
-        },
-        {
-          "name": "borderWidth",
-          "label": "Border Width (px)",
-          "type": "number",
-          "defaultValue": 1.5,
-          "min": 1,
-          "max": 4,
-          "step": 0.5,
-          "description": "Perimeter border stroke width."
-        },
-        {
-          "name": "colorFrom",
-          "label": "Color From",
-          "type": "string",
-          "defaultValue": "#ffaa40",
-          "description": "Starting gradient color."
-        },
-        {
-          "name": "colorTo",
-          "label": "Color To",
-          "type": "string",
-          "defaultValue": "#9c40ff",
-          "description": "Ending gradient color."
-        }
-      ],
-      "dependencies": {
-        "react": [
-          "@exhuma/core"
-        ],
-        "nextjs": [
-          "@exhuma/core"
-        ],
-        "vue": [
-          "@exhuma/core"
-        ],
-        "svelte": [
-          "@exhuma/core"
-        ],
-        "solid": [
-          "@exhuma/core"
-        ],
-        "angular": [
-          "@exhuma/core"
-        ],
-        "astro": [
-          "@exhuma/core"
-        ],
-        "vanilla": [
-          "@exhuma/core"
-        ],
-        "react-native": [
-          "@exhuma/core"
-        ],
-        "flutter": [
-          "exhuma"
-        ]
-      },
-      "flavors": [
-        "react",
-        "nextjs",
-        "vue",
-        "svelte",
-        "angular",
-        "solid",
-        "astro",
-        "blade",
-        "vanilla",
-        "wordpress",
-        "webcomponent",
-        "react-native",
-        "flutter"
-      ]
-    },
-    {
-      "name": "Animated Sphere",
-      "slug": "animated-sphere",
-      "category": "primitives",
-      "description": "Handcrafted 3D spherical trigonometry on HTML5 2D Canvas with depth sorting and zero Three.js.",
-      "version": "1.0.0",
-      "props": [
-        {
-          "name": "color",
-          "label": "Sphere Color",
-          "type": "string",
-          "defaultValue": "#6366f1",
-          "description": "Foreground raster color (hex or CSS color string)."
-        },
-        {
-          "name": "speed",
-          "label": "Rotation Speed",
-          "type": "number",
-          "defaultValue": 1,
-          "min": 0.2,
-          "max": 3,
-          "step": 0.1,
-          "description": "Multiplier for 3D rotation speed."
-        },
-        {
-          "name": "radiusScale",
-          "label": "Radius Scale",
-          "type": "number",
-          "defaultValue": 0.475,
-          "min": 0.2,
-          "max": 0.5,
-          "step": 0.025,
-          "description": "Radius relative to canvas dimension."
-        }
-      ],
-      "dependencies": {
-        "react": [
-          "@exhuma/core"
-        ],
-        "nextjs": [
-          "@exhuma/core"
-        ],
-        "vue": [
-          "@exhuma/core"
-        ],
-        "svelte": [
-          "@exhuma/core"
-        ],
-        "solid": [
-          "@exhuma/core"
-        ],
-        "angular": [
-          "@exhuma/core"
-        ],
-        "astro": [
-          "@exhuma/core"
-        ],
-        "vanilla": [
-          "@exhuma/core"
-        ],
-        "react-native": [
-          "@exhuma/core"
-        ],
-        "flutter": [
-          "exhuma"
-        ]
-      },
-      "flavors": [
-        "react",
-        "nextjs",
-        "vue",
-        "svelte",
-        "angular",
-        "solid",
-        "astro",
-        "blade",
-        "vanilla",
-        "wordpress",
-        "webcomponent",
-        "react-native",
-        "flutter"
-      ]
-    },
-    {
-      "name": "Floating Dock",
-      "slug": "floating-dock",
-      "category": "navigation",
-      "description": "macOS-style kinetic floating dock with continuous Gaussian proximity distribution and zero external animation libraries.",
-      "version": "1.0.0",
-      "props": [
-        {
-          "name": "baseSize",
-          "label": "Base Item Size (px)",
-          "type": "number",
-          "defaultValue": 44,
-          "min": 32,
-          "max": 64,
-          "step": 2,
-          "description": "Default width and height of dock items at rest."
-        },
-        {
-          "name": "maxMagnification",
-          "label": "Max Boost Factor",
-          "type": "number",
-          "defaultValue": 0.6,
-          "min": 0.2,
-          "max": 1,
-          "step": 0.05,
-          "description": "Maximum scale multiplier at zero distance."
-        },
-        {
-          "name": "influenceRadius",
-          "label": "Influence Radius (px)",
-          "type": "number",
-          "defaultValue": 70,
-          "min": 40,
-          "max": 140,
-          "step": 5,
-          "description": "Standard deviation spread of the Gaussian proximity curve."
-        }
-      ],
-      "dependencies": {
-        "react": [
-          "@exhuma/core"
-        ],
-        "nextjs": [
-          "@exhuma/core"
-        ],
-        "vue": [
-          "@exhuma/core"
-        ],
-        "svelte": [
-          "@exhuma/core"
-        ],
-        "solid": [
-          "@exhuma/core"
-        ],
-        "angular": [
-          "@exhuma/core"
-        ],
-        "astro": [
-          "@exhuma/core"
-        ],
-        "vanilla": [
-          "@exhuma/core"
-        ],
-        "react-native": [
-          "@exhuma/core"
-        ],
-        "flutter": [
-          "exhuma"
-        ]
-      },
-      "flavors": [
-        "react",
-        "nextjs",
-        "vue",
-        "svelte",
-        "angular",
-        "solid",
-        "astro",
-        "blade",
-        "vanilla",
-        "wordpress",
-        "webcomponent",
-        "react-native",
-        "flutter"
-      ]
-    },
-    {
-      "name": "Interactive Grid Pattern",
-      "slug": "interactive-grid",
-      "category": "layouts",
-      "description": "Sub-pixel SVG background grid pattern with hover activation and hardware-accelerated color transitions.",
-      "version": "1.0.0",
-      "props": [
-        {
-          "name": "width",
-          "label": "Square Width (px)",
-          "type": "number",
-          "defaultValue": 40,
-          "min": 20,
-          "max": 80,
-          "step": 5,
-          "description": "Width of each individual grid square."
-        },
-        {
-          "name": "height",
-          "label": "Square Height (px)",
-          "type": "number",
-          "defaultValue": 40,
-          "min": 20,
-          "max": 80,
-          "step": 5,
-          "description": "Height of each individual grid square."
-        }
-      ],
-      "dependencies": {
-        "react": [
-          "@exhuma/core"
-        ],
-        "nextjs": [
-          "@exhuma/core"
-        ],
-        "vue": [
-          "@exhuma/core"
-        ],
-        "svelte": [
-          "@exhuma/core"
-        ],
-        "solid": [
-          "@exhuma/core"
-        ],
-        "angular": [
-          "@exhuma/core"
-        ],
-        "astro": [
-          "@exhuma/core"
-        ],
-        "vanilla": [
-          "@exhuma/core"
-        ],
-        "react-native": [
-          "@exhuma/core"
-        ],
-        "flutter": [
-          "exhuma"
-        ]
-      },
-      "flavors": [
-        "react",
-        "nextjs",
-        "vue",
-        "svelte",
-        "angular",
-        "solid",
-        "astro",
-        "blade",
-        "vanilla",
-        "wordpress",
-        "webcomponent",
-        "react-native",
-        "flutter"
-      ]
-    },
-    {
-      "name": "Number Ticker",
-      "slug": "number-ticker",
-      "category": "primitives",
-      "description": "Analytical easeOutExpo numerical counter with direct DOM textContent manipulation and zero external animation libraries.",
-      "version": "1.0.0",
-      "props": [
-        {
-          "name": "value",
-          "label": "Target Value",
-          "type": "number",
-          "defaultValue": 1000,
-          "description": "The target numerical value to count towards."
-        },
-        {
-          "name": "initialValue",
-          "label": "Initial Value",
-          "type": "number",
-          "defaultValue": 0,
-          "description": "Starting number at inception."
-        },
-        {
-          "name": "duration",
-          "label": "Duration (s)",
-          "type": "number",
-          "defaultValue": 1.5,
-          "min": 0.5,
-          "max": 5,
-          "step": 0.25,
-          "description": "Time in seconds to reach the target number."
-        },
-        {
-          "name": "decimalPlaces",
-          "label": "Decimals",
-          "type": "number",
-          "defaultValue": 0,
-          "min": 0,
-          "max": 3,
-          "step": 1,
-          "description": "Decimal precision to format."
-        }
-      ],
-      "dependencies": {
-        "react": [
-          "@exhuma/core"
-        ],
-        "nextjs": [
-          "@exhuma/core"
-        ],
-        "vue": [
-          "@exhuma/core"
-        ],
-        "svelte": [
-          "@exhuma/core"
-        ],
-        "solid": [
-          "@exhuma/core"
-        ],
-        "angular": [
-          "@exhuma/core"
-        ],
-        "astro": [
-          "@exhuma/core"
-        ],
-        "vanilla": [
-          "@exhuma/core"
-        ],
-        "react-native": [
-          "@exhuma/core"
-        ],
-        "flutter": [
-          "exhuma"
-        ]
-      },
-      "flavors": [
-        "react",
-        "nextjs",
-        "vue",
-        "svelte",
-        "angular",
-        "solid",
-        "astro",
-        "blade",
-        "vanilla",
-        "wordpress",
-        "webcomponent",
-        "react-native",
-        "flutter"
-      ]
-    },
-    {
-      "name": "Magnetic Button",
-      "slug": "magnetic-button",
-      "category": "primitives",
-      "description": "Inverted spring pull field button that magnetically attracts cursor proximity with critically damped release snaps.",
-      "version": "1.0.0",
-      "props": [
-        {
-          "name": "strength",
-          "label": "Pull Strength",
-          "type": "number",
-          "defaultValue": 0.35,
-          "min": 0.1,
-          "max": 0.8,
-          "step": 0.05,
-          "description": "Displacement factor relative to cursor distance."
-        },
-        {
-          "name": "radius",
-          "label": "Magnetic Radius (px)",
-          "type": "number",
-          "defaultValue": 120,
-          "min": 50,
-          "max": 250,
-          "step": 10,
-          "description": "Influence radius threshold in pixels."
-        },
-        {
-          "name": "springDamping",
-          "label": "Spring Damping",
-          "type": "number",
-          "defaultValue": 18,
-          "min": 5,
-          "max": 35,
-          "step": 1,
-          "description": "Exponential decay rate for critically damped snaps."
-        }
-      ],
-      "dependencies": {
-        "react": [
-          "@exhuma/core"
-        ],
-        "nextjs": [
-          "@exhuma/core"
-        ],
-        "vue": [
-          "@exhuma/core"
-        ],
-        "svelte": [
-          "@exhuma/core"
-        ],
-        "solid": [
-          "@exhuma/core"
-        ],
-        "angular": [
-          "@exhuma/core"
-        ],
-        "astro": [
-          "@exhuma/core"
-        ],
-        "vanilla": [
-          "@exhuma/core"
-        ],
-        "react-native": [
-          "@exhuma/core"
-        ],
-        "flutter": [
-          "exhuma"
-        ]
-      },
-      "flavors": [
-        "react",
-        "nextjs",
-        "vue",
-        "svelte",
-        "angular",
-        "solid",
-        "astro",
-        "blade",
-        "vanilla",
-        "wordpress",
-        "webcomponent",
-        "react-native",
-        "flutter"
-      ]
-    },
-    {
-      "name": "Card Swipe Stack",
-      "slug": "card-swipe-stack",
-      "category": "cards",
-      "description": "Velocity-sensitive multi-card swipe stack with Euler angular rotation, circular velocity ring buffer, and zero external animation libraries.",
-      "version": "1.0.0",
-      "props": [
-        {
-          "name": "thresholdDistance",
-          "label": "Swipe Threshold (px)",
-          "type": "number",
-          "defaultValue": 120,
-          "min": 60,
-          "max": 240,
-          "step": 10,
-          "description": "Minimum drag distance to trigger a card dismiss."
-        },
-        {
-          "name": "maxRotation",
-          "label": "Max Rotation (deg)",
-          "type": "number",
-          "defaultValue": 20,
-          "min": 5,
-          "max": 45,
-          "step": 1,
-          "description": "Maximum angular rotation coupled to horizontal translation."
-        },
-        {
-          "name": "scaleStep",
-          "label": "Scale Step",
-          "type": "number",
-          "defaultValue": 0.05,
-          "min": 0.02,
-          "max": 0.1,
-          "step": 0.01,
-          "description": "Scale reduction step between consecutive cards in the stack."
-        }
-      ],
-      "dependencies": {
-        "react": [
-          "@exhuma/core"
-        ],
-        "nextjs": [
-          "@exhuma/core"
-        ],
-        "vue": [
-          "@exhuma/core"
-        ],
-        "svelte": [
-          "@exhuma/core"
-        ],
-        "solid": [
-          "@exhuma/core"
-        ],
-        "angular": [
-          "@exhuma/core"
-        ],
-        "astro": [
-          "@exhuma/core"
-        ],
-        "vanilla": [
-          "@exhuma/core"
-        ],
-        "react-native": [
-          "@exhuma/core"
-        ],
-        "flutter": [
-          "exhuma"
-        ]
-      },
-      "flavors": [
-        "react",
-        "nextjs",
-        "vue",
-        "svelte",
-        "angular",
-        "solid",
-        "astro",
-        "blade",
-        "vanilla",
-        "wordpress",
-        "webcomponent",
-        "react-native",
-        "flutter"
-      ]
-    },
-    {
-      "name": "Comparison Slider",
-      "slug": "comparison-slider",
-      "category": "cards",
-      "description": "Interactive before/after media comparison slider with sub-pixel clip-path polygon slicing and WAI-ARIA keyboard navigation.",
-      "version": "1.0.0",
-      "props": [
-        {
-          "name": "defaultPosition",
-          "label": "Default Position",
-          "type": "number",
-          "defaultValue": 0.5,
-          "min": 0.1,
-          "max": 0.9,
-          "step": 0.05,
-          "description": "Initial divider split ratio between 0 and 1."
-        },
-        {
-          "name": "step",
-          "label": "Keyboard Step",
-          "type": "number",
-          "defaultValue": 0.05,
-          "min": 0.01,
-          "max": 0.2,
-          "step": 0.01,
-          "description": "Position delta when stepping with arrow keys."
-        }
-      ],
-      "dependencies": {
-        "react": [
-          "@exhuma/core"
-        ],
-        "nextjs": [
-          "@exhuma/core"
-        ],
-        "vue": [
-          "@exhuma/core"
-        ],
-        "svelte": [
-          "@exhuma/core"
-        ],
-        "solid": [
-          "@exhuma/core"
-        ],
-        "angular": [
-          "@exhuma/core"
-        ],
-        "astro": [
-          "@exhuma/core"
-        ],
-        "vanilla": [
-          "@exhuma/core"
-        ],
-        "react-native": [
-          "@exhuma/core"
-        ],
-        "flutter": [
-          "exhuma"
-        ]
-      },
-      "flavors": [
-        "react",
-        "nextjs",
-        "vue",
-        "svelte",
-        "angular",
-        "solid",
-        "astro",
-        "blade",
-        "vanilla",
-        "wordpress",
-        "webcomponent",
-        "react-native",
-        "flutter"
-      ]
-    },
-    {
-      "name": "Expandable Card",
-      "slug": "expandable-card",
-      "category": "cards",
-      "description": "Mathematical FLIP morphing card dialog with zero Framer Motion dependencies, zero layout shifts, and accessible dialog semantics.",
-      "version": "1.0.0",
-      "props": [
-        {
-          "name": "duration",
-          "label": "Morph Duration (ms)",
-          "type": "number",
-          "defaultValue": 360,
-          "min": 150,
-          "max": 600,
-          "step": 20,
-          "description": "FLIP transition timing in milliseconds."
-        }
-      ],
-      "dependencies": {
-        "react": [
-          "@exhuma/core"
-        ],
-        "nextjs": [
-          "@exhuma/core"
-        ],
-        "vue": [
-          "@exhuma/core"
-        ],
-        "svelte": [
-          "@exhuma/core"
-        ],
-        "solid": [
-          "@exhuma/core"
-        ],
-        "angular": [
-          "@exhuma/core"
-        ],
-        "astro": [
-          "@exhuma/core"
-        ],
-        "vanilla": [
-          "@exhuma/core"
-        ],
-        "react-native": [
-          "@exhuma/core"
-        ],
-        "flutter": [
-          "exhuma"
-        ]
-      },
-      "flavors": [
-        "react",
-        "nextjs",
-        "vue",
-        "svelte",
-        "angular",
-        "solid",
-        "astro",
-        "blade",
-        "vanilla",
-        "wordpress",
-        "webcomponent",
-        "react-native",
-        "flutter"
-      ]
-    },
-    {
-      "name": "Cursor Tooltip",
-      "slug": "cursor-tooltip",
-      "category": "primitives",
-      "description": "Tactile cursor-following tooltip with continuous exponential lerp tracking, boundary viewport collision clamping, and zero Framer Motion dependencies.",
-      "version": "1.0.0",
-      "props": [
-        {
-          "name": "springDamping",
-          "label": "Spring Damping",
-          "type": "number",
-          "defaultValue": 22,
-          "min": 5,
-          "max": 40,
-          "step": 1,
-          "description": "Exponential smoothing factor for trailing cursor physics."
-        }
-      ],
-      "dependencies": {
-        "react": [
-          "@exhuma/core"
-        ],
-        "nextjs": [
-          "@exhuma/core"
-        ],
-        "vue": [
-          "@exhuma/core"
-        ],
-        "svelte": [
-          "@exhuma/core"
-        ],
-        "solid": [
-          "@exhuma/core"
-        ],
-        "angular": [
-          "@exhuma/core"
-        ],
-        "astro": [
-          "@exhuma/core"
-        ],
-        "vanilla": [
-          "@exhuma/core"
-        ],
-        "react-native": [
-          "@exhuma/core"
-        ],
-        "flutter": [
-          "exhuma"
-        ]
-      },
-      "flavors": [
-        "react",
-        "nextjs",
-        "vue",
-        "svelte",
-        "angular",
-        "solid",
-        "astro",
-        "blade",
-        "vanilla",
-        "wordpress",
-        "webcomponent",
-        "react-native",
-        "flutter"
-      ]
-    }
-  ]
+	"$schema": "https://exhuma.dev/schema/registry-index.json",
+	"version": "1.0.0",
+	"generatedAt": "2026-09-18T15:55:28.935Z",
+	"components": [
+		{
+			"name": "Stacking Cards",
+			"slug": "stacking-cards",
+			"category": "cards",
+			"description": "Layered 3D sticky stack cards with progressive scroll depth scale decay and reverse scaling exit mechanics.",
+			"version": "1.0.0",
+			"props": [
+				{
+					"name": "topStart",
+					"label": "Top Start (px)",
+					"type": "number",
+					"defaultValue": 90,
+					"min": 40,
+					"max": 200,
+					"step": 10,
+					"description": "Offset in pixels from top of viewport for the first sticky card."
+				},
+				{
+					"name": "topIncrement",
+					"label": "Top Increment (px)",
+					"type": "number",
+					"defaultValue": 24,
+					"min": 8,
+					"max": 64,
+					"step": 4,
+					"description": "Vertical stacking offset in pixels for each subsequent card."
+				},
+				{
+					"name": "scaleThreshold",
+					"label": "Scale Threshold (px)",
+					"type": "number",
+					"defaultValue": 120,
+					"min": 50,
+					"max": 400,
+					"step": 10,
+					"description": "Scroll distance threshold over which progressive scaling activates."
+				},
+				{
+					"name": "minScale",
+					"label": "Minimum Scale",
+					"type": "number",
+					"defaultValue": 0.94,
+					"min": 0.8,
+					"max": 0.99,
+					"step": 0.01,
+					"description": "Minimum scale applied to the base card in the stack."
+				}
+			],
+			"dependencies": {
+				"react": ["@exhuma/core"],
+				"nextjs": ["@exhuma/core"],
+				"vue": ["@exhuma/core"],
+				"svelte": ["@exhuma/core"],
+				"solid": ["@exhuma/core"],
+				"angular": ["@exhuma/core"],
+				"astro": ["@exhuma/core"],
+				"vanilla": ["@exhuma/core"],
+				"react-native": ["@exhuma/core"],
+				"flutter": ["exhuma"]
+			},
+			"flavors": ["react", "nextjs", "vue", "svelte", "angular", "solid", "astro", "blade", "vanilla", "wordpress", "webcomponent", "react-native", "flutter"]
+		},
+		{
+			"name": "Horizontal Scroller",
+			"slug": "horizontal-scroller",
+			"category": "cards",
+			"description": "Dynamic canvas track that smoothly maps vertical page scroll to horizontal card translation via GPU-accelerated CSS custom properties.",
+			"version": "1.0.0",
+			"props": [
+				{
+					"name": "speed",
+					"label": "Scroll Speed Multiplier",
+					"type": "number",
+					"defaultValue": 0.85,
+					"min": 0.2,
+					"max": 2,
+					"step": 0.05,
+					"description": "Scroll speed multiplier mapping vertical page scroll to horizontal translation distance."
+				},
+				{
+					"name": "itemGap",
+					"label": "Item Gap (px)",
+					"type": "number",
+					"defaultValue": 20,
+					"min": 8,
+					"max": 48,
+					"step": 4,
+					"description": "Gap in pixels between horizontal track cards."
+				},
+				{
+					"name": "showFadeEdges",
+					"label": "Fade Edges",
+					"type": "boolean",
+					"defaultValue": true,
+					"description": "Show subtle gradient mask at horizontal boundaries."
+				}
+			],
+			"dependencies": {
+				"react": ["@exhuma/core"],
+				"nextjs": ["@exhuma/core"],
+				"vue": ["@exhuma/core"],
+				"svelte": ["@exhuma/core"],
+				"solid": ["@exhuma/core"],
+				"angular": ["@exhuma/core"],
+				"astro": ["@exhuma/core"],
+				"vanilla": ["@exhuma/core"],
+				"react-native": ["@exhuma/core"],
+				"flutter": ["exhuma"]
+			},
+			"flavors": ["react", "nextjs", "vue", "svelte", "angular", "solid", "astro", "blade", "vanilla", "wordpress", "webcomponent", "react-native", "flutter"]
+		},
+		{
+			"name": "CSS Masonry",
+			"slug": "css-masonry",
+			"category": "layouts",
+			"description": "Pure CSS multi-column responsive masonry layout with zero external JavaScript runtime overhead.",
+			"version": "1.0.0",
+			"props": [
+				{
+					"name": "columns",
+					"label": "Desktop Columns",
+					"type": "number",
+					"defaultValue": 3,
+					"min": 1,
+					"max": 6,
+					"step": 1,
+					"description": "Number of columns on desktop viewports."
+				},
+				{
+					"name": "gap",
+					"label": "Column Gap (px)",
+					"type": "number",
+					"defaultValue": 16,
+					"min": 8,
+					"max": 48,
+					"step": 4,
+					"description": "Gap between masonry columns and items."
+				}
+			],
+			"dependencies": {
+				"react": ["@exhuma/core"],
+				"nextjs": ["@exhuma/core"],
+				"vue": ["@exhuma/core"],
+				"svelte": ["@exhuma/core"],
+				"solid": ["@exhuma/core"],
+				"angular": ["@exhuma/core"],
+				"astro": ["@exhuma/core"],
+				"vanilla": ["@exhuma/core"],
+				"react-native": ["@exhuma/core"],
+				"flutter": ["exhuma"]
+			},
+			"flavors": ["react", "nextjs", "vue", "svelte", "angular", "solid", "astro", "blade", "vanilla", "wordpress", "webcomponent", "react-native", "flutter"]
+		},
+		{
+			"name": "Auto Grid",
+			"slug": "auto-grid",
+			"category": "layouts",
+			"description": "Responsive CSS Grid with auto-fit / auto-fill minmax repeat tracks with zero media queries.",
+			"version": "1.0.0",
+			"props": [
+				{
+					"name": "minItemWidth",
+					"label": "Min Width (px)",
+					"type": "number",
+					"defaultValue": 280,
+					"min": 150,
+					"max": 450,
+					"step": 10,
+					"description": "Minimum width of each grid column before wrapping to the next line."
+				},
+				{
+					"name": "gap",
+					"label": "Grid Gap (px)",
+					"type": "number",
+					"defaultValue": 24,
+					"min": 8,
+					"max": 48,
+					"step": 4,
+					"description": "Gap between grid items."
+				}
+			],
+			"dependencies": {
+				"react": ["@exhuma/core"],
+				"nextjs": ["@exhuma/core"],
+				"vue": ["@exhuma/core"],
+				"svelte": ["@exhuma/core"],
+				"solid": ["@exhuma/core"],
+				"angular": ["@exhuma/core"],
+				"astro": ["@exhuma/core"],
+				"vanilla": ["@exhuma/core"],
+				"react-native": ["@exhuma/core"],
+				"flutter": ["exhuma"]
+			},
+			"flavors": ["react", "nextjs", "vue", "svelte", "angular", "solid", "astro", "blade", "vanilla", "wordpress", "webcomponent", "react-native", "flutter"]
+		},
+		{
+			"name": "Tilt Card",
+			"slug": "tilt-card",
+			"category": "cards",
+			"description": "Interactive 3D mouse-tracking card tilt with dynamic glare effect and smooth spring reset.",
+			"version": "1.0.0",
+			"props": [
+				{
+					"name": "maxTilt",
+					"label": "Max Tilt (deg)",
+					"type": "number",
+					"defaultValue": 15,
+					"min": 5,
+					"max": 35,
+					"step": 1,
+					"description": "Maximum tilt rotation in degrees."
+				},
+				{
+					"name": "perspective",
+					"label": "Perspective (px)",
+					"type": "number",
+					"defaultValue": 1000,
+					"min": 500,
+					"max": 2000,
+					"step": 100,
+					"description": "3D perspective depth in pixels."
+				},
+				{
+					"name": "glare",
+					"label": "Enable Glare",
+					"type": "boolean",
+					"defaultValue": true,
+					"description": "Dynamic glare reflection tracking mouse position."
+				}
+			],
+			"dependencies": {
+				"react": ["@exhuma/core"],
+				"nextjs": ["@exhuma/core"],
+				"vue": ["@exhuma/core"],
+				"svelte": ["@exhuma/core"],
+				"solid": ["@exhuma/core"],
+				"angular": ["@exhuma/core"],
+				"astro": ["@exhuma/core"],
+				"vanilla": ["@exhuma/core"],
+				"react-native": ["@exhuma/core"],
+				"flutter": ["exhuma"]
+			},
+			"flavors": ["react", "nextjs", "vue", "svelte", "angular", "solid", "astro", "blade", "vanilla", "wordpress", "webcomponent", "react-native", "flutter"]
+		},
+		{
+			"name": "Spotlight Card",
+			"slug": "spotlight-card",
+			"category": "cards",
+			"description": "Dynamic 2D spatial coordinate tracking with sub-pixel radial border illumination mask and smooth exponential smoothing.",
+			"version": "1.0.0",
+			"props": [
+				{
+					"name": "radius",
+					"label": "Spotlight Radius (px)",
+					"type": "number",
+					"defaultValue": 350,
+					"min": 150,
+					"max": 600,
+					"step": 25,
+					"description": "Radius of the radial spotlight illumination in pixels."
+				},
+				{
+					"name": "color",
+					"label": "Spotlight Color",
+					"type": "string",
+					"defaultValue": "rgba(99, 102, 241, 0.25)",
+					"description": "Background radial sheen color (CSS color string)."
+				},
+				{
+					"name": "opacity",
+					"label": "Glow Opacity",
+					"type": "number",
+					"defaultValue": 0.8,
+					"min": 0.1,
+					"max": 1,
+					"step": 0.05,
+					"description": "Opacity of the spotlight when active."
+				},
+				{
+					"name": "borderColor",
+					"label": "Border Glow Color",
+					"type": "string",
+					"defaultValue": "rgba(99, 102, 241, 0.5)",
+					"description": "Color of the illuminated border edge."
+				}
+			],
+			"dependencies": {
+				"react": ["@exhuma/core"],
+				"nextjs": ["@exhuma/core"],
+				"vue": ["@exhuma/core"],
+				"svelte": ["@exhuma/core"],
+				"solid": ["@exhuma/core"],
+				"angular": ["@exhuma/core"],
+				"astro": ["@exhuma/core"],
+				"vanilla": ["@exhuma/core"],
+				"react-native": ["@exhuma/core"],
+				"flutter": ["exhuma"]
+			},
+			"flavors": ["react", "nextjs", "vue", "svelte", "angular", "solid", "astro", "blade", "vanilla", "wordpress", "webcomponent", "react-native", "flutter"]
+		},
+		{
+			"name": "Morphing Tabs",
+			"slug": "morphing-tabs",
+			"category": "navigation",
+			"description": "Dynamic active rect geometry tracking with a floating spring indicator and roving focus keyboard navigation.",
+			"version": "1.0.0",
+			"props": [
+				{
+					"name": "springStiffness",
+					"label": "Spring Stiffness (omega)",
+					"type": "number",
+					"defaultValue": 26,
+					"min": 10,
+					"max": 50,
+					"step": 2,
+					"description": "Stiffness of the critically damped spring pill."
+				}
+			],
+			"dependencies": {
+				"react": ["@exhuma/core"],
+				"nextjs": ["@exhuma/core"],
+				"vue": ["@exhuma/core"],
+				"svelte": ["@exhuma/core"],
+				"solid": ["@exhuma/core"],
+				"angular": ["@exhuma/core"],
+				"astro": ["@exhuma/core"],
+				"vanilla": ["@exhuma/core"],
+				"react-native": ["@exhuma/core"],
+				"flutter": ["exhuma"]
+			},
+			"flavors": ["react", "nextjs", "vue", "svelte", "angular", "solid", "astro", "blade", "vanilla", "wordpress", "webcomponent", "react-native", "flutter"]
+		},
+		{
+			"name": "Accordion",
+			"slug": "accordion",
+			"category": "primitives",
+			"description": "Zero-jank dynamic height disclosure using CSS Grid 0fr to 1fr interpolation with morphing plus/minus icon and animated gradient border glow.",
+			"version": "1.0.0",
+			"props": [
+				{
+					"name": "mode",
+					"label": "Expansion Mode",
+					"type": "select",
+					"defaultValue": "single",
+					"options": [
+						{
+							"label": "Single Expand",
+							"value": "single"
+						},
+						{
+							"label": "Multiple Expand",
+							"value": "multiple"
+						}
+					],
+					"description": "Single auto-collapses other items; multiple allows independent toggles."
+				},
+				{
+					"name": "duration",
+					"label": "Transition Duration (ms)",
+					"type": "number",
+					"defaultValue": 300,
+					"min": 150,
+					"max": 600,
+					"step": 50,
+					"description": "CSS Grid height transition speed."
+				}
+			],
+			"dependencies": {
+				"react": ["@exhuma/core"],
+				"nextjs": ["@exhuma/core"],
+				"vue": ["@exhuma/core"],
+				"svelte": ["@exhuma/core"],
+				"solid": ["@exhuma/core"],
+				"angular": ["@exhuma/core"],
+				"astro": ["@exhuma/core"],
+				"vanilla": ["@exhuma/core"],
+				"react-native": ["@exhuma/core"],
+				"flutter": ["exhuma"]
+			},
+			"flavors": ["react", "nextjs", "vue", "svelte", "angular", "solid", "astro", "blade", "vanilla", "wordpress", "webcomponent", "react-native", "flutter"]
+		},
+		{
+			"name": "Infinite Marquee",
+			"slug": "infinite-marquee",
+			"category": "layouts",
+			"description": "High-performance rAF continuous translation loop with modulo wrap, exponential hover damping, and zero external animation libraries.",
+			"version": "1.0.0",
+			"props": [
+				{
+					"name": "speed",
+					"label": "Scroll Speed (px/s)",
+					"type": "number",
+					"defaultValue": 40,
+					"min": 10,
+					"max": 200,
+					"step": 5,
+					"description": "Scroll speed in pixels per second."
+				},
+				{
+					"name": "direction",
+					"label": "Direction",
+					"type": "select",
+					"defaultValue": "left",
+					"options": [
+						{
+							"label": "Left",
+							"value": "left"
+						},
+						{
+							"label": "Right",
+							"value": "right"
+						}
+					],
+					"description": "Direction of marquee translation."
+				},
+				{
+					"name": "pauseOnHover",
+					"label": "Pause On Hover",
+					"type": "boolean",
+					"defaultValue": true,
+					"description": "Smoothly decelerate to zero when hovered."
+				},
+				{
+					"name": "gap",
+					"label": "Item Gap",
+					"type": "string",
+					"defaultValue": "1.5rem",
+					"description": "Spacing between items and repeated tracks."
+				}
+			],
+			"dependencies": {
+				"react": ["@exhuma/core"],
+				"nextjs": ["@exhuma/core"],
+				"vue": ["@exhuma/core"],
+				"svelte": ["@exhuma/core"],
+				"solid": ["@exhuma/core"],
+				"angular": ["@exhuma/core"],
+				"astro": ["@exhuma/core"],
+				"vanilla": ["@exhuma/core"],
+				"react-native": ["@exhuma/core"],
+				"flutter": ["exhuma"]
+			},
+			"flavors": ["react", "nextjs", "vue", "svelte", "angular", "solid", "astro", "blade", "vanilla", "wordpress", "webcomponent", "react-native", "flutter"]
+		},
+		{
+			"name": "Bento Grid",
+			"slug": "bento-grid",
+			"category": "layouts",
+			"description": "Fluid responsive layout engine with dense auto-flow, asymmetric card spans, and subtle kinetic hover glow.",
+			"version": "1.0.0",
+			"props": [
+				{
+					"name": "cols",
+					"label": "Columns",
+					"type": "number",
+					"defaultValue": 3,
+					"min": 1,
+					"max": 6,
+					"step": 1,
+					"description": "Maximum column count for desktop screens."
+				},
+				{
+					"name": "gap",
+					"label": "Grid Gap",
+					"type": "string",
+					"defaultValue": "1.5rem",
+					"description": "Spacing between bento tiles."
+				}
+			],
+			"dependencies": {
+				"react": ["@exhuma/core"],
+				"nextjs": ["@exhuma/core"],
+				"vue": ["@exhuma/core"],
+				"svelte": ["@exhuma/core"],
+				"solid": ["@exhuma/core"],
+				"angular": ["@exhuma/core"],
+				"astro": ["@exhuma/core"],
+				"vanilla": ["@exhuma/core"],
+				"react-native": ["@exhuma/core"],
+				"flutter": ["exhuma"]
+			},
+			"flavors": ["react", "nextjs", "vue", "svelte", "angular", "solid", "astro", "blade", "vanilla", "wordpress", "webcomponent", "react-native", "flutter"]
+		},
+		{
+			"name": "Diamond Grid",
+			"slug": "diamond-grid",
+			"category": "layouts",
+			"description": "Rhombic symmetrical diamond column distribution [1, 2, 3, 4, 3, 2, 1] with responsive mobile collapse.",
+			"version": "1.0.0",
+			"props": [
+				{
+					"name": "gap",
+					"label": "Column Gap",
+					"type": "string",
+					"defaultValue": "0.75vw",
+					"description": "Spacing between diamond columns and elements."
+				}
+			],
+			"dependencies": {
+				"react": ["@exhuma/core"],
+				"nextjs": ["@exhuma/core"],
+				"vue": ["@exhuma/core"],
+				"svelte": ["@exhuma/core"],
+				"solid": ["@exhuma/core"],
+				"angular": ["@exhuma/core"],
+				"astro": ["@exhuma/core"],
+				"vanilla": ["@exhuma/core"],
+				"react-native": ["@exhuma/core"],
+				"flutter": ["exhuma"]
+			},
+			"flavors": ["react", "nextjs", "vue", "svelte", "angular", "solid", "astro", "blade", "vanilla", "wordpress", "webcomponent", "react-native", "flutter"]
+		},
+		{
+			"name": "Scroll Timeline",
+			"slug": "scroll-timeline",
+			"category": "layouts",
+			"description": "Organic serpentine cubic bezier SVG timeline with pure native rAF progress beam and zero external animation libraries.",
+			"version": "1.0.0",
+			"props": [
+				{
+					"name": "curveWidth",
+					"label": "Curve Swing (px)",
+					"type": "number",
+					"defaultValue": 24,
+					"min": 10,
+					"max": 60,
+					"step": 2,
+					"description": "Horizontal amplitude of bezier swing."
+				},
+				{
+					"name": "curveHeight",
+					"label": "Curve Height (px)",
+					"type": "number",
+					"defaultValue": 40,
+					"min": 20,
+					"max": 80,
+					"step": 5,
+					"description": "Vertical transition height of bezier curves."
+				},
+				{
+					"name": "accentColor",
+					"label": "Accent Color",
+					"type": "string",
+					"defaultValue": "#6366f1",
+					"description": "Color of the active kinetic progress beam."
+				}
+			],
+			"dependencies": {
+				"react": ["@exhuma/core"],
+				"nextjs": ["@exhuma/core"],
+				"vue": ["@exhuma/core"],
+				"svelte": ["@exhuma/core"],
+				"solid": ["@exhuma/core"],
+				"angular": ["@exhuma/core"],
+				"astro": ["@exhuma/core"],
+				"vanilla": ["@exhuma/core"],
+				"react-native": ["@exhuma/core"],
+				"flutter": ["exhuma"]
+			},
+			"flavors": ["react", "nextjs", "vue", "svelte", "angular", "solid", "astro", "blade", "vanilla", "wordpress", "webcomponent", "react-native", "flutter"]
+		},
+		{
+			"name": "Sticky Parallax Scroll",
+			"slug": "sticky-parallax",
+			"category": "layouts",
+			"description": "Sticky viewport rail with multi-speed differential layer transformations driven by scroll delta.",
+			"version": "1.0.0",
+			"props": [
+				{
+					"name": "trackHeight",
+					"label": "Track Height",
+					"type": "string",
+					"defaultValue": "250vh",
+					"description": "Total scroll track height controlling scroll duration."
+				}
+			],
+			"dependencies": {
+				"react": ["@exhuma/core"],
+				"nextjs": ["@exhuma/core"],
+				"vue": ["@exhuma/core"],
+				"svelte": ["@exhuma/core"],
+				"solid": ["@exhuma/core"],
+				"angular": ["@exhuma/core"],
+				"astro": ["@exhuma/core"],
+				"vanilla": ["@exhuma/core"],
+				"react-native": ["@exhuma/core"],
+				"flutter": ["exhuma"]
+			},
+			"flavors": ["react", "nextjs", "vue", "svelte", "angular", "solid", "astro", "blade", "vanilla", "wordpress", "webcomponent", "react-native", "flutter"]
+		},
+		{
+			"name": "Border Beam",
+			"slug": "border-beam",
+			"category": "cards",
+			"description": "Zero-runtime CSS conic perimeter laser trace with hardware mask clipping and sub-pixel compositing.",
+			"version": "1.0.0",
+			"props": [
+				{
+					"name": "size",
+					"label": "Beam Length (px)",
+					"type": "number",
+					"defaultValue": 250,
+					"min": 100,
+					"max": 600,
+					"step": 25,
+					"description": "Length/size of the perimeter laser trace."
+				},
+				{
+					"name": "duration",
+					"label": "Duration (s)",
+					"type": "number",
+					"defaultValue": 12,
+					"min": 2,
+					"max": 30,
+					"step": 1,
+					"description": "Loop duration for one full border sweep."
+				},
+				{
+					"name": "borderWidth",
+					"label": "Border Width (px)",
+					"type": "number",
+					"defaultValue": 1.5,
+					"min": 1,
+					"max": 4,
+					"step": 0.5,
+					"description": "Perimeter border stroke width."
+				},
+				{
+					"name": "colorFrom",
+					"label": "Color From",
+					"type": "string",
+					"defaultValue": "#ffaa40",
+					"description": "Starting gradient color."
+				},
+				{
+					"name": "colorTo",
+					"label": "Color To",
+					"type": "string",
+					"defaultValue": "#9c40ff",
+					"description": "Ending gradient color."
+				}
+			],
+			"dependencies": {
+				"react": ["@exhuma/core"],
+				"nextjs": ["@exhuma/core"],
+				"vue": ["@exhuma/core"],
+				"svelte": ["@exhuma/core"],
+				"solid": ["@exhuma/core"],
+				"angular": ["@exhuma/core"],
+				"astro": ["@exhuma/core"],
+				"vanilla": ["@exhuma/core"],
+				"react-native": ["@exhuma/core"],
+				"flutter": ["exhuma"]
+			},
+			"flavors": ["react", "nextjs", "vue", "svelte", "angular", "solid", "astro", "blade", "vanilla", "wordpress", "webcomponent", "react-native", "flutter"]
+		},
+		{
+			"name": "Animated Sphere",
+			"slug": "animated-sphere",
+			"category": "primitives",
+			"description": "Handcrafted 3D spherical trigonometry on HTML5 2D Canvas with depth sorting and zero Three.js.",
+			"version": "1.0.0",
+			"props": [
+				{
+					"name": "color",
+					"label": "Sphere Color",
+					"type": "string",
+					"defaultValue": "#6366f1",
+					"description": "Foreground raster color (hex or CSS color string)."
+				},
+				{
+					"name": "speed",
+					"label": "Rotation Speed",
+					"type": "number",
+					"defaultValue": 1,
+					"min": 0.2,
+					"max": 3,
+					"step": 0.1,
+					"description": "Multiplier for 3D rotation speed."
+				},
+				{
+					"name": "radiusScale",
+					"label": "Radius Scale",
+					"type": "number",
+					"defaultValue": 0.475,
+					"min": 0.2,
+					"max": 0.5,
+					"step": 0.025,
+					"description": "Radius relative to canvas dimension."
+				}
+			],
+			"dependencies": {
+				"react": ["@exhuma/core"],
+				"nextjs": ["@exhuma/core"],
+				"vue": ["@exhuma/core"],
+				"svelte": ["@exhuma/core"],
+				"solid": ["@exhuma/core"],
+				"angular": ["@exhuma/core"],
+				"astro": ["@exhuma/core"],
+				"vanilla": ["@exhuma/core"],
+				"react-native": ["@exhuma/core"],
+				"flutter": ["exhuma"]
+			},
+			"flavors": ["react", "nextjs", "vue", "svelte", "angular", "solid", "astro", "blade", "vanilla", "wordpress", "webcomponent", "react-native", "flutter"]
+		},
+		{
+			"name": "Floating Dock",
+			"slug": "floating-dock",
+			"category": "navigation",
+			"description": "macOS-style kinetic floating dock with continuous Gaussian proximity distribution and zero external animation libraries.",
+			"version": "1.0.0",
+			"props": [
+				{
+					"name": "baseSize",
+					"label": "Base Item Size (px)",
+					"type": "number",
+					"defaultValue": 44,
+					"min": 32,
+					"max": 64,
+					"step": 2,
+					"description": "Default width and height of dock items at rest."
+				},
+				{
+					"name": "maxMagnification",
+					"label": "Max Boost Factor",
+					"type": "number",
+					"defaultValue": 0.6,
+					"min": 0.2,
+					"max": 1,
+					"step": 0.05,
+					"description": "Maximum scale multiplier at zero distance."
+				},
+				{
+					"name": "influenceRadius",
+					"label": "Influence Radius (px)",
+					"type": "number",
+					"defaultValue": 70,
+					"min": 40,
+					"max": 140,
+					"step": 5,
+					"description": "Standard deviation spread of the Gaussian proximity curve."
+				}
+			],
+			"dependencies": {
+				"react": ["@exhuma/core"],
+				"nextjs": ["@exhuma/core"],
+				"vue": ["@exhuma/core"],
+				"svelte": ["@exhuma/core"],
+				"solid": ["@exhuma/core"],
+				"angular": ["@exhuma/core"],
+				"astro": ["@exhuma/core"],
+				"vanilla": ["@exhuma/core"],
+				"react-native": ["@exhuma/core"],
+				"flutter": ["exhuma"]
+			},
+			"flavors": ["react", "nextjs", "vue", "svelte", "angular", "solid", "astro", "blade", "vanilla", "wordpress", "webcomponent", "react-native", "flutter"]
+		},
+		{
+			"name": "Interactive Grid Pattern",
+			"slug": "interactive-grid",
+			"category": "layouts",
+			"description": "Sub-pixel SVG background grid pattern with hover activation and hardware-accelerated color transitions.",
+			"version": "1.0.0",
+			"props": [
+				{
+					"name": "width",
+					"label": "Square Width (px)",
+					"type": "number",
+					"defaultValue": 40,
+					"min": 20,
+					"max": 80,
+					"step": 5,
+					"description": "Width of each individual grid square."
+				},
+				{
+					"name": "height",
+					"label": "Square Height (px)",
+					"type": "number",
+					"defaultValue": 40,
+					"min": 20,
+					"max": 80,
+					"step": 5,
+					"description": "Height of each individual grid square."
+				}
+			],
+			"dependencies": {
+				"react": ["@exhuma/core"],
+				"nextjs": ["@exhuma/core"],
+				"vue": ["@exhuma/core"],
+				"svelte": ["@exhuma/core"],
+				"solid": ["@exhuma/core"],
+				"angular": ["@exhuma/core"],
+				"astro": ["@exhuma/core"],
+				"vanilla": ["@exhuma/core"],
+				"react-native": ["@exhuma/core"],
+				"flutter": ["exhuma"]
+			},
+			"flavors": ["react", "nextjs", "vue", "svelte", "angular", "solid", "astro", "blade", "vanilla", "wordpress", "webcomponent", "react-native", "flutter"]
+		},
+		{
+			"name": "Number Ticker",
+			"slug": "number-ticker",
+			"category": "primitives",
+			"description": "Analytical easeOutExpo numerical counter with direct DOM textContent manipulation and zero external animation libraries.",
+			"version": "1.0.0",
+			"props": [
+				{
+					"name": "value",
+					"label": "Target Value",
+					"type": "number",
+					"defaultValue": 1000,
+					"description": "The target numerical value to count towards."
+				},
+				{
+					"name": "initialValue",
+					"label": "Initial Value",
+					"type": "number",
+					"defaultValue": 0,
+					"description": "Starting number at inception."
+				},
+				{
+					"name": "duration",
+					"label": "Duration (s)",
+					"type": "number",
+					"defaultValue": 1.5,
+					"min": 0.5,
+					"max": 5,
+					"step": 0.25,
+					"description": "Time in seconds to reach the target number."
+				},
+				{
+					"name": "decimalPlaces",
+					"label": "Decimals",
+					"type": "number",
+					"defaultValue": 0,
+					"min": 0,
+					"max": 3,
+					"step": 1,
+					"description": "Decimal precision to format."
+				}
+			],
+			"dependencies": {
+				"react": ["@exhuma/core"],
+				"nextjs": ["@exhuma/core"],
+				"vue": ["@exhuma/core"],
+				"svelte": ["@exhuma/core"],
+				"solid": ["@exhuma/core"],
+				"angular": ["@exhuma/core"],
+				"astro": ["@exhuma/core"],
+				"vanilla": ["@exhuma/core"],
+				"react-native": ["@exhuma/core"],
+				"flutter": ["exhuma"]
+			},
+			"flavors": ["react", "nextjs", "vue", "svelte", "angular", "solid", "astro", "blade", "vanilla", "wordpress", "webcomponent", "react-native", "flutter"]
+		},
+		{
+			"name": "Magnetic Button",
+			"slug": "magnetic-button",
+			"category": "primitives",
+			"description": "Inverted spring pull field button that magnetically attracts cursor proximity with critically damped release snaps.",
+			"version": "1.0.0",
+			"props": [
+				{
+					"name": "strength",
+					"label": "Pull Strength",
+					"type": "number",
+					"defaultValue": 0.35,
+					"min": 0.1,
+					"max": 0.8,
+					"step": 0.05,
+					"description": "Displacement factor relative to cursor distance."
+				},
+				{
+					"name": "radius",
+					"label": "Magnetic Radius (px)",
+					"type": "number",
+					"defaultValue": 120,
+					"min": 50,
+					"max": 250,
+					"step": 10,
+					"description": "Influence radius threshold in pixels."
+				},
+				{
+					"name": "springDamping",
+					"label": "Spring Damping",
+					"type": "number",
+					"defaultValue": 18,
+					"min": 5,
+					"max": 35,
+					"step": 1,
+					"description": "Exponential decay rate for critically damped snaps."
+				}
+			],
+			"dependencies": {
+				"react": ["@exhuma/core"],
+				"nextjs": ["@exhuma/core"],
+				"vue": ["@exhuma/core"],
+				"svelte": ["@exhuma/core"],
+				"solid": ["@exhuma/core"],
+				"angular": ["@exhuma/core"],
+				"astro": ["@exhuma/core"],
+				"vanilla": ["@exhuma/core"],
+				"react-native": ["@exhuma/core"],
+				"flutter": ["exhuma"]
+			},
+			"flavors": ["react", "nextjs", "vue", "svelte", "angular", "solid", "astro", "blade", "vanilla", "wordpress", "webcomponent", "react-native", "flutter"]
+		},
+		{
+			"name": "Card Swipe Stack",
+			"slug": "card-swipe-stack",
+			"category": "cards",
+			"description": "Velocity-sensitive multi-card swipe stack with Euler angular rotation, circular velocity ring buffer, and zero external animation libraries.",
+			"version": "1.0.0",
+			"props": [
+				{
+					"name": "thresholdDistance",
+					"label": "Swipe Threshold (px)",
+					"type": "number",
+					"defaultValue": 120,
+					"min": 60,
+					"max": 240,
+					"step": 10,
+					"description": "Minimum drag distance to trigger a card dismiss."
+				},
+				{
+					"name": "maxRotation",
+					"label": "Max Rotation (deg)",
+					"type": "number",
+					"defaultValue": 20,
+					"min": 5,
+					"max": 45,
+					"step": 1,
+					"description": "Maximum angular rotation coupled to horizontal translation."
+				},
+				{
+					"name": "scaleStep",
+					"label": "Scale Step",
+					"type": "number",
+					"defaultValue": 0.05,
+					"min": 0.02,
+					"max": 0.1,
+					"step": 0.01,
+					"description": "Scale reduction step between consecutive cards in the stack."
+				}
+			],
+			"dependencies": {
+				"react": ["@exhuma/core"],
+				"nextjs": ["@exhuma/core"],
+				"vue": ["@exhuma/core"],
+				"svelte": ["@exhuma/core"],
+				"solid": ["@exhuma/core"],
+				"angular": ["@exhuma/core"],
+				"astro": ["@exhuma/core"],
+				"vanilla": ["@exhuma/core"],
+				"react-native": ["@exhuma/core"],
+				"flutter": ["exhuma"]
+			},
+			"flavors": ["react", "nextjs", "vue", "svelte", "angular", "solid", "astro", "blade", "vanilla", "wordpress", "webcomponent", "react-native", "flutter"]
+		},
+		{
+			"name": "Comparison Slider",
+			"slug": "comparison-slider",
+			"category": "cards",
+			"description": "Interactive before/after media comparison slider with sub-pixel clip-path polygon slicing and WAI-ARIA keyboard navigation.",
+			"version": "1.0.0",
+			"props": [
+				{
+					"name": "defaultPosition",
+					"label": "Default Position",
+					"type": "number",
+					"defaultValue": 0.5,
+					"min": 0.1,
+					"max": 0.9,
+					"step": 0.05,
+					"description": "Initial divider split ratio between 0 and 1."
+				},
+				{
+					"name": "step",
+					"label": "Keyboard Step",
+					"type": "number",
+					"defaultValue": 0.05,
+					"min": 0.01,
+					"max": 0.2,
+					"step": 0.01,
+					"description": "Position delta when stepping with arrow keys."
+				}
+			],
+			"dependencies": {
+				"react": ["@exhuma/core"],
+				"nextjs": ["@exhuma/core"],
+				"vue": ["@exhuma/core"],
+				"svelte": ["@exhuma/core"],
+				"solid": ["@exhuma/core"],
+				"angular": ["@exhuma/core"],
+				"astro": ["@exhuma/core"],
+				"vanilla": ["@exhuma/core"],
+				"react-native": ["@exhuma/core"],
+				"flutter": ["exhuma"]
+			},
+			"flavors": ["react", "nextjs", "vue", "svelte", "angular", "solid", "astro", "blade", "vanilla", "wordpress", "webcomponent", "react-native", "flutter"]
+		},
+		{
+			"name": "Expandable Card",
+			"slug": "expandable-card",
+			"category": "cards",
+			"description": "Mathematical FLIP morphing card dialog with zero Framer Motion dependencies, zero layout shifts, and accessible dialog semantics.",
+			"version": "1.0.0",
+			"props": [
+				{
+					"name": "duration",
+					"label": "Morph Duration (ms)",
+					"type": "number",
+					"defaultValue": 360,
+					"min": 150,
+					"max": 600,
+					"step": 20,
+					"description": "FLIP transition timing in milliseconds."
+				}
+			],
+			"dependencies": {
+				"react": ["@exhuma/core"],
+				"nextjs": ["@exhuma/core"],
+				"vue": ["@exhuma/core"],
+				"svelte": ["@exhuma/core"],
+				"solid": ["@exhuma/core"],
+				"angular": ["@exhuma/core"],
+				"astro": ["@exhuma/core"],
+				"vanilla": ["@exhuma/core"],
+				"react-native": ["@exhuma/core"],
+				"flutter": ["exhuma"]
+			},
+			"flavors": ["react", "nextjs", "vue", "svelte", "angular", "solid", "astro", "blade", "vanilla", "wordpress", "webcomponent", "react-native", "flutter"]
+		},
+		{
+			"name": "Cursor Tooltip",
+			"slug": "cursor-tooltip",
+			"category": "primitives",
+			"description": "Tactile cursor-following tooltip with continuous exponential lerp tracking, boundary viewport collision clamping, and zero Framer Motion dependencies.",
+			"version": "1.0.0",
+			"props": [
+				{
+					"name": "springDamping",
+					"label": "Spring Damping",
+					"type": "number",
+					"defaultValue": 22,
+					"min": 5,
+					"max": 40,
+					"step": 1,
+					"description": "Exponential smoothing factor for trailing cursor physics."
+				}
+			],
+			"dependencies": {
+				"react": ["@exhuma/core"],
+				"nextjs": ["@exhuma/core"],
+				"vue": ["@exhuma/core"],
+				"svelte": ["@exhuma/core"],
+				"solid": ["@exhuma/core"],
+				"angular": ["@exhuma/core"],
+				"astro": ["@exhuma/core"],
+				"vanilla": ["@exhuma/core"],
+				"react-native": ["@exhuma/core"],
+				"flutter": ["exhuma"]
+			},
+			"flavors": ["react", "nextjs", "vue", "svelte", "angular", "solid", "astro", "blade", "vanilla", "wordpress", "webcomponent", "react-native", "flutter"]
+		}
+	]
 }
