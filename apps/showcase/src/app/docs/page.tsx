@@ -11,9 +11,18 @@ import { COMPONENT_COUNT, ECOSYSTEM_COUNT, getEcosystemTargets } from '@/compone
 const HREF = '/docs';
 
 export const metadata: Metadata = {
-	// Absolute: the docs layout's "%s — Exhuma Docs" template only applies to pages below it, not its own index.
 	title: { absolute: 'Introduction — Exhuma Docs' },
 	description: 'Why Exhuma ships physics-driven components as source you own, re-authored natively for every supported frontend ecosystem.',
+	openGraph: {
+		title: 'Introduction — Exhuma Docs',
+		description: 'Why Exhuma ships physics-driven components as source you own, re-authored natively for every supported frontend ecosystem.',
+		type: 'article',
+	},
+	twitter: {
+		card: 'summary_large_image',
+		title: 'Introduction — Exhuma Docs',
+		description: 'Why Exhuma ships physics-driven components as source you own, re-authored natively for every supported frontend ecosystem.',
+	},
 };
 
 const toc = [

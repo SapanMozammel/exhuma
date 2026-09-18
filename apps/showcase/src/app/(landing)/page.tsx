@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import type { Metadata } from 'next';
 import {
 	IconAdjustments as Sliders,
 	IconArrowRight as ArrowRight,
@@ -21,6 +22,21 @@ import { CapabilityMatrix } from '@/components/showcase/CapabilityMatrix';
 import { Reveal } from '@/components/motion/Reveal';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+
+export const metadata: Metadata = {
+	title: { absolute: 'Exhuma — Universal Kinetic Primitives & Layout Engines' },
+	description: 'Zero external animation runtimes, 120 FPS compositor execution, and 100% source ownership. Native implementations for React, Next.js, Vue, Svelte, Angular, Solid, Astro, and more.',
+	openGraph: {
+		title: 'Exhuma — Universal Kinetic Primitives & Layout Engines',
+		description: 'Zero external animation runtimes, 120 FPS compositor execution, and 100% source ownership across 13 frontend ecosystems.',
+		type: 'website',
+	},
+	twitter: {
+		card: 'summary_large_image',
+		title: 'Exhuma — Universal Kinetic Primitives & Layout Engines',
+		description: 'Zero external animation runtimes, 120 FPS compositor execution, and 100% source ownership across 13 frontend ecosystems.',
+	},
+};
 
 const STEPS = [
 	{

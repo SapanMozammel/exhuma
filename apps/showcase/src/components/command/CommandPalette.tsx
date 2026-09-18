@@ -2,6 +2,7 @@
 
 import * as React from 'react';
 import { useRouter } from 'next/navigation';
+import { useTheme } from 'next-themes';
 import {
 	IconSearch as Search,
 	IconStack2 as Layers,
@@ -16,13 +17,17 @@ import {
 	IconLayoutGrid as LayoutGrid,
 	IconRoute as Route,
 	IconBox as Box,
+	IconSun as Sun,
+	IconMoon as Moon,
+	IconBrandGithub as BrandGithub,
+	IconNews as News,
 } from '@tabler/icons-react';
 import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { ALL_COMPONENTS, ECOSYSTEM_LABELS, EcosystemFlavor } from '@/registry';
 import { BLOG_POSTS } from '@/lib/blog-data';
 import { cn } from '@/lib/utils';
 
-type FilterCategory = 'all' | 'components' | 'ecosystems' | 'docs' | 'actions';
+type FilterCategory = 'all' | 'components' | 'journal' | 'docs' | 'ecosystems' | 'actions';
 type PackageManager = 'pnpm' | 'npm' | 'bun' | 'yarn';
 
 const PM_OPTIONS: PackageManager[] = ['pnpm', 'npm', 'bun', 'yarn'];
@@ -65,7 +70,7 @@ interface PaletteItem {
 	id: string;
 	title: string;
 	subtitle: string;
-	category: 'components' | 'ecosystems' | 'docs' | 'actions';
+	category: 'components' | 'journal' | 'docs' | 'ecosystems' | 'actions';
 	icon: React.ElementType;
 	href?: string;
 	cliCommand?: string;
@@ -81,6 +86,7 @@ export function CommandPalette() {
 	const [selectedIndex, setSelectedIndex] = React.useState(0);
 	const [copied, setCopied] = React.useState(false);
 	const [pm, setPm] = React.useState<PackageManager>('pnpm');
+	const { theme, setTheme } = useTheme();
 	const router = useRouter();
 	const itemRefs = React.useRef<Array<HTMLDivElement | null>>([]);
 
@@ -122,22 +128,37 @@ export function CommandPalette() {
 	const items = React.useMemo<PaletteItem[]>(() => {
 		const list: PaletteItem[] = [];
 
-		// 1. Components
+		// 1. Components (with full tags & categories)
 		ALL_COMPONENTS.forEach((comp) => {
+			const compTags = (comp as unknown as { tags?: string[] }).tags || [];
 			list.push({
 				id: `component-${comp.slug}`,
 				title: comp.name,
-				subtitle: `Canonical Component (${comp.category})`,
+				subtitle: `Canonical Component (${capitalize(comp.category)})`,
 				category: 'components',
 				icon: COMPONENT_CATEGORY_ICONS[comp.category] || Layers,
 				href: `/docs/components/${comp.slug}`,
 				cliCommand: `npx exhuma add ${comp.slug}`,
 				description: comp.description,
-				badges: [capitalize(comp.category), '13 Ecosystems', 'Zero-CSS-Leak'],
+				badges: [capitalize(comp.category), '13 Ecosystems', 'Zero-CSS-Leak', ...compTags],
 			});
 		});
 
-		// 2. Ecosystems
+		// 2. Engineering Journal Dispatches
+		BLOG_POSTS.forEach((post) => {
+			list.push({
+				id: `blog-${post.slug}`,
+				title: post.title,
+				subtitle: `Journal · ${post.readTime} · ${post.tags.join(', ')}`,
+				category: 'journal',
+				icon: News,
+				href: `/blog/${post.slug}`,
+				description: post.description,
+				badges: ['Journal', post.readTime, ...post.tags],
+			});
+		});
+
+		// 3. Ecosystems
 		(Object.keys(ECOSYSTEM_LABELS) as EcosystemFlavor[]).forEach((flavor) => {
 			list.push({
 				id: `eco-${flavor}`,
@@ -148,11 +169,11 @@ export function CommandPalette() {
 				href: `/docs/ecosystems#${flavor}`,
 				cliCommand: `npx exhuma add stacking-cards --flavor=${flavor}`,
 				description: `Universal contract and native idiomatic architecture for ${ECOSYSTEM_LABELS[flavor]}.`,
-				badges: [flavor, 'Native Idiom', 'Teardown Safety'],
+				badges: [flavor, 'Native Idiom', '120Hz Target', 'Teardown Safety'],
 			});
 		});
 
-		// 3. Documentation
+		// 4. Documentation
 		list.push(
 			{
 				id: 'doc-overview',
@@ -162,6 +183,7 @@ export function CommandPalette() {
 				icon: BookOpen,
 				href: '/docs',
 				description: 'Why copy-paste headless engineering beats bloated monolithic npm dependencies.',
+				badges: ['Architecture', 'Docs', 'Philosophy'],
 			},
 			{
 				id: 'doc-install',
@@ -172,6 +194,17 @@ export function CommandPalette() {
 				href: '/docs/installation',
 				cliCommand: 'npm create exhuma@latest',
 				description: 'Get up and running with create-exhuma and standalone components in seconds.',
+				badges: ['Setup', 'CLI', 'Quickstart'],
+			},
+			{
+				id: 'doc-components-catalog',
+				title: 'All Components Catalog',
+				subtitle: 'Explore 23+ kinetic layout primitives',
+				category: 'docs',
+				icon: Layers,
+				href: '/docs/components',
+				description: 'Complete inventory of physics-driven cards, layouts, navigation, and visual primitives.',
+				badges: ['Components', 'Catalog', 'Library'],
 			},
 			{
 				id: 'doc-cli',
@@ -182,6 +215,7 @@ export function CommandPalette() {
 				href: '/docs/cli',
 				cliCommand: 'npx exhuma --help',
 				description: 'Complete command-line manual, flags, options, and offline embedded canonical execution.',
+				badges: ['CLI', 'Commands', 'Manual'],
 			},
 			{
 				id: 'doc-theming',
@@ -191,7 +225,7 @@ export function CommandPalette() {
 				icon: BookOpen,
 				href: '/docs/theming',
 				description: 'Dual-theme CSS variables, Tailwind v4 @theme integration, and custom palette tokens.',
-				badges: ['Light/Dark', '⌘⌥T', 'Zero-Flash'],
+				badges: ['Light/Dark', '⌘⌥T', 'Zero-Flash', 'Tailwind'],
 			},
 			{
 				id: 'doc-lifecycle',
@@ -201,34 +235,52 @@ export function CommandPalette() {
 				icon: BookOpen,
 				href: '/docs/lifecycle',
 				description: 'Zero memory leaks, listener detaching, and observer disconnection contracts.',
-				badges: ['Safety', 'Garbage Collection', 'Verified'],
-			}
-			/*
+				badges: ['Safety', 'Garbage Collection', 'Verified', 'Memory'],
+			},
 			{
-				id: 'page-showcase',
-				title: 'Community Showcase',
-				subtitle: 'Production apps & design systems',
+				id: 'doc-methodology',
+				title: 'Methodology & Engineering Principles',
+				subtitle: 'Deterministic Physics & Compositor Rules',
 				category: 'docs',
-				icon: Sparkles,
-				href: '/showcase',
-				description: 'Real-world dashboards, developer tools, and mobile shells built with Exhuma.',
-				badges: ['Showcase', 'Templates', 'Multi-Framework'],
+				icon: BookOpen,
+				href: '/docs/methodology',
+				description: 'How Exhuma builds physics interactions without heavy JavaScript animation runtimes.',
+				badges: ['Methodology', 'Principles', 'Compositor'],
+			},
+			{
+				id: 'doc-ecosystems',
+				title: 'Supported Ecosystems Guide',
+				subtitle: '13 Frontend Framework Implementations',
+				category: 'docs',
+				icon: Cpu,
+				href: '/docs/ecosystems',
+				description: 'Deep dives into React, Next.js, Vue, Svelte, Angular, Solid, Astro, and Flutter contracts.',
+				badges: ['Ecosystems', 'Frameworks', 'Cross-Platform'],
 			},
 			{
 				id: 'page-blog',
 				title: 'Engineering Journal',
 				subtitle: 'Technical deep-dives & architecture essays',
 				category: 'docs',
-				icon: BookOpen,
+				icon: News,
 				href: '/blog',
 				description: 'Essays on kinetic spring math, copy-paste architecture, and multi-framework design.',
-				badges: ['Articles', 'Journal'],
+				badges: ['Articles', 'Journal', 'Dispatches'],
 			}
-			*/
 		);
 
-		// 4. Studio Actions
+		// 5. Actions & Quick Utilities
 		list.push(
+			{
+				id: 'action-theme-toggle',
+				title: 'Toggle Dark / Light Theme',
+				subtitle: `Current theme: ${theme ?? 'system'}`,
+				category: 'actions',
+				icon: theme === 'dark' ? Sun : Moon,
+				action: () => setTheme(theme === 'dark' ? 'light' : 'dark'),
+				description: 'Switch between monochromatic dark mode and high-contrast light mode.',
+				badges: ['Theme', 'Dark Mode', 'Light Mode', 'Appearance'],
+			},
 			{
 				id: 'action-studio',
 				title: 'Explore Components & Playgrounds',
@@ -237,6 +289,7 @@ export function CommandPalette() {
 				icon: Sliders,
 				href: '/docs/components',
 				description: 'Visual inspector with real-time code synthesis across all 13 platforms.',
+				badges: ['Playground', 'Components', 'Explore'],
 			},
 			{
 				id: 'action-cli-init',
@@ -246,21 +299,34 @@ export function CommandPalette() {
 				icon: Copy,
 				cliCommand: 'npx exhuma init',
 				description: 'Initialize exhuma.json configuration file in your active workspace.',
+				badges: ['CLI', 'Init', 'Config'],
+			},
+			{
+				id: 'action-github',
+				title: 'Open GitHub Repository',
+				subtitle: 'SapanMozammel/exhuma',
+				category: 'actions',
+				icon: BrandGithub,
+				action: () => window.open('https://github.com/SapanMozammel/exhuma', '_blank', 'noopener,noreferrer'),
+				description: 'Inspect source code, star the project, report issues, or contribute.',
+				badges: ['GitHub', 'Source', 'Open Source'],
 			}
 		);
 
 		return list;
-	}, []);
+	}, [theme, setTheme]);
 
-	// Filter by search query & category
+	// Filter by search query & category with multi-token keyword matching
 	const filteredItems = React.useMemo(() => {
 		return items.filter((item) => {
 			const matchesCategory = activeCategory === 'all' || item.category === activeCategory;
 			if (!matchesCategory) return false;
 
 			if (!query.trim()) return true;
-			const q = query.toLowerCase();
-			return item.title.toLowerCase().includes(q) || item.subtitle.toLowerCase().includes(q) || (item.description && item.description.toLowerCase().includes(q));
+			const tokens = query.toLowerCase().trim().split(/\s+/);
+			const searchableText = [item.title, item.subtitle, item.description || '', item.cliCommand || '', ...(item.badges || [])].join(' ').toLowerCase();
+
+			return tokens.every((token) => searchableText.includes(token));
 		});
 	}, [items, query, activeCategory]);
 
@@ -371,8 +437,9 @@ export function CommandPalette() {
 						[
 							{ id: 'all', label: 'All' },
 							{ id: 'components', label: 'Components' },
-							{ id: 'ecosystems', label: 'Ecosystems' },
+							{ id: 'journal', label: 'Journal' },
 							{ id: 'docs', label: 'Docs' },
+							{ id: 'ecosystems', label: 'Ecosystems' },
 							{ id: 'actions', label: 'Actions' },
 						] as const
 					).map((tab) => (

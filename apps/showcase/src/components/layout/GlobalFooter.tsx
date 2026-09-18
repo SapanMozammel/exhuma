@@ -14,7 +14,7 @@ const LINK_GROUPS = [
 			{ label: 'Docs', href: '/docs' },
 			{ label: 'Components', href: '/docs/components' },
 			{ label: 'Ecosystems', href: '/docs/ecosystems' },
-			// { label: 'Studio', href: '/studio' }, // Consolidated into /docs/components/[slug]
+			{ label: 'Blog', href: '/blog' },
 		],
 	},
 	{
@@ -29,8 +29,6 @@ const LINK_GROUPS = [
 	{
 		title: 'Community',
 		links: [
-			// { label: 'Showcase', href: '/showcase' }, // Temporarily disabled
-			// { label: 'Blog', href: '/blog' }, // Temporarily disabled
 			{ label: 'GitHub', href: GITHUB_URL, external: true },
 			{ label: 'npm', href: 'https://npmjs.com/package/exhuma', external: true },
 		],

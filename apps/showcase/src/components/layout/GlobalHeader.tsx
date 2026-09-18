@@ -3,17 +3,7 @@
 import * as React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import {
-	IconSearch as Search,
-	IconSparkles as Sparkles,
-	IconStack2 as Layers,
-	IconAdjustments as Sliders,
-	IconBook2 as BookOpen,
-	IconArrowRight as ArrowRight,
-	IconStar as Star,
-	IconMenu2 as Menu,
-	IconX as X,
-} from '@tabler/icons-react';
+import { IconSearch as Search, IconStack2 as Layers, IconBook2 as BookOpen, IconArrowRight as ArrowRight, IconStar as Star, IconMenu2 as Menu, IconX as X } from '@tabler/icons-react';
 import { ExhumaLogo } from '@/components/brand/ExhumaLogo';
 import { ThemeSwitcher } from './ThemeSwitcher';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -71,9 +61,7 @@ export function GlobalHeader() {
 	const navLinks = [
 		{ href: '/docs', label: 'Docs', icon: BookOpen },
 		{ href: '/docs/components', label: 'Components', icon: Layers },
-		// { href: '/showcase', label: 'Showcase', icon: Sparkles },
-		// { href: '/blog', label: 'Blog', icon: BookOpen },
-		// { href: '/studio', label: 'Studio', icon: Sliders }, // Studio consolidated into /docs/components/[slug]
+		{ href: '/blog', label: 'Blog', icon: BookOpen },
 	];
 
 	const triggerCommandPalette = () => {
