@@ -84,7 +84,7 @@ export default function HomePage() {
 					{/* Subtitle */}
 					<Reveal delay={120}>
 						<p className='text-muted-foreground mx-auto mt-6 max-w-[62ch] text-base leading-relaxed sm:text-lg'>
-							Autonomous kinetic primitives engineered natively across {ecosystemCount} frontend ecosystems. Zero runtime dependencies, 120 FPS compositor execution, and 100% source ownership.
+							Autonomous kinetic primitives engineered natively across {ecosystemCount} frontend ecosystems. Zero external animation runtimes, 120 FPS compositor execution, and 100% source ownership.
 						</p>
 					</Reveal>
 
@@ -134,7 +134,7 @@ export default function HomePage() {
 					stats={[
 						{ value: componentCount, label: 'Canonical components', note: 'Every one physics-driven' },
 						{ value: ecosystemCount, label: 'Native ecosystems', note: 'Idiomatic, not transpiled' },
-						{ value: 0, label: 'Runtime dependencies', note: 'Nothing ships to your users' },
+						{ value: 0, label: 'Animation runtimes', note: 'No Framer Motion or GSAP' },
 						{ value: 120, suffix: 'Hz', label: 'Frame rate floor', note: 'Guaranteed lower bound' },
 					]}
 				/>
@@ -174,7 +174,7 @@ export default function HomePage() {
 				</Reveal>
 
 				<div className='flex flex-wrap gap-6'>
-					{/* Card 1: Zero Runtime Debt */}
+					{/* Card 1: Zero Animation Debt */}
 					<Reveal delay={60} className='min-w-0 grow basis-64'>
 						<div className='border-border/80 bg-card/60 hover:border-foreground/40 group relative flex h-full flex-col justify-between overflow-hidden rounded-2xl border p-6 shadow-xs backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-black/10'>
 							{/* Precision corner ticks */}
@@ -186,14 +186,14 @@ export default function HomePage() {
 								<div className='border-border bg-background text-foreground flex h-10 w-10 items-center justify-center rounded-xl border shadow-xs'>
 									<Zap className='h-5 w-5' />
 								</div>
-								<h3 className='text-foreground mt-4 text-base font-bold tracking-tight'>Zero Runtime Debt</h3>
+								<h3 className='text-foreground mt-4 text-base font-bold tracking-tight'>Zero Animation Debt</h3>
 								<p className='text-muted-foreground mt-2 text-xs leading-relaxed'>
-									0.00 KB vendor bundle cost. No Framer Motion or GSAP. Spring math executes directly on the browser compositor thread with a guaranteed 120 FPS floor.
+									No Framer Motion or GSAP runtime dependencies. Spring math executes directly on the browser compositor thread with a guaranteed 120 FPS floor.
 								</p>
 							</div>
 							<div className='border-border/60 text-3xs text-foreground mt-5 flex items-center gap-1.5 border-t pt-3 font-mono font-semibold'>
 								<ShieldCheck className='h-3.5 w-3.5 shrink-0' />
-								<span>0.00 KB CLIENT BUNDLE</span>
+								<span>0.00 KB ANIMATION RUNTIME</span>
 							</div>
 						</div>
 					</Reveal>

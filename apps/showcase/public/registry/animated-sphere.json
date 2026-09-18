@@ -1,154 +1,174 @@
 {
-	"name": "Animated Sphere",
-	"slug": "animated-sphere",
-	"category": "primitives",
-	"description": "Handcrafted 3D spherical trigonometry on HTML5 2D Canvas with depth sorting and zero Three.js.",
-	"version": "1.0.0",
-	"props": [
-		{
-			"name": "color",
-			"label": "Sphere Color",
-			"type": "string",
-			"defaultValue": "#6366f1",
-			"description": "Foreground raster color (hex or CSS color string)."
-		},
-		{
-			"name": "speed",
-			"label": "Rotation Speed",
-			"type": "number",
-			"defaultValue": 1,
-			"min": 0.2,
-			"max": 3,
-			"step": 0.1,
-			"description": "Multiplier for 3D rotation speed."
-		},
-		{
-			"name": "radiusScale",
-			"label": "Radius Scale",
-			"type": "number",
-			"defaultValue": 0.475,
-			"min": 0.2,
-			"max": 0.5,
-			"step": 0.025,
-			"description": "Radius relative to canvas dimension."
-		}
-	],
-	"dependencies": {
-		"react": ["@exhuma/core"],
-		"nextjs": ["@exhuma/core"],
-		"vue": ["@exhuma/core"],
-		"svelte": ["@exhuma/core"],
-		"solid": ["@exhuma/core"],
-		"angular": ["@exhuma/core"],
-		"astro": ["@exhuma/core"],
-		"vanilla": ["@exhuma/core"],
-		"react-native": ["@exhuma/core"],
-		"flutter": ["exhuma"]
-	},
-	"flavors": {
-		"react": [
-			{
-				"filename": "AnimatedSphere.tsx",
-				"language": "tsx",
-				"description": "Animated Sphere — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
-				"code": "import * as React from 'react';\nimport * as AnimatedSpherePrimitive from '@exhuma/core';\nimport { cn } from '@/lib/utils';\n\nexport interface AnimatedSphereProps extends React.ComponentPropsWithoutRef<typeof AnimatedSpherePrimitive.AnimatedSphere> {\n  className?: string;\n}\n\nexport const AnimatedSphere = React.forwardRef<HTMLDivElement, AnimatedSphereProps>(\n  ({ className, children, ...props }, ref) => (\n    <AnimatedSpherePrimitive.AnimatedSphere\n      ref={ref}\n      className={cn(\n        'relative flex items-center justify-center overflow-hidden rounded-2xl bg-card border border-border p-4 shadow-sm',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </AnimatedSpherePrimitive.AnimatedSphere>\n  )\n);\nAnimatedSphere.displayName = 'AnimatedSphere';\n"
-			}
-		],
-		"nextjs": [
-			{
-				"filename": "AnimatedSphere.tsx",
-				"language": "tsx",
-				"description": "Animated Sphere — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
-				"code": "'use client';\n\nimport * as React from 'react';\nimport * as AnimatedSpherePrimitive from '@exhuma/core';\nimport { cn } from '@/lib/utils';\n\nexport interface AnimatedSphereProps extends React.ComponentPropsWithoutRef<typeof AnimatedSpherePrimitive.AnimatedSphere> {\n  className?: string;\n}\n\nexport const AnimatedSphere = React.forwardRef<HTMLDivElement, AnimatedSphereProps>(\n  ({ className, children, ...props }, ref) => (\n    <AnimatedSpherePrimitive.AnimatedSphere\n      ref={ref}\n      className={cn(\n        'relative flex items-center justify-center overflow-hidden rounded-2xl bg-card border border-border p-4 shadow-sm',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </AnimatedSpherePrimitive.AnimatedSphere>\n  )\n);\nAnimatedSphere.displayName = 'AnimatedSphere';\n"
-			}
-		],
-		"vue": [
-			{
-				"filename": "AnimatedSphere.vue",
-				"language": "vue",
-				"description": "Vue 3 Animated Sphere outer adapter wrapping @exhuma/core headless primitive.",
-				"code": "<script setup lang=\"ts\">\nimport { AnimatedSphere as AnimatedSpherePrimitive } from '@exhuma/core';\nimport { cn } from '@/lib/utils';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst props = withDefaults(defineProps<Props>(), {\n  class: '',\n});\n</script>\n\n<template>\n  <AnimatedSpherePrimitive\n    v-bind=\"props\"\n    :class=\"cn('relative flex items-center justify-center overflow-hidden rounded-2xl bg-card border border-border p-4 shadow-sm', props.class)\"\n  >\n    <slot />\n  </AnimatedSpherePrimitive>\n</template>\n"
-			}
-		],
-		"svelte": [
-			{
-				"filename": "AnimatedSphere.svelte",
-				"language": "svelte",
-				"description": "Svelte 5 Animated Sphere adapter using runes and @exhuma/core primitives.",
-				"code": "<script lang=\"ts\">\n  import { AnimatedSphere as AnimatedSpherePrimitive } from '@exhuma/core';\n  import { cn } from '$lib/utils';\n\n  let {\n    class: className = '',\n    children,\n    ...restProps\n  }: {\n    class?: string;\n    children?: import('svelte').Snippet;\n    [key: string]: unknown;\n  } = $props();\n</script>\n\n<AnimatedSpherePrimitive\n  class={cn('relative flex items-center justify-center overflow-hidden rounded-2xl bg-card border border-border p-4 shadow-sm', className)}\n  {...restProps}\n>\n  {@render children?.()}\n</AnimatedSpherePrimitive>\n"
-			}
-		],
-		"angular": [
-			{
-				"filename": "animated-sphere.component.ts",
-				"language": "typescript",
-				"description": "Angular 18+ Standalone Animated Sphere component.",
-				"code": "import { Component, input } from '@angular/core';\nimport { CommonModule } from '@angular/common';\n\n@Component({\n  selector: 'exhuma-animated-sphere',\n  standalone: true,\n  imports: [CommonModule],\n  template: `\n    <div\n      class=\"relative flex items-center justify-center overflow-hidden rounded-2xl bg-card border border-border p-4 shadow-sm {{ customClass() }}\"\n    >\n      <ng-content></ng-content>\n    </div>\n  `,\n})\nexport class ExhumaAnimatedSphereComponent {\n  readonly customClass = input<string>('');\n}\n"
-			}
-		],
-		"solid": [
-			{
-				"filename": "AnimatedSphere.tsx",
-				"language": "tsx",
-				"description": "SolidJS Animated Sphere adapter wrapping @exhuma/core headless primitive.",
-				"code": "import { Component, JSX, splitProps } from 'solid-js';\nimport * as AnimatedSpherePrimitive from '@exhuma/core';\n\nexport interface AnimatedSphereProps extends JSX.HTMLAttributes<HTMLDivElement> {\n  [key: string]: unknown;\n}\n\nexport const AnimatedSphere: Component<AnimatedSphereProps> = (props) => {\n  const [local, others] = splitProps(props, ['class', 'children']);\n  return (\n    <AnimatedSpherePrimitive.AnimatedSphere\n      class={`relative flex items-center justify-center overflow-hidden rounded-2xl bg-card border border-border p-4 shadow-sm ${local.class ?? ''}`}\n      {...others}\n    >\n      {local.children}\n    </AnimatedSpherePrimitive.AnimatedSphere>\n  );\n};\n"
-			}
-		],
-		"astro": [
-			{
-				"filename": "AnimatedSphere.astro",
-				"language": "astro",
-				"description": "Astro Animated Sphere component with @exhuma/core primitive.",
-				"code": "---\nimport * as AnimatedSpherePrimitive from '@exhuma/core';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst { class: className = '', ...props } = Astro.props;\n---\n\n<AnimatedSpherePrimitive.AnimatedSphere\n  client:visible\n  className={`relative flex items-center justify-center overflow-hidden rounded-2xl bg-card border border-border p-4 shadow-sm ${className}`}\n  {...props}\n>\n  <slot />\n</AnimatedSpherePrimitive.AnimatedSphere>\n"
-			}
-		],
-		"blade": [
-			{
-				"filename": "animated-sphere.blade.php",
-				"language": "php",
-				"description": "Laravel Blade component for Animated Sphere with Alpine / data attributes.",
-				"code": "@props([])\n\n<exhuma-animated-sphere\n    {{ $attributes->merge([\n        'class' => 'relative flex items-center justify-center overflow-hidden rounded-2xl bg-card border border-border p-4 shadow-sm block',\n    ]) }}\n>\n    {{ $slot }}\n</exhuma-animated-sphere>\n"
-			}
-		],
-		"vanilla": [
-			{
-				"filename": "exhuma-animated-sphere.js",
-				"language": "javascript",
-				"description": "Autonomous Vanilla JS Animated Sphere initialization module.",
-				"code": "import { AnimatedSphere } from '@exhuma/core';\n\nexport function initAnimatedSphere(selector = '[data-exhuma-animated-sphere]', options = {}) {\n  const elements = document.querySelectorAll(selector);\n  return Array.from(elements);\n}\n"
-			}
-		],
-		"wordpress": [
-			{
-				"filename": "block.json",
-				"language": "json",
-				"description": "WordPress Block API v3 definition for Animated Sphere.",
-				"code": "{\n  \"$schema\": \"https://schemas.wp.org/trunk/block.json\",\n  \"apiVersion\": 3,\n  \"name\": \"exhuma/animated-sphere\",\n  \"version\": \"1.0.0\",\n  \"title\": \"Exhuma Animated Sphere\",\n  \"category\": \"design\",\n  \"icon\": \"art\",\n  \"description\": \"Handcrafted 3D spherical trigonometry on HTML5 2D Canvas.\",\n  \"attributes\": {},\n  \"editorScript\": \"file:./index.js\",\n  \"viewScript\": \"exhuma-kinetic\"\n}"
-			}
-		],
-		"webcomponent": [
-			{
-				"filename": "exhuma-animated-sphere.js",
-				"language": "javascript",
-				"description": "Universal Web Component wrapper for <exhuma-animated-sphere>.",
-				"code": "import { AnimatedSphere } from '@exhuma/core';\n\nclass ExhumaAnimatedSphereElement extends HTMLElement {\n  connectedCallback() {\n    this.classList.add('exhuma-animated-sphere');\n    this.style.display = 'block';\n  }\n}\n\nif (!customElements.get('exhuma-animated-sphere')) {\n  customElements.define('exhuma-animated-sphere', ExhumaAnimatedSphereElement);\n}\n"
-			}
-		],
-		"react-native": [
-			{
-				"filename": "AnimatedSphere.tsx",
-				"language": "tsx",
-				"description": "React Native Animated Sphere adapter wrapping @exhuma/core touch primitive.",
-				"code": "import React from 'react';\nimport { View, StyleSheet, type ViewProps } from 'react-native';\nimport * as AnimatedSpherePrimitive from '@exhuma/core';\n\nexport interface AnimatedSphereProps extends ViewProps {\n  children?: React.ReactNode;\n}\n\nexport function AnimatedSphere({ style, children, ...props }: AnimatedSphereProps) {\n  return (\n    <View style={[styles.container, style]} {...props}>\n      {children}\n    </View>\n  );\n}\n\nconst styles = StyleSheet.create({\n  container: {\n    borderRadius: 16,\n    borderWidth: 1,\n    borderColor: '#e2e8f0',\n    backgroundColor: '#ffffff',\n    padding: 20,\n    overflow: 'hidden',\n  },\n});\n"
-			}
-		],
-		"flutter": [
-			{
-				"filename": "animated_sphere.dart",
-				"language": "dart",
-				"description": "Flutter Animated Sphere widget wrapping package:exhuma.",
-				"code": "import 'package:flutter/material.dart';\nimport 'package:exhuma/exhuma.dart' as exhuma;\n\nclass ExhumaAnimatedSphere extends StatelessWidget {\n  final Widget child;\n\n  const ExhumaAnimatedSphere({\n    super.key,\n    required this.child,\n  });\n\n  @override\n  Widget build(BuildContext context) {\n    return Container(\n      decoration: BoxDecoration(\n        borderRadius: BorderRadius.circular(16.0),\n        border: Border.all(color: Theme.of(context).dividerColor),\n        color: Theme.of(context).cardColor,\n      ),\n      padding: const EdgeInsets.all(20.0),\n      child: child,\n    );\n  }\n}\n"
-			}
-		]
-	}
+  "name": "Animated Sphere",
+  "slug": "animated-sphere",
+  "category": "primitives",
+  "description": "Handcrafted 3D spherical trigonometry on HTML5 2D Canvas with depth sorting and zero Three.js.",
+  "version": "1.0.0",
+  "props": [
+    {
+      "name": "color",
+      "label": "Sphere Color",
+      "type": "string",
+      "defaultValue": "#6366f1",
+      "description": "Foreground raster color (hex or CSS color string)."
+    },
+    {
+      "name": "speed",
+      "label": "Rotation Speed",
+      "type": "number",
+      "defaultValue": 1,
+      "min": 0.2,
+      "max": 3,
+      "step": 0.1,
+      "description": "Multiplier for 3D rotation speed."
+    },
+    {
+      "name": "radiusScale",
+      "label": "Radius Scale",
+      "type": "number",
+      "defaultValue": 0.475,
+      "min": 0.2,
+      "max": 0.5,
+      "step": 0.025,
+      "description": "Radius relative to canvas dimension."
+    }
+  ],
+  "dependencies": {
+    "react": [
+      "@exhuma/core"
+    ],
+    "nextjs": [
+      "@exhuma/core"
+    ],
+    "vue": [
+      "@exhuma/core"
+    ],
+    "svelte": [
+      "@exhuma/core"
+    ],
+    "solid": [
+      "@exhuma/core"
+    ],
+    "angular": [
+      "@exhuma/core"
+    ],
+    "astro": [
+      "@exhuma/core"
+    ],
+    "vanilla": [
+      "@exhuma/core"
+    ],
+    "react-native": [
+      "@exhuma/core"
+    ],
+    "flutter": [
+      "exhuma"
+    ]
+  },
+  "flavors": {
+    "react": [
+      {
+        "filename": "AnimatedSphere.tsx",
+        "language": "tsx",
+        "description": "Animated Sphere — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
+        "code": "import * as React from 'react';\nimport * as AnimatedSpherePrimitive from '@exhuma/core';\nimport { clsx } from 'clsx';\n\nexport interface AnimatedSphereProps extends React.ComponentPropsWithoutRef<typeof AnimatedSpherePrimitive.AnimatedSphere> {\n  className?: string;\n}\n\nexport const AnimatedSphere = React.forwardRef<HTMLDivElement, AnimatedSphereProps>(\n  ({ className, children, ...props }, ref) => (\n    <AnimatedSpherePrimitive.AnimatedSphere\n      ref={ref}\n      className={clsx(\n        'relative flex items-center justify-center overflow-hidden rounded-2xl bg-card border border-border p-4 shadow-sm',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </AnimatedSpherePrimitive.AnimatedSphere>\n  )\n);\nAnimatedSphere.displayName = 'AnimatedSphere';\n"
+      }
+    ],
+    "nextjs": [
+      {
+        "filename": "AnimatedSphere.tsx",
+        "language": "tsx",
+        "description": "Animated Sphere — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
+        "code": "'use client';\n\nimport * as React from 'react';\nimport * as AnimatedSpherePrimitive from '@exhuma/core';\nimport { clsx } from 'clsx';\n\nexport interface AnimatedSphereProps extends React.ComponentPropsWithoutRef<typeof AnimatedSpherePrimitive.AnimatedSphere> {\n  className?: string;\n}\n\nexport const AnimatedSphere = React.forwardRef<HTMLDivElement, AnimatedSphereProps>(\n  ({ className, children, ...props }, ref) => (\n    <AnimatedSpherePrimitive.AnimatedSphere\n      ref={ref}\n      className={clsx(\n        'relative flex items-center justify-center overflow-hidden rounded-2xl bg-card border border-border p-4 shadow-sm',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </AnimatedSpherePrimitive.AnimatedSphere>\n  )\n);\nAnimatedSphere.displayName = 'AnimatedSphere';\n"
+      }
+    ],
+    "vue": [
+      {
+        "filename": "AnimatedSphere.vue",
+        "language": "vue",
+        "description": "Vue 3 Animated Sphere outer adapter wrapping @exhuma/core headless primitive.",
+        "code": "<script setup lang=\"ts\">\nimport { AnimatedSphere as AnimatedSpherePrimitive } from '@exhuma/core';\nimport { clsx } from 'clsx';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst props = withDefaults(defineProps<Props>(), {\n  class: '',\n});\n</script>\n\n<template>\n  <AnimatedSpherePrimitive\n    v-bind=\"props\"\n    :class=\"clsx('relative flex items-center justify-center overflow-hidden rounded-2xl bg-card border border-border p-4 shadow-sm', props.class)\"\n  >\n    <slot />\n  </AnimatedSpherePrimitive>\n</template>\n"
+      }
+    ],
+    "svelte": [
+      {
+        "filename": "AnimatedSphere.svelte",
+        "language": "svelte",
+        "description": "Svelte 5 Animated Sphere adapter using runes and @exhuma/core primitives.",
+        "code": "<script lang=\"ts\">\n  import { AnimatedSphere as AnimatedSpherePrimitive } from '@exhuma/core';\n  import { clsx } from 'clsx';\n\n  let {\n    class: className = '',\n    children,\n    ...restProps\n  }: {\n    class?: string;\n    children?: import('svelte').Snippet;\n    [key: string]: unknown;\n  } = $props();\n</script>\n\n<AnimatedSpherePrimitive\n  class={clsx('relative flex items-center justify-center overflow-hidden rounded-2xl bg-card border border-border p-4 shadow-sm', className)}\n  {...restProps}\n>\n  {@render children?.()}\n</AnimatedSpherePrimitive>\n"
+      }
+    ],
+    "angular": [
+      {
+        "filename": "animated-sphere.component.ts",
+        "language": "typescript",
+        "description": "Angular 18+ Standalone Animated Sphere component.",
+        "code": "import { Component, input } from '@angular/core';\nimport { CommonModule } from '@angular/common';\n\n@Component({\n  selector: 'exhuma-animated-sphere',\n  standalone: true,\n  imports: [CommonModule],\n  template: `\n    <div\n      class=\"relative flex items-center justify-center overflow-hidden rounded-2xl bg-card border border-border p-4 shadow-sm {{ customClass() }}\"\n    >\n      <ng-content></ng-content>\n    </div>\n  `,\n})\nexport class ExhumaAnimatedSphereComponent {\n  readonly customClass = input<string>('');\n}\n"
+      }
+    ],
+    "solid": [
+      {
+        "filename": "AnimatedSphere.tsx",
+        "language": "tsx",
+        "description": "SolidJS Animated Sphere adapter wrapping @exhuma/core headless primitive.",
+        "code": "import { Component, JSX, splitProps } from 'solid-js';\nimport * as AnimatedSpherePrimitive from '@exhuma/core';\n\nexport interface AnimatedSphereProps extends JSX.HTMLAttributes<HTMLDivElement> {\n  [key: string]: unknown;\n}\n\nexport const AnimatedSphere: Component<AnimatedSphereProps> = (props) => {\n  const [local, others] = splitProps(props, ['class', 'children']);\n  return (\n    <AnimatedSpherePrimitive.AnimatedSphere\n      class={`relative flex items-center justify-center overflow-hidden rounded-2xl bg-card border border-border p-4 shadow-sm ${local.class ?? ''}`}\n      {...others}\n    >\n      {local.children}\n    </AnimatedSpherePrimitive.AnimatedSphere>\n  );\n};\n"
+      }
+    ],
+    "astro": [
+      {
+        "filename": "AnimatedSphere.astro",
+        "language": "astro",
+        "description": "Astro Animated Sphere component with @exhuma/core primitive.",
+        "code": "---\nimport * as AnimatedSpherePrimitive from '@exhuma/core';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst { class: className = '', ...props } = Astro.props;\n---\n\n<AnimatedSpherePrimitive.AnimatedSphere\n  client:visible\n  className={`relative flex items-center justify-center overflow-hidden rounded-2xl bg-card border border-border p-4 shadow-sm ${className}`}\n  {...props}\n>\n  <slot />\n</AnimatedSpherePrimitive.AnimatedSphere>\n"
+      }
+    ],
+    "blade": [
+      {
+        "filename": "animated-sphere.blade.php",
+        "language": "php",
+        "description": "Laravel Blade component for Animated Sphere with Alpine / data attributes.",
+        "code": "@props([])\n\n<exhuma-animated-sphere\n    {{ $attributes->merge([\n        'class' => 'relative flex items-center justify-center overflow-hidden rounded-2xl bg-card border border-border p-4 shadow-sm block',\n    ]) }}\n>\n    {{ $slot }}\n</exhuma-animated-sphere>\n"
+      }
+    ],
+    "vanilla": [
+      {
+        "filename": "exhuma-animated-sphere.js",
+        "language": "javascript",
+        "description": "Autonomous Vanilla JS Animated Sphere initialization module.",
+        "code": "import { AnimatedSphere } from '@exhuma/core';\n\nexport function initAnimatedSphere(selector = '[data-exhuma-animated-sphere]', options = {}) {\n  const elements = document.querySelectorAll(selector);\n  return Array.from(elements);\n}\n"
+      }
+    ],
+    "wordpress": [
+      {
+        "filename": "block.json",
+        "language": "json",
+        "description": "WordPress Block API v3 definition for Animated Sphere.",
+        "code": "{\n  \"$schema\": \"https://schemas.wp.org/trunk/block.json\",\n  \"apiVersion\": 3,\n  \"name\": \"exhuma/animated-sphere\",\n  \"version\": \"1.0.0\",\n  \"title\": \"Exhuma Animated Sphere\",\n  \"category\": \"design\",\n  \"icon\": \"art\",\n  \"description\": \"Handcrafted 3D spherical trigonometry on HTML5 2D Canvas.\",\n  \"attributes\": {},\n  \"editorScript\": \"file:./index.js\",\n  \"viewScript\": \"exhuma-kinetic\"\n}"
+      }
+    ],
+    "webcomponent": [
+      {
+        "filename": "exhuma-animated-sphere.js",
+        "language": "javascript",
+        "description": "Universal Web Component wrapper for <exhuma-animated-sphere>.",
+        "code": "import { AnimatedSphere } from '@exhuma/core';\n\nclass ExhumaAnimatedSphereElement extends HTMLElement {\n  connectedCallback() {\n    this.classList.add('exhuma-animated-sphere');\n    this.style.display = 'block';\n  }\n}\n\nif (!customElements.get('exhuma-animated-sphere')) {\n  customElements.define('exhuma-animated-sphere', ExhumaAnimatedSphereElement);\n}\n"
+      }
+    ],
+    "react-native": [
+      {
+        "filename": "AnimatedSphere.tsx",
+        "language": "tsx",
+        "description": "React Native Animated Sphere adapter wrapping @exhuma/core touch primitive.",
+        "code": "import React from 'react';\nimport { View, StyleSheet, type ViewProps } from 'react-native';\nimport * as AnimatedSpherePrimitive from '@exhuma/core';\n\nexport interface AnimatedSphereProps extends ViewProps {\n  children?: React.ReactNode;\n}\n\nexport function AnimatedSphere({ style, children, ...props }: AnimatedSphereProps) {\n  return (\n    <View style={[styles.container, style]} {...props}>\n      {children}\n    </View>\n  );\n}\n\nconst styles = StyleSheet.create({\n  container: {\n    borderRadius: 16,\n    borderWidth: 1,\n    borderColor: '#e2e8f0',\n    backgroundColor: '#ffffff',\n    padding: 20,\n    overflow: 'hidden',\n  },\n});\n"
+      }
+    ],
+    "flutter": [
+      {
+        "filename": "animated_sphere.dart",
+        "language": "dart",
+        "description": "Flutter Animated Sphere widget wrapping package:exhuma.",
+        "code": "import 'package:flutter/material.dart';\nimport 'package:exhuma/exhuma.dart' as exhuma;\n\nclass ExhumaAnimatedSphere extends StatelessWidget {\n  final Widget child;\n\n  const ExhumaAnimatedSphere({\n    super.key,\n    required this.child,\n  });\n\n  @override\n  Widget build(BuildContext context) {\n    return Container(\n      decoration: BoxDecoration(\n        borderRadius: BorderRadius.circular(16.0),\n        border: Border.all(color: Theme.of(context).dividerColor),\n        color: Theme.of(context).cardColor,\n      ),\n      padding: const EdgeInsets.all(20.0),\n      child: child,\n    );\n  }\n}\n"
+      }
+    ]
+  }
 }

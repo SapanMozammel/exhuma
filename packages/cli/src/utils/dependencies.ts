@@ -55,18 +55,22 @@ export function ensureCoreDependency(cwd: string = process.cwd()): boolean {
 			...(pkg.devDependencies || {}),
 		};
 
-		if (allDeps['@exhuma/core']) {
-			return true; // Already installed
+		const missing: string[] = [];
+		if (!allDeps['@exhuma/core']) missing.push('@exhuma/core');
+		if (!allDeps['clsx']) missing.push('clsx');
+
+		if (missing.length === 0) {
+			return true;
 		}
 
 		const pm = detectPackageManager(cwd);
-		const installCmd = pm === 'npm' ? 'npm install @exhuma/core' : `${pm} add @exhuma/core`;
+		const installCmd = pm === 'npm' ? `npm install ${missing.join(' ')}` : `${pm} add ${missing.join(' ')}`;
 
-		console.log(pc.cyan(`  ▲ Installing required kinetic primitive: ${pc.bold('@exhuma/core')} (${pm})...`));
+		console.log(pc.cyan(`  ▲ Installing required packages: ${pc.bold(missing.join(', '))} (${pm})...`));
 		execSync(installCmd, { cwd, stdio: 'inherit' });
 		return true;
 	} catch (err: any) {
-		console.log(pc.yellow(`  ⚠ Note: Could not auto-install @exhuma/core: ${err.message}`));
+		console.log(pc.yellow(`  ⚠ Note: Could not auto-install dependencies: ${err.message}`));
 		return false;
 	}
 }

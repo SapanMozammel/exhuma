@@ -6,7 +6,7 @@ import ora from 'ora';
 import { getConfig, detectEcosystem } from '../utils/config';
 import { fetchComponentFromRegistry } from '../utils/registry';
 import { CANONICAL_COMPONENTS, DEFAULT_PATHS, EcosystemFlavor, SUPPORTED_ECOSYSTEMS } from '../constants';
-import { ensureUtilsHelper, ensureCoreDependency } from '../utils/dependencies';
+import { ensureCoreDependency } from '../utils/dependencies';
 
 export interface AddCommandOptions {
 	flavor?: string;
@@ -49,9 +49,8 @@ export async function addCommand(components: string[], options: AddCommandOption
 		selectedSlugs = response.selected;
 	}
 
-	// Ensure helper utilities and core packages for modern frameworks
+	// Ensure core packages for modern frameworks
 	if (['react', 'nextjs', 'vue', 'svelte', 'solid', 'angular'].includes(flavor)) {
-		ensureUtilsHelper(process.cwd());
 		ensureCoreDependency(process.cwd());
 	}
 

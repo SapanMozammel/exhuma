@@ -54,7 +54,7 @@ export function generateOuterLayerFiles(spec: ComponentOuterSpec, flavor: Ecosys
   ({ className, children, ...props }, ref) => (
     <${pascalName}Primitive.${part.primitiveExport || part.name}
       ref={ref}
-      className={cn('${part.defaultClass || ''}', className)}
+      className={clsx('${part.defaultClass || ''}', className)}
       {...props}
     >
       {children}
@@ -73,7 +73,7 @@ ${part.name}.displayName = '${part.name}';`
 					description: `${name} — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.`,
 					code: `${isNext ? "'use client';\n\n" : ''}import * as React from 'react';
 import * as ${pascalName}Primitive from '@exhuma/core';
-import { cn } from '@/lib/utils';
+import { clsx } from 'clsx';
 
 export interface ${pascalName}Props extends React.ComponentPropsWithoutRef<typeof ${pascalName}Primitive.${pascalName}> {
   className?: string;
@@ -83,7 +83,7 @@ export const ${pascalName} = React.forwardRef<HTMLDivElement, ${pascalName}Props
   ({ className, children, ...props }, ref) => (
     <${pascalName}Primitive.${pascalName}
       ref={ref}
-      className={cn(
+      className={clsx(
         '${defaultTailwindClass}',
         className
       )}
@@ -107,7 +107,7 @@ ${pascalName}.displayName = '${pascalName}';${partsCode}
 					description: `Vue 3 ${name} outer adapter wrapping @exhuma/core headless primitive.`,
 					code: `<script setup lang="ts">
 import { ${pascalName} as ${pascalName}Primitive } from '@exhuma/core';
-import { cn } from '@/lib/utils';
+import { clsx } from 'clsx';
 
 interface Props {
   class?: string;
@@ -122,7 +122,7 @@ const props = withDefaults(defineProps<Props>(), {
 <template>
   <${pascalName}Primitive
     v-bind="props"
-    :class="cn('${defaultTailwindClass}', props.class)"
+    :class="clsx('${defaultTailwindClass}', props.class)"
   >
     <slot />
   </${pascalName}Primitive>
@@ -140,7 +140,7 @@ const props = withDefaults(defineProps<Props>(), {
 					description: `Svelte 5 ${name} adapter using runes and @exhuma/core primitives.`,
 					code: `<script lang="ts">
   import { ${pascalName} as ${pascalName}Primitive } from '@exhuma/core';
-  import { cn } from '$lib/utils';
+  import { clsx } from 'clsx';
 
   let {
     class: className = '',
@@ -154,7 +154,7 @@ const props = withDefaults(defineProps<Props>(), {
 </script>
 
 <${pascalName}Primitive
-  class={cn('${defaultTailwindClass}', className)}
+  class={clsx('${defaultTailwindClass}', className)}
   {...restProps}
 >
   {@render children?.()}
@@ -413,7 +413,7 @@ class Exhuma${pascalName} extends StatelessWidget {
 }
 
 function getEjectedReactCode(slug: string, pascalName: string, defaultClass: string, props: Record<string, unknown>, isNext: boolean): string {
-	const header = `${isNext ? "'use client';\n\n" : ''}import * as React from 'react';\nimport { cn } from '@/lib/utils';\n\n`;
+	const header = `${isNext ? "'use client';\n\n" : ''}import * as React from 'react';\nimport { clsx } from 'clsx';\n\n`;
 
 	switch (slug) {
 		case 'tilt-card': {
@@ -484,7 +484,7 @@ export const TiltCard = React.forwardRef<HTMLDivElement, TiltCardProps>(
         ref={cardRef}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
-        className={cn('${defaultClass}', className)}
+        className={clsx('${defaultClass}', className)}
         style={{ transform, ...style }}
         {...props}
       >
@@ -535,7 +535,7 @@ export const SpotlightCard = React.forwardRef<HTMLDivElement, SpotlightCardProps
         ref={ref}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
-        className={cn('${defaultClass}', className)}
+        className={clsx('${defaultClass}', className)}
         {...props}
       >
         <div
@@ -589,7 +589,7 @@ export const NumberTicker = React.forwardRef<HTMLSpanElement, NumberTickerProps>
     }, [value, duration]);
 
     return (
-      <span ref={ref} className={cn('${defaultClass}', className)} {...props}>
+      <span ref={ref} className={clsx('${defaultClass}', className)} {...props}>
         {Math.round(displayVal).toLocaleString()}
       </span>
     );
@@ -635,7 +635,7 @@ export const MagneticButton = React.forwardRef<HTMLButtonElement, MagneticButton
         ref={btnRef}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
-        className={cn('${defaultClass}', className)}
+        className={clsx('${defaultClass}', className)}
         style={{
           transform: \`translate3d(\${offset.x.toFixed(2)}px, \${offset.y.toFixed(2)}px, 0)\`,
           transition: offset.x === 0 && offset.y === 0 ? 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)' : 'none',
@@ -666,7 +666,7 @@ export const ${pascalName} = React.forwardRef<HTMLDivElement, ${pascalName}Props
     return (
       <div
         ref={ref}
-        className={cn('${defaultClass}', className)}
+        className={clsx('${defaultClass}', className)}
         {...props}
       >
         {children}

@@ -1,147 +1,167 @@
 {
-	"name": "Auto Grid",
-	"slug": "auto-grid",
-	"category": "layouts",
-	"description": "Responsive CSS Grid with auto-fit / auto-fill minmax repeat tracks with zero media queries.",
-	"version": "1.0.0",
-	"props": [
-		{
-			"name": "minItemWidth",
-			"label": "Min Width (px)",
-			"type": "number",
-			"defaultValue": 280,
-			"min": 150,
-			"max": 450,
-			"step": 10,
-			"description": "Minimum width of each grid column before wrapping to the next line."
-		},
-		{
-			"name": "gap",
-			"label": "Grid Gap (px)",
-			"type": "number",
-			"defaultValue": 24,
-			"min": 8,
-			"max": 48,
-			"step": 4,
-			"description": "Gap between grid items."
-		}
-	],
-	"dependencies": {
-		"react": ["@exhuma/core"],
-		"nextjs": ["@exhuma/core"],
-		"vue": ["@exhuma/core"],
-		"svelte": ["@exhuma/core"],
-		"solid": ["@exhuma/core"],
-		"angular": ["@exhuma/core"],
-		"astro": ["@exhuma/core"],
-		"vanilla": ["@exhuma/core"],
-		"react-native": ["@exhuma/core"],
-		"flutter": ["exhuma"]
-	},
-	"flavors": {
-		"react": [
-			{
-				"filename": "AutoGrid.tsx",
-				"language": "tsx",
-				"description": "Auto Grid — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
-				"code": "import * as React from 'react';\nimport * as AutoGridPrimitive from '@exhuma/core';\nimport { cn } from '@/lib/utils';\n\nexport interface AutoGridProps extends React.ComponentPropsWithoutRef<typeof AutoGridPrimitive.AutoGrid> {\n  className?: string;\n}\n\nexport const AutoGrid = React.forwardRef<HTMLDivElement, AutoGridProps>(\n  ({ className, children, ...props }, ref) => (\n    <AutoGridPrimitive.AutoGrid\n      ref={ref}\n      className={cn(\n        'grid grid-cols-[repeat(auto-fill,minmax(min(100%,280px),1fr))] gap-6 w-full',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </AutoGridPrimitive.AutoGrid>\n  )\n);\nAutoGrid.displayName = 'AutoGrid';\n"
-			}
-		],
-		"nextjs": [
-			{
-				"filename": "AutoGrid.tsx",
-				"language": "tsx",
-				"description": "Auto Grid — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
-				"code": "'use client';\n\nimport * as React from 'react';\nimport * as AutoGridPrimitive from '@exhuma/core';\nimport { cn } from '@/lib/utils';\n\nexport interface AutoGridProps extends React.ComponentPropsWithoutRef<typeof AutoGridPrimitive.AutoGrid> {\n  className?: string;\n}\n\nexport const AutoGrid = React.forwardRef<HTMLDivElement, AutoGridProps>(\n  ({ className, children, ...props }, ref) => (\n    <AutoGridPrimitive.AutoGrid\n      ref={ref}\n      className={cn(\n        'grid grid-cols-[repeat(auto-fill,minmax(min(100%,280px),1fr))] gap-6 w-full',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </AutoGridPrimitive.AutoGrid>\n  )\n);\nAutoGrid.displayName = 'AutoGrid';\n"
-			}
-		],
-		"vue": [
-			{
-				"filename": "AutoGrid.vue",
-				"language": "vue",
-				"description": "Vue 3 Auto Grid outer adapter wrapping @exhuma/core headless primitive.",
-				"code": "<script setup lang=\"ts\">\nimport { AutoGrid as AutoGridPrimitive } from '@exhuma/core';\nimport { cn } from '@/lib/utils';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst props = withDefaults(defineProps<Props>(), {\n  class: '',\n});\n</script>\n\n<template>\n  <AutoGridPrimitive\n    v-bind=\"props\"\n    :class=\"cn('grid grid-cols-[repeat(auto-fill,minmax(min(100%,280px),1fr))] gap-6 w-full', props.class)\"\n  >\n    <slot />\n  </AutoGridPrimitive>\n</template>\n"
-			}
-		],
-		"svelte": [
-			{
-				"filename": "AutoGrid.svelte",
-				"language": "svelte",
-				"description": "Svelte 5 Auto Grid adapter using runes and @exhuma/core primitives.",
-				"code": "<script lang=\"ts\">\n  import { AutoGrid as AutoGridPrimitive } from '@exhuma/core';\n  import { cn } from '$lib/utils';\n\n  let {\n    class: className = '',\n    children,\n    ...restProps\n  }: {\n    class?: string;\n    children?: import('svelte').Snippet;\n    [key: string]: unknown;\n  } = $props();\n</script>\n\n<AutoGridPrimitive\n  class={cn('grid grid-cols-[repeat(auto-fill,minmax(min(100%,280px),1fr))] gap-6 w-full', className)}\n  {...restProps}\n>\n  {@render children?.()}\n</AutoGridPrimitive>\n"
-			}
-		],
-		"angular": [
-			{
-				"filename": "auto-grid.component.ts",
-				"language": "typescript",
-				"description": "Angular 18+ Standalone Auto Grid component.",
-				"code": "import { Component, input } from '@angular/core';\nimport { CommonModule } from '@angular/common';\n\n@Component({\n  selector: 'exhuma-auto-grid',\n  standalone: true,\n  imports: [CommonModule],\n  template: `\n    <div\n      class=\"grid grid-cols-[repeat(auto-fill,minmax(min(100%,280px),1fr))] gap-6 w-full {{ customClass() }}\"\n    >\n      <ng-content></ng-content>\n    </div>\n  `,\n})\nexport class ExhumaAutoGridComponent {\n  readonly customClass = input<string>('');\n}\n"
-			}
-		],
-		"solid": [
-			{
-				"filename": "AutoGrid.tsx",
-				"language": "tsx",
-				"description": "SolidJS Auto Grid adapter wrapping @exhuma/core headless primitive.",
-				"code": "import { Component, JSX, splitProps } from 'solid-js';\nimport * as AutoGridPrimitive from '@exhuma/core';\n\nexport interface AutoGridProps extends JSX.HTMLAttributes<HTMLDivElement> {\n  [key: string]: unknown;\n}\n\nexport const AutoGrid: Component<AutoGridProps> = (props) => {\n  const [local, others] = splitProps(props, ['class', 'children']);\n  return (\n    <AutoGridPrimitive.AutoGrid\n      class={`grid grid-cols-[repeat(auto-fill,minmax(min(100%,280px),1fr))] gap-6 w-full ${local.class ?? ''}`}\n      {...others}\n    >\n      {local.children}\n    </AutoGridPrimitive.AutoGrid>\n  );\n};\n"
-			}
-		],
-		"astro": [
-			{
-				"filename": "AutoGrid.astro",
-				"language": "astro",
-				"description": "Astro Auto Grid component with @exhuma/core primitive.",
-				"code": "---\nimport * as AutoGridPrimitive from '@exhuma/core';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst { class: className = '', ...props } = Astro.props;\n---\n\n<AutoGridPrimitive.AutoGrid\n  client:visible\n  className={`grid grid-cols-[repeat(auto-fill,minmax(min(100%,280px),1fr))] gap-6 w-full ${className}`}\n  {...props}\n>\n  <slot />\n</AutoGridPrimitive.AutoGrid>\n"
-			}
-		],
-		"blade": [
-			{
-				"filename": "auto-grid.blade.php",
-				"language": "php",
-				"description": "Laravel Blade component for Auto Grid with Alpine / data attributes.",
-				"code": "@props([])\n\n<exhuma-auto-grid\n    {{ $attributes->merge([\n        'class' => 'grid grid-cols-[repeat(auto-fill,minmax(min(100%,280px),1fr))] gap-6 w-full block',\n    ]) }}\n>\n    {{ $slot }}\n</exhuma-auto-grid>\n"
-			}
-		],
-		"vanilla": [
-			{
-				"filename": "exhuma-auto-grid.js",
-				"language": "javascript",
-				"description": "Autonomous Vanilla JS Auto Grid initialization module.",
-				"code": "import { AutoGrid } from '@exhuma/core';\n\nexport function initAutoGrid(selector = '[data-exhuma-auto-grid]', options = {}) {\n  const elements = document.querySelectorAll(selector);\n  return Array.from(elements);\n}\n"
-			}
-		],
-		"wordpress": [
-			{
-				"filename": "block.json",
-				"language": "json",
-				"description": "WordPress Block API v3 definition for Auto Grid.",
-				"code": "{\n  \"$schema\": \"https://schemas.wp.org/trunk/block.json\",\n  \"apiVersion\": 3,\n  \"name\": \"exhuma/auto-grid\",\n  \"version\": \"1.0.0\",\n  \"title\": \"Exhuma Auto Grid\",\n  \"category\": \"design\",\n  \"icon\": \"art\",\n  \"description\": \"Responsive CSS Grid with auto-fit / auto-fill minmax repeat tracks.\",\n  \"attributes\": {},\n  \"editorScript\": \"file:./index.js\",\n  \"viewScript\": \"exhuma-kinetic\"\n}"
-			}
-		],
-		"webcomponent": [
-			{
-				"filename": "exhuma-auto-grid.js",
-				"language": "javascript",
-				"description": "Universal Web Component wrapper for <exhuma-auto-grid>.",
-				"code": "import { AutoGrid } from '@exhuma/core';\n\nclass ExhumaAutoGridElement extends HTMLElement {\n  connectedCallback() {\n    this.classList.add('exhuma-auto-grid');\n    this.style.display = 'block';\n  }\n}\n\nif (!customElements.get('exhuma-auto-grid')) {\n  customElements.define('exhuma-auto-grid', ExhumaAutoGridElement);\n}\n"
-			}
-		],
-		"react-native": [
-			{
-				"filename": "AutoGrid.tsx",
-				"language": "tsx",
-				"description": "React Native Auto Grid adapter wrapping @exhuma/core touch primitive.",
-				"code": "import React from 'react';\nimport { View, StyleSheet, type ViewProps } from 'react-native';\nimport * as AutoGridPrimitive from '@exhuma/core';\n\nexport interface AutoGridProps extends ViewProps {\n  children?: React.ReactNode;\n}\n\nexport function AutoGrid({ style, children, ...props }: AutoGridProps) {\n  return (\n    <View style={[styles.container, style]} {...props}>\n      {children}\n    </View>\n  );\n}\n\nconst styles = StyleSheet.create({\n  container: {\n    borderRadius: 16,\n    borderWidth: 1,\n    borderColor: '#e2e8f0',\n    backgroundColor: '#ffffff',\n    padding: 20,\n    overflow: 'hidden',\n  },\n});\n"
-			}
-		],
-		"flutter": [
-			{
-				"filename": "auto_grid.dart",
-				"language": "dart",
-				"description": "Flutter Auto Grid widget wrapping package:exhuma.",
-				"code": "import 'package:flutter/material.dart';\nimport 'package:exhuma/exhuma.dart' as exhuma;\n\nclass ExhumaAutoGrid extends StatelessWidget {\n  final Widget child;\n\n  const ExhumaAutoGrid({\n    super.key,\n    required this.child,\n  });\n\n  @override\n  Widget build(BuildContext context) {\n    return Container(\n      decoration: BoxDecoration(\n        borderRadius: BorderRadius.circular(16.0),\n        border: Border.all(color: Theme.of(context).dividerColor),\n        color: Theme.of(context).cardColor,\n      ),\n      padding: const EdgeInsets.all(20.0),\n      child: child,\n    );\n  }\n}\n"
-			}
-		]
-	}
+  "name": "Auto Grid",
+  "slug": "auto-grid",
+  "category": "layouts",
+  "description": "Responsive CSS Grid with auto-fit / auto-fill minmax repeat tracks with zero media queries.",
+  "version": "1.0.0",
+  "props": [
+    {
+      "name": "minItemWidth",
+      "label": "Min Width (px)",
+      "type": "number",
+      "defaultValue": 280,
+      "min": 150,
+      "max": 450,
+      "step": 10,
+      "description": "Minimum width of each grid column before wrapping to the next line."
+    },
+    {
+      "name": "gap",
+      "label": "Grid Gap (px)",
+      "type": "number",
+      "defaultValue": 24,
+      "min": 8,
+      "max": 48,
+      "step": 4,
+      "description": "Gap between grid items."
+    }
+  ],
+  "dependencies": {
+    "react": [
+      "@exhuma/core"
+    ],
+    "nextjs": [
+      "@exhuma/core"
+    ],
+    "vue": [
+      "@exhuma/core"
+    ],
+    "svelte": [
+      "@exhuma/core"
+    ],
+    "solid": [
+      "@exhuma/core"
+    ],
+    "angular": [
+      "@exhuma/core"
+    ],
+    "astro": [
+      "@exhuma/core"
+    ],
+    "vanilla": [
+      "@exhuma/core"
+    ],
+    "react-native": [
+      "@exhuma/core"
+    ],
+    "flutter": [
+      "exhuma"
+    ]
+  },
+  "flavors": {
+    "react": [
+      {
+        "filename": "AutoGrid.tsx",
+        "language": "tsx",
+        "description": "Auto Grid — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
+        "code": "import * as React from 'react';\nimport * as AutoGridPrimitive from '@exhuma/core';\nimport { clsx } from 'clsx';\n\nexport interface AutoGridProps extends React.ComponentPropsWithoutRef<typeof AutoGridPrimitive.AutoGrid> {\n  className?: string;\n}\n\nexport const AutoGrid = React.forwardRef<HTMLDivElement, AutoGridProps>(\n  ({ className, children, ...props }, ref) => (\n    <AutoGridPrimitive.AutoGrid\n      ref={ref}\n      className={clsx(\n        'grid grid-cols-[repeat(auto-fill,minmax(min(100%,280px),1fr))] gap-6 w-full',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </AutoGridPrimitive.AutoGrid>\n  )\n);\nAutoGrid.displayName = 'AutoGrid';\n"
+      }
+    ],
+    "nextjs": [
+      {
+        "filename": "AutoGrid.tsx",
+        "language": "tsx",
+        "description": "Auto Grid — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
+        "code": "'use client';\n\nimport * as React from 'react';\nimport * as AutoGridPrimitive from '@exhuma/core';\nimport { clsx } from 'clsx';\n\nexport interface AutoGridProps extends React.ComponentPropsWithoutRef<typeof AutoGridPrimitive.AutoGrid> {\n  className?: string;\n}\n\nexport const AutoGrid = React.forwardRef<HTMLDivElement, AutoGridProps>(\n  ({ className, children, ...props }, ref) => (\n    <AutoGridPrimitive.AutoGrid\n      ref={ref}\n      className={clsx(\n        'grid grid-cols-[repeat(auto-fill,minmax(min(100%,280px),1fr))] gap-6 w-full',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </AutoGridPrimitive.AutoGrid>\n  )\n);\nAutoGrid.displayName = 'AutoGrid';\n"
+      }
+    ],
+    "vue": [
+      {
+        "filename": "AutoGrid.vue",
+        "language": "vue",
+        "description": "Vue 3 Auto Grid outer adapter wrapping @exhuma/core headless primitive.",
+        "code": "<script setup lang=\"ts\">\nimport { AutoGrid as AutoGridPrimitive } from '@exhuma/core';\nimport { clsx } from 'clsx';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst props = withDefaults(defineProps<Props>(), {\n  class: '',\n});\n</script>\n\n<template>\n  <AutoGridPrimitive\n    v-bind=\"props\"\n    :class=\"clsx('grid grid-cols-[repeat(auto-fill,minmax(min(100%,280px),1fr))] gap-6 w-full', props.class)\"\n  >\n    <slot />\n  </AutoGridPrimitive>\n</template>\n"
+      }
+    ],
+    "svelte": [
+      {
+        "filename": "AutoGrid.svelte",
+        "language": "svelte",
+        "description": "Svelte 5 Auto Grid adapter using runes and @exhuma/core primitives.",
+        "code": "<script lang=\"ts\">\n  import { AutoGrid as AutoGridPrimitive } from '@exhuma/core';\n  import { clsx } from 'clsx';\n\n  let {\n    class: className = '',\n    children,\n    ...restProps\n  }: {\n    class?: string;\n    children?: import('svelte').Snippet;\n    [key: string]: unknown;\n  } = $props();\n</script>\n\n<AutoGridPrimitive\n  class={clsx('grid grid-cols-[repeat(auto-fill,minmax(min(100%,280px),1fr))] gap-6 w-full', className)}\n  {...restProps}\n>\n  {@render children?.()}\n</AutoGridPrimitive>\n"
+      }
+    ],
+    "angular": [
+      {
+        "filename": "auto-grid.component.ts",
+        "language": "typescript",
+        "description": "Angular 18+ Standalone Auto Grid component.",
+        "code": "import { Component, input } from '@angular/core';\nimport { CommonModule } from '@angular/common';\n\n@Component({\n  selector: 'exhuma-auto-grid',\n  standalone: true,\n  imports: [CommonModule],\n  template: `\n    <div\n      class=\"grid grid-cols-[repeat(auto-fill,minmax(min(100%,280px),1fr))] gap-6 w-full {{ customClass() }}\"\n    >\n      <ng-content></ng-content>\n    </div>\n  `,\n})\nexport class ExhumaAutoGridComponent {\n  readonly customClass = input<string>('');\n}\n"
+      }
+    ],
+    "solid": [
+      {
+        "filename": "AutoGrid.tsx",
+        "language": "tsx",
+        "description": "SolidJS Auto Grid adapter wrapping @exhuma/core headless primitive.",
+        "code": "import { Component, JSX, splitProps } from 'solid-js';\nimport * as AutoGridPrimitive from '@exhuma/core';\n\nexport interface AutoGridProps extends JSX.HTMLAttributes<HTMLDivElement> {\n  [key: string]: unknown;\n}\n\nexport const AutoGrid: Component<AutoGridProps> = (props) => {\n  const [local, others] = splitProps(props, ['class', 'children']);\n  return (\n    <AutoGridPrimitive.AutoGrid\n      class={`grid grid-cols-[repeat(auto-fill,minmax(min(100%,280px),1fr))] gap-6 w-full ${local.class ?? ''}`}\n      {...others}\n    >\n      {local.children}\n    </AutoGridPrimitive.AutoGrid>\n  );\n};\n"
+      }
+    ],
+    "astro": [
+      {
+        "filename": "AutoGrid.astro",
+        "language": "astro",
+        "description": "Astro Auto Grid component with @exhuma/core primitive.",
+        "code": "---\nimport * as AutoGridPrimitive from '@exhuma/core';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst { class: className = '', ...props } = Astro.props;\n---\n\n<AutoGridPrimitive.AutoGrid\n  client:visible\n  className={`grid grid-cols-[repeat(auto-fill,minmax(min(100%,280px),1fr))] gap-6 w-full ${className}`}\n  {...props}\n>\n  <slot />\n</AutoGridPrimitive.AutoGrid>\n"
+      }
+    ],
+    "blade": [
+      {
+        "filename": "auto-grid.blade.php",
+        "language": "php",
+        "description": "Laravel Blade component for Auto Grid with Alpine / data attributes.",
+        "code": "@props([])\n\n<exhuma-auto-grid\n    {{ $attributes->merge([\n        'class' => 'grid grid-cols-[repeat(auto-fill,minmax(min(100%,280px),1fr))] gap-6 w-full block',\n    ]) }}\n>\n    {{ $slot }}\n</exhuma-auto-grid>\n"
+      }
+    ],
+    "vanilla": [
+      {
+        "filename": "exhuma-auto-grid.js",
+        "language": "javascript",
+        "description": "Autonomous Vanilla JS Auto Grid initialization module.",
+        "code": "import { AutoGrid } from '@exhuma/core';\n\nexport function initAutoGrid(selector = '[data-exhuma-auto-grid]', options = {}) {\n  const elements = document.querySelectorAll(selector);\n  return Array.from(elements);\n}\n"
+      }
+    ],
+    "wordpress": [
+      {
+        "filename": "block.json",
+        "language": "json",
+        "description": "WordPress Block API v3 definition for Auto Grid.",
+        "code": "{\n  \"$schema\": \"https://schemas.wp.org/trunk/block.json\",\n  \"apiVersion\": 3,\n  \"name\": \"exhuma/auto-grid\",\n  \"version\": \"1.0.0\",\n  \"title\": \"Exhuma Auto Grid\",\n  \"category\": \"design\",\n  \"icon\": \"art\",\n  \"description\": \"Responsive CSS Grid with auto-fit / auto-fill minmax repeat tracks.\",\n  \"attributes\": {},\n  \"editorScript\": \"file:./index.js\",\n  \"viewScript\": \"exhuma-kinetic\"\n}"
+      }
+    ],
+    "webcomponent": [
+      {
+        "filename": "exhuma-auto-grid.js",
+        "language": "javascript",
+        "description": "Universal Web Component wrapper for <exhuma-auto-grid>.",
+        "code": "import { AutoGrid } from '@exhuma/core';\n\nclass ExhumaAutoGridElement extends HTMLElement {\n  connectedCallback() {\n    this.classList.add('exhuma-auto-grid');\n    this.style.display = 'block';\n  }\n}\n\nif (!customElements.get('exhuma-auto-grid')) {\n  customElements.define('exhuma-auto-grid', ExhumaAutoGridElement);\n}\n"
+      }
+    ],
+    "react-native": [
+      {
+        "filename": "AutoGrid.tsx",
+        "language": "tsx",
+        "description": "React Native Auto Grid adapter wrapping @exhuma/core touch primitive.",
+        "code": "import React from 'react';\nimport { View, StyleSheet, type ViewProps } from 'react-native';\nimport * as AutoGridPrimitive from '@exhuma/core';\n\nexport interface AutoGridProps extends ViewProps {\n  children?: React.ReactNode;\n}\n\nexport function AutoGrid({ style, children, ...props }: AutoGridProps) {\n  return (\n    <View style={[styles.container, style]} {...props}>\n      {children}\n    </View>\n  );\n}\n\nconst styles = StyleSheet.create({\n  container: {\n    borderRadius: 16,\n    borderWidth: 1,\n    borderColor: '#e2e8f0',\n    backgroundColor: '#ffffff',\n    padding: 20,\n    overflow: 'hidden',\n  },\n});\n"
+      }
+    ],
+    "flutter": [
+      {
+        "filename": "auto_grid.dart",
+        "language": "dart",
+        "description": "Flutter Auto Grid widget wrapping package:exhuma.",
+        "code": "import 'package:flutter/material.dart';\nimport 'package:exhuma/exhuma.dart' as exhuma;\n\nclass ExhumaAutoGrid extends StatelessWidget {\n  final Widget child;\n\n  const ExhumaAutoGrid({\n    super.key,\n    required this.child,\n  });\n\n  @override\n  Widget build(BuildContext context) {\n    return Container(\n      decoration: BoxDecoration(\n        borderRadius: BorderRadius.circular(16.0),\n        border: Border.all(color: Theme.of(context).dividerColor),\n        color: Theme.of(context).cardColor,\n      ),\n      padding: const EdgeInsets.all(20.0),\n      child: child,\n    );\n  }\n}\n"
+      }
+    ]
+  }
 }

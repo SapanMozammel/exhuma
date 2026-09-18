@@ -52,7 +52,7 @@ export default function MethodologyPage() {
 		},
 		{ title: 'Dual-Channel State Separation', body: 'High-frequency 120Hz continuous inputs bypass virtual DOM reconciliation entirely, writing directly to element style variables.' },
 		{ title: 'Deterministic 5-State Gesture FSM', body: 'Formally complete automaton with slop-angle trajectory filtering to guarantee zero mobile page scroll hijacking.' },
-		{ title: 'Universal Cross-Ecosystem Parity Contract', body: `Zero runtime dependencies. Identical behavioral contracts compiled to ${ecosystemNames}.` },
+		{ title: 'Universal Cross-Ecosystem Parity Contract', body: `Zero external animation runtimes. Identical behavioral contracts compiled to ${ecosystemNames}.` },
 	];
 
 	return (

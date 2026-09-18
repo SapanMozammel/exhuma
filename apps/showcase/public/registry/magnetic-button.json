@@ -1,157 +1,177 @@
 {
-	"name": "Magnetic Button",
-	"slug": "magnetic-button",
-	"category": "primitives",
-	"description": "Inverted spring pull field button that magnetically attracts cursor proximity with critically damped release snaps.",
-	"version": "1.0.0",
-	"props": [
-		{
-			"name": "strength",
-			"label": "Pull Strength",
-			"type": "number",
-			"defaultValue": 0.35,
-			"min": 0.1,
-			"max": 0.8,
-			"step": 0.05,
-			"description": "Displacement factor relative to cursor distance."
-		},
-		{
-			"name": "radius",
-			"label": "Magnetic Radius (px)",
-			"type": "number",
-			"defaultValue": 120,
-			"min": 50,
-			"max": 250,
-			"step": 10,
-			"description": "Influence radius threshold in pixels."
-		},
-		{
-			"name": "springDamping",
-			"label": "Spring Damping",
-			"type": "number",
-			"defaultValue": 18,
-			"min": 5,
-			"max": 35,
-			"step": 1,
-			"description": "Exponential decay rate for critically damped snaps."
-		}
-	],
-	"dependencies": {
-		"react": ["@exhuma/core"],
-		"nextjs": ["@exhuma/core"],
-		"vue": ["@exhuma/core"],
-		"svelte": ["@exhuma/core"],
-		"solid": ["@exhuma/core"],
-		"angular": ["@exhuma/core"],
-		"astro": ["@exhuma/core"],
-		"vanilla": ["@exhuma/core"],
-		"react-native": ["@exhuma/core"],
-		"flutter": ["exhuma"]
-	},
-	"flavors": {
-		"react": [
-			{
-				"filename": "MagneticButton.tsx",
-				"language": "tsx",
-				"description": "Magnetic Button — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
-				"code": "import * as React from 'react';\nimport * as MagneticButtonPrimitive from '@exhuma/core';\nimport { cn } from '@/lib/utils';\n\nexport interface MagneticButtonProps extends React.ComponentPropsWithoutRef<typeof MagneticButtonPrimitive.MagneticButton> {\n  className?: string;\n}\n\nexport const MagneticButton = React.forwardRef<HTMLDivElement, MagneticButtonProps>(\n  ({ className, children, ...props }, ref) => (\n    <MagneticButtonPrimitive.MagneticButton\n      ref={ref}\n      className={cn(\n        'relative inline-flex items-center justify-center rounded-xl bg-primary px-6 py-3 font-semibold text-primary-foreground shadow-md transition-shadow hover:shadow-lg cursor-pointer will-change-transform',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </MagneticButtonPrimitive.MagneticButton>\n  )\n);\nMagneticButton.displayName = 'MagneticButton';\n"
-			}
-		],
-		"nextjs": [
-			{
-				"filename": "MagneticButton.tsx",
-				"language": "tsx",
-				"description": "Magnetic Button — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
-				"code": "'use client';\n\nimport * as React from 'react';\nimport * as MagneticButtonPrimitive from '@exhuma/core';\nimport { cn } from '@/lib/utils';\n\nexport interface MagneticButtonProps extends React.ComponentPropsWithoutRef<typeof MagneticButtonPrimitive.MagneticButton> {\n  className?: string;\n}\n\nexport const MagneticButton = React.forwardRef<HTMLDivElement, MagneticButtonProps>(\n  ({ className, children, ...props }, ref) => (\n    <MagneticButtonPrimitive.MagneticButton\n      ref={ref}\n      className={cn(\n        'relative inline-flex items-center justify-center rounded-xl bg-primary px-6 py-3 font-semibold text-primary-foreground shadow-md transition-shadow hover:shadow-lg cursor-pointer will-change-transform',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </MagneticButtonPrimitive.MagneticButton>\n  )\n);\nMagneticButton.displayName = 'MagneticButton';\n"
-			}
-		],
-		"vue": [
-			{
-				"filename": "MagneticButton.vue",
-				"language": "vue",
-				"description": "Vue 3 Magnetic Button outer adapter wrapping @exhuma/core headless primitive.",
-				"code": "<script setup lang=\"ts\">\nimport { MagneticButton as MagneticButtonPrimitive } from '@exhuma/core';\nimport { cn } from '@/lib/utils';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst props = withDefaults(defineProps<Props>(), {\n  class: '',\n});\n</script>\n\n<template>\n  <MagneticButtonPrimitive\n    v-bind=\"props\"\n    :class=\"cn('relative inline-flex items-center justify-center rounded-xl bg-primary px-6 py-3 font-semibold text-primary-foreground shadow-md transition-shadow hover:shadow-lg cursor-pointer will-change-transform', props.class)\"\n  >\n    <slot />\n  </MagneticButtonPrimitive>\n</template>\n"
-			}
-		],
-		"svelte": [
-			{
-				"filename": "MagneticButton.svelte",
-				"language": "svelte",
-				"description": "Svelte 5 Magnetic Button adapter using runes and @exhuma/core primitives.",
-				"code": "<script lang=\"ts\">\n  import { MagneticButton as MagneticButtonPrimitive } from '@exhuma/core';\n  import { cn } from '$lib/utils';\n\n  let {\n    class: className = '',\n    children,\n    ...restProps\n  }: {\n    class?: string;\n    children?: import('svelte').Snippet;\n    [key: string]: unknown;\n  } = $props();\n</script>\n\n<MagneticButtonPrimitive\n  class={cn('relative inline-flex items-center justify-center rounded-xl bg-primary px-6 py-3 font-semibold text-primary-foreground shadow-md transition-shadow hover:shadow-lg cursor-pointer will-change-transform', className)}\n  {...restProps}\n>\n  {@render children?.()}\n</MagneticButtonPrimitive>\n"
-			}
-		],
-		"angular": [
-			{
-				"filename": "magnetic-button.component.ts",
-				"language": "typescript",
-				"description": "Angular 18+ Standalone Magnetic Button component.",
-				"code": "import { Component, input } from '@angular/core';\nimport { CommonModule } from '@angular/common';\n\n@Component({\n  selector: 'exhuma-magnetic-button',\n  standalone: true,\n  imports: [CommonModule],\n  template: `\n    <div\n      class=\"relative inline-flex items-center justify-center rounded-xl bg-primary px-6 py-3 font-semibold text-primary-foreground shadow-md transition-shadow hover:shadow-lg cursor-pointer will-change-transform {{ customClass() }}\"\n    >\n      <ng-content></ng-content>\n    </div>\n  `,\n})\nexport class ExhumaMagneticButtonComponent {\n  readonly customClass = input<string>('');\n}\n"
-			}
-		],
-		"solid": [
-			{
-				"filename": "MagneticButton.tsx",
-				"language": "tsx",
-				"description": "SolidJS Magnetic Button adapter wrapping @exhuma/core headless primitive.",
-				"code": "import { Component, JSX, splitProps } from 'solid-js';\nimport * as MagneticButtonPrimitive from '@exhuma/core';\n\nexport interface MagneticButtonProps extends JSX.HTMLAttributes<HTMLDivElement> {\n  [key: string]: unknown;\n}\n\nexport const MagneticButton: Component<MagneticButtonProps> = (props) => {\n  const [local, others] = splitProps(props, ['class', 'children']);\n  return (\n    <MagneticButtonPrimitive.MagneticButton\n      class={`relative inline-flex items-center justify-center rounded-xl bg-primary px-6 py-3 font-semibold text-primary-foreground shadow-md transition-shadow hover:shadow-lg cursor-pointer will-change-transform ${local.class ?? ''}`}\n      {...others}\n    >\n      {local.children}\n    </MagneticButtonPrimitive.MagneticButton>\n  );\n};\n"
-			}
-		],
-		"astro": [
-			{
-				"filename": "MagneticButton.astro",
-				"language": "astro",
-				"description": "Astro Magnetic Button component with @exhuma/core primitive.",
-				"code": "---\nimport * as MagneticButtonPrimitive from '@exhuma/core';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst { class: className = '', ...props } = Astro.props;\n---\n\n<MagneticButtonPrimitive.MagneticButton\n  client:visible\n  className={`relative inline-flex items-center justify-center rounded-xl bg-primary px-6 py-3 font-semibold text-primary-foreground shadow-md transition-shadow hover:shadow-lg cursor-pointer will-change-transform ${className}`}\n  {...props}\n>\n  <slot />\n</MagneticButtonPrimitive.MagneticButton>\n"
-			}
-		],
-		"blade": [
-			{
-				"filename": "magnetic-button.blade.php",
-				"language": "php",
-				"description": "Laravel Blade component for Magnetic Button with Alpine / data attributes.",
-				"code": "@props([])\n\n<exhuma-magnetic-button\n    {{ $attributes->merge([\n        'class' => 'relative inline-flex items-center justify-center rounded-xl bg-primary px-6 py-3 font-semibold text-primary-foreground shadow-md transition-shadow hover:shadow-lg cursor-pointer will-change-transform block',\n    ]) }}\n>\n    {{ $slot }}\n</exhuma-magnetic-button>\n"
-			}
-		],
-		"vanilla": [
-			{
-				"filename": "exhuma-magnetic-button.js",
-				"language": "javascript",
-				"description": "Autonomous Vanilla JS Magnetic Button initialization module.",
-				"code": "import { MagneticButton } from '@exhuma/core';\n\nexport function initMagneticButton(selector = '[data-exhuma-magnetic-button]', options = {}) {\n  const elements = document.querySelectorAll(selector);\n  return Array.from(elements);\n}\n"
-			}
-		],
-		"wordpress": [
-			{
-				"filename": "block.json",
-				"language": "json",
-				"description": "WordPress Block API v3 definition for Magnetic Button.",
-				"code": "{\n  \"$schema\": \"https://schemas.wp.org/trunk/block.json\",\n  \"apiVersion\": 3,\n  \"name\": \"exhuma/magnetic-button\",\n  \"version\": \"1.0.0\",\n  \"title\": \"Exhuma Magnetic Button\",\n  \"category\": \"design\",\n  \"icon\": \"art\",\n  \"description\": \"Inverted spring pull field button that magnetically attracts cursor proximity.\",\n  \"attributes\": {},\n  \"editorScript\": \"file:./index.js\",\n  \"viewScript\": \"exhuma-kinetic\"\n}"
-			}
-		],
-		"webcomponent": [
-			{
-				"filename": "exhuma-magnetic-button.js",
-				"language": "javascript",
-				"description": "Universal Web Component wrapper for <exhuma-magnetic-button>.",
-				"code": "import { MagneticButton } from '@exhuma/core';\n\nclass ExhumaMagneticButtonElement extends HTMLElement {\n  connectedCallback() {\n    this.classList.add('exhuma-magnetic-button');\n    this.style.display = 'block';\n  }\n}\n\nif (!customElements.get('exhuma-magnetic-button')) {\n  customElements.define('exhuma-magnetic-button', ExhumaMagneticButtonElement);\n}\n"
-			}
-		],
-		"react-native": [
-			{
-				"filename": "MagneticButton.tsx",
-				"language": "tsx",
-				"description": "React Native Magnetic Button adapter wrapping @exhuma/core touch primitive.",
-				"code": "import React from 'react';\nimport { View, StyleSheet, type ViewProps } from 'react-native';\nimport * as MagneticButtonPrimitive from '@exhuma/core';\n\nexport interface MagneticButtonProps extends ViewProps {\n  children?: React.ReactNode;\n}\n\nexport function MagneticButton({ style, children, ...props }: MagneticButtonProps) {\n  return (\n    <View style={[styles.container, style]} {...props}>\n      {children}\n    </View>\n  );\n}\n\nconst styles = StyleSheet.create({\n  container: {\n    borderRadius: 16,\n    borderWidth: 1,\n    borderColor: '#e2e8f0',\n    backgroundColor: '#ffffff',\n    padding: 20,\n    overflow: 'hidden',\n  },\n});\n"
-			}
-		],
-		"flutter": [
-			{
-				"filename": "magnetic_button.dart",
-				"language": "dart",
-				"description": "Flutter Magnetic Button widget wrapping package:exhuma.",
-				"code": "import 'package:flutter/material.dart';\nimport 'package:exhuma/exhuma.dart' as exhuma;\n\nclass ExhumaMagneticButton extends StatelessWidget {\n  final Widget child;\n\n  const ExhumaMagneticButton({\n    super.key,\n    required this.child,\n  });\n\n  @override\n  Widget build(BuildContext context) {\n    return Container(\n      decoration: BoxDecoration(\n        borderRadius: BorderRadius.circular(16.0),\n        border: Border.all(color: Theme.of(context).dividerColor),\n        color: Theme.of(context).cardColor,\n      ),\n      padding: const EdgeInsets.all(20.0),\n      child: child,\n    );\n  }\n}\n"
-			}
-		]
-	}
+  "name": "Magnetic Button",
+  "slug": "magnetic-button",
+  "category": "primitives",
+  "description": "Inverted spring pull field button that magnetically attracts cursor proximity with critically damped release snaps.",
+  "version": "1.0.0",
+  "props": [
+    {
+      "name": "strength",
+      "label": "Pull Strength",
+      "type": "number",
+      "defaultValue": 0.35,
+      "min": 0.1,
+      "max": 0.8,
+      "step": 0.05,
+      "description": "Displacement factor relative to cursor distance."
+    },
+    {
+      "name": "radius",
+      "label": "Magnetic Radius (px)",
+      "type": "number",
+      "defaultValue": 120,
+      "min": 50,
+      "max": 250,
+      "step": 10,
+      "description": "Influence radius threshold in pixels."
+    },
+    {
+      "name": "springDamping",
+      "label": "Spring Damping",
+      "type": "number",
+      "defaultValue": 18,
+      "min": 5,
+      "max": 35,
+      "step": 1,
+      "description": "Exponential decay rate for critically damped snaps."
+    }
+  ],
+  "dependencies": {
+    "react": [
+      "@exhuma/core"
+    ],
+    "nextjs": [
+      "@exhuma/core"
+    ],
+    "vue": [
+      "@exhuma/core"
+    ],
+    "svelte": [
+      "@exhuma/core"
+    ],
+    "solid": [
+      "@exhuma/core"
+    ],
+    "angular": [
+      "@exhuma/core"
+    ],
+    "astro": [
+      "@exhuma/core"
+    ],
+    "vanilla": [
+      "@exhuma/core"
+    ],
+    "react-native": [
+      "@exhuma/core"
+    ],
+    "flutter": [
+      "exhuma"
+    ]
+  },
+  "flavors": {
+    "react": [
+      {
+        "filename": "MagneticButton.tsx",
+        "language": "tsx",
+        "description": "Magnetic Button — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
+        "code": "import * as React from 'react';\nimport * as MagneticButtonPrimitive from '@exhuma/core';\nimport { clsx } from 'clsx';\n\nexport interface MagneticButtonProps extends React.ComponentPropsWithoutRef<typeof MagneticButtonPrimitive.MagneticButton> {\n  className?: string;\n}\n\nexport const MagneticButton = React.forwardRef<HTMLDivElement, MagneticButtonProps>(\n  ({ className, children, ...props }, ref) => (\n    <MagneticButtonPrimitive.MagneticButton\n      ref={ref}\n      className={clsx(\n        'relative inline-flex items-center justify-center rounded-xl bg-primary px-6 py-3 font-semibold text-primary-foreground shadow-md transition-shadow hover:shadow-lg cursor-pointer will-change-transform',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </MagneticButtonPrimitive.MagneticButton>\n  )\n);\nMagneticButton.displayName = 'MagneticButton';\n"
+      }
+    ],
+    "nextjs": [
+      {
+        "filename": "MagneticButton.tsx",
+        "language": "tsx",
+        "description": "Magnetic Button — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
+        "code": "'use client';\n\nimport * as React from 'react';\nimport * as MagneticButtonPrimitive from '@exhuma/core';\nimport { clsx } from 'clsx';\n\nexport interface MagneticButtonProps extends React.ComponentPropsWithoutRef<typeof MagneticButtonPrimitive.MagneticButton> {\n  className?: string;\n}\n\nexport const MagneticButton = React.forwardRef<HTMLDivElement, MagneticButtonProps>(\n  ({ className, children, ...props }, ref) => (\n    <MagneticButtonPrimitive.MagneticButton\n      ref={ref}\n      className={clsx(\n        'relative inline-flex items-center justify-center rounded-xl bg-primary px-6 py-3 font-semibold text-primary-foreground shadow-md transition-shadow hover:shadow-lg cursor-pointer will-change-transform',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </MagneticButtonPrimitive.MagneticButton>\n  )\n);\nMagneticButton.displayName = 'MagneticButton';\n"
+      }
+    ],
+    "vue": [
+      {
+        "filename": "MagneticButton.vue",
+        "language": "vue",
+        "description": "Vue 3 Magnetic Button outer adapter wrapping @exhuma/core headless primitive.",
+        "code": "<script setup lang=\"ts\">\nimport { MagneticButton as MagneticButtonPrimitive } from '@exhuma/core';\nimport { clsx } from 'clsx';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst props = withDefaults(defineProps<Props>(), {\n  class: '',\n});\n</script>\n\n<template>\n  <MagneticButtonPrimitive\n    v-bind=\"props\"\n    :class=\"clsx('relative inline-flex items-center justify-center rounded-xl bg-primary px-6 py-3 font-semibold text-primary-foreground shadow-md transition-shadow hover:shadow-lg cursor-pointer will-change-transform', props.class)\"\n  >\n    <slot />\n  </MagneticButtonPrimitive>\n</template>\n"
+      }
+    ],
+    "svelte": [
+      {
+        "filename": "MagneticButton.svelte",
+        "language": "svelte",
+        "description": "Svelte 5 Magnetic Button adapter using runes and @exhuma/core primitives.",
+        "code": "<script lang=\"ts\">\n  import { MagneticButton as MagneticButtonPrimitive } from '@exhuma/core';\n  import { clsx } from 'clsx';\n\n  let {\n    class: className = '',\n    children,\n    ...restProps\n  }: {\n    class?: string;\n    children?: import('svelte').Snippet;\n    [key: string]: unknown;\n  } = $props();\n</script>\n\n<MagneticButtonPrimitive\n  class={clsx('relative inline-flex items-center justify-center rounded-xl bg-primary px-6 py-3 font-semibold text-primary-foreground shadow-md transition-shadow hover:shadow-lg cursor-pointer will-change-transform', className)}\n  {...restProps}\n>\n  {@render children?.()}\n</MagneticButtonPrimitive>\n"
+      }
+    ],
+    "angular": [
+      {
+        "filename": "magnetic-button.component.ts",
+        "language": "typescript",
+        "description": "Angular 18+ Standalone Magnetic Button component.",
+        "code": "import { Component, input } from '@angular/core';\nimport { CommonModule } from '@angular/common';\n\n@Component({\n  selector: 'exhuma-magnetic-button',\n  standalone: true,\n  imports: [CommonModule],\n  template: `\n    <div\n      class=\"relative inline-flex items-center justify-center rounded-xl bg-primary px-6 py-3 font-semibold text-primary-foreground shadow-md transition-shadow hover:shadow-lg cursor-pointer will-change-transform {{ customClass() }}\"\n    >\n      <ng-content></ng-content>\n    </div>\n  `,\n})\nexport class ExhumaMagneticButtonComponent {\n  readonly customClass = input<string>('');\n}\n"
+      }
+    ],
+    "solid": [
+      {
+        "filename": "MagneticButton.tsx",
+        "language": "tsx",
+        "description": "SolidJS Magnetic Button adapter wrapping @exhuma/core headless primitive.",
+        "code": "import { Component, JSX, splitProps } from 'solid-js';\nimport * as MagneticButtonPrimitive from '@exhuma/core';\n\nexport interface MagneticButtonProps extends JSX.HTMLAttributes<HTMLDivElement> {\n  [key: string]: unknown;\n}\n\nexport const MagneticButton: Component<MagneticButtonProps> = (props) => {\n  const [local, others] = splitProps(props, ['class', 'children']);\n  return (\n    <MagneticButtonPrimitive.MagneticButton\n      class={`relative inline-flex items-center justify-center rounded-xl bg-primary px-6 py-3 font-semibold text-primary-foreground shadow-md transition-shadow hover:shadow-lg cursor-pointer will-change-transform ${local.class ?? ''}`}\n      {...others}\n    >\n      {local.children}\n    </MagneticButtonPrimitive.MagneticButton>\n  );\n};\n"
+      }
+    ],
+    "astro": [
+      {
+        "filename": "MagneticButton.astro",
+        "language": "astro",
+        "description": "Astro Magnetic Button component with @exhuma/core primitive.",
+        "code": "---\nimport * as MagneticButtonPrimitive from '@exhuma/core';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst { class: className = '', ...props } = Astro.props;\n---\n\n<MagneticButtonPrimitive.MagneticButton\n  client:visible\n  className={`relative inline-flex items-center justify-center rounded-xl bg-primary px-6 py-3 font-semibold text-primary-foreground shadow-md transition-shadow hover:shadow-lg cursor-pointer will-change-transform ${className}`}\n  {...props}\n>\n  <slot />\n</MagneticButtonPrimitive.MagneticButton>\n"
+      }
+    ],
+    "blade": [
+      {
+        "filename": "magnetic-button.blade.php",
+        "language": "php",
+        "description": "Laravel Blade component for Magnetic Button with Alpine / data attributes.",
+        "code": "@props([])\n\n<exhuma-magnetic-button\n    {{ $attributes->merge([\n        'class' => 'relative inline-flex items-center justify-center rounded-xl bg-primary px-6 py-3 font-semibold text-primary-foreground shadow-md transition-shadow hover:shadow-lg cursor-pointer will-change-transform block',\n    ]) }}\n>\n    {{ $slot }}\n</exhuma-magnetic-button>\n"
+      }
+    ],
+    "vanilla": [
+      {
+        "filename": "exhuma-magnetic-button.js",
+        "language": "javascript",
+        "description": "Autonomous Vanilla JS Magnetic Button initialization module.",
+        "code": "import { MagneticButton } from '@exhuma/core';\n\nexport function initMagneticButton(selector = '[data-exhuma-magnetic-button]', options = {}) {\n  const elements = document.querySelectorAll(selector);\n  return Array.from(elements);\n}\n"
+      }
+    ],
+    "wordpress": [
+      {
+        "filename": "block.json",
+        "language": "json",
+        "description": "WordPress Block API v3 definition for Magnetic Button.",
+        "code": "{\n  \"$schema\": \"https://schemas.wp.org/trunk/block.json\",\n  \"apiVersion\": 3,\n  \"name\": \"exhuma/magnetic-button\",\n  \"version\": \"1.0.0\",\n  \"title\": \"Exhuma Magnetic Button\",\n  \"category\": \"design\",\n  \"icon\": \"art\",\n  \"description\": \"Inverted spring pull field button that magnetically attracts cursor proximity.\",\n  \"attributes\": {},\n  \"editorScript\": \"file:./index.js\",\n  \"viewScript\": \"exhuma-kinetic\"\n}"
+      }
+    ],
+    "webcomponent": [
+      {
+        "filename": "exhuma-magnetic-button.js",
+        "language": "javascript",
+        "description": "Universal Web Component wrapper for <exhuma-magnetic-button>.",
+        "code": "import { MagneticButton } from '@exhuma/core';\n\nclass ExhumaMagneticButtonElement extends HTMLElement {\n  connectedCallback() {\n    this.classList.add('exhuma-magnetic-button');\n    this.style.display = 'block';\n  }\n}\n\nif (!customElements.get('exhuma-magnetic-button')) {\n  customElements.define('exhuma-magnetic-button', ExhumaMagneticButtonElement);\n}\n"
+      }
+    ],
+    "react-native": [
+      {
+        "filename": "MagneticButton.tsx",
+        "language": "tsx",
+        "description": "React Native Magnetic Button adapter wrapping @exhuma/core touch primitive.",
+        "code": "import React from 'react';\nimport { View, StyleSheet, type ViewProps } from 'react-native';\nimport * as MagneticButtonPrimitive from '@exhuma/core';\n\nexport interface MagneticButtonProps extends ViewProps {\n  children?: React.ReactNode;\n}\n\nexport function MagneticButton({ style, children, ...props }: MagneticButtonProps) {\n  return (\n    <View style={[styles.container, style]} {...props}>\n      {children}\n    </View>\n  );\n}\n\nconst styles = StyleSheet.create({\n  container: {\n    borderRadius: 16,\n    borderWidth: 1,\n    borderColor: '#e2e8f0',\n    backgroundColor: '#ffffff',\n    padding: 20,\n    overflow: 'hidden',\n  },\n});\n"
+      }
+    ],
+    "flutter": [
+      {
+        "filename": "magnetic_button.dart",
+        "language": "dart",
+        "description": "Flutter Magnetic Button widget wrapping package:exhuma.",
+        "code": "import 'package:flutter/material.dart';\nimport 'package:exhuma/exhuma.dart' as exhuma;\n\nclass ExhumaMagneticButton extends StatelessWidget {\n  final Widget child;\n\n  const ExhumaMagneticButton({\n    super.key,\n    required this.child,\n  });\n\n  @override\n  Widget build(BuildContext context) {\n    return Container(\n      decoration: BoxDecoration(\n        borderRadius: BorderRadius.circular(16.0),\n        border: Border.all(color: Theme.of(context).dividerColor),\n        color: Theme.of(context).cardColor,\n      ),\n      padding: const EdgeInsets.all(20.0),\n      child: child,\n    );\n  }\n}\n"
+      }
+    ]
+  }
 }
