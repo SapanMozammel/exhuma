@@ -4,7 +4,7 @@ export default defineConfig({
 	entry: ['src/index.ts', 'src/cards.ts', 'src/layouts.ts', 'src/router.ts', 'src/physics.ts', 'src/gestures.ts'],
 	format: ['esm', 'cjs'],
 	dts: true,
-	clean: true,
+	clean: false,
 	sourcemap: true,
 	treeshake: true,
 	banner: {
