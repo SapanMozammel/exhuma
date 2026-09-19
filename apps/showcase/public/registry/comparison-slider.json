@@ -1,160 +1,150 @@
 {
-  "name": "Comparison Slider",
-  "slug": "comparison-slider",
-  "category": "cards",
-  "description": "Interactive before/after media comparison slider with sub-pixel clip-path polygon slicing and WAI-ARIA keyboard navigation.",
-  "version": "1.0.0",
-  "props": [
-    {
-      "name": "defaultPosition",
-      "label": "Default Position",
-      "type": "number",
-      "defaultValue": 0.5,
-      "min": 0.1,
-      "max": 0.9,
-      "step": 0.05,
-      "description": "Initial divider split ratio between 0 and 1."
-    },
-    {
-      "name": "step",
-      "label": "Keyboard Step",
-      "type": "number",
-      "defaultValue": 0.05,
-      "min": 0.01,
-      "max": 0.2,
-      "step": 0.01,
-      "description": "Position delta when stepping with arrow keys."
-    }
-  ],
-  "dependencies": {
-    "react": [
-      "@exhuma/core"
-    ],
-    "nextjs": [
-      "@exhuma/core"
-    ],
-    "vue": [
-      "clsx"
-    ],
-    "svelte": [
-      "clsx"
-    ],
-    "solid": [
-      "clsx"
-    ],
-    "angular": [],
-    "astro": [],
-    "blade": [],
-    "vanilla": [],
-    "wordpress": [],
-    "webcomponent": [],
-    "react-native": [],
-    "flutter": []
-  },
-  "flavors": {
-    "react": [
-      {
-        "filename": "ComparisonSlider.tsx",
-        "language": "tsx",
-        "description": "Comparison Slider — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
-        "code": "import * as React from 'react';\nimport * as ComparisonSliderPrimitive from '@exhuma/core';\nimport { clsx } from 'clsx';\n\nexport interface ComparisonSliderProps extends React.ComponentPropsWithoutRef<typeof ComparisonSliderPrimitive.ComparisonSlider> {\n  className?: string;\n}\n\nexport const ComparisonSlider = React.forwardRef<HTMLDivElement, ComparisonSliderProps>(\n  ({ className, children, ...props }, ref) => (\n    <ComparisonSliderPrimitive.ComparisonSlider\n      ref={ref}\n      className={clsx(\n        'relative overflow-hidden rounded-2xl border border-border select-none w-full max-w-2xl mx-auto',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </ComparisonSliderPrimitive.ComparisonSlider>\n  )\n);\nComparisonSlider.displayName = 'ComparisonSlider';\n"
-      }
-    ],
-    "nextjs": [
-      {
-        "filename": "ComparisonSlider.tsx",
-        "language": "tsx",
-        "description": "Comparison Slider — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
-        "code": "'use client';\n\nimport * as React from 'react';\nimport * as ComparisonSliderPrimitive from '@exhuma/core';\nimport { clsx } from 'clsx';\n\nexport interface ComparisonSliderProps extends React.ComponentPropsWithoutRef<typeof ComparisonSliderPrimitive.ComparisonSlider> {\n  className?: string;\n}\n\nexport const ComparisonSlider = React.forwardRef<HTMLDivElement, ComparisonSliderProps>(\n  ({ className, children, ...props }, ref) => (\n    <ComparisonSliderPrimitive.ComparisonSlider\n      ref={ref}\n      className={clsx(\n        'relative overflow-hidden rounded-2xl border border-border select-none w-full max-w-2xl mx-auto',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </ComparisonSliderPrimitive.ComparisonSlider>\n  )\n);\nComparisonSlider.displayName = 'ComparisonSlider';\n"
-      }
-    ],
-    "vue": [
-      {
-        "filename": "ComparisonSlider.vue",
-        "language": "vue",
-        "description": "Vue 3 Native Comparison Slider component.",
-        "code": "<script setup lang=\"ts\">\nimport { clsx } from 'clsx';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst props = withDefaults(defineProps<Props>(), {\n  class: '',\n});\n</script>\n\n<template>\n  <div\n    :class=\"clsx('relative overflow-hidden rounded-2xl border border-border select-none w-full max-w-2xl mx-auto', props.class)\"\n    v-bind=\"$attrs\"\n  >\n    <slot />\n  </div>\n</template>\n"
-      }
-    ],
-    "svelte": [
-      {
-        "filename": "ComparisonSlider.svelte",
-        "language": "svelte",
-        "description": "Svelte 5 Native Comparison Slider component using runes.",
-        "code": "<script lang=\"ts\">\n  import { clsx } from 'clsx';\n\n  let {\n    class: className = '',\n    children,\n    ...restProps\n  }: {\n    class?: string;\n    children?: import('svelte').Snippet;\n    [key: string]: unknown;\n  } = $props();\n</script>\n\n<div\n  class={clsx('relative overflow-hidden rounded-2xl border border-border select-none w-full max-w-2xl mx-auto', className)}\n  {...restProps}\n>\n  {@render children?.()}\n</div>\n"
-      }
-    ],
-    "angular": [
-      {
-        "filename": "comparison-slider.component.ts",
-        "language": "typescript",
-        "description": "Angular 18+ Standalone Comparison Slider component.",
-        "code": "import { Component, input } from '@angular/core';\n\n@Component({\n  selector: 'exhuma-comparison-slider',\n  standalone: true,\n  template: `\n    <div\n      class=\"relative overflow-hidden rounded-2xl border border-border select-none w-full max-w-2xl mx-auto {{ customClass() }}\"\n    >\n      <ng-content></ng-content>\n    </div>\n  `,\n})\nexport class ExhumaComparisonSliderComponent {\n  readonly customClass = input<string>('');\n}\n"
-      }
-    ],
-    "solid": [
-      {
-        "filename": "ComparisonSlider.tsx",
-        "language": "tsx",
-        "description": "SolidJS Native Comparison Slider component.",
-        "code": "import { Component, JSX, splitProps } from 'solid-js';\n\nexport interface ComparisonSliderProps extends JSX.HTMLAttributes<HTMLDivElement> {\n  [key: string]: unknown;\n}\n\nexport const ComparisonSlider: Component<ComparisonSliderProps> = (props) => {\n  const [local, others] = splitProps(props, ['class', 'children']);\n  return (\n    <div\n      class={`relative overflow-hidden rounded-2xl border border-border select-none w-full max-w-2xl mx-auto ${local.class ?? ''}`}\n      {...others}\n    >\n      {local.children}\n    </div>\n  );\n};\n"
-      }
-    ],
-    "astro": [
-      {
-        "filename": "ComparisonSlider.astro",
-        "language": "astro",
-        "description": "Pure Native Astro Comparison Slider component.",
-        "code": "---\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst { class: className = '', ...props } = Astro.props;\n---\n\n<div\n  class={`relative overflow-hidden rounded-2xl border border-border select-none w-full max-w-2xl mx-auto ${className}`}\n  {...props}\n>\n  <slot />\n</div>\n"
-      }
-    ],
-    "blade": [
-      {
-        "filename": "comparison-slider.blade.php",
-        "language": "php",
-        "description": "Laravel Blade component for Comparison Slider.",
-        "code": "@props([])\n\n<div\n    {{ $attributes->merge([\n        'class' => 'relative overflow-hidden rounded-2xl border border-border select-none w-full max-w-2xl mx-auto block',\n    ]) }}\n>\n    {{ $slot }}\n</div>\n"
-      }
-    ],
-    "vanilla": [
-      {
-        "filename": "comparison-slider.vanilla.js",
-        "language": "javascript",
-        "description": "Autonomous Vanilla JS Comparison Slider initialization module.",
-        "code": "export function initComparisonSlider(selector = '[data-exhuma-comparison-slider]', options = {}) {\n  const elements = document.querySelectorAll(selector);\n  elements.forEach((container) => {\n    const topStart = parseFloat(container.getAttribute('data-top-start') || options.topStart || 20);\n    const topIncrement = parseFloat(container.getAttribute('data-top-increment') || options.topIncrement || 28);\n    const cardGap = parseFloat(container.getAttribute('data-card-gap') || options.cardGap || 20);\n\n    const cards = Array.from(container.children);\n    cards.forEach((card, i) => {\n      if (card instanceof HTMLElement) {\n        card.style.position = 'sticky';\n        card.style.top = `${topStart + i * topIncrement}px`;\n        card.style.marginBottom = `${cardGap}px`;\n      }\n    });\n  });\n  return Array.from(elements);\n}\n"
-      }
-    ],
-    "wordpress": [
-      {
-        "filename": "block.json",
-        "language": "json",
-        "description": "WordPress Block API v3 definition for Comparison Slider.",
-        "code": "{\n  \"$schema\": \"https://schemas.wp.org/trunk/block.json\",\n  \"apiVersion\": 3,\n  \"name\": \"exhuma/comparison-slider\",\n  \"version\": \"1.0.0\",\n  \"title\": \"Exhuma Comparison Slider\",\n  \"category\": \"design\",\n  \"icon\": \"art\",\n  \"description\": \"Interactive before/after media comparison slider with sub-pixel clip-path polygon slicing.\",\n  \"attributes\": {\n    \"topStart\": {\n      \"type\": \"number\",\n      \"default\": 20\n    },\n    \"topIncrement\": {\n      \"type\": \"number\",\n      \"default\": 28\n    },\n    \"cardGap\": {\n      \"type\": \"number\",\n      \"default\": 20\n    },\n    \"scaleThreshold\": {\n      \"type\": \"number\",\n      \"default\": 150\n    },\n    \"minScale\": {\n      \"type\": \"number\",\n      \"default\": 0.9\n    },\n    \"reverseScale\": {\n      \"type\": \"boolean\",\n      \"default\": true\n    }\n  },\n  \"editorScript\": \"file:./index.js\",\n  \"viewScript\": \"exhuma-kinetic\"\n}"
-      }
-    ],
-    "webcomponent": [
-      {
-        "filename": "exhuma-comparison-slider.js",
-        "language": "javascript",
-        "description": "Universal Web Component wrapper for <exhuma-comparison-slider>.",
-        "code": "class ExhumaComparisonSliderElement extends HTMLElement {\n  connectedCallback() {\n    this.classList.add('exhuma-comparison-slider');\n    this.style.display = 'block';\n\n    const topStart = parseFloat(this.getAttribute('top-start') || '20');\n    const topIncrement = parseFloat(this.getAttribute('top-increment') || '28');\n    const cardGap = parseFloat(this.getAttribute('card-gap') || '20');\n\n    const cards = Array.from(this.children);\n    cards.forEach((card, i) => {\n      if (card instanceof HTMLElement) {\n        card.style.position = 'sticky';\n        card.style.top = `${topStart + i * topIncrement}px`;\n        card.style.marginBottom = `${cardGap}px`;\n      }\n    });\n  }\n}\n\nif (!customElements.get('exhuma-comparison-slider')) {\n  customElements.define('exhuma-comparison-slider', ExhumaComparisonSliderElement);\n}\n"
-      }
-    ],
-    "react-native": [
-      {
-        "filename": "ComparisonSlider.tsx",
-        "language": "tsx",
-        "description": "React Native Comparison Slider native component.",
-        "code": "import React from 'react';\nimport { View, StyleSheet, type ViewProps } from 'react-native';\n\nexport interface ComparisonSliderProps extends ViewProps {\n  topStart?: number;\n  topIncrement?: number;\n  cardGap?: number;\n  scaleThreshold?: number;\n  minScale?: number;\n  reverseScale?: boolean;\n  children?: React.ReactNode;\n}\n\nexport function ComparisonSlider({\n  topStart = 20,\n  topIncrement = 28,\n  cardGap = 20,\n  style,\n  children,\n  ...props\n}: ComparisonSliderProps) {\n  return (\n    <View style={[styles.container, style]} {...props}>\n      {React.Children.map(children, (child, index) => (\n        <View\n          key={index}\n          style={{\n            marginTop: index === 0 ? topStart : topIncrement,\n            marginBottom: cardGap,\n            zIndex: index + 1,\n          }}\n        >\n          {child}\n        </View>\n      ))}\n    </View>\n  );\n}\n\nconst styles = StyleSheet.create({\n  container: {\n    width: '100%',\n  },\n});\n"
-      }
-    ],
-    "flutter": [
-      {
-        "filename": "comparison_slider.dart",
-        "language": "dart",
-        "description": "Flutter Comparison Slider widget wrapping package:exhuma.",
-        "code": "import 'package:flutter/material.dart';\n\nclass ExhumaComparisonSlider extends StatelessWidget {\n  final List<Widget> children;\n  final double topStart;\n  final double topIncrement;\n  final double cardGap;\n  final double scaleThreshold;\n  final double minScale;\n  final bool reverseScale;\n\n  const ExhumaComparisonSlider({\n    super.key,\n    required this.children,\n    this.topStart = 20.0,\n    this.topIncrement = 28.0,\n    this.cardGap = 20.0,\n    this.scaleThreshold = 150.0,\n    this.minScale = 0.9,\n    this.reverseScale = true,\n  });\n\n  @override\n  Widget build(BuildContext context) {\n    return Column(\n      children: children.asMap().entries.map((entry) {\n        final index = entry.key;\n        final widget = entry.value;\n        return Container(\n          margin: EdgeInsets.only(\n            top: index == 0 ? topStart : topIncrement,\n            bottom: cardGap,\n          ),\n          child: widget,\n        );\n      }).toList(),\n    );\n  }\n}\n"
-      }
-    ]
-  }
+	"name": "Comparison Slider",
+	"slug": "comparison-slider",
+	"category": "cards",
+	"description": "Interactive before/after media comparison slider with sub-pixel clip-path polygon slicing and WAI-ARIA keyboard navigation.",
+	"version": "1.0.0",
+	"props": [
+		{
+			"name": "defaultPosition",
+			"label": "Default Position",
+			"type": "number",
+			"defaultValue": 0.5,
+			"min": 0.1,
+			"max": 0.9,
+			"step": 0.05,
+			"description": "Initial divider split ratio between 0 and 1."
+		},
+		{
+			"name": "step",
+			"label": "Keyboard Step",
+			"type": "number",
+			"defaultValue": 0.05,
+			"min": 0.01,
+			"max": 0.2,
+			"step": 0.01,
+			"description": "Position delta when stepping with arrow keys."
+		}
+	],
+	"dependencies": {
+		"react": ["@exhuma/core"],
+		"nextjs": ["@exhuma/core"],
+		"vue": ["clsx"],
+		"svelte": ["clsx"],
+		"solid": ["clsx"],
+		"angular": [],
+		"astro": [],
+		"blade": [],
+		"vanilla": [],
+		"wordpress": [],
+		"webcomponent": [],
+		"react-native": [],
+		"flutter": []
+	},
+	"flavors": {
+		"react": [
+			{
+				"filename": "ComparisonSlider.tsx",
+				"language": "tsx",
+				"description": "Comparison Slider — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
+				"code": "import * as React from 'react';\nimport * as ComparisonSliderPrimitive from '@exhuma/core';\nimport { clsx } from 'clsx';\n\nexport interface ComparisonSliderProps extends React.ComponentPropsWithoutRef<typeof ComparisonSliderPrimitive.ComparisonSlider> {\n  className?: string;\n}\n\nexport const ComparisonSlider = React.forwardRef<HTMLDivElement, ComparisonSliderProps>(\n  ({ className, children, ...props }, ref) => (\n    <ComparisonSliderPrimitive.ComparisonSlider\n      ref={ref}\n      className={clsx(\n        'relative overflow-hidden rounded-2xl border border-border select-none w-full max-w-2xl mx-auto',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </ComparisonSliderPrimitive.ComparisonSlider>\n  )\n);\nComparisonSlider.displayName = 'ComparisonSlider';\n"
+			}
+		],
+		"nextjs": [
+			{
+				"filename": "ComparisonSlider.tsx",
+				"language": "tsx",
+				"description": "Comparison Slider — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
+				"code": "'use client';\n\nimport * as React from 'react';\nimport * as ComparisonSliderPrimitive from '@exhuma/core';\nimport { clsx } from 'clsx';\n\nexport interface ComparisonSliderProps extends React.ComponentPropsWithoutRef<typeof ComparisonSliderPrimitive.ComparisonSlider> {\n  className?: string;\n}\n\nexport const ComparisonSlider = React.forwardRef<HTMLDivElement, ComparisonSliderProps>(\n  ({ className, children, ...props }, ref) => (\n    <ComparisonSliderPrimitive.ComparisonSlider\n      ref={ref}\n      className={clsx(\n        'relative overflow-hidden rounded-2xl border border-border select-none w-full max-w-2xl mx-auto',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </ComparisonSliderPrimitive.ComparisonSlider>\n  )\n);\nComparisonSlider.displayName = 'ComparisonSlider';\n"
+			}
+		],
+		"vue": [
+			{
+				"filename": "ComparisonSlider.vue",
+				"language": "vue",
+				"description": "Vue 3 Native Comparison Slider component.",
+				"code": "<script setup lang=\"ts\">\nimport { clsx } from 'clsx';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst props = withDefaults(defineProps<Props>(), {\n  class: '',\n});\n</script>\n\n<template>\n  <div\n    :class=\"clsx('relative overflow-hidden rounded-2xl border border-border select-none w-full max-w-2xl mx-auto', props.class)\"\n    v-bind=\"$attrs\"\n  >\n    <slot />\n  </div>\n</template>\n"
+			}
+		],
+		"svelte": [
+			{
+				"filename": "ComparisonSlider.svelte",
+				"language": "svelte",
+				"description": "Svelte 5 Native Comparison Slider component using runes.",
+				"code": "<script lang=\"ts\">\n  import { clsx } from 'clsx';\n\n  let {\n    class: className = '',\n    children,\n    ...restProps\n  }: {\n    class?: string;\n    children?: import('svelte').Snippet;\n    [key: string]: unknown;\n  } = $props();\n</script>\n\n<div\n  class={clsx('relative overflow-hidden rounded-2xl border border-border select-none w-full max-w-2xl mx-auto', className)}\n  {...restProps}\n>\n  {@render children?.()}\n</div>\n"
+			}
+		],
+		"angular": [
+			{
+				"filename": "comparison-slider.component.ts",
+				"language": "typescript",
+				"description": "Angular 18+ Standalone Comparison Slider component.",
+				"code": "import { Component, input } from '@angular/core';\n\n@Component({\n  selector: 'exhuma-comparison-slider',\n  standalone: true,\n  template: `\n    <div\n      class=\"relative overflow-hidden rounded-2xl border border-border select-none w-full max-w-2xl mx-auto {{ customClass() }}\"\n    >\n      <ng-content></ng-content>\n    </div>\n  `,\n})\nexport class ExhumaComparisonSliderComponent {\n  readonly customClass = input<string>('');\n}\n"
+			}
+		],
+		"solid": [
+			{
+				"filename": "ComparisonSlider.tsx",
+				"language": "tsx",
+				"description": "SolidJS Native Comparison Slider component.",
+				"code": "import { Component, JSX, splitProps } from 'solid-js';\n\nexport interface ComparisonSliderProps extends JSX.HTMLAttributes<HTMLDivElement> {\n  [key: string]: unknown;\n}\n\nexport const ComparisonSlider: Component<ComparisonSliderProps> = (props) => {\n  const [local, others] = splitProps(props, ['class', 'children']);\n  return (\n    <div\n      class={`relative overflow-hidden rounded-2xl border border-border select-none w-full max-w-2xl mx-auto ${local.class ?? ''}`}\n      {...others}\n    >\n      {local.children}\n    </div>\n  );\n};\n"
+			}
+		],
+		"astro": [
+			{
+				"filename": "ComparisonSlider.astro",
+				"language": "astro",
+				"description": "Pure Native Astro Comparison Slider component.",
+				"code": "---\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst { class: className = '', ...props } = Astro.props;\n---\n\n<div\n  class={`relative overflow-hidden rounded-2xl border border-border select-none w-full max-w-2xl mx-auto ${className}`}\n  {...props}\n>\n  <slot />\n</div>\n"
+			}
+		],
+		"blade": [
+			{
+				"filename": "comparison-slider.blade.php",
+				"language": "php",
+				"description": "Laravel Blade component for Comparison Slider.",
+				"code": "@props([])\n\n<div\n    {{ $attributes->merge([\n        'class' => 'relative overflow-hidden rounded-2xl border border-border select-none w-full max-w-2xl mx-auto block',\n    ]) }}\n>\n    {{ $slot }}\n</div>\n"
+			}
+		],
+		"vanilla": [
+			{
+				"filename": "comparison-slider.vanilla.js",
+				"language": "javascript",
+				"description": "Autonomous Vanilla JS Comparison Slider initialization module.",
+				"code": "export function initComparisonSlider(selector = '[data-exhuma-comparison-slider]', options = {}) {\n  const elements = document.querySelectorAll(selector);\n  elements.forEach((container) => {\n    const topStart = parseFloat(container.getAttribute('data-top-start') || options.topStart || 20);\n    const topIncrement = parseFloat(container.getAttribute('data-top-increment') || options.topIncrement || 28);\n    const cardGap = parseFloat(container.getAttribute('data-card-gap') || options.cardGap || 20);\n\n    const cards = Array.from(container.children);\n    cards.forEach((card, i) => {\n      if (card instanceof HTMLElement) {\n        card.style.position = 'sticky';\n        card.style.top = `${topStart + i * topIncrement}px`;\n        card.style.marginBottom = `${cardGap}px`;\n      }\n    });\n  });\n  return Array.from(elements);\n}\n"
+			}
+		],
+		"wordpress": [
+			{
+				"filename": "block.json",
+				"language": "json",
+				"description": "WordPress Block API v3 definition for Comparison Slider.",
+				"code": "{\n  \"$schema\": \"https://schemas.wp.org/trunk/block.json\",\n  \"apiVersion\": 3,\n  \"name\": \"exhuma/comparison-slider\",\n  \"version\": \"1.0.0\",\n  \"title\": \"Exhuma Comparison Slider\",\n  \"category\": \"design\",\n  \"icon\": \"art\",\n  \"description\": \"Interactive before/after media comparison slider with sub-pixel clip-path polygon slicing.\",\n  \"attributes\": {\n    \"topStart\": {\n      \"type\": \"number\",\n      \"default\": 20\n    },\n    \"topIncrement\": {\n      \"type\": \"number\",\n      \"default\": 28\n    },\n    \"cardGap\": {\n      \"type\": \"number\",\n      \"default\": 20\n    },\n    \"scaleThreshold\": {\n      \"type\": \"number\",\n      \"default\": 150\n    },\n    \"minScale\": {\n      \"type\": \"number\",\n      \"default\": 0.9\n    },\n    \"reverseScale\": {\n      \"type\": \"boolean\",\n      \"default\": true\n    }\n  },\n  \"editorScript\": \"file:./index.js\",\n  \"viewScript\": \"exhuma-kinetic\"\n}"
+			}
+		],
+		"webcomponent": [
+			{
+				"filename": "exhuma-comparison-slider.js",
+				"language": "javascript",
+				"description": "Universal Web Component wrapper for <exhuma-comparison-slider>.",
+				"code": "class ExhumaComparisonSliderElement extends HTMLElement {\n  connectedCallback() {\n    this.classList.add('exhuma-comparison-slider');\n    this.style.display = 'block';\n\n    const topStart = parseFloat(this.getAttribute('top-start') || '20');\n    const topIncrement = parseFloat(this.getAttribute('top-increment') || '28');\n    const cardGap = parseFloat(this.getAttribute('card-gap') || '20');\n\n    const cards = Array.from(this.children);\n    cards.forEach((card, i) => {\n      if (card instanceof HTMLElement) {\n        card.style.position = 'sticky';\n        card.style.top = `${topStart + i * topIncrement}px`;\n        card.style.marginBottom = `${cardGap}px`;\n      }\n    });\n  }\n}\n\nif (!customElements.get('exhuma-comparison-slider')) {\n  customElements.define('exhuma-comparison-slider', ExhumaComparisonSliderElement);\n}\n"
+			}
+		],
+		"react-native": [
+			{
+				"filename": "ComparisonSlider.tsx",
+				"language": "tsx",
+				"description": "React Native Comparison Slider native component.",
+				"code": "import React from 'react';\nimport { View, StyleSheet, type ViewProps } from 'react-native';\n\nexport interface ComparisonSliderProps extends ViewProps {\n  topStart?: number;\n  topIncrement?: number;\n  cardGap?: number;\n  scaleThreshold?: number;\n  minScale?: number;\n  reverseScale?: boolean;\n  children?: React.ReactNode;\n}\n\nexport function ComparisonSlider({\n  topStart = 20,\n  topIncrement = 28,\n  cardGap = 20,\n  style,\n  children,\n  ...props\n}: ComparisonSliderProps) {\n  return (\n    <View style={[styles.container, style]} {...props}>\n      {React.Children.map(children, (child, index) => (\n        <View\n          key={index}\n          style={{\n            marginTop: index === 0 ? topStart : topIncrement,\n            marginBottom: cardGap,\n            zIndex: index + 1,\n          }}\n        >\n          {child}\n        </View>\n      ))}\n    </View>\n  );\n}\n\nconst styles = StyleSheet.create({\n  container: {\n    width: '100%',\n  },\n});\n"
+			}
+		],
+		"flutter": [
+			{
+				"filename": "comparison_slider.dart",
+				"language": "dart",
+				"description": "Flutter Comparison Slider widget wrapping package:exhuma.",
+				"code": "import 'package:flutter/material.dart';\n\nclass ExhumaComparisonSlider extends StatelessWidget {\n  final List<Widget> children;\n  final double topStart;\n  final double topIncrement;\n  final double cardGap;\n  final double scaleThreshold;\n  final double minScale;\n  final bool reverseScale;\n\n  const ExhumaComparisonSlider({\n    super.key,\n    required this.children,\n    this.topStart = 20.0,\n    this.topIncrement = 28.0,\n    this.cardGap = 20.0,\n    this.scaleThreshold = 150.0,\n    this.minScale = 0.9,\n    this.reverseScale = true,\n  });\n\n  @override\n  Widget build(BuildContext context) {\n    return Column(\n      children: children.asMap().entries.map((entry) {\n        final index = entry.key;\n        final widget = entry.value;\n        return Container(\n          margin: EdgeInsets.only(\n            top: index == 0 ? topStart : topIncrement,\n            bottom: cardGap,\n          ),\n          child: widget,\n        );\n      }).toList(),\n    );\n  }\n}\n"
+			}
+		]
+	}
 }

@@ -1,157 +1,147 @@
 {
-  "name": "Bento Grid",
-  "slug": "bento-grid",
-  "category": "layouts",
-  "description": "Fluid responsive layout engine with dense auto-flow, asymmetric card spans, and subtle kinetic hover glow.",
-  "version": "1.0.0",
-  "props": [
-    {
-      "name": "cols",
-      "label": "Columns",
-      "type": "number",
-      "defaultValue": 3,
-      "min": 1,
-      "max": 6,
-      "step": 1,
-      "description": "Maximum column count for desktop screens."
-    },
-    {
-      "name": "gap",
-      "label": "Grid Gap",
-      "type": "string",
-      "defaultValue": "1.5rem",
-      "description": "Spacing between bento tiles."
-    }
-  ],
-  "dependencies": {
-    "react": [
-      "@exhuma/core"
-    ],
-    "nextjs": [
-      "@exhuma/core"
-    ],
-    "vue": [
-      "clsx"
-    ],
-    "svelte": [
-      "clsx"
-    ],
-    "solid": [
-      "clsx"
-    ],
-    "angular": [],
-    "astro": [],
-    "blade": [],
-    "vanilla": [],
-    "wordpress": [],
-    "webcomponent": [],
-    "react-native": [],
-    "flutter": []
-  },
-  "flavors": {
-    "react": [
-      {
-        "filename": "BentoGrid.tsx",
-        "language": "tsx",
-        "description": "Bento Grid — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
-        "code": "import * as React from 'react';\nimport * as BentoGridPrimitive from '@exhuma/core';\nimport { clsx } from 'clsx';\n\nexport interface BentoGridProps extends React.ComponentPropsWithoutRef<typeof BentoGridPrimitive.BentoGrid> {\n  className?: string;\n}\n\nexport const BentoGrid = React.forwardRef<HTMLDivElement, BentoGridProps>(\n  ({ className, children, ...props }, ref) => (\n    <BentoGridPrimitive.BentoGrid\n      ref={ref}\n      className={clsx(\n        'grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[22rem] max-w-7xl mx-auto w-full',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </BentoGridPrimitive.BentoGrid>\n  )\n);\nBentoGrid.displayName = 'BentoGrid';\n"
-      }
-    ],
-    "nextjs": [
-      {
-        "filename": "BentoGrid.tsx",
-        "language": "tsx",
-        "description": "Bento Grid — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
-        "code": "'use client';\n\nimport * as React from 'react';\nimport * as BentoGridPrimitive from '@exhuma/core';\nimport { clsx } from 'clsx';\n\nexport interface BentoGridProps extends React.ComponentPropsWithoutRef<typeof BentoGridPrimitive.BentoGrid> {\n  className?: string;\n}\n\nexport const BentoGrid = React.forwardRef<HTMLDivElement, BentoGridProps>(\n  ({ className, children, ...props }, ref) => (\n    <BentoGridPrimitive.BentoGrid\n      ref={ref}\n      className={clsx(\n        'grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[22rem] max-w-7xl mx-auto w-full',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </BentoGridPrimitive.BentoGrid>\n  )\n);\nBentoGrid.displayName = 'BentoGrid';\n"
-      }
-    ],
-    "vue": [
-      {
-        "filename": "BentoGrid.vue",
-        "language": "vue",
-        "description": "Vue 3 Native Bento Grid component.",
-        "code": "<script setup lang=\"ts\">\nimport { clsx } from 'clsx';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst props = withDefaults(defineProps<Props>(), {\n  class: '',\n});\n</script>\n\n<template>\n  <div\n    :class=\"clsx('grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[22rem] max-w-7xl mx-auto w-full', props.class)\"\n    v-bind=\"$attrs\"\n  >\n    <slot />\n  </div>\n</template>\n"
-      }
-    ],
-    "svelte": [
-      {
-        "filename": "BentoGrid.svelte",
-        "language": "svelte",
-        "description": "Svelte 5 Native Bento Grid component using runes.",
-        "code": "<script lang=\"ts\">\n  import { clsx } from 'clsx';\n\n  let {\n    class: className = '',\n    children,\n    ...restProps\n  }: {\n    class?: string;\n    children?: import('svelte').Snippet;\n    [key: string]: unknown;\n  } = $props();\n</script>\n\n<div\n  class={clsx('grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[22rem] max-w-7xl mx-auto w-full', className)}\n  {...restProps}\n>\n  {@render children?.()}\n</div>\n"
-      }
-    ],
-    "angular": [
-      {
-        "filename": "bento-grid.component.ts",
-        "language": "typescript",
-        "description": "Angular 18+ Standalone Bento Grid component.",
-        "code": "import { Component, input } from '@angular/core';\n\n@Component({\n  selector: 'exhuma-bento-grid',\n  standalone: true,\n  template: `\n    <div\n      class=\"grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[22rem] max-w-7xl mx-auto w-full {{ customClass() }}\"\n    >\n      <ng-content></ng-content>\n    </div>\n  `,\n})\nexport class ExhumaBentoGridComponent {\n  readonly customClass = input<string>('');\n}\n"
-      }
-    ],
-    "solid": [
-      {
-        "filename": "BentoGrid.tsx",
-        "language": "tsx",
-        "description": "SolidJS Native Bento Grid component.",
-        "code": "import { Component, JSX, splitProps } from 'solid-js';\n\nexport interface BentoGridProps extends JSX.HTMLAttributes<HTMLDivElement> {\n  [key: string]: unknown;\n}\n\nexport const BentoGrid: Component<BentoGridProps> = (props) => {\n  const [local, others] = splitProps(props, ['class', 'children']);\n  return (\n    <div\n      class={`grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[22rem] max-w-7xl mx-auto w-full ${local.class ?? ''}`}\n      {...others}\n    >\n      {local.children}\n    </div>\n  );\n};\n"
-      }
-    ],
-    "astro": [
-      {
-        "filename": "BentoGrid.astro",
-        "language": "astro",
-        "description": "Pure Native Astro Bento Grid component.",
-        "code": "---\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst { class: className = '', ...props } = Astro.props;\n---\n\n<div\n  class={`grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[22rem] max-w-7xl mx-auto w-full ${className}`}\n  {...props}\n>\n  <slot />\n</div>\n"
-      }
-    ],
-    "blade": [
-      {
-        "filename": "bento-grid.blade.php",
-        "language": "php",
-        "description": "Laravel Blade component for Bento Grid.",
-        "code": "@props([])\n\n<div\n    {{ $attributes->merge([\n        'class' => 'grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[22rem] max-w-7xl mx-auto w-full block',\n    ]) }}\n>\n    {{ $slot }}\n</div>\n"
-      }
-    ],
-    "vanilla": [
-      {
-        "filename": "bento-grid.vanilla.js",
-        "language": "javascript",
-        "description": "Autonomous Vanilla JS Bento Grid initialization module.",
-        "code": "export function initBentoGrid(selector = '[data-exhuma-bento-grid]', options = {}) {\n  const elements = document.querySelectorAll(selector);\n  elements.forEach((container) => {\n    const topStart = parseFloat(container.getAttribute('data-top-start') || options.topStart || 20);\n    const topIncrement = parseFloat(container.getAttribute('data-top-increment') || options.topIncrement || 28);\n    const cardGap = parseFloat(container.getAttribute('data-card-gap') || options.cardGap || 20);\n\n    const cards = Array.from(container.children);\n    cards.forEach((card, i) => {\n      if (card instanceof HTMLElement) {\n        card.style.position = 'sticky';\n        card.style.top = `${topStart + i * topIncrement}px`;\n        card.style.marginBottom = `${cardGap}px`;\n      }\n    });\n  });\n  return Array.from(elements);\n}\n"
-      }
-    ],
-    "wordpress": [
-      {
-        "filename": "block.json",
-        "language": "json",
-        "description": "WordPress Block API v3 definition for Bento Grid.",
-        "code": "{\n  \"$schema\": \"https://schemas.wp.org/trunk/block.json\",\n  \"apiVersion\": 3,\n  \"name\": \"exhuma/bento-grid\",\n  \"version\": \"1.0.0\",\n  \"title\": \"Exhuma Bento Grid\",\n  \"category\": \"design\",\n  \"icon\": \"art\",\n  \"description\": \"Fluid responsive layout engine with dense auto-flow and asymmetric spans.\",\n  \"attributes\": {\n    \"topStart\": {\n      \"type\": \"number\",\n      \"default\": 20\n    },\n    \"topIncrement\": {\n      \"type\": \"number\",\n      \"default\": 28\n    },\n    \"cardGap\": {\n      \"type\": \"number\",\n      \"default\": 20\n    },\n    \"scaleThreshold\": {\n      \"type\": \"number\",\n      \"default\": 150\n    },\n    \"minScale\": {\n      \"type\": \"number\",\n      \"default\": 0.9\n    },\n    \"reverseScale\": {\n      \"type\": \"boolean\",\n      \"default\": true\n    }\n  },\n  \"editorScript\": \"file:./index.js\",\n  \"viewScript\": \"exhuma-kinetic\"\n}"
-      }
-    ],
-    "webcomponent": [
-      {
-        "filename": "exhuma-bento-grid.js",
-        "language": "javascript",
-        "description": "Universal Web Component wrapper for <exhuma-bento-grid>.",
-        "code": "class ExhumaBentoGridElement extends HTMLElement {\n  connectedCallback() {\n    this.classList.add('exhuma-bento-grid');\n    this.style.display = 'block';\n\n    const topStart = parseFloat(this.getAttribute('top-start') || '20');\n    const topIncrement = parseFloat(this.getAttribute('top-increment') || '28');\n    const cardGap = parseFloat(this.getAttribute('card-gap') || '20');\n\n    const cards = Array.from(this.children);\n    cards.forEach((card, i) => {\n      if (card instanceof HTMLElement) {\n        card.style.position = 'sticky';\n        card.style.top = `${topStart + i * topIncrement}px`;\n        card.style.marginBottom = `${cardGap}px`;\n      }\n    });\n  }\n}\n\nif (!customElements.get('exhuma-bento-grid')) {\n  customElements.define('exhuma-bento-grid', ExhumaBentoGridElement);\n}\n"
-      }
-    ],
-    "react-native": [
-      {
-        "filename": "BentoGrid.tsx",
-        "language": "tsx",
-        "description": "React Native Bento Grid native component.",
-        "code": "import React from 'react';\nimport { View, StyleSheet, type ViewProps } from 'react-native';\n\nexport interface BentoGridProps extends ViewProps {\n  topStart?: number;\n  topIncrement?: number;\n  cardGap?: number;\n  scaleThreshold?: number;\n  minScale?: number;\n  reverseScale?: boolean;\n  children?: React.ReactNode;\n}\n\nexport function BentoGrid({\n  topStart = 20,\n  topIncrement = 28,\n  cardGap = 20,\n  style,\n  children,\n  ...props\n}: BentoGridProps) {\n  return (\n    <View style={[styles.container, style]} {...props}>\n      {React.Children.map(children, (child, index) => (\n        <View\n          key={index}\n          style={{\n            marginTop: index === 0 ? topStart : topIncrement,\n            marginBottom: cardGap,\n            zIndex: index + 1,\n          }}\n        >\n          {child}\n        </View>\n      ))}\n    </View>\n  );\n}\n\nconst styles = StyleSheet.create({\n  container: {\n    width: '100%',\n  },\n});\n"
-      }
-    ],
-    "flutter": [
-      {
-        "filename": "bento_grid.dart",
-        "language": "dart",
-        "description": "Flutter Bento Grid widget wrapping package:exhuma.",
-        "code": "import 'package:flutter/material.dart';\n\nclass ExhumaBentoGrid extends StatelessWidget {\n  final List<Widget> children;\n  final double topStart;\n  final double topIncrement;\n  final double cardGap;\n  final double scaleThreshold;\n  final double minScale;\n  final bool reverseScale;\n\n  const ExhumaBentoGrid({\n    super.key,\n    required this.children,\n    this.topStart = 20.0,\n    this.topIncrement = 28.0,\n    this.cardGap = 20.0,\n    this.scaleThreshold = 150.0,\n    this.minScale = 0.9,\n    this.reverseScale = true,\n  });\n\n  @override\n  Widget build(BuildContext context) {\n    return Column(\n      children: children.asMap().entries.map((entry) {\n        final index = entry.key;\n        final widget = entry.value;\n        return Container(\n          margin: EdgeInsets.only(\n            top: index == 0 ? topStart : topIncrement,\n            bottom: cardGap,\n          ),\n          child: widget,\n        );\n      }).toList(),\n    );\n  }\n}\n"
-      }
-    ]
-  }
+	"name": "Bento Grid",
+	"slug": "bento-grid",
+	"category": "layouts",
+	"description": "Fluid responsive layout engine with dense auto-flow, asymmetric card spans, and subtle kinetic hover glow.",
+	"version": "1.0.0",
+	"props": [
+		{
+			"name": "cols",
+			"label": "Columns",
+			"type": "number",
+			"defaultValue": 3,
+			"min": 1,
+			"max": 6,
+			"step": 1,
+			"description": "Maximum column count for desktop screens."
+		},
+		{
+			"name": "gap",
+			"label": "Grid Gap",
+			"type": "string",
+			"defaultValue": "1.5rem",
+			"description": "Spacing between bento tiles."
+		}
+	],
+	"dependencies": {
+		"react": ["@exhuma/core"],
+		"nextjs": ["@exhuma/core"],
+		"vue": ["clsx"],
+		"svelte": ["clsx"],
+		"solid": ["clsx"],
+		"angular": [],
+		"astro": [],
+		"blade": [],
+		"vanilla": [],
+		"wordpress": [],
+		"webcomponent": [],
+		"react-native": [],
+		"flutter": []
+	},
+	"flavors": {
+		"react": [
+			{
+				"filename": "BentoGrid.tsx",
+				"language": "tsx",
+				"description": "Bento Grid — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
+				"code": "import * as React from 'react';\nimport * as BentoGridPrimitive from '@exhuma/core';\nimport { clsx } from 'clsx';\n\nexport interface BentoGridProps extends React.ComponentPropsWithoutRef<typeof BentoGridPrimitive.BentoGrid> {\n  className?: string;\n}\n\nexport const BentoGrid = React.forwardRef<HTMLDivElement, BentoGridProps>(\n  ({ className, children, ...props }, ref) => (\n    <BentoGridPrimitive.BentoGrid\n      ref={ref}\n      className={clsx(\n        'grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[22rem] max-w-7xl mx-auto w-full',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </BentoGridPrimitive.BentoGrid>\n  )\n);\nBentoGrid.displayName = 'BentoGrid';\n"
+			}
+		],
+		"nextjs": [
+			{
+				"filename": "BentoGrid.tsx",
+				"language": "tsx",
+				"description": "Bento Grid — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
+				"code": "'use client';\n\nimport * as React from 'react';\nimport * as BentoGridPrimitive from '@exhuma/core';\nimport { clsx } from 'clsx';\n\nexport interface BentoGridProps extends React.ComponentPropsWithoutRef<typeof BentoGridPrimitive.BentoGrid> {\n  className?: string;\n}\n\nexport const BentoGrid = React.forwardRef<HTMLDivElement, BentoGridProps>(\n  ({ className, children, ...props }, ref) => (\n    <BentoGridPrimitive.BentoGrid\n      ref={ref}\n      className={clsx(\n        'grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[22rem] max-w-7xl mx-auto w-full',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </BentoGridPrimitive.BentoGrid>\n  )\n);\nBentoGrid.displayName = 'BentoGrid';\n"
+			}
+		],
+		"vue": [
+			{
+				"filename": "BentoGrid.vue",
+				"language": "vue",
+				"description": "Vue 3 Native Bento Grid component.",
+				"code": "<script setup lang=\"ts\">\nimport { clsx } from 'clsx';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst props = withDefaults(defineProps<Props>(), {\n  class: '',\n});\n</script>\n\n<template>\n  <div\n    :class=\"clsx('grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[22rem] max-w-7xl mx-auto w-full', props.class)\"\n    v-bind=\"$attrs\"\n  >\n    <slot />\n  </div>\n</template>\n"
+			}
+		],
+		"svelte": [
+			{
+				"filename": "BentoGrid.svelte",
+				"language": "svelte",
+				"description": "Svelte 5 Native Bento Grid component using runes.",
+				"code": "<script lang=\"ts\">\n  import { clsx } from 'clsx';\n\n  let {\n    class: className = '',\n    children,\n    ...restProps\n  }: {\n    class?: string;\n    children?: import('svelte').Snippet;\n    [key: string]: unknown;\n  } = $props();\n</script>\n\n<div\n  class={clsx('grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[22rem] max-w-7xl mx-auto w-full', className)}\n  {...restProps}\n>\n  {@render children?.()}\n</div>\n"
+			}
+		],
+		"angular": [
+			{
+				"filename": "bento-grid.component.ts",
+				"language": "typescript",
+				"description": "Angular 18+ Standalone Bento Grid component.",
+				"code": "import { Component, input } from '@angular/core';\n\n@Component({\n  selector: 'exhuma-bento-grid',\n  standalone: true,\n  template: `\n    <div\n      class=\"grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[22rem] max-w-7xl mx-auto w-full {{ customClass() }}\"\n    >\n      <ng-content></ng-content>\n    </div>\n  `,\n})\nexport class ExhumaBentoGridComponent {\n  readonly customClass = input<string>('');\n}\n"
+			}
+		],
+		"solid": [
+			{
+				"filename": "BentoGrid.tsx",
+				"language": "tsx",
+				"description": "SolidJS Native Bento Grid component.",
+				"code": "import { Component, JSX, splitProps } from 'solid-js';\n\nexport interface BentoGridProps extends JSX.HTMLAttributes<HTMLDivElement> {\n  [key: string]: unknown;\n}\n\nexport const BentoGrid: Component<BentoGridProps> = (props) => {\n  const [local, others] = splitProps(props, ['class', 'children']);\n  return (\n    <div\n      class={`grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[22rem] max-w-7xl mx-auto w-full ${local.class ?? ''}`}\n      {...others}\n    >\n      {local.children}\n    </div>\n  );\n};\n"
+			}
+		],
+		"astro": [
+			{
+				"filename": "BentoGrid.astro",
+				"language": "astro",
+				"description": "Pure Native Astro Bento Grid component.",
+				"code": "---\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst { class: className = '', ...props } = Astro.props;\n---\n\n<div\n  class={`grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[22rem] max-w-7xl mx-auto w-full ${className}`}\n  {...props}\n>\n  <slot />\n</div>\n"
+			}
+		],
+		"blade": [
+			{
+				"filename": "bento-grid.blade.php",
+				"language": "php",
+				"description": "Laravel Blade component for Bento Grid.",
+				"code": "@props([])\n\n<div\n    {{ $attributes->merge([\n        'class' => 'grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[22rem] max-w-7xl mx-auto w-full block',\n    ]) }}\n>\n    {{ $slot }}\n</div>\n"
+			}
+		],
+		"vanilla": [
+			{
+				"filename": "bento-grid.vanilla.js",
+				"language": "javascript",
+				"description": "Autonomous Vanilla JS Bento Grid initialization module.",
+				"code": "export function initBentoGrid(selector = '[data-exhuma-bento-grid]', options = {}) {\n  const elements = document.querySelectorAll(selector);\n  elements.forEach((container) => {\n    const topStart = parseFloat(container.getAttribute('data-top-start') || options.topStart || 20);\n    const topIncrement = parseFloat(container.getAttribute('data-top-increment') || options.topIncrement || 28);\n    const cardGap = parseFloat(container.getAttribute('data-card-gap') || options.cardGap || 20);\n\n    const cards = Array.from(container.children);\n    cards.forEach((card, i) => {\n      if (card instanceof HTMLElement) {\n        card.style.position = 'sticky';\n        card.style.top = `${topStart + i * topIncrement}px`;\n        card.style.marginBottom = `${cardGap}px`;\n      }\n    });\n  });\n  return Array.from(elements);\n}\n"
+			}
+		],
+		"wordpress": [
+			{
+				"filename": "block.json",
+				"language": "json",
+				"description": "WordPress Block API v3 definition for Bento Grid.",
+				"code": "{\n  \"$schema\": \"https://schemas.wp.org/trunk/block.json\",\n  \"apiVersion\": 3,\n  \"name\": \"exhuma/bento-grid\",\n  \"version\": \"1.0.0\",\n  \"title\": \"Exhuma Bento Grid\",\n  \"category\": \"design\",\n  \"icon\": \"art\",\n  \"description\": \"Fluid responsive layout engine with dense auto-flow and asymmetric spans.\",\n  \"attributes\": {\n    \"topStart\": {\n      \"type\": \"number\",\n      \"default\": 20\n    },\n    \"topIncrement\": {\n      \"type\": \"number\",\n      \"default\": 28\n    },\n    \"cardGap\": {\n      \"type\": \"number\",\n      \"default\": 20\n    },\n    \"scaleThreshold\": {\n      \"type\": \"number\",\n      \"default\": 150\n    },\n    \"minScale\": {\n      \"type\": \"number\",\n      \"default\": 0.9\n    },\n    \"reverseScale\": {\n      \"type\": \"boolean\",\n      \"default\": true\n    }\n  },\n  \"editorScript\": \"file:./index.js\",\n  \"viewScript\": \"exhuma-kinetic\"\n}"
+			}
+		],
+		"webcomponent": [
+			{
+				"filename": "exhuma-bento-grid.js",
+				"language": "javascript",
+				"description": "Universal Web Component wrapper for <exhuma-bento-grid>.",
+				"code": "class ExhumaBentoGridElement extends HTMLElement {\n  connectedCallback() {\n    this.classList.add('exhuma-bento-grid');\n    this.style.display = 'block';\n\n    const topStart = parseFloat(this.getAttribute('top-start') || '20');\n    const topIncrement = parseFloat(this.getAttribute('top-increment') || '28');\n    const cardGap = parseFloat(this.getAttribute('card-gap') || '20');\n\n    const cards = Array.from(this.children);\n    cards.forEach((card, i) => {\n      if (card instanceof HTMLElement) {\n        card.style.position = 'sticky';\n        card.style.top = `${topStart + i * topIncrement}px`;\n        card.style.marginBottom = `${cardGap}px`;\n      }\n    });\n  }\n}\n\nif (!customElements.get('exhuma-bento-grid')) {\n  customElements.define('exhuma-bento-grid', ExhumaBentoGridElement);\n}\n"
+			}
+		],
+		"react-native": [
+			{
+				"filename": "BentoGrid.tsx",
+				"language": "tsx",
+				"description": "React Native Bento Grid native component.",
+				"code": "import React from 'react';\nimport { View, StyleSheet, type ViewProps } from 'react-native';\n\nexport interface BentoGridProps extends ViewProps {\n  topStart?: number;\n  topIncrement?: number;\n  cardGap?: number;\n  scaleThreshold?: number;\n  minScale?: number;\n  reverseScale?: boolean;\n  children?: React.ReactNode;\n}\n\nexport function BentoGrid({\n  topStart = 20,\n  topIncrement = 28,\n  cardGap = 20,\n  style,\n  children,\n  ...props\n}: BentoGridProps) {\n  return (\n    <View style={[styles.container, style]} {...props}>\n      {React.Children.map(children, (child, index) => (\n        <View\n          key={index}\n          style={{\n            marginTop: index === 0 ? topStart : topIncrement,\n            marginBottom: cardGap,\n            zIndex: index + 1,\n          }}\n        >\n          {child}\n        </View>\n      ))}\n    </View>\n  );\n}\n\nconst styles = StyleSheet.create({\n  container: {\n    width: '100%',\n  },\n});\n"
+			}
+		],
+		"flutter": [
+			{
+				"filename": "bento_grid.dart",
+				"language": "dart",
+				"description": "Flutter Bento Grid widget wrapping package:exhuma.",
+				"code": "import 'package:flutter/material.dart';\n\nclass ExhumaBentoGrid extends StatelessWidget {\n  final List<Widget> children;\n  final double topStart;\n  final double topIncrement;\n  final double cardGap;\n  final double scaleThreshold;\n  final double minScale;\n  final bool reverseScale;\n\n  const ExhumaBentoGrid({\n    super.key,\n    required this.children,\n    this.topStart = 20.0,\n    this.topIncrement = 28.0,\n    this.cardGap = 20.0,\n    this.scaleThreshold = 150.0,\n    this.minScale = 0.9,\n    this.reverseScale = true,\n  });\n\n  @override\n  Widget build(BuildContext context) {\n    return Column(\n      children: children.asMap().entries.map((entry) {\n        final index = entry.key;\n        final widget = entry.value;\n        return Container(\n          margin: EdgeInsets.only(\n            top: index == 0 ? topStart : topIncrement,\n            bottom: cardGap,\n          ),\n          child: widget,\n        );\n      }).toList(),\n    );\n  }\n}\n"
+			}
+		]
+	}
 }

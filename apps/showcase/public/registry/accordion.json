@@ -1,167 +1,157 @@
 {
-  "name": "Accordion",
-  "slug": "accordion",
-  "category": "primitives",
-  "description": "Zero-jank dynamic height disclosure using CSS Grid 0fr to 1fr interpolation with morphing plus/minus icon and animated gradient border glow.",
-  "version": "1.0.0",
-  "props": [
-    {
-      "name": "mode",
-      "label": "Expansion Mode",
-      "type": "select",
-      "defaultValue": "single",
-      "options": [
-        {
-          "label": "Single Expand",
-          "value": "single"
-        },
-        {
-          "label": "Multiple Expand",
-          "value": "multiple"
-        }
-      ],
-      "description": "Single auto-collapses other items; multiple allows independent toggles."
-    },
-    {
-      "name": "duration",
-      "label": "Transition Duration (ms)",
-      "type": "number",
-      "defaultValue": 300,
-      "min": 150,
-      "max": 600,
-      "step": 50,
-      "description": "CSS Grid height transition speed."
-    }
-  ],
-  "dependencies": {
-    "react": [
-      "@exhuma/core"
-    ],
-    "nextjs": [
-      "@exhuma/core"
-    ],
-    "vue": [
-      "clsx"
-    ],
-    "svelte": [
-      "clsx"
-    ],
-    "solid": [
-      "clsx"
-    ],
-    "angular": [],
-    "astro": [],
-    "blade": [],
-    "vanilla": [],
-    "wordpress": [],
-    "webcomponent": [],
-    "react-native": [],
-    "flutter": []
-  },
-  "flavors": {
-    "react": [
-      {
-        "filename": "Accordion.tsx",
-        "language": "tsx",
-        "description": "Accordion — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
-        "code": "import * as React from 'react';\nimport * as AccordionPrimitive from '@exhuma/core';\nimport { clsx } from 'clsx';\n\nexport interface AccordionProps extends React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Accordion> {\n  className?: string;\n}\n\nexport const Accordion = React.forwardRef<HTMLDivElement, AccordionProps>(\n  ({ className, children, ...props }, ref) => (\n    <AccordionPrimitive.Accordion\n      ref={ref}\n      className={clsx(\n        'w-full space-y-3',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </AccordionPrimitive.Accordion>\n  )\n);\nAccordion.displayName = 'Accordion';\n"
-      }
-    ],
-    "nextjs": [
-      {
-        "filename": "Accordion.tsx",
-        "language": "tsx",
-        "description": "Accordion — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
-        "code": "'use client';\n\nimport * as React from 'react';\nimport * as AccordionPrimitive from '@exhuma/core';\nimport { clsx } from 'clsx';\n\nexport interface AccordionProps extends React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Accordion> {\n  className?: string;\n}\n\nexport const Accordion = React.forwardRef<HTMLDivElement, AccordionProps>(\n  ({ className, children, ...props }, ref) => (\n    <AccordionPrimitive.Accordion\n      ref={ref}\n      className={clsx(\n        'w-full space-y-3',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </AccordionPrimitive.Accordion>\n  )\n);\nAccordion.displayName = 'Accordion';\n"
-      }
-    ],
-    "vue": [
-      {
-        "filename": "Accordion.vue",
-        "language": "vue",
-        "description": "Vue 3 Native Accordion component.",
-        "code": "<script setup lang=\"ts\">\nimport { clsx } from 'clsx';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst props = withDefaults(defineProps<Props>(), {\n  class: '',\n});\n</script>\n\n<template>\n  <div\n    :class=\"clsx('w-full space-y-3', props.class)\"\n    v-bind=\"$attrs\"\n  >\n    <slot />\n  </div>\n</template>\n"
-      }
-    ],
-    "svelte": [
-      {
-        "filename": "Accordion.svelte",
-        "language": "svelte",
-        "description": "Svelte 5 Native Accordion component using runes.",
-        "code": "<script lang=\"ts\">\n  import { clsx } from 'clsx';\n\n  let {\n    class: className = '',\n    children,\n    ...restProps\n  }: {\n    class?: string;\n    children?: import('svelte').Snippet;\n    [key: string]: unknown;\n  } = $props();\n</script>\n\n<div\n  class={clsx('w-full space-y-3', className)}\n  {...restProps}\n>\n  {@render children?.()}\n</div>\n"
-      }
-    ],
-    "angular": [
-      {
-        "filename": "accordion.component.ts",
-        "language": "typescript",
-        "description": "Angular 18+ Standalone Accordion component.",
-        "code": "import { Component, input } from '@angular/core';\n\n@Component({\n  selector: 'exhuma-accordion',\n  standalone: true,\n  template: `\n    <div\n      class=\"w-full space-y-3 {{ customClass() }}\"\n    >\n      <ng-content></ng-content>\n    </div>\n  `,\n})\nexport class ExhumaAccordionComponent {\n  readonly customClass = input<string>('');\n}\n"
-      }
-    ],
-    "solid": [
-      {
-        "filename": "Accordion.tsx",
-        "language": "tsx",
-        "description": "SolidJS Native Accordion component.",
-        "code": "import { Component, JSX, splitProps } from 'solid-js';\n\nexport interface AccordionProps extends JSX.HTMLAttributes<HTMLDivElement> {\n  [key: string]: unknown;\n}\n\nexport const Accordion: Component<AccordionProps> = (props) => {\n  const [local, others] = splitProps(props, ['class', 'children']);\n  return (\n    <div\n      class={`w-full space-y-3 ${local.class ?? ''}`}\n      {...others}\n    >\n      {local.children}\n    </div>\n  );\n};\n"
-      }
-    ],
-    "astro": [
-      {
-        "filename": "Accordion.astro",
-        "language": "astro",
-        "description": "Pure Native Astro Accordion component.",
-        "code": "---\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst { class: className = '', ...props } = Astro.props;\n---\n\n<div\n  class={`w-full space-y-3 ${className}`}\n  {...props}\n>\n  <slot />\n</div>\n"
-      }
-    ],
-    "blade": [
-      {
-        "filename": "accordion.blade.php",
-        "language": "php",
-        "description": "Laravel Blade component for Accordion.",
-        "code": "@props([])\n\n<div\n    {{ $attributes->merge([\n        'class' => 'w-full space-y-3 block',\n    ]) }}\n>\n    {{ $slot }}\n</div>\n"
-      }
-    ],
-    "vanilla": [
-      {
-        "filename": "accordion.vanilla.js",
-        "language": "javascript",
-        "description": "Autonomous Vanilla JS Accordion initialization module.",
-        "code": "export function initAccordion(selector = '[data-exhuma-accordion]', options = {}) {\n  const elements = document.querySelectorAll(selector);\n  elements.forEach((container) => {\n    const topStart = parseFloat(container.getAttribute('data-top-start') || options.topStart || 20);\n    const topIncrement = parseFloat(container.getAttribute('data-top-increment') || options.topIncrement || 28);\n    const cardGap = parseFloat(container.getAttribute('data-card-gap') || options.cardGap || 20);\n\n    const cards = Array.from(container.children);\n    cards.forEach((card, i) => {\n      if (card instanceof HTMLElement) {\n        card.style.position = 'sticky';\n        card.style.top = `${topStart + i * topIncrement}px`;\n        card.style.marginBottom = `${cardGap}px`;\n      }\n    });\n  });\n  return Array.from(elements);\n}\n"
-      }
-    ],
-    "wordpress": [
-      {
-        "filename": "block.json",
-        "language": "json",
-        "description": "WordPress Block API v3 definition for Accordion.",
-        "code": "{\n  \"$schema\": \"https://schemas.wp.org/trunk/block.json\",\n  \"apiVersion\": 3,\n  \"name\": \"exhuma/accordion\",\n  \"version\": \"1.0.0\",\n  \"title\": \"Exhuma Accordion\",\n  \"category\": \"design\",\n  \"icon\": \"art\",\n  \"description\": \"Zero-jank dynamic height disclosure using CSS Grid 0fr to 1fr interpolation.\",\n  \"attributes\": {\n    \"topStart\": {\n      \"type\": \"number\",\n      \"default\": 20\n    },\n    \"topIncrement\": {\n      \"type\": \"number\",\n      \"default\": 28\n    },\n    \"cardGap\": {\n      \"type\": \"number\",\n      \"default\": 20\n    },\n    \"scaleThreshold\": {\n      \"type\": \"number\",\n      \"default\": 150\n    },\n    \"minScale\": {\n      \"type\": \"number\",\n      \"default\": 0.9\n    },\n    \"reverseScale\": {\n      \"type\": \"boolean\",\n      \"default\": true\n    }\n  },\n  \"editorScript\": \"file:./index.js\",\n  \"viewScript\": \"exhuma-kinetic\"\n}"
-      }
-    ],
-    "webcomponent": [
-      {
-        "filename": "exhuma-accordion.js",
-        "language": "javascript",
-        "description": "Universal Web Component wrapper for <exhuma-accordion>.",
-        "code": "class ExhumaAccordionElement extends HTMLElement {\n  connectedCallback() {\n    this.classList.add('exhuma-accordion');\n    this.style.display = 'block';\n\n    const topStart = parseFloat(this.getAttribute('top-start') || '20');\n    const topIncrement = parseFloat(this.getAttribute('top-increment') || '28');\n    const cardGap = parseFloat(this.getAttribute('card-gap') || '20');\n\n    const cards = Array.from(this.children);\n    cards.forEach((card, i) => {\n      if (card instanceof HTMLElement) {\n        card.style.position = 'sticky';\n        card.style.top = `${topStart + i * topIncrement}px`;\n        card.style.marginBottom = `${cardGap}px`;\n      }\n    });\n  }\n}\n\nif (!customElements.get('exhuma-accordion')) {\n  customElements.define('exhuma-accordion', ExhumaAccordionElement);\n}\n"
-      }
-    ],
-    "react-native": [
-      {
-        "filename": "Accordion.tsx",
-        "language": "tsx",
-        "description": "React Native Accordion native component.",
-        "code": "import React from 'react';\nimport { View, StyleSheet, type ViewProps } from 'react-native';\n\nexport interface AccordionProps extends ViewProps {\n  topStart?: number;\n  topIncrement?: number;\n  cardGap?: number;\n  scaleThreshold?: number;\n  minScale?: number;\n  reverseScale?: boolean;\n  children?: React.ReactNode;\n}\n\nexport function Accordion({\n  topStart = 20,\n  topIncrement = 28,\n  cardGap = 20,\n  style,\n  children,\n  ...props\n}: AccordionProps) {\n  return (\n    <View style={[styles.container, style]} {...props}>\n      {React.Children.map(children, (child, index) => (\n        <View\n          key={index}\n          style={{\n            marginTop: index === 0 ? topStart : topIncrement,\n            marginBottom: cardGap,\n            zIndex: index + 1,\n          }}\n        >\n          {child}\n        </View>\n      ))}\n    </View>\n  );\n}\n\nconst styles = StyleSheet.create({\n  container: {\n    width: '100%',\n  },\n});\n"
-      }
-    ],
-    "flutter": [
-      {
-        "filename": "accordion.dart",
-        "language": "dart",
-        "description": "Flutter Accordion widget wrapping package:exhuma.",
-        "code": "import 'package:flutter/material.dart';\n\nclass ExhumaAccordion extends StatelessWidget {\n  final List<Widget> children;\n  final double topStart;\n  final double topIncrement;\n  final double cardGap;\n  final double scaleThreshold;\n  final double minScale;\n  final bool reverseScale;\n\n  const ExhumaAccordion({\n    super.key,\n    required this.children,\n    this.topStart = 20.0,\n    this.topIncrement = 28.0,\n    this.cardGap = 20.0,\n    this.scaleThreshold = 150.0,\n    this.minScale = 0.9,\n    this.reverseScale = true,\n  });\n\n  @override\n  Widget build(BuildContext context) {\n    return Column(\n      children: children.asMap().entries.map((entry) {\n        final index = entry.key;\n        final widget = entry.value;\n        return Container(\n          margin: EdgeInsets.only(\n            top: index == 0 ? topStart : topIncrement,\n            bottom: cardGap,\n          ),\n          child: widget,\n        );\n      }).toList(),\n    );\n  }\n}\n"
-      }
-    ]
-  }
+	"name": "Accordion",
+	"slug": "accordion",
+	"category": "primitives",
+	"description": "Zero-jank dynamic height disclosure using CSS Grid 0fr to 1fr interpolation with morphing plus/minus icon and animated gradient border glow.",
+	"version": "1.0.0",
+	"props": [
+		{
+			"name": "mode",
+			"label": "Expansion Mode",
+			"type": "select",
+			"defaultValue": "single",
+			"options": [
+				{
+					"label": "Single Expand",
+					"value": "single"
+				},
+				{
+					"label": "Multiple Expand",
+					"value": "multiple"
+				}
+			],
+			"description": "Single auto-collapses other items; multiple allows independent toggles."
+		},
+		{
+			"name": "duration",
+			"label": "Transition Duration (ms)",
+			"type": "number",
+			"defaultValue": 300,
+			"min": 150,
+			"max": 600,
+			"step": 50,
+			"description": "CSS Grid height transition speed."
+		}
+	],
+	"dependencies": {
+		"react": ["@exhuma/core"],
+		"nextjs": ["@exhuma/core"],
+		"vue": ["clsx"],
+		"svelte": ["clsx"],
+		"solid": ["clsx"],
+		"angular": [],
+		"astro": [],
+		"blade": [],
+		"vanilla": [],
+		"wordpress": [],
+		"webcomponent": [],
+		"react-native": [],
+		"flutter": []
+	},
+	"flavors": {
+		"react": [
+			{
+				"filename": "Accordion.tsx",
+				"language": "tsx",
+				"description": "Accordion — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
+				"code": "import * as React from 'react';\nimport * as AccordionPrimitive from '@exhuma/core';\nimport { clsx } from 'clsx';\n\nexport interface AccordionProps extends React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Accordion> {\n  className?: string;\n}\n\nexport const Accordion = React.forwardRef<HTMLDivElement, AccordionProps>(\n  ({ className, children, ...props }, ref) => (\n    <AccordionPrimitive.Accordion\n      ref={ref}\n      className={clsx(\n        'w-full space-y-3',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </AccordionPrimitive.Accordion>\n  )\n);\nAccordion.displayName = 'Accordion';\n"
+			}
+		],
+		"nextjs": [
+			{
+				"filename": "Accordion.tsx",
+				"language": "tsx",
+				"description": "Accordion — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
+				"code": "'use client';\n\nimport * as React from 'react';\nimport * as AccordionPrimitive from '@exhuma/core';\nimport { clsx } from 'clsx';\n\nexport interface AccordionProps extends React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Accordion> {\n  className?: string;\n}\n\nexport const Accordion = React.forwardRef<HTMLDivElement, AccordionProps>(\n  ({ className, children, ...props }, ref) => (\n    <AccordionPrimitive.Accordion\n      ref={ref}\n      className={clsx(\n        'w-full space-y-3',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </AccordionPrimitive.Accordion>\n  )\n);\nAccordion.displayName = 'Accordion';\n"
+			}
+		],
+		"vue": [
+			{
+				"filename": "Accordion.vue",
+				"language": "vue",
+				"description": "Vue 3 Native Accordion component.",
+				"code": "<script setup lang=\"ts\">\nimport { clsx } from 'clsx';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst props = withDefaults(defineProps<Props>(), {\n  class: '',\n});\n</script>\n\n<template>\n  <div\n    :class=\"clsx('w-full space-y-3', props.class)\"\n    v-bind=\"$attrs\"\n  >\n    <slot />\n  </div>\n</template>\n"
+			}
+		],
+		"svelte": [
+			{
+				"filename": "Accordion.svelte",
+				"language": "svelte",
+				"description": "Svelte 5 Native Accordion component using runes.",
+				"code": "<script lang=\"ts\">\n  import { clsx } from 'clsx';\n\n  let {\n    class: className = '',\n    children,\n    ...restProps\n  }: {\n    class?: string;\n    children?: import('svelte').Snippet;\n    [key: string]: unknown;\n  } = $props();\n</script>\n\n<div\n  class={clsx('w-full space-y-3', className)}\n  {...restProps}\n>\n  {@render children?.()}\n</div>\n"
+			}
+		],
+		"angular": [
+			{
+				"filename": "accordion.component.ts",
+				"language": "typescript",
+				"description": "Angular 18+ Standalone Accordion component.",
+				"code": "import { Component, input } from '@angular/core';\n\n@Component({\n  selector: 'exhuma-accordion',\n  standalone: true,\n  template: `\n    <div\n      class=\"w-full space-y-3 {{ customClass() }}\"\n    >\n      <ng-content></ng-content>\n    </div>\n  `,\n})\nexport class ExhumaAccordionComponent {\n  readonly customClass = input<string>('');\n}\n"
+			}
+		],
+		"solid": [
+			{
+				"filename": "Accordion.tsx",
+				"language": "tsx",
+				"description": "SolidJS Native Accordion component.",
+				"code": "import { Component, JSX, splitProps } from 'solid-js';\n\nexport interface AccordionProps extends JSX.HTMLAttributes<HTMLDivElement> {\n  [key: string]: unknown;\n}\n\nexport const Accordion: Component<AccordionProps> = (props) => {\n  const [local, others] = splitProps(props, ['class', 'children']);\n  return (\n    <div\n      class={`w-full space-y-3 ${local.class ?? ''}`}\n      {...others}\n    >\n      {local.children}\n    </div>\n  );\n};\n"
+			}
+		],
+		"astro": [
+			{
+				"filename": "Accordion.astro",
+				"language": "astro",
+				"description": "Pure Native Astro Accordion component.",
+				"code": "---\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst { class: className = '', ...props } = Astro.props;\n---\n\n<div\n  class={`w-full space-y-3 ${className}`}\n  {...props}\n>\n  <slot />\n</div>\n"
+			}
+		],
+		"blade": [
+			{
+				"filename": "accordion.blade.php",
+				"language": "php",
+				"description": "Laravel Blade component for Accordion.",
+				"code": "@props([])\n\n<div\n    {{ $attributes->merge([\n        'class' => 'w-full space-y-3 block',\n    ]) }}\n>\n    {{ $slot }}\n</div>\n"
+			}
+		],
+		"vanilla": [
+			{
+				"filename": "accordion.vanilla.js",
+				"language": "javascript",
+				"description": "Autonomous Vanilla JS Accordion initialization module.",
+				"code": "export function initAccordion(selector = '[data-exhuma-accordion]', options = {}) {\n  const elements = document.querySelectorAll(selector);\n  elements.forEach((container) => {\n    const topStart = parseFloat(container.getAttribute('data-top-start') || options.topStart || 20);\n    const topIncrement = parseFloat(container.getAttribute('data-top-increment') || options.topIncrement || 28);\n    const cardGap = parseFloat(container.getAttribute('data-card-gap') || options.cardGap || 20);\n\n    const cards = Array.from(container.children);\n    cards.forEach((card, i) => {\n      if (card instanceof HTMLElement) {\n        card.style.position = 'sticky';\n        card.style.top = `${topStart + i * topIncrement}px`;\n        card.style.marginBottom = `${cardGap}px`;\n      }\n    });\n  });\n  return Array.from(elements);\n}\n"
+			}
+		],
+		"wordpress": [
+			{
+				"filename": "block.json",
+				"language": "json",
+				"description": "WordPress Block API v3 definition for Accordion.",
+				"code": "{\n  \"$schema\": \"https://schemas.wp.org/trunk/block.json\",\n  \"apiVersion\": 3,\n  \"name\": \"exhuma/accordion\",\n  \"version\": \"1.0.0\",\n  \"title\": \"Exhuma Accordion\",\n  \"category\": \"design\",\n  \"icon\": \"art\",\n  \"description\": \"Zero-jank dynamic height disclosure using CSS Grid 0fr to 1fr interpolation.\",\n  \"attributes\": {\n    \"topStart\": {\n      \"type\": \"number\",\n      \"default\": 20\n    },\n    \"topIncrement\": {\n      \"type\": \"number\",\n      \"default\": 28\n    },\n    \"cardGap\": {\n      \"type\": \"number\",\n      \"default\": 20\n    },\n    \"scaleThreshold\": {\n      \"type\": \"number\",\n      \"default\": 150\n    },\n    \"minScale\": {\n      \"type\": \"number\",\n      \"default\": 0.9\n    },\n    \"reverseScale\": {\n      \"type\": \"boolean\",\n      \"default\": true\n    }\n  },\n  \"editorScript\": \"file:./index.js\",\n  \"viewScript\": \"exhuma-kinetic\"\n}"
+			}
+		],
+		"webcomponent": [
+			{
+				"filename": "exhuma-accordion.js",
+				"language": "javascript",
+				"description": "Universal Web Component wrapper for <exhuma-accordion>.",
+				"code": "class ExhumaAccordionElement extends HTMLElement {\n  connectedCallback() {\n    this.classList.add('exhuma-accordion');\n    this.style.display = 'block';\n\n    const topStart = parseFloat(this.getAttribute('top-start') || '20');\n    const topIncrement = parseFloat(this.getAttribute('top-increment') || '28');\n    const cardGap = parseFloat(this.getAttribute('card-gap') || '20');\n\n    const cards = Array.from(this.children);\n    cards.forEach((card, i) => {\n      if (card instanceof HTMLElement) {\n        card.style.position = 'sticky';\n        card.style.top = `${topStart + i * topIncrement}px`;\n        card.style.marginBottom = `${cardGap}px`;\n      }\n    });\n  }\n}\n\nif (!customElements.get('exhuma-accordion')) {\n  customElements.define('exhuma-accordion', ExhumaAccordionElement);\n}\n"
+			}
+		],
+		"react-native": [
+			{
+				"filename": "Accordion.tsx",
+				"language": "tsx",
+				"description": "React Native Accordion native component.",
+				"code": "import React from 'react';\nimport { View, StyleSheet, type ViewProps } from 'react-native';\n\nexport interface AccordionProps extends ViewProps {\n  topStart?: number;\n  topIncrement?: number;\n  cardGap?: number;\n  scaleThreshold?: number;\n  minScale?: number;\n  reverseScale?: boolean;\n  children?: React.ReactNode;\n}\n\nexport function Accordion({\n  topStart = 20,\n  topIncrement = 28,\n  cardGap = 20,\n  style,\n  children,\n  ...props\n}: AccordionProps) {\n  return (\n    <View style={[styles.container, style]} {...props}>\n      {React.Children.map(children, (child, index) => (\n        <View\n          key={index}\n          style={{\n            marginTop: index === 0 ? topStart : topIncrement,\n            marginBottom: cardGap,\n            zIndex: index + 1,\n          }}\n        >\n          {child}\n        </View>\n      ))}\n    </View>\n  );\n}\n\nconst styles = StyleSheet.create({\n  container: {\n    width: '100%',\n  },\n});\n"
+			}
+		],
+		"flutter": [
+			{
+				"filename": "accordion.dart",
+				"language": "dart",
+				"description": "Flutter Accordion widget wrapping package:exhuma.",
+				"code": "import 'package:flutter/material.dart';\n\nclass ExhumaAccordion extends StatelessWidget {\n  final List<Widget> children;\n  final double topStart;\n  final double topIncrement;\n  final double cardGap;\n  final double scaleThreshold;\n  final double minScale;\n  final bool reverseScale;\n\n  const ExhumaAccordion({\n    super.key,\n    required this.children,\n    this.topStart = 20.0,\n    this.topIncrement = 28.0,\n    this.cardGap = 20.0,\n    this.scaleThreshold = 150.0,\n    this.minScale = 0.9,\n    this.reverseScale = true,\n  });\n\n  @override\n  Widget build(BuildContext context) {\n    return Column(\n      children: children.asMap().entries.map((entry) {\n        final index = entry.key;\n        final widget = entry.value;\n        return Container(\n          margin: EdgeInsets.only(\n            top: index == 0 ? topStart : topIncrement,\n            bottom: cardGap,\n          ),\n          child: widget,\n        );\n      }).toList(),\n    );\n  }\n}\n"
+			}
+		]
+	}
 }
