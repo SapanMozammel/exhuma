@@ -1,4 +1,4 @@
-import type { CSSProperties, ReactNode } from 'react';
+import type { CSSProperties, ReactNode, HTMLAttributes } from 'react';
 
 export interface HorizontalScrollerProps {
 	children: ReactNode;
@@ -25,26 +25,26 @@ export interface HorizontalScrollerProps {
 	style?: CSSProperties;
 }
 
-export interface StackingCardsProps {
+export interface StackingCardsProps extends HTMLAttributes<HTMLDivElement> {
 	children: ReactNode;
 	/**
 	 * Sticky start offset from top of viewport in px.
-	 * Default: 90
+	 * Default: 20
 	 */
 	topStart?: number;
 	/**
 	 * Additional top increment for each subsequent card in px.
-	 * Default: 24
+	 * Default: 28
 	 */
 	topIncrement?: number;
 	/**
-	 * Minimum scale for auto-generated values (e.g. 0.94 = 94% size).
-	 * Default: 0.94
+	 * Minimum scale for auto-generated values (e.g. 0.9 = 90% size).
+	 * Default: 0.9
 	 */
 	minScale?: number;
 	/**
 	 * Threshold in px from top to trigger progressive scaling.
-	 * Default: 120
+	 * Default: 150
 	 */
 	scaleThreshold?: number;
 	/**
@@ -56,6 +56,26 @@ export interface StackingCardsProps {
 	 * Default: true
 	 */
 	enabled?: boolean;
+	/**
+	 * Vertical gap between cards before they stack over one another (in px or CSS string).
+	 * Default: 20
+	 */
+	cardGap?: number | string;
+	/**
+	 * Alias for `cardGap`.
+	 * Default: 20
+	 */
+	gap?: number | string;
+	/**
+	 * Whether reverse scaling exit cascade mechanics are enabled.
+	 * Default: true
+	 */
+	reverseScale?: boolean;
+	/**
+	 * Alias for `reverseScale`.
+	 * Default: true
+	 */
+	enableReverseScale?: boolean;
 	/**
 	 * Additional CSS class for wrapper container
 	 */

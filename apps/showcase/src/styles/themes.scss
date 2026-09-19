@@ -98,6 +98,8 @@
 	   sticky header; `top-header-offset` adds the docs content's 1.5rem top padding. */
 	--spacing-header: var(--header-height);
 	--spacing-header-offset: calc(var(--header-height) + 1.5rem);
+	--spacing-header-gap: calc(var(--header-height) + 0.75rem);
+	--spacing-header-mobile-gap: calc(var(--header-height) + 3.75rem);
 
 	/* Exhuma Brand Colors */
 	--color-exhuma-50: #f4f4f5;

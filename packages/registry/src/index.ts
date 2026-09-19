@@ -24,6 +24,7 @@ import { expandableCardComponent } from './components/expandable-card';
 import { cursorTooltipComponent } from './components/cursor-tooltip';
 
 export * from './schema';
+export { generateComponentUsage } from './templates/usage-generator';
 
 export const COMPONENT_REGISTRY: Record<string, UniversalComponent> = {
 	'stacking-cards': stackingCardsComponent,

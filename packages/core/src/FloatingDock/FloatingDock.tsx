@@ -63,9 +63,7 @@ export const FloatingDock: React.FC<FloatingDockProps> & {
 		for (const el of itemsRef.current) {
 			const rect = el.getBoundingClientRect();
 			const itemCenter = rect.left + rect.width / 2;
-			const size = mouseX === -9999
-				? baseSize
-				: calculateDockItemSize(Math.abs(mouseX - itemCenter), baseSize, influenceRadius, maxMagnification);
+			const size = mouseX === -9999 ? baseSize : calculateDockItemSize(Math.abs(mouseX - itemCenter), baseSize, influenceRadius, maxMagnification);
 			el.style.width = `${size.toFixed(2)}px`;
 			el.style.height = `${size.toFixed(2)}px`;
 		}

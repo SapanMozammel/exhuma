@@ -1,154 +1,167 @@
 {
-	"name": "Horizontal Scroller",
-	"slug": "horizontal-scroller",
-	"category": "cards",
-	"description": "Dynamic canvas track that smoothly maps vertical page scroll to horizontal card translation via GPU-accelerated CSS custom properties.",
-	"version": "1.0.0",
-	"props": [
-		{
-			"name": "speed",
-			"label": "Scroll Speed Multiplier",
-			"type": "number",
-			"defaultValue": 0.85,
-			"min": 0.2,
-			"max": 2,
-			"step": 0.05,
-			"description": "Scroll speed multiplier mapping vertical page scroll to horizontal translation distance."
-		},
-		{
-			"name": "itemGap",
-			"label": "Item Gap (px)",
-			"type": "number",
-			"defaultValue": 20,
-			"min": 8,
-			"max": 48,
-			"step": 4,
-			"description": "Gap in pixels between horizontal track cards."
-		},
-		{
-			"name": "showFadeEdges",
-			"label": "Fade Edges",
-			"type": "boolean",
-			"defaultValue": true,
-			"description": "Show subtle gradient mask at horizontal boundaries."
-		}
-	],
-	"dependencies": {
-		"react": ["@exhuma/core"],
-		"nextjs": ["@exhuma/core"],
-		"vue": ["@exhuma/core"],
-		"svelte": ["@exhuma/core"],
-		"solid": ["@exhuma/core"],
-		"angular": ["@exhuma/core"],
-		"astro": ["@exhuma/core"],
-		"vanilla": ["@exhuma/core"],
-		"react-native": ["@exhuma/core"],
-		"flutter": ["exhuma"]
-	},
-	"flavors": {
-		"react": [
-			{
-				"filename": "HorizontalScroller.tsx",
-				"language": "tsx",
-				"description": "Horizontal Scroller — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
-				"code": "import * as React from 'react';\nimport * as HorizontalScrollerPrimitive from '@exhuma/core';\nimport { clsx } from 'clsx';\n\nexport interface HorizontalScrollerProps extends React.ComponentPropsWithoutRef<typeof HorizontalScrollerPrimitive.HorizontalScroller> {\n  className?: string;\n}\n\nexport const HorizontalScroller = React.forwardRef<HTMLDivElement, HorizontalScrollerProps>(\n  ({ className, children, ...props }, ref) => (\n    <HorizontalScrollerPrimitive.HorizontalScroller\n      ref={ref}\n      className={clsx(\n        'relative overflow-hidden w-full py-8',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </HorizontalScrollerPrimitive.HorizontalScroller>\n  )\n);\nHorizontalScroller.displayName = 'HorizontalScroller';\n"
-			}
-		],
-		"nextjs": [
-			{
-				"filename": "HorizontalScroller.tsx",
-				"language": "tsx",
-				"description": "Horizontal Scroller — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
-				"code": "'use client';\n\nimport * as React from 'react';\nimport * as HorizontalScrollerPrimitive from '@exhuma/core';\nimport { clsx } from 'clsx';\n\nexport interface HorizontalScrollerProps extends React.ComponentPropsWithoutRef<typeof HorizontalScrollerPrimitive.HorizontalScroller> {\n  className?: string;\n}\n\nexport const HorizontalScroller = React.forwardRef<HTMLDivElement, HorizontalScrollerProps>(\n  ({ className, children, ...props }, ref) => (\n    <HorizontalScrollerPrimitive.HorizontalScroller\n      ref={ref}\n      className={clsx(\n        'relative overflow-hidden w-full py-8',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </HorizontalScrollerPrimitive.HorizontalScroller>\n  )\n);\nHorizontalScroller.displayName = 'HorizontalScroller';\n"
-			}
-		],
-		"vue": [
-			{
-				"filename": "HorizontalScroller.vue",
-				"language": "vue",
-				"description": "Vue 3 Horizontal Scroller outer adapter wrapping @exhuma/core headless primitive.",
-				"code": "<script setup lang=\"ts\">\nimport { HorizontalScroller as HorizontalScrollerPrimitive } from '@exhuma/core';\nimport { clsx } from 'clsx';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst props = withDefaults(defineProps<Props>(), {\n  class: '',\n});\n</script>\n\n<template>\n  <HorizontalScrollerPrimitive\n    v-bind=\"props\"\n    :class=\"clsx('relative overflow-hidden w-full py-8', props.class)\"\n  >\n    <slot />\n  </HorizontalScrollerPrimitive>\n</template>\n"
-			}
-		],
-		"svelte": [
-			{
-				"filename": "HorizontalScroller.svelte",
-				"language": "svelte",
-				"description": "Svelte 5 Horizontal Scroller adapter using runes and @exhuma/core primitives.",
-				"code": "<script lang=\"ts\">\n  import { HorizontalScroller as HorizontalScrollerPrimitive } from '@exhuma/core';\n  import { clsx } from 'clsx';\n\n  let {\n    class: className = '',\n    children,\n    ...restProps\n  }: {\n    class?: string;\n    children?: import('svelte').Snippet;\n    [key: string]: unknown;\n  } = $props();\n</script>\n\n<HorizontalScrollerPrimitive\n  class={clsx('relative overflow-hidden w-full py-8', className)}\n  {...restProps}\n>\n  {@render children?.()}\n</HorizontalScrollerPrimitive>\n"
-			}
-		],
-		"angular": [
-			{
-				"filename": "horizontal-scroller.component.ts",
-				"language": "typescript",
-				"description": "Angular 18+ Standalone Horizontal Scroller component.",
-				"code": "import { Component, input } from '@angular/core';\nimport { CommonModule } from '@angular/common';\n\n@Component({\n  selector: 'exhuma-horizontal-scroller',\n  standalone: true,\n  imports: [CommonModule],\n  template: `\n    <div\n      class=\"relative overflow-hidden w-full py-8 {{ customClass() }}\"\n    >\n      <ng-content></ng-content>\n    </div>\n  `,\n})\nexport class ExhumaHorizontalScrollerComponent {\n  readonly customClass = input<string>('');\n}\n"
-			}
-		],
-		"solid": [
-			{
-				"filename": "HorizontalScroller.tsx",
-				"language": "tsx",
-				"description": "SolidJS Horizontal Scroller adapter wrapping @exhuma/core headless primitive.",
-				"code": "import { Component, JSX, splitProps } from 'solid-js';\nimport * as HorizontalScrollerPrimitive from '@exhuma/core';\n\nexport interface HorizontalScrollerProps extends JSX.HTMLAttributes<HTMLDivElement> {\n  [key: string]: unknown;\n}\n\nexport const HorizontalScroller: Component<HorizontalScrollerProps> = (props) => {\n  const [local, others] = splitProps(props, ['class', 'children']);\n  return (\n    <HorizontalScrollerPrimitive.HorizontalScroller\n      class={`relative overflow-hidden w-full py-8 ${local.class ?? ''}`}\n      {...others}\n    >\n      {local.children}\n    </HorizontalScrollerPrimitive.HorizontalScroller>\n  );\n};\n"
-			}
-		],
-		"astro": [
-			{
-				"filename": "HorizontalScroller.astro",
-				"language": "astro",
-				"description": "Astro Horizontal Scroller component with @exhuma/core primitive.",
-				"code": "---\nimport * as HorizontalScrollerPrimitive from '@exhuma/core';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst { class: className = '', ...props } = Astro.props;\n---\n\n<HorizontalScrollerPrimitive.HorizontalScroller\n  client:visible\n  className={`relative overflow-hidden w-full py-8 ${className}`}\n  {...props}\n>\n  <slot />\n</HorizontalScrollerPrimitive.HorizontalScroller>\n"
-			}
-		],
-		"blade": [
-			{
-				"filename": "horizontal-scroller.blade.php",
-				"language": "php",
-				"description": "Laravel Blade component for Horizontal Scroller with Alpine / data attributes.",
-				"code": "@props([])\n\n<exhuma-horizontal-scroller\n    {{ $attributes->merge([\n        'class' => 'relative overflow-hidden w-full py-8 block',\n    ]) }}\n>\n    {{ $slot }}\n</exhuma-horizontal-scroller>\n"
-			}
-		],
-		"vanilla": [
-			{
-				"filename": "exhuma-horizontal-scroller.js",
-				"language": "javascript",
-				"description": "Autonomous Vanilla JS Horizontal Scroller initialization module.",
-				"code": "import { HorizontalScroller } from '@exhuma/core';\n\nexport function initHorizontalScroller(selector = '[data-exhuma-horizontal-scroller]', options = {}) {\n  const elements = document.querySelectorAll(selector);\n  return Array.from(elements);\n}\n"
-			}
-		],
-		"wordpress": [
-			{
-				"filename": "block.json",
-				"language": "json",
-				"description": "WordPress Block API v3 definition for Horizontal Scroller.",
-				"code": "{\n  \"$schema\": \"https://schemas.wp.org/trunk/block.json\",\n  \"apiVersion\": 3,\n  \"name\": \"exhuma/horizontal-scroller\",\n  \"version\": \"1.0.0\",\n  \"title\": \"Exhuma Horizontal Scroller\",\n  \"category\": \"design\",\n  \"icon\": \"art\",\n  \"description\": \"Dynamic canvas track that smoothly maps vertical page scroll to horizontal card translation.\",\n  \"attributes\": {},\n  \"editorScript\": \"file:./index.js\",\n  \"viewScript\": \"exhuma-kinetic\"\n}"
-			}
-		],
-		"webcomponent": [
-			{
-				"filename": "exhuma-horizontal-scroller.js",
-				"language": "javascript",
-				"description": "Universal Web Component wrapper for <exhuma-horizontal-scroller>.",
-				"code": "import { HorizontalScroller } from '@exhuma/core';\n\nclass ExhumaHorizontalScrollerElement extends HTMLElement {\n  connectedCallback() {\n    this.classList.add('exhuma-horizontal-scroller');\n    this.style.display = 'block';\n  }\n}\n\nif (!customElements.get('exhuma-horizontal-scroller')) {\n  customElements.define('exhuma-horizontal-scroller', ExhumaHorizontalScrollerElement);\n}\n"
-			}
-		],
-		"react-native": [
-			{
-				"filename": "HorizontalScroller.tsx",
-				"language": "tsx",
-				"description": "React Native Horizontal Scroller adapter wrapping @exhuma/core touch primitive.",
-				"code": "import React from 'react';\nimport { View, StyleSheet, type ViewProps } from 'react-native';\nimport * as HorizontalScrollerPrimitive from '@exhuma/core';\n\nexport interface HorizontalScrollerProps extends ViewProps {\n  children?: React.ReactNode;\n}\n\nexport function HorizontalScroller({ style, children, ...props }: HorizontalScrollerProps) {\n  return (\n    <View style={[styles.container, style]} {...props}>\n      {children}\n    </View>\n  );\n}\n\nconst styles = StyleSheet.create({\n  container: {\n    borderRadius: 16,\n    borderWidth: 1,\n    borderColor: '#e2e8f0',\n    backgroundColor: '#ffffff',\n    padding: 20,\n    overflow: 'hidden',\n  },\n});\n"
-			}
-		],
-		"flutter": [
-			{
-				"filename": "horizontal_scroller.dart",
-				"language": "dart",
-				"description": "Flutter Horizontal Scroller widget wrapping package:exhuma.",
-				"code": "import 'package:flutter/material.dart';\nimport 'package:exhuma/exhuma.dart' as exhuma;\n\nclass ExhumaHorizontalScroller extends StatelessWidget {\n  final Widget child;\n\n  const ExhumaHorizontalScroller({\n    super.key,\n    required this.child,\n  });\n\n  @override\n  Widget build(BuildContext context) {\n    return Container(\n      decoration: BoxDecoration(\n        borderRadius: BorderRadius.circular(16.0),\n        border: Border.all(color: Theme.of(context).dividerColor),\n        color: Theme.of(context).cardColor,\n      ),\n      padding: const EdgeInsets.all(20.0),\n      child: child,\n    );\n  }\n}\n"
-			}
-		]
-	}
+  "name": "Horizontal Scroller",
+  "slug": "horizontal-scroller",
+  "category": "cards",
+  "description": "Dynamic canvas track that smoothly maps vertical page scroll to horizontal card translation via GPU-accelerated CSS custom properties.",
+  "version": "1.0.0",
+  "props": [
+    {
+      "name": "speed",
+      "label": "Scroll Speed Multiplier",
+      "type": "number",
+      "defaultValue": 0.85,
+      "min": 0.2,
+      "max": 2,
+      "step": 0.05,
+      "description": "Scroll speed multiplier mapping vertical page scroll to horizontal translation distance."
+    },
+    {
+      "name": "itemGap",
+      "label": "Item Gap (px)",
+      "type": "number",
+      "defaultValue": 20,
+      "min": 8,
+      "max": 48,
+      "step": 4,
+      "description": "Gap in pixels between horizontal track cards."
+    },
+    {
+      "name": "showFadeEdges",
+      "label": "Fade Edges",
+      "type": "boolean",
+      "defaultValue": true,
+      "description": "Show subtle gradient mask at horizontal boundaries."
+    }
+  ],
+  "dependencies": {
+    "react": [
+      "@exhuma/core"
+    ],
+    "nextjs": [
+      "@exhuma/core"
+    ],
+    "vue": [
+      "clsx"
+    ],
+    "svelte": [
+      "clsx"
+    ],
+    "solid": [
+      "clsx"
+    ],
+    "angular": [],
+    "astro": [],
+    "blade": [],
+    "vanilla": [],
+    "wordpress": [],
+    "webcomponent": [],
+    "react-native": [],
+    "flutter": []
+  },
+  "flavors": {
+    "react": [
+      {
+        "filename": "HorizontalScroller.tsx",
+        "language": "tsx",
+        "description": "Horizontal Scroller — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
+        "code": "import * as React from 'react';\nimport * as HorizontalScrollerPrimitive from '@exhuma/core';\nimport { clsx } from 'clsx';\n\nexport interface HorizontalScrollerProps extends React.ComponentPropsWithoutRef<typeof HorizontalScrollerPrimitive.HorizontalScroller> {\n  className?: string;\n}\n\nexport const HorizontalScroller = React.forwardRef<HTMLDivElement, HorizontalScrollerProps>(\n  ({ className, children, ...props }, ref) => (\n    <HorizontalScrollerPrimitive.HorizontalScroller\n      ref={ref}\n      className={clsx(\n        'relative overflow-hidden w-full py-8',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </HorizontalScrollerPrimitive.HorizontalScroller>\n  )\n);\nHorizontalScroller.displayName = 'HorizontalScroller';\n"
+      }
+    ],
+    "nextjs": [
+      {
+        "filename": "HorizontalScroller.tsx",
+        "language": "tsx",
+        "description": "Horizontal Scroller — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
+        "code": "'use client';\n\nimport * as React from 'react';\nimport * as HorizontalScrollerPrimitive from '@exhuma/core';\nimport { clsx } from 'clsx';\n\nexport interface HorizontalScrollerProps extends React.ComponentPropsWithoutRef<typeof HorizontalScrollerPrimitive.HorizontalScroller> {\n  className?: string;\n}\n\nexport const HorizontalScroller = React.forwardRef<HTMLDivElement, HorizontalScrollerProps>(\n  ({ className, children, ...props }, ref) => (\n    <HorizontalScrollerPrimitive.HorizontalScroller\n      ref={ref}\n      className={clsx(\n        'relative overflow-hidden w-full py-8',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </HorizontalScrollerPrimitive.HorizontalScroller>\n  )\n);\nHorizontalScroller.displayName = 'HorizontalScroller';\n"
+      }
+    ],
+    "vue": [
+      {
+        "filename": "HorizontalScroller.vue",
+        "language": "vue",
+        "description": "Vue 3 Native Horizontal Scroller component.",
+        "code": "<script setup lang=\"ts\">\nimport { clsx } from 'clsx';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst props = withDefaults(defineProps<Props>(), {\n  class: '',\n});\n</script>\n\n<template>\n  <div\n    :class=\"clsx('relative overflow-hidden w-full py-8', props.class)\"\n    v-bind=\"$attrs\"\n  >\n    <slot />\n  </div>\n</template>\n"
+      }
+    ],
+    "svelte": [
+      {
+        "filename": "HorizontalScroller.svelte",
+        "language": "svelte",
+        "description": "Svelte 5 Native Horizontal Scroller component using runes.",
+        "code": "<script lang=\"ts\">\n  import { clsx } from 'clsx';\n\n  let {\n    class: className = '',\n    children,\n    ...restProps\n  }: {\n    class?: string;\n    children?: import('svelte').Snippet;\n    [key: string]: unknown;\n  } = $props();\n</script>\n\n<div\n  class={clsx('relative overflow-hidden w-full py-8', className)}\n  {...restProps}\n>\n  {@render children?.()}\n</div>\n"
+      }
+    ],
+    "angular": [
+      {
+        "filename": "horizontal-scroller.component.ts",
+        "language": "typescript",
+        "description": "Angular 18+ Standalone Horizontal Scroller component.",
+        "code": "import { Component, input } from '@angular/core';\n\n@Component({\n  selector: 'exhuma-horizontal-scroller',\n  standalone: true,\n  template: `\n    <div\n      class=\"relative overflow-hidden w-full py-8 {{ customClass() }}\"\n    >\n      <ng-content></ng-content>\n    </div>\n  `,\n})\nexport class ExhumaHorizontalScrollerComponent {\n  readonly customClass = input<string>('');\n}\n"
+      }
+    ],
+    "solid": [
+      {
+        "filename": "HorizontalScroller.tsx",
+        "language": "tsx",
+        "description": "SolidJS Native Horizontal Scroller component.",
+        "code": "import { Component, JSX, splitProps } from 'solid-js';\n\nexport interface HorizontalScrollerProps extends JSX.HTMLAttributes<HTMLDivElement> {\n  [key: string]: unknown;\n}\n\nexport const HorizontalScroller: Component<HorizontalScrollerProps> = (props) => {\n  const [local, others] = splitProps(props, ['class', 'children']);\n  return (\n    <div\n      class={`relative overflow-hidden w-full py-8 ${local.class ?? ''}`}\n      {...others}\n    >\n      {local.children}\n    </div>\n  );\n};\n"
+      }
+    ],
+    "astro": [
+      {
+        "filename": "HorizontalScroller.astro",
+        "language": "astro",
+        "description": "Pure Native Astro Horizontal Scroller component.",
+        "code": "---\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst { class: className = '', ...props } = Astro.props;\n---\n\n<div\n  class={`relative overflow-hidden w-full py-8 ${className}`}\n  {...props}\n>\n  <slot />\n</div>\n"
+      }
+    ],
+    "blade": [
+      {
+        "filename": "horizontal-scroller.blade.php",
+        "language": "php",
+        "description": "Laravel Blade component for Horizontal Scroller.",
+        "code": "@props([])\n\n<div\n    {{ $attributes->merge([\n        'class' => 'relative overflow-hidden w-full py-8 block',\n    ]) }}\n>\n    {{ $slot }}\n</div>\n"
+      }
+    ],
+    "vanilla": [
+      {
+        "filename": "horizontal-scroller.vanilla.js",
+        "language": "javascript",
+        "description": "Autonomous Vanilla JS Horizontal Scroller initialization module.",
+        "code": "export function initHorizontalScroller(selector = '[data-exhuma-horizontal-scroller]', options = {}) {\n  const elements = document.querySelectorAll(selector);\n  elements.forEach((container) => {\n    const topStart = parseFloat(container.getAttribute('data-top-start') || options.topStart || 20);\n    const topIncrement = parseFloat(container.getAttribute('data-top-increment') || options.topIncrement || 28);\n    const cardGap = parseFloat(container.getAttribute('data-card-gap') || options.cardGap || 20);\n\n    const cards = Array.from(container.children);\n    cards.forEach((card, i) => {\n      if (card instanceof HTMLElement) {\n        card.style.position = 'sticky';\n        card.style.top = `${topStart + i * topIncrement}px`;\n        card.style.marginBottom = `${cardGap}px`;\n      }\n    });\n  });\n  return Array.from(elements);\n}\n"
+      }
+    ],
+    "wordpress": [
+      {
+        "filename": "block.json",
+        "language": "json",
+        "description": "WordPress Block API v3 definition for Horizontal Scroller.",
+        "code": "{\n  \"$schema\": \"https://schemas.wp.org/trunk/block.json\",\n  \"apiVersion\": 3,\n  \"name\": \"exhuma/horizontal-scroller\",\n  \"version\": \"1.0.0\",\n  \"title\": \"Exhuma Horizontal Scroller\",\n  \"category\": \"design\",\n  \"icon\": \"art\",\n  \"description\": \"Dynamic canvas track that smoothly maps vertical page scroll to horizontal card translation.\",\n  \"attributes\": {\n    \"topStart\": {\n      \"type\": \"number\",\n      \"default\": 20\n    },\n    \"topIncrement\": {\n      \"type\": \"number\",\n      \"default\": 28\n    },\n    \"cardGap\": {\n      \"type\": \"number\",\n      \"default\": 20\n    },\n    \"scaleThreshold\": {\n      \"type\": \"number\",\n      \"default\": 150\n    },\n    \"minScale\": {\n      \"type\": \"number\",\n      \"default\": 0.9\n    },\n    \"reverseScale\": {\n      \"type\": \"boolean\",\n      \"default\": true\n    }\n  },\n  \"editorScript\": \"file:./index.js\",\n  \"viewScript\": \"exhuma-kinetic\"\n}"
+      }
+    ],
+    "webcomponent": [
+      {
+        "filename": "exhuma-horizontal-scroller.js",
+        "language": "javascript",
+        "description": "Universal Web Component wrapper for <exhuma-horizontal-scroller>.",
+        "code": "class ExhumaHorizontalScrollerElement extends HTMLElement {\n  connectedCallback() {\n    this.classList.add('exhuma-horizontal-scroller');\n    this.style.display = 'block';\n\n    const topStart = parseFloat(this.getAttribute('top-start') || '20');\n    const topIncrement = parseFloat(this.getAttribute('top-increment') || '28');\n    const cardGap = parseFloat(this.getAttribute('card-gap') || '20');\n\n    const cards = Array.from(this.children);\n    cards.forEach((card, i) => {\n      if (card instanceof HTMLElement) {\n        card.style.position = 'sticky';\n        card.style.top = `${topStart + i * topIncrement}px`;\n        card.style.marginBottom = `${cardGap}px`;\n      }\n    });\n  }\n}\n\nif (!customElements.get('exhuma-horizontal-scroller')) {\n  customElements.define('exhuma-horizontal-scroller', ExhumaHorizontalScrollerElement);\n}\n"
+      }
+    ],
+    "react-native": [
+      {
+        "filename": "HorizontalScroller.tsx",
+        "language": "tsx",
+        "description": "React Native Horizontal Scroller native component.",
+        "code": "import React from 'react';\nimport { View, StyleSheet, type ViewProps } from 'react-native';\n\nexport interface HorizontalScrollerProps extends ViewProps {\n  topStart?: number;\n  topIncrement?: number;\n  cardGap?: number;\n  scaleThreshold?: number;\n  minScale?: number;\n  reverseScale?: boolean;\n  children?: React.ReactNode;\n}\n\nexport function HorizontalScroller({\n  topStart = 20,\n  topIncrement = 28,\n  cardGap = 20,\n  style,\n  children,\n  ...props\n}: HorizontalScrollerProps) {\n  return (\n    <View style={[styles.container, style]} {...props}>\n      {React.Children.map(children, (child, index) => (\n        <View\n          key={index}\n          style={{\n            marginTop: index === 0 ? topStart : topIncrement,\n            marginBottom: cardGap,\n            zIndex: index + 1,\n          }}\n        >\n          {child}\n        </View>\n      ))}\n    </View>\n  );\n}\n\nconst styles = StyleSheet.create({\n  container: {\n    width: '100%',\n  },\n});\n"
+      }
+    ],
+    "flutter": [
+      {
+        "filename": "horizontal_scroller.dart",
+        "language": "dart",
+        "description": "Flutter Horizontal Scroller widget wrapping package:exhuma.",
+        "code": "import 'package:flutter/material.dart';\n\nclass ExhumaHorizontalScroller extends StatelessWidget {\n  final List<Widget> children;\n  final double topStart;\n  final double topIncrement;\n  final double cardGap;\n  final double scaleThreshold;\n  final double minScale;\n  final bool reverseScale;\n\n  const ExhumaHorizontalScroller({\n    super.key,\n    required this.children,\n    this.topStart = 20.0,\n    this.topIncrement = 28.0,\n    this.cardGap = 20.0,\n    this.scaleThreshold = 150.0,\n    this.minScale = 0.9,\n    this.reverseScale = true,\n  });\n\n  @override\n  Widget build(BuildContext context) {\n    return Column(\n      children: children.asMap().entries.map((entry) {\n        final index = entry.key;\n        final widget = entry.value;\n        return Container(\n          margin: EdgeInsets.only(\n            top: index == 0 ? topStart : topIncrement,\n            bottom: cardGap,\n          ),\n          child: widget,\n        );\n      }).toList(),\n    );\n  }\n}\n"
+      }
+    ]
+  }
 }

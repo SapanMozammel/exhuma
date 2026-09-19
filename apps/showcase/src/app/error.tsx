@@ -28,7 +28,7 @@ export default function RootError({ error, reset }: { error: Error & { digest?: 
 					<span>Diagnostic Digest</span>
 					<span>{error.digest ? `ID: ${error.digest}` : 'LOCAL_DEV'}</span>
 				</div>
-				<div className='text-foreground mt-2 font-medium break-words'>{error.message || 'An unknown runtime fault occurred.'}</div>
+				<div className='text-foreground mt-2 font-medium wrap-break-word'>{error.message || 'An unknown runtime fault occurred.'}</div>
 			</div>
 
 			{/* Actions */}

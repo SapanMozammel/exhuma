@@ -141,8 +141,7 @@ export const TabsList: React.FC<TabsListProps> = ({ children, className = '', ..
 			const nextVal = triggers[nextIndex]!;
 			onValueChange(nextVal);
 			// Move keyboard focus to the newly activated trigger (WAI-ARIA tab pattern requirement)
-			const nextTrigger = e.currentTarget.querySelector<HTMLButtonElement>(`[data-value="${nextVal}"]`) ??
-				(e.currentTarget.querySelectorAll<HTMLButtonElement>('[role="tab"]')[nextIndex] ?? null);
+			const nextTrigger = e.currentTarget.querySelector<HTMLButtonElement>(`[data-value="${nextVal}"]`) ?? e.currentTarget.querySelectorAll<HTMLButtonElement>('[role="tab"]')[nextIndex] ?? null;
 			nextTrigger?.focus();
 		}
 	};
@@ -205,7 +204,7 @@ export const TabsIndicator: React.FC<TabsIndicatorProps> = ({ className = '', st
 			rafIdRef.current = null;
 			lastTimeRef.current = 0;
 		}
-	}, []); // eslint-disable-line react-hooks/exhaustive-deps
+	}, []);
 
 	useEffect(() => {
 		if (!activeRect) return;
@@ -234,7 +233,6 @@ export const TabsIndicator: React.FC<TabsIndicatorProps> = ({ className = '', st
 			}
 		};
 	}, [activeRect, updateSpring]);
-
 
 	if (!activeRect) return null;
 

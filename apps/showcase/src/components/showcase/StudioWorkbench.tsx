@@ -36,10 +36,10 @@ import { MorphingTabs, Accordion, AnimatedSphere, FloatingDock, NumberTicker, Ma
 // Presets per component
 const COMPONENT_PRESETS: Record<string, Record<string, Record<string, unknown>>> = {
 	'stacking-cards': {
-		Default: { cardHeight: 320, stackOffset: 24, scaleStep: 0.04, tiltFactor: 0.15 },
-		'Subtle Elegance': { cardHeight: 280, stackOffset: 16, scaleStep: 0.02, tiltFactor: 0.05 },
-		'Cinematic 3D': { cardHeight: 360, stackOffset: 32, scaleStep: 0.06, tiltFactor: 0.3 },
-		'Compact Deck': { cardHeight: 220, stackOffset: 12, scaleStep: 0.03, tiltFactor: 0.1 },
+		Default: { topStart: 20, topIncrement: 28, cardGap: 20, scaleThreshold: 150, minScale: 0.9, reverseScale: true },
+		'Subtle Elegance': { topStart: 20, topIncrement: 16, cardGap: 24, scaleThreshold: 180, minScale: 0.94, reverseScale: true },
+		'Cinematic 3D': { topStart: 24, topIncrement: 36, cardGap: 28, scaleThreshold: 120, minScale: 0.85, reverseScale: true },
+		'Compact Deck': { topStart: 16, topIncrement: 14, cardGap: 12, scaleThreshold: 100, minScale: 0.92, reverseScale: false },
 	},
 	'horizontal-scroller': {
 		Default: { gap: 16, itemWidth: 280, scrollSpeed: 1.2, snapToItem: true },
@@ -258,9 +258,12 @@ export function StudioWorkbench({ initialSlug = 'stacking-cards' }: { initialSlu
 	// Render interactive canvas preview according to selected component
 	const renderCanvasPreview = () => {
 		if (selectedSlug === 'stacking-cards') {
-			const topIncrement = Number(propValues.topIncrement ?? propValues.stackOffset ?? 24);
 			const topStart = Number(propValues.topStart ?? 20);
-			const minScale = Number(propValues.minScale ?? 0.92);
+			const topIncrement = Number(propValues.topIncrement ?? propValues.stackOffset ?? 28);
+			const cardGap = Number(propValues.cardGap ?? propValues.gap ?? 20);
+			const scaleThreshold = Number(propValues.scaleThreshold ?? 150);
+			const minScale = Number(propValues.minScale ?? 0.9);
+			const reverseScale = propValues.reverseScale !== undefined ? Boolean(propValues.reverseScale) : true;
 			const count = Number(propValues.cardCount ?? 4);
 
 			return (
@@ -269,7 +272,7 @@ export function StudioWorkbench({ initialSlug = 'stacking-cards' }: { initialSlu
 						<span className='kbd text-3xs'>SCROLL DOWN TO TEST DYNAMIC SCALE</span>
 						<span>↓</span>
 					</div>
-					<StackingCards topStart={topStart} topIncrement={topIncrement} minScale={minScale} scaleThreshold={100} scrollContainerRef={studioStackingRef}>
+					<StackingCards topStart={topStart} topIncrement={topIncrement} cardGap={cardGap} minScale={minScale} scaleThreshold={scaleThreshold} reverseScale={reverseScale} scrollContainerRef={studioStackingRef}>
 						{Array.from({ length: count }).map((_, idx) => (
 							<div key={idx} className='border-border bg-card/95 rounded-2xl border p-6 shadow-xl backdrop-blur-md'>
 								<div className='text-muted-foreground mb-3 flex items-center justify-between font-mono text-xs'>
@@ -974,41 +977,34 @@ export function StudioWorkbench({ initialSlug = 'stacking-cards' }: { initialSlu
 					</div>
 
 					{/* Prop Controls List */}
-					<div className='max-h-[32.5rem] space-y-4 overflow-y-auto pr-1'>
+					<div className='max-h-[32.5rem] space-y-1.5 overflow-y-auto pr-1'>
 						{component.props.map((propDef) => {
 							const val = propValues[propDef.name] ?? propDef.defaultValue;
 
 							return (
-								<div key={propDef.name} className='border-border/60 bg-muted/20 space-y-1.5 rounded-xl border p-3'>
+								<div key={propDef.name} className='border-border/60 bg-muted/20 rounded-lg border px-2.5 py-1.5'>
 									<div className='flex items-center justify-between text-xs'>
 										<label htmlFor={`prop-${propDef.name}`} className='text-foreground text-2xs font-mono font-semibold'>
 											{propDef.name}
 										</label>
-										<span className='kbd text-3xs'>{String(val)}</span>
-									</div>
-
-									{propDef.description && <p className='text-muted-foreground text-3xs leading-tight'>{propDef.description}</p>}
-
-									{/* Render Control based on type */}
-									{propDef.type === 'boolean' ? (
-										<div className='flex items-center gap-2 pt-1'>
+										{propDef.type === 'boolean' && (
 											<input
 												type='checkbox'
 												id={`prop-${propDef.name}`}
 												checked={Boolean(val)}
 												onChange={(e) => handlePropChange(propDef.name, e.target.checked)}
-												className='border-border accent-primary h-4 w-4 cursor-pointer rounded-sm'
+												className='border-border accent-primary h-3.5 w-3.5 cursor-pointer rounded-sm'
 											/>
-											<label htmlFor={`prop-${propDef.name}`} className='text-muted-foreground cursor-pointer text-xs'>
-												{val ? 'Enabled' : 'Disabled'}
-											</label>
-										</div>
-									) : propDef.type === 'select' && propDef.options ? (
+										)}
+									</div>
+
+									{/* Render Control based on type */}
+									{propDef.type === 'select' && propDef.options ? (
 										<select
 											id={`prop-${propDef.name}`}
 											value={String(val)}
 											onChange={(e) => handlePropChange(propDef.name, e.target.value)}
-											className='border-input bg-background text-foreground focus:ring-ring w-full rounded-md border px-2.5 py-1.5 text-xs outline-none focus:ring-1'
+											className='border-input bg-background text-foreground text-2xs focus:ring-ring mt-1 w-full rounded-md border px-2 py-1 outline-none focus:ring-1'
 										>
 											{propDef.options.map((opt) => (
 												<option key={opt.value} value={opt.value}>
@@ -1016,9 +1012,9 @@ export function StudioWorkbench({ initialSlug = 'stacking-cards' }: { initialSlu
 												</option>
 											))}
 										</select>
-									) : (
+									) : propDef.type === 'number' ? (
 										/* Slider + Numerical Input Sync */
-										<div className='flex items-center gap-2 pt-1'>
+										<div className='flex items-center gap-2 pt-0.5'>
 											<input
 												type='range'
 												id={`prop-${propDef.name}`}
@@ -1027,7 +1023,7 @@ export function StudioWorkbench({ initialSlug = 'stacking-cards' }: { initialSlu
 												step={propDef.step ?? 1}
 												value={Number(val)}
 												onChange={(e) => handlePropChange(propDef.name, Number(e.target.value))}
-												className='accent-primary h-1.5 flex-1 cursor-pointer'
+												className='accent-primary h-1 flex-1 cursor-pointer'
 											/>
 											<input
 												type='number'
@@ -1036,10 +1032,10 @@ export function StudioWorkbench({ initialSlug = 'stacking-cards' }: { initialSlu
 												step={propDef.step ?? 1}
 												value={Number(val)}
 												onChange={(e) => handlePropChange(propDef.name, Number(e.target.value))}
-												className='border-input bg-background text-foreground text-2xs w-14 rounded-sm border px-1.5 py-0.5 text-right font-mono'
+												className='border-input bg-background text-foreground text-3xs w-12 rounded-sm border px-1 py-0.5 text-right font-mono'
 											/>
 										</div>
-									)}
+									) : null}
 								</div>
 							);
 						})}

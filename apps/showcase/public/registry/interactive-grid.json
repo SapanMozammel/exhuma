@@ -1,147 +1,160 @@
 {
-	"name": "Interactive Grid Pattern",
-	"slug": "interactive-grid",
-	"category": "layouts",
-	"description": "Sub-pixel SVG background grid pattern with hover activation and hardware-accelerated color transitions.",
-	"version": "1.0.0",
-	"props": [
-		{
-			"name": "width",
-			"label": "Square Width (px)",
-			"type": "number",
-			"defaultValue": 40,
-			"min": 20,
-			"max": 80,
-			"step": 5,
-			"description": "Width of each individual grid square."
-		},
-		{
-			"name": "height",
-			"label": "Square Height (px)",
-			"type": "number",
-			"defaultValue": 40,
-			"min": 20,
-			"max": 80,
-			"step": 5,
-			"description": "Height of each individual grid square."
-		}
-	],
-	"dependencies": {
-		"react": ["@exhuma/core"],
-		"nextjs": ["@exhuma/core"],
-		"vue": ["@exhuma/core"],
-		"svelte": ["@exhuma/core"],
-		"solid": ["@exhuma/core"],
-		"angular": ["@exhuma/core"],
-		"astro": ["@exhuma/core"],
-		"vanilla": ["@exhuma/core"],
-		"react-native": ["@exhuma/core"],
-		"flutter": ["exhuma"]
-	},
-	"flavors": {
-		"react": [
-			{
-				"filename": "InteractiveGridPattern.tsx",
-				"language": "tsx",
-				"description": "Interactive Grid Pattern — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
-				"code": "import * as React from 'react';\nimport * as InteractiveGridPatternPrimitive from '@exhuma/core';\nimport { clsx } from 'clsx';\n\nexport interface InteractiveGridPatternProps extends React.ComponentPropsWithoutRef<typeof InteractiveGridPatternPrimitive.InteractiveGridPattern> {\n  className?: string;\n}\n\nexport const InteractiveGridPattern = React.forwardRef<HTMLDivElement, InteractiveGridPatternProps>(\n  ({ className, children, ...props }, ref) => (\n    <InteractiveGridPatternPrimitive.InteractiveGridPattern\n      ref={ref}\n      className={clsx(\n        'absolute inset-0 h-full w-full stroke-gray-400/30 [mask-image:radial-gradient(600px_circle_at_center,white,transparent)]',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </InteractiveGridPatternPrimitive.InteractiveGridPattern>\n  )\n);\nInteractiveGridPattern.displayName = 'InteractiveGridPattern';\n"
-			}
-		],
-		"nextjs": [
-			{
-				"filename": "InteractiveGridPattern.tsx",
-				"language": "tsx",
-				"description": "Interactive Grid Pattern — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
-				"code": "'use client';\n\nimport * as React from 'react';\nimport * as InteractiveGridPatternPrimitive from '@exhuma/core';\nimport { clsx } from 'clsx';\n\nexport interface InteractiveGridPatternProps extends React.ComponentPropsWithoutRef<typeof InteractiveGridPatternPrimitive.InteractiveGridPattern> {\n  className?: string;\n}\n\nexport const InteractiveGridPattern = React.forwardRef<HTMLDivElement, InteractiveGridPatternProps>(\n  ({ className, children, ...props }, ref) => (\n    <InteractiveGridPatternPrimitive.InteractiveGridPattern\n      ref={ref}\n      className={clsx(\n        'absolute inset-0 h-full w-full stroke-gray-400/30 [mask-image:radial-gradient(600px_circle_at_center,white,transparent)]',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </InteractiveGridPatternPrimitive.InteractiveGridPattern>\n  )\n);\nInteractiveGridPattern.displayName = 'InteractiveGridPattern';\n"
-			}
-		],
-		"vue": [
-			{
-				"filename": "InteractiveGridPattern.vue",
-				"language": "vue",
-				"description": "Vue 3 Interactive Grid Pattern outer adapter wrapping @exhuma/core headless primitive.",
-				"code": "<script setup lang=\"ts\">\nimport { InteractiveGridPattern as InteractiveGridPatternPrimitive } from '@exhuma/core';\nimport { clsx } from 'clsx';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst props = withDefaults(defineProps<Props>(), {\n  class: '',\n});\n</script>\n\n<template>\n  <InteractiveGridPatternPrimitive\n    v-bind=\"props\"\n    :class=\"clsx('absolute inset-0 h-full w-full stroke-gray-400/30 [mask-image:radial-gradient(600px_circle_at_center,white,transparent)]', props.class)\"\n  >\n    <slot />\n  </InteractiveGridPatternPrimitive>\n</template>\n"
-			}
-		],
-		"svelte": [
-			{
-				"filename": "InteractiveGridPattern.svelte",
-				"language": "svelte",
-				"description": "Svelte 5 Interactive Grid Pattern adapter using runes and @exhuma/core primitives.",
-				"code": "<script lang=\"ts\">\n  import { InteractiveGridPattern as InteractiveGridPatternPrimitive } from '@exhuma/core';\n  import { clsx } from 'clsx';\n\n  let {\n    class: className = '',\n    children,\n    ...restProps\n  }: {\n    class?: string;\n    children?: import('svelte').Snippet;\n    [key: string]: unknown;\n  } = $props();\n</script>\n\n<InteractiveGridPatternPrimitive\n  class={clsx('absolute inset-0 h-full w-full stroke-gray-400/30 [mask-image:radial-gradient(600px_circle_at_center,white,transparent)]', className)}\n  {...restProps}\n>\n  {@render children?.()}\n</InteractiveGridPatternPrimitive>\n"
-			}
-		],
-		"angular": [
-			{
-				"filename": "interactive-grid.component.ts",
-				"language": "typescript",
-				"description": "Angular 18+ Standalone Interactive Grid Pattern component.",
-				"code": "import { Component, input } from '@angular/core';\nimport { CommonModule } from '@angular/common';\n\n@Component({\n  selector: 'exhuma-interactive-grid',\n  standalone: true,\n  imports: [CommonModule],\n  template: `\n    <div\n      class=\"absolute inset-0 h-full w-full stroke-gray-400/30 [mask-image:radial-gradient(600px_circle_at_center,white,transparent)] {{ customClass() }}\"\n    >\n      <ng-content></ng-content>\n    </div>\n  `,\n})\nexport class ExhumaInteractiveGridPatternComponent {\n  readonly customClass = input<string>('');\n}\n"
-			}
-		],
-		"solid": [
-			{
-				"filename": "InteractiveGridPattern.tsx",
-				"language": "tsx",
-				"description": "SolidJS Interactive Grid Pattern adapter wrapping @exhuma/core headless primitive.",
-				"code": "import { Component, JSX, splitProps } from 'solid-js';\nimport * as InteractiveGridPatternPrimitive from '@exhuma/core';\n\nexport interface InteractiveGridPatternProps extends JSX.HTMLAttributes<HTMLDivElement> {\n  [key: string]: unknown;\n}\n\nexport const InteractiveGridPattern: Component<InteractiveGridPatternProps> = (props) => {\n  const [local, others] = splitProps(props, ['class', 'children']);\n  return (\n    <InteractiveGridPatternPrimitive.InteractiveGridPattern\n      class={`absolute inset-0 h-full w-full stroke-gray-400/30 [mask-image:radial-gradient(600px_circle_at_center,white,transparent)] ${local.class ?? ''}`}\n      {...others}\n    >\n      {local.children}\n    </InteractiveGridPatternPrimitive.InteractiveGridPattern>\n  );\n};\n"
-			}
-		],
-		"astro": [
-			{
-				"filename": "InteractiveGridPattern.astro",
-				"language": "astro",
-				"description": "Astro Interactive Grid Pattern component with @exhuma/core primitive.",
-				"code": "---\nimport * as InteractiveGridPatternPrimitive from '@exhuma/core';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst { class: className = '', ...props } = Astro.props;\n---\n\n<InteractiveGridPatternPrimitive.InteractiveGridPattern\n  client:visible\n  className={`absolute inset-0 h-full w-full stroke-gray-400/30 [mask-image:radial-gradient(600px_circle_at_center,white,transparent)] ${className}`}\n  {...props}\n>\n  <slot />\n</InteractiveGridPatternPrimitive.InteractiveGridPattern>\n"
-			}
-		],
-		"blade": [
-			{
-				"filename": "interactive-grid.blade.php",
-				"language": "php",
-				"description": "Laravel Blade component for Interactive Grid Pattern with Alpine / data attributes.",
-				"code": "@props([])\n\n<exhuma-interactive-grid\n    {{ $attributes->merge([\n        'class' => 'absolute inset-0 h-full w-full stroke-gray-400/30 [mask-image:radial-gradient(600px_circle_at_center,white,transparent)] block',\n    ]) }}\n>\n    {{ $slot }}\n</exhuma-interactive-grid>\n"
-			}
-		],
-		"vanilla": [
-			{
-				"filename": "exhuma-interactive-grid.js",
-				"language": "javascript",
-				"description": "Autonomous Vanilla JS Interactive Grid Pattern initialization module.",
-				"code": "import { InteractiveGridPattern } from '@exhuma/core';\n\nexport function initInteractiveGridPattern(selector = '[data-exhuma-interactive-grid]', options = {}) {\n  const elements = document.querySelectorAll(selector);\n  return Array.from(elements);\n}\n"
-			}
-		],
-		"wordpress": [
-			{
-				"filename": "block.json",
-				"language": "json",
-				"description": "WordPress Block API v3 definition for Interactive Grid Pattern.",
-				"code": "{\n  \"$schema\": \"https://schemas.wp.org/trunk/block.json\",\n  \"apiVersion\": 3,\n  \"name\": \"exhuma/interactive-grid\",\n  \"version\": \"1.0.0\",\n  \"title\": \"Exhuma Interactive Grid Pattern\",\n  \"category\": \"design\",\n  \"icon\": \"art\",\n  \"description\": \"Sub-pixel SVG background grid pattern with interactive square activation.\",\n  \"attributes\": {},\n  \"editorScript\": \"file:./index.js\",\n  \"viewScript\": \"exhuma-kinetic\"\n}"
-			}
-		],
-		"webcomponent": [
-			{
-				"filename": "exhuma-interactive-grid.js",
-				"language": "javascript",
-				"description": "Universal Web Component wrapper for <exhuma-interactive-grid>.",
-				"code": "import { InteractiveGridPattern } from '@exhuma/core';\n\nclass ExhumaInteractiveGridPatternElement extends HTMLElement {\n  connectedCallback() {\n    this.classList.add('exhuma-interactive-grid');\n    this.style.display = 'block';\n  }\n}\n\nif (!customElements.get('exhuma-interactive-grid')) {\n  customElements.define('exhuma-interactive-grid', ExhumaInteractiveGridPatternElement);\n}\n"
-			}
-		],
-		"react-native": [
-			{
-				"filename": "InteractiveGridPattern.tsx",
-				"language": "tsx",
-				"description": "React Native Interactive Grid Pattern adapter wrapping @exhuma/core touch primitive.",
-				"code": "import React from 'react';\nimport { View, StyleSheet, type ViewProps } from 'react-native';\nimport * as InteractiveGridPatternPrimitive from '@exhuma/core';\n\nexport interface InteractiveGridPatternProps extends ViewProps {\n  children?: React.ReactNode;\n}\n\nexport function InteractiveGridPattern({ style, children, ...props }: InteractiveGridPatternProps) {\n  return (\n    <View style={[styles.container, style]} {...props}>\n      {children}\n    </View>\n  );\n}\n\nconst styles = StyleSheet.create({\n  container: {\n    borderRadius: 16,\n    borderWidth: 1,\n    borderColor: '#e2e8f0',\n    backgroundColor: '#ffffff',\n    padding: 20,\n    overflow: 'hidden',\n  },\n});\n"
-			}
-		],
-		"flutter": [
-			{
-				"filename": "interactive_grid_pattern.dart",
-				"language": "dart",
-				"description": "Flutter Interactive Grid Pattern widget wrapping package:exhuma.",
-				"code": "import 'package:flutter/material.dart';\nimport 'package:exhuma/exhuma.dart' as exhuma;\n\nclass ExhumaInteractiveGridPattern extends StatelessWidget {\n  final Widget child;\n\n  const ExhumaInteractiveGridPattern({\n    super.key,\n    required this.child,\n  });\n\n  @override\n  Widget build(BuildContext context) {\n    return Container(\n      decoration: BoxDecoration(\n        borderRadius: BorderRadius.circular(16.0),\n        border: Border.all(color: Theme.of(context).dividerColor),\n        color: Theme.of(context).cardColor,\n      ),\n      padding: const EdgeInsets.all(20.0),\n      child: child,\n    );\n  }\n}\n"
-			}
-		]
-	}
+  "name": "Interactive Grid Pattern",
+  "slug": "interactive-grid",
+  "category": "layouts",
+  "description": "Sub-pixel SVG background grid pattern with hover activation and hardware-accelerated color transitions.",
+  "version": "1.0.0",
+  "props": [
+    {
+      "name": "width",
+      "label": "Square Width (px)",
+      "type": "number",
+      "defaultValue": 40,
+      "min": 20,
+      "max": 80,
+      "step": 5,
+      "description": "Width of each individual grid square."
+    },
+    {
+      "name": "height",
+      "label": "Square Height (px)",
+      "type": "number",
+      "defaultValue": 40,
+      "min": 20,
+      "max": 80,
+      "step": 5,
+      "description": "Height of each individual grid square."
+    }
+  ],
+  "dependencies": {
+    "react": [
+      "@exhuma/core"
+    ],
+    "nextjs": [
+      "@exhuma/core"
+    ],
+    "vue": [
+      "clsx"
+    ],
+    "svelte": [
+      "clsx"
+    ],
+    "solid": [
+      "clsx"
+    ],
+    "angular": [],
+    "astro": [],
+    "blade": [],
+    "vanilla": [],
+    "wordpress": [],
+    "webcomponent": [],
+    "react-native": [],
+    "flutter": []
+  },
+  "flavors": {
+    "react": [
+      {
+        "filename": "InteractiveGridPattern.tsx",
+        "language": "tsx",
+        "description": "Interactive Grid Pattern — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
+        "code": "import * as React from 'react';\nimport * as InteractiveGridPatternPrimitive from '@exhuma/core';\nimport { clsx } from 'clsx';\n\nexport interface InteractiveGridPatternProps extends React.ComponentPropsWithoutRef<typeof InteractiveGridPatternPrimitive.InteractiveGridPattern> {\n  className?: string;\n}\n\nexport const InteractiveGridPattern = React.forwardRef<HTMLDivElement, InteractiveGridPatternProps>(\n  ({ className, children, ...props }, ref) => (\n    <InteractiveGridPatternPrimitive.InteractiveGridPattern\n      ref={ref}\n      className={clsx(\n        'absolute inset-0 h-full w-full stroke-gray-400/30 [mask-image:radial-gradient(600px_circle_at_center,white,transparent)]',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </InteractiveGridPatternPrimitive.InteractiveGridPattern>\n  )\n);\nInteractiveGridPattern.displayName = 'InteractiveGridPattern';\n"
+      }
+    ],
+    "nextjs": [
+      {
+        "filename": "InteractiveGridPattern.tsx",
+        "language": "tsx",
+        "description": "Interactive Grid Pattern — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
+        "code": "'use client';\n\nimport * as React from 'react';\nimport * as InteractiveGridPatternPrimitive from '@exhuma/core';\nimport { clsx } from 'clsx';\n\nexport interface InteractiveGridPatternProps extends React.ComponentPropsWithoutRef<typeof InteractiveGridPatternPrimitive.InteractiveGridPattern> {\n  className?: string;\n}\n\nexport const InteractiveGridPattern = React.forwardRef<HTMLDivElement, InteractiveGridPatternProps>(\n  ({ className, children, ...props }, ref) => (\n    <InteractiveGridPatternPrimitive.InteractiveGridPattern\n      ref={ref}\n      className={clsx(\n        'absolute inset-0 h-full w-full stroke-gray-400/30 [mask-image:radial-gradient(600px_circle_at_center,white,transparent)]',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </InteractiveGridPatternPrimitive.InteractiveGridPattern>\n  )\n);\nInteractiveGridPattern.displayName = 'InteractiveGridPattern';\n"
+      }
+    ],
+    "vue": [
+      {
+        "filename": "InteractiveGridPattern.vue",
+        "language": "vue",
+        "description": "Vue 3 Native Interactive Grid Pattern component.",
+        "code": "<script setup lang=\"ts\">\nimport { clsx } from 'clsx';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst props = withDefaults(defineProps<Props>(), {\n  class: '',\n});\n</script>\n\n<template>\n  <div\n    :class=\"clsx('absolute inset-0 h-full w-full stroke-gray-400/30 [mask-image:radial-gradient(600px_circle_at_center,white,transparent)]', props.class)\"\n    v-bind=\"$attrs\"\n  >\n    <slot />\n  </div>\n</template>\n"
+      }
+    ],
+    "svelte": [
+      {
+        "filename": "InteractiveGridPattern.svelte",
+        "language": "svelte",
+        "description": "Svelte 5 Native Interactive Grid Pattern component using runes.",
+        "code": "<script lang=\"ts\">\n  import { clsx } from 'clsx';\n\n  let {\n    class: className = '',\n    children,\n    ...restProps\n  }: {\n    class?: string;\n    children?: import('svelte').Snippet;\n    [key: string]: unknown;\n  } = $props();\n</script>\n\n<div\n  class={clsx('absolute inset-0 h-full w-full stroke-gray-400/30 [mask-image:radial-gradient(600px_circle_at_center,white,transparent)]', className)}\n  {...restProps}\n>\n  {@render children?.()}\n</div>\n"
+      }
+    ],
+    "angular": [
+      {
+        "filename": "interactive-grid.component.ts",
+        "language": "typescript",
+        "description": "Angular 18+ Standalone Interactive Grid Pattern component.",
+        "code": "import { Component, input } from '@angular/core';\n\n@Component({\n  selector: 'exhuma-interactive-grid',\n  standalone: true,\n  template: `\n    <div\n      class=\"absolute inset-0 h-full w-full stroke-gray-400/30 [mask-image:radial-gradient(600px_circle_at_center,white,transparent)] {{ customClass() }}\"\n    >\n      <ng-content></ng-content>\n    </div>\n  `,\n})\nexport class ExhumaInteractiveGridPatternComponent {\n  readonly customClass = input<string>('');\n}\n"
+      }
+    ],
+    "solid": [
+      {
+        "filename": "InteractiveGridPattern.tsx",
+        "language": "tsx",
+        "description": "SolidJS Native Interactive Grid Pattern component.",
+        "code": "import { Component, JSX, splitProps } from 'solid-js';\n\nexport interface InteractiveGridPatternProps extends JSX.HTMLAttributes<HTMLDivElement> {\n  [key: string]: unknown;\n}\n\nexport const InteractiveGridPattern: Component<InteractiveGridPatternProps> = (props) => {\n  const [local, others] = splitProps(props, ['class', 'children']);\n  return (\n    <div\n      class={`absolute inset-0 h-full w-full stroke-gray-400/30 [mask-image:radial-gradient(600px_circle_at_center,white,transparent)] ${local.class ?? ''}`}\n      {...others}\n    >\n      {local.children}\n    </div>\n  );\n};\n"
+      }
+    ],
+    "astro": [
+      {
+        "filename": "InteractiveGridPattern.astro",
+        "language": "astro",
+        "description": "Pure Native Astro Interactive Grid Pattern component.",
+        "code": "---\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst { class: className = '', ...props } = Astro.props;\n---\n\n<div\n  class={`absolute inset-0 h-full w-full stroke-gray-400/30 [mask-image:radial-gradient(600px_circle_at_center,white,transparent)] ${className}`}\n  {...props}\n>\n  <slot />\n</div>\n"
+      }
+    ],
+    "blade": [
+      {
+        "filename": "interactive-grid.blade.php",
+        "language": "php",
+        "description": "Laravel Blade component for Interactive Grid Pattern.",
+        "code": "@props([])\n\n<div\n    {{ $attributes->merge([\n        'class' => 'absolute inset-0 h-full w-full stroke-gray-400/30 [mask-image:radial-gradient(600px_circle_at_center,white,transparent)] block',\n    ]) }}\n>\n    {{ $slot }}\n</div>\n"
+      }
+    ],
+    "vanilla": [
+      {
+        "filename": "interactive-grid.vanilla.js",
+        "language": "javascript",
+        "description": "Autonomous Vanilla JS Interactive Grid Pattern initialization module.",
+        "code": "export function initInteractiveGridPattern(selector = '[data-exhuma-interactive-grid]', options = {}) {\n  const elements = document.querySelectorAll(selector);\n  elements.forEach((container) => {\n    const topStart = parseFloat(container.getAttribute('data-top-start') || options.topStart || 20);\n    const topIncrement = parseFloat(container.getAttribute('data-top-increment') || options.topIncrement || 28);\n    const cardGap = parseFloat(container.getAttribute('data-card-gap') || options.cardGap || 20);\n\n    const cards = Array.from(container.children);\n    cards.forEach((card, i) => {\n      if (card instanceof HTMLElement) {\n        card.style.position = 'sticky';\n        card.style.top = `${topStart + i * topIncrement}px`;\n        card.style.marginBottom = `${cardGap}px`;\n      }\n    });\n  });\n  return Array.from(elements);\n}\n"
+      }
+    ],
+    "wordpress": [
+      {
+        "filename": "block.json",
+        "language": "json",
+        "description": "WordPress Block API v3 definition for Interactive Grid Pattern.",
+        "code": "{\n  \"$schema\": \"https://schemas.wp.org/trunk/block.json\",\n  \"apiVersion\": 3,\n  \"name\": \"exhuma/interactive-grid\",\n  \"version\": \"1.0.0\",\n  \"title\": \"Exhuma Interactive Grid Pattern\",\n  \"category\": \"design\",\n  \"icon\": \"art\",\n  \"description\": \"Sub-pixel SVG background grid pattern with interactive square activation.\",\n  \"attributes\": {\n    \"topStart\": {\n      \"type\": \"number\",\n      \"default\": 20\n    },\n    \"topIncrement\": {\n      \"type\": \"number\",\n      \"default\": 28\n    },\n    \"cardGap\": {\n      \"type\": \"number\",\n      \"default\": 20\n    },\n    \"scaleThreshold\": {\n      \"type\": \"number\",\n      \"default\": 150\n    },\n    \"minScale\": {\n      \"type\": \"number\",\n      \"default\": 0.9\n    },\n    \"reverseScale\": {\n      \"type\": \"boolean\",\n      \"default\": true\n    }\n  },\n  \"editorScript\": \"file:./index.js\",\n  \"viewScript\": \"exhuma-kinetic\"\n}"
+      }
+    ],
+    "webcomponent": [
+      {
+        "filename": "exhuma-interactive-grid.js",
+        "language": "javascript",
+        "description": "Universal Web Component wrapper for <exhuma-interactive-grid>.",
+        "code": "class ExhumaInteractiveGridPatternElement extends HTMLElement {\n  connectedCallback() {\n    this.classList.add('exhuma-interactive-grid');\n    this.style.display = 'block';\n\n    const topStart = parseFloat(this.getAttribute('top-start') || '20');\n    const topIncrement = parseFloat(this.getAttribute('top-increment') || '28');\n    const cardGap = parseFloat(this.getAttribute('card-gap') || '20');\n\n    const cards = Array.from(this.children);\n    cards.forEach((card, i) => {\n      if (card instanceof HTMLElement) {\n        card.style.position = 'sticky';\n        card.style.top = `${topStart + i * topIncrement}px`;\n        card.style.marginBottom = `${cardGap}px`;\n      }\n    });\n  }\n}\n\nif (!customElements.get('exhuma-interactive-grid')) {\n  customElements.define('exhuma-interactive-grid', ExhumaInteractiveGridPatternElement);\n}\n"
+      }
+    ],
+    "react-native": [
+      {
+        "filename": "InteractiveGridPattern.tsx",
+        "language": "tsx",
+        "description": "React Native Interactive Grid Pattern native component.",
+        "code": "import React from 'react';\nimport { View, StyleSheet, type ViewProps } from 'react-native';\n\nexport interface InteractiveGridPatternProps extends ViewProps {\n  topStart?: number;\n  topIncrement?: number;\n  cardGap?: number;\n  scaleThreshold?: number;\n  minScale?: number;\n  reverseScale?: boolean;\n  children?: React.ReactNode;\n}\n\nexport function InteractiveGridPattern({\n  topStart = 20,\n  topIncrement = 28,\n  cardGap = 20,\n  style,\n  children,\n  ...props\n}: InteractiveGridPatternProps) {\n  return (\n    <View style={[styles.container, style]} {...props}>\n      {React.Children.map(children, (child, index) => (\n        <View\n          key={index}\n          style={{\n            marginTop: index === 0 ? topStart : topIncrement,\n            marginBottom: cardGap,\n            zIndex: index + 1,\n          }}\n        >\n          {child}\n        </View>\n      ))}\n    </View>\n  );\n}\n\nconst styles = StyleSheet.create({\n  container: {\n    width: '100%',\n  },\n});\n"
+      }
+    ],
+    "flutter": [
+      {
+        "filename": "interactive_grid_pattern.dart",
+        "language": "dart",
+        "description": "Flutter Interactive Grid Pattern widget wrapping package:exhuma.",
+        "code": "import 'package:flutter/material.dart';\n\nclass ExhumaInteractiveGridPattern extends StatelessWidget {\n  final List<Widget> children;\n  final double topStart;\n  final double topIncrement;\n  final double cardGap;\n  final double scaleThreshold;\n  final double minScale;\n  final bool reverseScale;\n\n  const ExhumaInteractiveGridPattern({\n    super.key,\n    required this.children,\n    this.topStart = 20.0,\n    this.topIncrement = 28.0,\n    this.cardGap = 20.0,\n    this.scaleThreshold = 150.0,\n    this.minScale = 0.9,\n    this.reverseScale = true,\n  });\n\n  @override\n  Widget build(BuildContext context) {\n    return Column(\n      children: children.asMap().entries.map((entry) {\n        final index = entry.key;\n        final widget = entry.value;\n        return Container(\n          margin: EdgeInsets.only(\n            top: index == 0 ? topStart : topIncrement,\n            bottom: cardGap,\n          ),\n          child: widget,\n        );\n      }).toList(),\n    );\n  }\n}\n"
+      }
+    ]
+  }
 }

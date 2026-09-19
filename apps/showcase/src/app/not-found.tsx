@@ -71,7 +71,7 @@ export default function NotFound() {
 							<div>
 								<div className='flex items-center justify-between'>
 									<span className='font-display text-foreground group-hover:text-primary text-sm font-bold tracking-tight transition-colors'>{item.name}</span>
-									<span className='border-border text-muted-foreground text-3xs rounded border px-1.5 py-0.5 font-mono font-medium'>{item.category}</span>
+									<span className='border-border text-muted-foreground text-3xs rounded-sm border px-1.5 py-0.5 font-mono font-medium'>{item.category}</span>
 								</div>
 								<p className='text-muted-foreground mt-1.5 text-xs leading-relaxed'>{item.desc}</p>
 							</div>

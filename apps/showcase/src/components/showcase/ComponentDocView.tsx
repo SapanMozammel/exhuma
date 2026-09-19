@@ -17,17 +17,16 @@ import {
 	IconZoomOut as ZoomOut,
 	IconDownload as Download,
 	IconRefresh as RefreshCw,
-	IconChevronDown as ChevronDown,
 	IconArrowsMaximize as Maximize,
 	IconArrowsMinimize as Minimize,
 } from '@tabler/icons-react';
-import { COMPONENT_REGISTRY, ALL_COMPONENTS, EcosystemFlavor, ECOSYSTEM_LABELS } from '@/registry';
+import { COMPONENT_REGISTRY, ALL_COMPONENTS, EcosystemFlavor, ECOSYSTEM_LABELS, generateComponentUsage } from '@/registry';
 import { CodeBlock } from './CodeBlock';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Slider } from '@/components/ui/slider';
 import { Switch } from '@/components/ui/switch';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectSeparator, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -44,10 +43,10 @@ import { MorphingTabs, Accordion, AnimatedSphere, FloatingDock, NumberTicker, Ma
 // Architectural grayscale presets per component
 const COMPONENT_PRESETS: Record<string, Record<string, Record<string, unknown>>> = {
 	'stacking-cards': {
-		Default: { topStart: 90, topIncrement: 24, scaleThreshold: 120, minScale: 0.94 },
-		'Subtle Elegance': { topStart: 70, topIncrement: 16, scaleThreshold: 150, minScale: 0.96 },
-		'Cinematic 3D': { topStart: 120, topIncrement: 36, scaleThreshold: 90, minScale: 0.88 },
-		'Compact Deck': { topStart: 60, topIncrement: 12, scaleThreshold: 100, minScale: 0.92 },
+		Default: { topStart: 20, topIncrement: 28, cardGap: 20, scaleThreshold: 150, minScale: 0.9, reverseScale: true },
+		'Subtle Elegance': { topStart: 20, topIncrement: 16, cardGap: 24, scaleThreshold: 180, minScale: 0.94, reverseScale: true },
+		'Cinematic 3D': { topStart: 24, topIncrement: 36, cardGap: 28, scaleThreshold: 120, minScale: 0.85, reverseScale: true },
+		'Compact Deck': { topStart: 16, topIncrement: 14, cardGap: 12, scaleThreshold: 100, minScale: 0.92, reverseScale: false },
 	},
 	'horizontal-scroller': {
 		Default: { speed: 0.85, gap: 16, itemWidth: 280 },
@@ -155,6 +154,66 @@ const COMPONENT_PRESETS: Record<string, Record<string, Record<string, unknown>>>
 
 const FLAVORS = Object.keys(ECOSYSTEM_LABELS) as EcosystemFlavor[];
 
+const ECOSYSTEM_SHORT_NAMES: Record<EcosystemFlavor, string> = {
+	react: 'React',
+	nextjs: 'Next.js 15',
+	vue: 'Vue 3',
+	svelte: 'Svelte 5',
+	angular: 'Angular 18+',
+	solid: 'SolidJS',
+	astro: 'Astro',
+	blade: 'Laravel Blade',
+	vanilla: 'Vanilla JS',
+	wordpress: 'WordPress',
+	webcomponent: 'Web Components',
+	'react-native': 'React Native',
+	flutter: 'Flutter',
+};
+
+const ECOSYSTEM_EXTENSIONS: Record<EcosystemFlavor, string> = {
+	react: '.tsx',
+	nextjs: 'App Router',
+	vue: '.vue',
+	svelte: '.svelte',
+	angular: 'Standalone',
+	solid: '.tsx',
+	astro: '.astro',
+	blade: '.blade.php',
+	vanilla: 'ESM / CSS',
+	wordpress: 'Gutenberg',
+	webcomponent: 'Custom Element',
+	'react-native': 'Expo / TSX',
+	flutter: 'Dart',
+};
+
+const ECOSYSTEM_GROUPS: { label: string; flavors: EcosystemFlavor[] }[] = [
+	{
+		label: 'Web & Full-Stack',
+		flavors: ['nextjs', 'react', 'vue', 'svelte', 'angular', 'solid', 'astro'],
+	},
+	{
+		label: 'Backend & CMS',
+		flavors: ['blade', 'wordpress'],
+	},
+	{
+		label: 'Universal Standards',
+		flavors: ['webcomponent', 'vanilla'],
+	},
+	{
+		label: 'Mobile & Native',
+		flavors: ['react-native', 'flutter'],
+	},
+];
+
+type PackageManager = 'pnpm' | 'npm' | 'bun' | 'yarn';
+
+const PKG_MANAGERS: { id: PackageManager; label: string; prefix: string }[] = [
+	{ id: 'pnpm', label: 'pnpm', prefix: 'pnpm dlx' },
+	{ id: 'npm', label: 'npm', prefix: 'npx' },
+	{ id: 'bun', label: 'bun', prefix: 'bunx --bun' },
+	{ id: 'yarn', label: 'yarn', prefix: 'yarn dlx' },
+];
+
 interface ComponentDocViewProps {
 	slug: string;
 }
@@ -166,7 +225,9 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 	const [selectedFileIdx, setSelectedFileIdx] = React.useState(0);
 	const [codeMode, setCodeMode] = React.useState<'clean' | 'ejected'>('clean');
 	const [copiedCli, setCopiedCli] = React.useState(false);
-	const [copiedCode, setCopiedCode] = React.useState(false);
+	const [copiedUsage, setCopiedUsage] = React.useState(false);
+	const [copiedSource, setCopiedSource] = React.useState(false);
+	const [pkgManager, setPkgManager] = React.useState<PackageManager>('pnpm');
 
 	// Studio Viewport & Canvas Controls
 	const [viewportMode, setViewportMode] = React.useState<'fluid' | 'tablet' | 'mobile'>('fluid');
@@ -178,15 +239,50 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 	const [activePreset, setActivePreset] = React.useState<string>('Default');
 
 	// Dynamic prop values state, initialized with component.defaultProps
-	const [propValues, setPropValues] = React.useState<Record<string, unknown>>(() => ({
+	const [propValues, setPropValues] = React.useState<Record<string, unknown>>({
 		...component.defaultProps,
-	}));
+	});
 
 	// Synchronize propValues when component changes
 	React.useEffect(() => {
 		setPropValues({ ...component.defaultProps });
 		setActivePreset('Default');
 	}, [component]);
+
+	// Sticky dock elevation observer with exact header clearance offset
+	const stickyDockRef = React.useRef<HTMLDivElement>(null);
+	const [isDockSticky, setIsDockSticky] = React.useState(false);
+
+	React.useEffect(() => {
+		const dock = stickyDockRef.current;
+		if (!dock) return;
+
+		// Calculate sticky position dynamically based on current header offset
+		const checkSticky = () => {
+			const dockTop = dock.getBoundingClientRect().top;
+			const root = document.documentElement;
+			const rootFontSize = parseFloat(getComputedStyle(root).fontSize) || 16;
+			const rawHeaderHeight = getComputedStyle(root).getPropertyValue('--header-height').trim();
+			const headerRem = parseFloat(rawHeaderHeight) || 5.4375;
+			const isMobile = window.innerWidth < 1024;
+			// Match CSS top offsets: top-header-mobile-gap (header + 3.75rem) vs lg:top-header-gap (header + 0.75rem)
+			const gapRem = isMobile ? 3.75 : 0.75;
+			const targetTopPx = (headerRem + gapRem) * rootFontSize;
+
+			// If dock has reached or stuck at its target top position (within 1.5px tolerance)
+			const isStuck = dockTop <= targetTopPx + 1.5;
+			setIsDockSticky(isStuck);
+		};
+
+		checkSticky();
+		window.addEventListener('scroll', checkSticky, { passive: true });
+		window.addEventListener('resize', checkSticky, { passive: true });
+
+		return () => {
+			window.removeEventListener('scroll', checkSticky);
+			window.removeEventListener('resize', checkSticky);
+		};
+	}, []);
 
 	// Scroll refs for container-based kinetic components
 	const stackingScrollRef = React.useRef<HTMLDivElement>(null);
@@ -200,8 +296,11 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 		}
 	};
 
-	const handlePropChange = (name: string, value: unknown) => {
-		setPropValues((prev) => ({ ...prev, [name]: value }));
+	const handlePropChange = (propName: string, value: unknown) => {
+		setPropValues((prev) => ({
+			...prev,
+			[propName]: value,
+		}));
 		setActivePreset('Custom');
 	};
 
@@ -210,14 +309,35 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 		setActivePreset('Default');
 	};
 
-	// Synthesize code dynamically across the 13 supported ecosystems
-	const generatedFiles = React.useMemo(() => {
-		return component.generateCode(selectedFlavor, propValues, { eject: codeMode === 'ejected' });
-	}, [component, selectedFlavor, propValues, codeMode]);
+	// 1. Synthesize Usage Example snippet for consumer application
+	const usageFile = React.useMemo(() => {
+		return generateComponentUsage(component, selectedFlavor, propValues);
+	}, [component, selectedFlavor, propValues]);
 
-	const activeFile = generatedFiles[selectedFileIdx] || generatedFiles[0] || { filename: 'component.tsx', code: '' };
+	// 2. Synthesize internal Component Source files (Clean vs Ejected Engine)
+	const cleanFiles = React.useMemo(() => {
+		return component.generateCode(selectedFlavor, propValues, { eject: false });
+	}, [component, selectedFlavor, propValues]);
 
-	const cliCommand = `npx exhuma add ${component.slug} --flavor=${selectedFlavor}`;
+	const ejectedFiles = React.useMemo(() => {
+		return component.generateCode(selectedFlavor, propValues, { eject: true });
+	}, [component, selectedFlavor, propValues]);
+
+	const hasEjectedDifference = React.useMemo(() => {
+		if (cleanFiles.length !== ejectedFiles.length) return true;
+		return cleanFiles.some((cf, i) => {
+			const ef = ejectedFiles[i];
+			return !ef || cf.code !== ef.code || cf.filename !== ef.filename;
+		});
+	}, [cleanFiles, ejectedFiles]);
+
+	const generatedFiles = hasEjectedDifference && codeMode === 'ejected' ? ejectedFiles : cleanFiles;
+
+	const activeSourceFile = generatedFiles[selectedFileIdx] || generatedFiles[0] || { filename: 'component.tsx', code: '' };
+
+	const activePkg = React.useMemo(() => PKG_MANAGERS.find((p) => p.id === pkgManager) || PKG_MANAGERS[0], [pkgManager]);
+
+	const cliCommand = `${activePkg.prefix} exhuma add ${component.slug} --flavor=${selectedFlavor}`;
 
 	const copyCli = async () => {
 		try {
@@ -229,34 +349,70 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 		}
 	};
 
-	const copyCode = async () => {
+	const copyUsageCode = async () => {
 		try {
-			await navigator.clipboard.writeText(activeFile.code);
-			setCopiedCode(true);
-			setTimeout(() => setCopiedCode(false), 2000);
+			await navigator.clipboard.writeText(usageFile.code);
+			setCopiedUsage(true);
+			setTimeout(() => setCopiedUsage(false), 2000);
 		} catch {
-			setCopiedCode(false);
+			setCopiedUsage(false);
 		}
 	};
 
-	const downloadFile = () => {
-		const blob = new Blob([activeFile.code], { type: 'text/plain;charset=utf-8' });
+	const downloadUsageFile = () => {
+		const blob = new Blob([usageFile.code], { type: 'text/plain;charset=utf-8' });
 		const url = URL.createObjectURL(blob);
 		const a = document.createElement('a');
 		a.href = url;
-		a.download = activeFile.filename;
+		a.download = usageFile.filename;
 		a.click();
 		URL.revokeObjectURL(url);
+	};
+
+	const copySourceCode = async () => {
+		try {
+			await navigator.clipboard.writeText(activeSourceFile.code);
+			setCopiedSource(true);
+			setTimeout(() => setCopiedSource(false), 2000);
+		} catch {
+			setCopiedSource(false);
+		}
+	};
+
+	const downloadSourceFile = () => {
+		const blob = new Blob([activeSourceFile.code], { type: 'text/plain;charset=utf-8' });
+		const url = URL.createObjectURL(blob);
+		const a = document.createElement('a');
+		a.href = url;
+		a.download = activeSourceFile.filename;
+		a.click();
+		URL.revokeObjectURL(url);
+	};
+
+	const getCodeLanguage = (filename: string) => {
+		if (filename.endsWith('.dart')) return 'dart';
+		if (filename.endsWith('.php')) return 'php';
+		if (filename.endsWith('.vue')) return 'vue';
+		if (filename.endsWith('.svelte')) return 'svelte';
+		if (filename.endsWith('.astro')) return 'astro';
+		if (filename.endsWith('.json')) return 'json';
+		if (filename.endsWith('.css')) return 'css';
+		if (filename.endsWith('.html')) return 'html';
+		if (filename.endsWith('.js')) return 'js';
+		if (filename.endsWith('.ts')) return 'typescript';
+		return 'tsx';
 	};
 
 	// Render interactive canvas preview with real-time prop tweaking across all 23 components
 	const renderCanvasPreview = () => {
 		// 1. Stacking Cards
 		if (component.slug === 'stacking-cards') {
-			const topStart = Number(propValues.topStart ?? 90);
-			const topIncrement = Number(propValues.topIncrement ?? propValues.stackOffset ?? 24);
-			const scaleThreshold = Number(propValues.scaleThreshold ?? 120);
-			const minScale = Number(propValues.minScale ?? 0.94);
+			const topStart = Number(propValues.topStart ?? 20);
+			const topIncrement = Number(propValues.topIncrement ?? propValues.stackOffset ?? 28);
+			const cardGap = Number(propValues.cardGap ?? propValues.gap ?? 20);
+			const scaleThreshold = Number(propValues.scaleThreshold ?? 150);
+			const minScale = Number(propValues.minScale ?? 0.9);
+			const reverseScale = propValues.reverseScale !== undefined ? Boolean(propValues.reverseScale) : true;
 
 			return (
 				<div
@@ -264,15 +420,15 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 					tabIndex={0}
 					role='region'
 					aria-label={`${component.name} scroll demo`}
-					className='border-border/80 bg-background/50 no-scrollbar focus-visible:ring-foreground/50 relative mx-auto h-[31.25rem] w-full max-w-xl overflow-y-auto rounded-2xl border p-6 shadow-inner outline-none focus-visible:ring-1'
+					className='border-border/80 bg-background/50 no-scrollbar focus-visible:ring-foreground/50 relative mx-auto h-[31.25rem] w-full max-w-xl overflow-y-auto rounded-2xl border p-3 shadow-inner outline-none focus-visible:ring-1 sm:p-6'
 				>
 					<div className='text-muted-foreground text-2xs mb-6 flex items-center justify-center gap-2 text-center font-mono'>
 						<span className='kbd border-border bg-card/80 text-foreground text-3xs font-mono font-bold uppercase'>SCROLL DOWN TO ENGAGE MOMENTUM</span>
 						<span>↓</span>
 					</div>
-					<StackingCards topStart={topStart} topIncrement={topIncrement} minScale={minScale} scaleThreshold={scaleThreshold} scrollContainerRef={stackingScrollRef}>
+					<StackingCards topStart={topStart} topIncrement={topIncrement} cardGap={cardGap} minScale={minScale} scaleThreshold={scaleThreshold} reverseScale={reverseScale} scrollContainerRef={stackingScrollRef}>
 						{Array.from({ length: 4 }).map((_, idx) => (
-							<div key={idx} className='border-border/80 bg-card/95 relative rounded-2xl border p-6 shadow-xl backdrop-blur-md transition-colors'>
+							<div key={idx} className='border-border/80 bg-card/95 relative rounded-2xl border p-4 shadow-xl backdrop-blur-md transition-colors sm:p-6'>
 								<div className='text-foreground/20 text-4xs pointer-events-none absolute top-2 left-2 font-mono select-none'>+</div>
 								<div className='text-foreground/20 text-4xs pointer-events-none absolute top-2 right-2 font-mono select-none'>+</div>
 
@@ -280,12 +436,14 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 									<span className='kbd border-border bg-background/90 text-foreground text-3xs font-mono font-bold uppercase'>LAYER // 0{idx + 1}</span>
 									<span className='text-muted-foreground text-2xs font-mono'>120 FPS rAF</span>
 								</div>
-								<h4 className='text-foreground text-xl font-bold tracking-tight'>Autonomous Stacking Card</h4>
+								<h4 className='text-foreground text-lg font-bold tracking-tight sm:text-xl'>Autonomous Stacking Card</h4>
 								<p className='text-muted-foreground mt-2 text-xs leading-relaxed'>Card stacks with dynamic mathematical scale decay. Zero layout thrashing or parent scroll locking.</p>
-								<div className='border-border/60 text-muted-foreground mt-6 flex flex-wrap items-center justify-between gap-2 border-t pt-4 font-mono text-xs'>
+								<div className='border-border/60 text-muted-foreground mt-4 flex flex-wrap items-center justify-between gap-2 border-t pt-3 font-mono text-xs sm:mt-6 sm:pt-4'>
 									<span>topStart: {topStart}px</span>
 									<span>topIncrement: {topIncrement}px</span>
+									<span>cardGap: {cardGap}px</span>
 									<span>minScale: {minScale}</span>
+									<span>reverseScale: {reverseScale ? 'true' : 'false'}</span>
 								</div>
 							</div>
 						))}
@@ -860,18 +1018,54 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 				description={component.description}
 			/>
 
-			{/* CLI Quick Install Command Bar + Environment Chooser */}
-			<div className='border-border/80 bg-card/75 relative flex flex-col items-stretch justify-between gap-3 overflow-hidden rounded-2xl border p-3.5 shadow-xs backdrop-blur-md sm:flex-row sm:items-center sm:px-5'>
-				{/* Top hairline highlight */}
-				<div className='via-foreground/20 absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent to-transparent' />
-				<div className='text-foreground/20 text-4xs pointer-events-none absolute top-1.5 left-2 font-mono select-none'>+</div>
-				<div className='text-foreground/20 text-4xs pointer-events-none absolute top-1.5 right-2 font-mono select-none'>+</div>
+			{/* Sticky Target Environment Chooser Floating Mission Control Bar */}
+			<div ref={stickyDockRef} className='top-header-mobile-gap lg:top-header-gap sticky z-30 mb-5! transition-all duration-300'>
+				<div
+					className={cn(
+						'relative flex flex-col gap-2.5 overflow-hidden rounded-2xl transition-all duration-300 sm:flex-row sm:items-center sm:justify-between sm:gap-3',
+						isDockSticky
+							? 'border-primary/50 shadow-sticky-dock ring-primary/20 bg-card/95 supports-[backdrop-filter]:bg-background/90 scale-[1.01] border-2 p-2.5 shadow-2xl ring-2 backdrop-blur-2xl sm:p-3'
+							: 'border-border/60 bg-muted/20 hover:border-border/80 border p-2.5 backdrop-blur-xs sm:p-3'
+					)}
+				>
+					{/* Active laser accent beam across top edge: only appears when sticky */}
+					{isDockSticky && <div className='via-primary absolute inset-x-0 top-0 h-0.75 bg-linear-to-r from-transparent to-transparent' />}
 
-				<div className='flex flex-1 flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center'>
-					{/* Environment Chooser Dropdown */}
-					<div className='flex items-center gap-2'>
-						<Cpu className='text-foreground/70 h-3.5 w-3.5 shrink-0' />
-						<span className='text-foreground/80 text-2xs font-mono font-bold tracking-wider whitespace-nowrap uppercase'>Environment:</span>
+					{/* Left: Icon & Label */}
+					<div className='flex min-w-0 items-center justify-between gap-2.5 sm:justify-start sm:gap-3'>
+						<div className='flex min-w-0 items-center gap-2.5 sm:gap-3'>
+							<div
+								className={cn(
+									'flex shrink-0 items-center justify-center rounded-xl border transition-all duration-300',
+									isDockSticky
+										? 'border-primary/50 bg-primary text-primary-foreground h-7.5 w-7.5 shadow-sm sm:h-8 sm:w-8'
+										: 'border-border/70 bg-background/60 text-muted-foreground h-7 w-7 sm:h-7.5 sm:w-7.5'
+								)}
+							>
+								<Cpu className='h-3.5 w-3.5' />
+							</div>
+							<div className='flex min-w-0 flex-col gap-0.5'>
+								<div className='flex items-center gap-2'>
+									<span className={cn('text-xs font-semibold tracking-tight whitespace-nowrap transition-colors sm:text-sm', isDockSticky ? 'text-foreground font-bold' : 'text-foreground/90')}>
+										Target Environment
+									</span>
+									{isDockSticky && (
+										<div className='flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 shadow-xs'>
+											<span className='relative flex h-1.5 w-1.5'>
+												<span className='absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-75' />
+												<span className='relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500' />
+											</span>
+											<span className='text-3xs font-mono font-bold tracking-wide text-emerald-600 uppercase dark:text-emerald-400'>Pinned</span>
+										</div>
+									)}
+								</div>
+								{isDockSticky && <span className='text-muted-foreground text-3xs hidden font-mono md:inline-block'>Adapts interactive workbench, props contract & CLI commands below</span>}
+							</div>
+						</div>
+					</div>
+
+					{/* Right: Select Trigger */}
+					<div className='flex w-full items-center gap-2 sm:w-auto sm:shrink-0'>
 						<Select
 							value={selectedFlavor}
 							onValueChange={(val) => {
@@ -879,41 +1073,136 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 								setSelectedFileIdx(0);
 							}}
 						>
-							<SelectTrigger className='h-8 w-full min-w-0 sm:w-56 sm:min-w-[13.5rem]'>
-								<SelectValue />
+							<SelectTrigger
+								className={cn(
+									'h-9 w-full cursor-pointer rounded-xl px-3 font-mono text-xs transition-all sm:h-9.5 sm:w-44',
+									isDockSticky
+										? 'border-primary/60 bg-background/95 hover:bg-background hover:border-primary focus:ring-primary/30 shadow-md focus:ring-2'
+										: 'border-border/70 bg-background/80 hover:bg-background hover:border-foreground/30 focus:ring-foreground/10 shadow-2xs focus:ring-1'
+								)}
+							>
+								<div className='flex w-full items-center justify-between gap-2 truncate'>
+									<div className='flex items-center gap-2 truncate'>
+										<span className='text-foreground text-xs font-bold sm:text-sm'>{ECOSYSTEM_SHORT_NAMES[selectedFlavor]}</span>
+										<span className='border-border/80 bg-muted/80 text-muted-foreground text-3xs hidden rounded-sm px-1.5 py-0.5 font-mono sm:inline'>{ECOSYSTEM_EXTENSIONS[selectedFlavor]}</span>
+									</div>
+									<span
+										className={cn(
+											'text-3xs shrink-0 rounded-sm px-1.5 py-0.5 font-mono font-bold tracking-wider uppercase sm:hidden',
+											isDockSticky ? 'bg-primary/10 text-primary' : 'text-muted-foreground'
+										)}
+									>
+										Switch
+									</span>
+								</div>
 							</SelectTrigger>
-							<SelectContent>
-								{FLAVORS.map((flavor) => (
-									<SelectItem key={flavor} value={flavor}>
-										{ECOSYSTEM_LABELS[flavor]}
-									</SelectItem>
+							<SelectContent className='max-h-96 min-w-64 sm:min-w-68'>
+								{ECOSYSTEM_GROUPS.map((group, groupIdx) => (
+									<React.Fragment key={group.label}>
+										{groupIdx > 0 && <SelectSeparator />}
+										<SelectGroup>
+											<SelectLabel className='text-3xs text-muted-foreground/80 font-mono tracking-wider'>{group.label}</SelectLabel>
+											{group.flavors.map((flavor) => (
+												<SelectItem key={flavor} value={flavor} className='cursor-pointer py-2 font-mono text-xs'>
+													<div className='flex w-full items-center justify-between gap-3'>
+														<span className='font-semibold'>{ECOSYSTEM_LABELS[flavor]}</span>
+														<span className='text-3xs text-muted-foreground/70 bg-muted rounded-sm px-1.5 py-0.5 font-mono'>{ECOSYSTEM_EXTENSIONS[flavor]}</span>
+													</div>
+												</SelectItem>
+											))}
+										</SelectGroup>
+									</React.Fragment>
 								))}
 							</SelectContent>
 						</Select>
 					</div>
+				</div>
+			</div>
 
-					<div className='text-muted-foreground bg-border/80 hidden h-4 w-px sm:block' />
+			{/* CLI Quick Install Command Bar */}
+			<div className='border-border/80 bg-card/85 relative flex flex-col gap-3 overflow-hidden rounded-2xl border p-3.5 shadow-xs backdrop-blur-xl transition-all sm:p-4'>
+				{/* Top hairline highlight & registration marks */}
+				<div className='via-foreground/20 absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent to-transparent' />
+				<div className='text-foreground/20 text-4xs pointer-events-none absolute top-1.5 left-2 font-mono select-none'>+</div>
+				<div className='text-foreground/20 text-4xs pointer-events-none absolute top-1.5 right-2 font-mono select-none'>+</div>
 
-					{/* CLI Command */}
-					<div className='text-muted-foreground flex min-w-0 flex-1 items-center gap-2 font-mono text-xs'>
-						<Terminal className='text-foreground/70 h-3.5 w-3.5 shrink-0' />
-						<span className='border-border/60 bg-muted/60 text-foreground text-2xs truncate rounded-md border px-2.5 py-1 font-mono break-all whitespace-nowrap select-all'>{cliCommand}</span>
+				{/* Header Row: Terminal Identity & Package Manager Switcher */}
+				<div className='flex flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-between'>
+					<div className='flex items-center gap-2'>
+						{/* macOS Terminal window dots */}
+						<div className='flex items-center gap-1.5 pr-1'>
+							<div className='h-2.5 w-2.5 rounded-full bg-red-500/70' />
+							<div className='h-2.5 w-2.5 rounded-full bg-amber-500/70' />
+							<div className='h-2.5 w-2.5 rounded-full bg-emerald-500/70' />
+						</div>
+						<span className='text-foreground font-mono text-xs font-bold tracking-tight'>CLI Installation</span>
+						<Badge variant='outline' className='text-3xs border-emerald-500/30 bg-emerald-500/10 font-mono font-medium text-emerald-600 dark:text-emerald-400'>
+							{ECOSYSTEM_SHORT_NAMES[selectedFlavor]}
+						</Badge>
+					</div>
+
+					{/* Package Manager Selector: pnpm, npm, bun, yarn */}
+					<div className='border-border/60 bg-muted/50 flex w-full items-center gap-1 rounded-lg border p-0.5 sm:w-auto'>
+						{PKG_MANAGERS.map((pm) => {
+							const isSelected = pkgManager === pm.id;
+							return (
+								<button
+									key={pm.id}
+									type='button'
+									onClick={() => setPkgManager(pm.id)}
+									className={cn(
+										'text-2xs flex-1 cursor-pointer rounded-md px-2.5 py-1 text-center font-mono font-semibold transition-all sm:flex-none sm:px-2 sm:py-0.5',
+										isSelected ? 'bg-foreground text-background font-bold shadow-xs' : 'text-muted-foreground hover:text-foreground'
+									)}
+								>
+									{pm.label}
+								</button>
+							);
+						})}
 					</div>
 				</div>
 
-				<Button variant='outline' size='sm' onClick={copyCli} className='border-border/80 bg-background/80 hover:border-foreground/40 h-8 shrink-0 gap-1.5 font-mono text-xs'>
-					{copiedCli ? (
-						<>
-							<Check className='h-3.5 w-3.5 text-emerald-500' />
-							<span className='font-semibold text-emerald-600 dark:text-emerald-400'>Copied!</span>
-						</>
-					) : (
-						<>
-							<Copy className='h-3.5 w-3.5' />
-							<span>Copy Command</span>
-						</>
-					)}
-				</Button>
+				{/* Terminal Viewport Row */}
+				<div className='flex flex-col gap-2.5 sm:flex-row sm:items-center'>
+					<div
+						onClick={copyCli}
+						title='Click to copy install command'
+						className='group/cli border-muted-foreground/50! dark:border-border! relative flex min-w-0 flex-1 cursor-pointer items-center gap-2.5 overflow-hidden rounded-xl border bg-zinc-950/90 px-3.5 py-2.5 shadow-inner transition-colors hover:border-zinc-600 dark:bg-black/90'
+					>
+						<Terminal className='h-4 w-4 shrink-0 text-zinc-500 transition-colors group-hover/cli:text-emerald-400' />
+						<div className='no-scrollbar flex min-w-0 flex-1 items-center gap-2 overflow-x-auto font-mono text-xs whitespace-nowrap select-all'>
+							<span className='font-bold text-emerald-400 select-none'>$</span>
+							<span className='font-semibold text-sky-400'>{activePkg.prefix}</span>
+							<span className='font-bold text-zinc-100'>exhuma</span>
+							<span className='text-zinc-400'>add</span>
+							<span className='font-bold text-amber-400'>{component.slug}</span>
+							<span className='text-zinc-500'>--flavor=</span>
+							<span className='font-bold text-emerald-400 underline decoration-emerald-500/40 decoration-dotted'>{selectedFlavor}</span>
+						</div>
+					</div>
+
+					<Button
+						variant='default'
+						size='sm'
+						onClick={copyCli}
+						className={cn(
+							'h-9.5 shrink-0 cursor-pointer gap-1.5 rounded-xl px-4 font-mono text-xs font-semibold shadow-xs transition-all max-sm:w-full max-sm:justify-center',
+							copiedCli ? 'bg-emerald-600 text-white hover:bg-emerald-600 dark:bg-emerald-500 dark:text-white' : 'bg-foreground text-background hover:bg-foreground/90'
+						)}
+					>
+						{copiedCli ? (
+							<>
+								<Check className='h-3.5 w-3.5' />
+								<span>Copied!</span>
+							</>
+						) : (
+							<>
+								<Copy className='h-3.5 w-3.5' />
+								<span>Copy Command</span>
+							</>
+						)}
+					</Button>
+				</div>
 			</div>
 
 			{/* Studio Workbench Interactive Specification Section */}
@@ -931,7 +1220,7 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 
 							{Object.keys(presets).length > 0 && (
 								<div className='flex items-center gap-2 pl-1 max-sm:w-full'>
-									<span className='text-muted-foreground text-3xs font-mono font-semibold uppercase max-sm:hidden max-sm:w-full'>Preset:</span>
+									<span className='text-muted-foreground text-3xs font-mono font-semibold uppercase max-sm:hidden'>Preset:</span>
 									<div className='flex max-sm:scrollbar-none max-sm:overflow-x-auto'>
 										<div className='border-border/70 bg-background/80 no-scrollbar flex max-w-full items-center gap-1 overflow-x-auto rounded-lg border p-0.5 whitespace-nowrap'>
 											{Object.keys(presets).map((pName) => (
@@ -1000,7 +1289,7 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 						{/* Canvas Viewport Card */}
 						<div
 							className={cn(
-								'border-border/80 bg-card/75 relative flex flex-col overflow-hidden rounded-2xl border shadow-xl backdrop-blur-xl transition-all duration-300',
+								'border-border/80 bg-card/75 relative flex flex-col overflow-hidden rounded-2xl border shadow-xs backdrop-blur-xl transition-all duration-300',
 								isExpanded ? 'xl:col-span-12' : 'xl:col-span-8'
 							)}
 						>
@@ -1082,7 +1371,7 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 						{/* 3. Parameter Inspector Card */}
 						<div
 							className={cn(
-								'border-border/80 bg-card/75 relative space-y-4 overflow-hidden rounded-2xl border p-4 shadow-xl backdrop-blur-xl transition-all duration-300',
+								'border-border/80 bg-card/75 relative space-y-4 overflow-hidden rounded-2xl border p-4 shadow-xs backdrop-blur-xl transition-all duration-300',
 								isExpanded ? 'xl:col-span-12' : 'xl:col-span-4'
 							)}
 						>
@@ -1111,38 +1400,29 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 							</div>
 
 							{/* Dynamic Prop Tweaks List */}
-							<div className='max-h-[31.25rem] space-y-3 overflow-y-auto pr-1'>
+							<div className='max-h-[31.25rem] space-y-1.5 overflow-y-auto pr-1'>
 								{component.props.map((propDef) => {
 									const val = propValues[propDef.name] ?? propDef.defaultValue;
 
 									return (
-										<div key={propDef.name} className='border-border/70 bg-background/50 hover:border-foreground/30 space-y-1.5 rounded-xl border p-3 shadow-2xs transition-colors'>
+										<div key={propDef.name} className='border-border/70 bg-background/50 hover:border-foreground/30 rounded-lg border px-2.5 py-2.5 shadow-2xs transition-colors'>
 											<div className='flex items-center justify-between text-xs'>
 												<label htmlFor={`prop-${propDef.name}`} className='text-foreground text-2xs font-mono font-semibold'>
 													{propDef.name}
 												</label>
-												<span className='kbd border-border bg-card text-foreground text-3xs font-mono font-bold'>{String(val)}</span>
+												{propDef.type === 'boolean' && <Switch id={`prop-${propDef.name}`} checked={Boolean(val)} onCheckedChange={(checked) => handlePropChange(propDef.name, checked)} />}
 											</div>
 
-											{propDef.description && <p className='text-muted-foreground text-3xs font-mono leading-relaxed'>{propDef.description}</p>}
-
 											{/* Controls */}
-											{propDef.type === 'boolean' ? (
-												<div className='flex items-center justify-between pt-1'>
-													<label htmlFor={`prop-${propDef.name}`} className='text-muted-foreground cursor-pointer font-mono text-xs'>
-														{val ? 'Enabled' : 'Disabled'}
-													</label>
-													<Switch id={`prop-${propDef.name}`} checked={Boolean(val)} onCheckedChange={(checked) => handlePropChange(propDef.name, checked)} />
-												</div>
-											) : propDef.type === 'select' && propDef.options ? (
+											{propDef.type === 'select' && propDef.options ? (
 												<div className='mt-1 w-full'>
 													<Select value={String(val ?? '')} onValueChange={(newVal) => handlePropChange(propDef.name, newVal)}>
-														<SelectTrigger id={`prop-${propDef.name}`} className='h-8 w-full'>
+														<SelectTrigger id={`prop-${propDef.name}`} className='text-2xs h-7 w-full'>
 															<SelectValue />
 														</SelectTrigger>
 														<SelectContent>
 															{propDef.options.map((opt) => (
-																<SelectItem key={opt.value} value={opt.value}>
+																<SelectItem key={opt.value} value={opt.value} className='text-2xs'>
 																	{opt.label}
 																</SelectItem>
 															))}
@@ -1157,7 +1437,7 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 													const step = propDef.step ?? 1;
 													const num = Number.isFinite(parsed) ? parsed : min;
 													return (
-														<div className='flex items-center gap-3 pt-1'>
+														<div className='flex items-center gap-2 pt-0.5'>
 															<Slider min={min} max={max} step={step} value={[num]} onValueChange={(vals) => handlePropChange(propDef.name, vals[0])} className='flex-1' />
 															<Input
 																type='number'
@@ -1169,78 +1449,236 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 																	const parsedVal = parseFloat(e.target.value);
 																	handlePropChange(propDef.name, Number.isFinite(parsedVal) ? parsedVal : min);
 																}}
-																className='text-2xs h-7 w-16 px-1.5 py-0.5 text-right font-mono'
+																className='text-3xs h-6 w-14 px-1 py-0 text-right font-mono'
 															/>
 														</div>
 													);
 												})()
 											) : propDef.type === 'color' ? (
-												<div className='flex items-center gap-2 pt-1'>
+												<div className='flex items-center gap-1.5 pt-0.5'>
 													<input
 														type='color'
 														id={`prop-${propDef.name}`}
 														value={String(val ?? '#ffffff')}
 														onChange={(e) => handlePropChange(propDef.name, e.target.value)}
-														className='border-border/80 h-7 w-10 cursor-pointer rounded-md border bg-transparent p-0.5'
+														className='border-border/80 h-6 w-8 cursor-pointer rounded-sm border bg-transparent p-0.5'
 													/>
-													<Input type='text' value={String(val ?? '')} onChange={(e) => handlePropChange(propDef.name, e.target.value)} className='text-2xs h-7 flex-1 font-mono' />
+													<Input type='text' value={String(val ?? '')} onChange={(e) => handlePropChange(propDef.name, e.target.value)} className='text-3xs h-6 flex-1 font-mono' />
 												</div>
-											) : (
-												<div className='pt-1'>
+											) : propDef.type !== 'boolean' ? (
+												<div className='pt-0.5'>
 													<Input
 														type='text'
 														id={`prop-${propDef.name}`}
 														value={String(val ?? '')}
 														onChange={(e) => handlePropChange(propDef.name, e.target.value)}
-														className='text-2xs h-7 w-full font-mono'
+														className='text-3xs h-6 w-full font-mono'
 													/>
 												</div>
-											)}
+											) : null}
 										</div>
 									);
 								})}
 							</div>
 						</div>
 					</div>
+				</div>
+			</DocsSection>
 
-					{/* 4. Universal Code Synchronizer Card */}
-					<div className='border-border/80 bg-card/75 relative overflow-hidden rounded-2xl border shadow-xl backdrop-blur-xl'>
-						<div className='via-foreground/20 absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent to-transparent' />
-						<div className='text-foreground/20 text-4xs pointer-events-none absolute top-2 left-2 font-mono select-none'>+</div>
-						<div className='text-foreground/20 text-4xs pointer-events-none absolute top-2 right-2 font-mono select-none'>+</div>
+			{/* 2. Quick Start & Usage Example Section */}
+			<DocsSection
+				id='usage-example'
+				index={2}
+				label='Usage'
+				title='Quick Start & Consumer Example'
+				description={`Copy-paste ready implementation for ${ECOSYSTEM_LABELS[selectedFlavor]}. Automatically updates when you modify parameters in the Workbench above.`}
+			>
+				<div className='border-border/80 bg-card/75 relative overflow-hidden rounded-2xl border shadow-xs backdrop-blur-xl'>
+					<div className='via-foreground/20 absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent to-transparent' />
+					<div className='text-foreground/20 text-4xs pointer-events-none absolute top-2 left-2 font-mono select-none'>+</div>
+					<div className='text-foreground/20 text-4xs pointer-events-none absolute top-2 right-2 font-mono select-none'>+</div>
 
-						<div className='border-border/70 bg-muted/40 flex flex-col items-stretch justify-between gap-3 border-b px-4 py-3 md:flex-row md:items-center'>
-							<div className='flex flex-wrap items-center gap-3'>
-								<div className='flex items-center gap-2'>
-									<Sparkles className='text-foreground/80 h-4 w-4 shrink-0' />
-									<span className='text-foreground font-mono text-xs font-bold tracking-wider uppercase'>Source Code</span>
-								</div>
+					{/* File Header Bar */}
+					<div className='border-border/70 bg-muted/40 flex flex-wrap items-center justify-between gap-3 border-b px-4 py-2.5'>
+						<div className='flex items-center gap-2'>
+							<span className='kbd border-border bg-background/90 text-foreground text-3xs font-mono font-bold uppercase'>{usageFile.filename}</span>
+							<Badge variant='outline' className='text-3xs font-mono'>
+								{ECOSYSTEM_LABELS[selectedFlavor]}
+							</Badge>
+						</div>
 
-								{/* Framework Target Select */}
-								<div className='flex items-center gap-1.5'>
-									<span className='text-muted-foreground text-3xs font-mono font-semibold uppercase'>Target:</span>
-									<Select
-										value={selectedFlavor}
-										onValueChange={(val) => {
-											setSelectedFlavor(val as EcosystemFlavor);
-											setSelectedFileIdx(0);
-										}}
+						<div className='flex items-center gap-1.5'>
+							<TooltipProvider delayDuration={150}>
+								<Tooltip>
+									<TooltipTrigger asChild>
+										<Button
+											variant='outline'
+											size='icon'
+											onClick={downloadUsageFile}
+											className='border-border/80 hover:border-foreground/40 h-8 w-8 cursor-pointer'
+											aria-label={`Download ${usageFile.filename}`}
+										>
+											<Download className='h-3.5 w-3.5 shrink-0' />
+										</Button>
+									</TooltipTrigger>
+									<TooltipContent side='bottom'>Download {usageFile.filename}</TooltipContent>
+								</Tooltip>
+
+								<Tooltip>
+									<TooltipTrigger asChild>
+										<Button
+											variant='outline'
+											size='sm'
+											onClick={copyUsageCode}
+											className='border-border/80 hover:border-foreground/40 h-8 cursor-pointer gap-1.5 font-mono text-xs'
+											aria-label='Copy usage code'
+										>
+											{copiedUsage ? (
+												<>
+													<Check className='h-3.5 w-3.5 text-emerald-500' />
+													<span className='font-semibold text-emerald-600 dark:text-emerald-400'>Copied!</span>
+												</>
+											) : (
+												<>
+													<Copy className='h-3.5 w-3.5' />
+													<span>Copy Code</span>
+												</>
+											)}
+										</Button>
+									</TooltipTrigger>
+									<TooltipContent side='bottom'>{copiedUsage ? 'Copied to clipboard' : 'Copy code snippet'}</TooltipContent>
+								</Tooltip>
+							</TooltipProvider>
+						</div>
+					</div>
+
+					{/* Code Preview */}
+					<div className='bg-muted/10 p-3 sm:p-4'>
+						<CodeBlock code={usageFile.code} filename={usageFile.filename} language={getCodeLanguage(usageFile.filename)} showHeader={false} className='border-0 bg-transparent shadow-none' />
+					</div>
+				</div>
+			</DocsSection>
+
+			{/* 3. API Contract: Focused Props & Configuration Section */}
+			<DocsSection
+				id='props-api'
+				index={3}
+				label='API Contract'
+				title='Props & Configuration'
+				description={`Exhaustive parameter contract for ${component.name}. Validated in the live Studio workbench above and statically checked across all ${ECOSYSTEM_COUNT} ecosystem templates.`}
+			>
+				{/* Desktop View: Dense Data Table */}
+				<div className='hidden md:block'>
+					<DocsTable label={`${component.name} props`}>
+						<thead className={docsTableHeadClass}>
+							<tr>
+								<th className='px-4 py-3 font-mono'>Prop</th>
+								<th className='px-4 py-3 font-mono'>Type</th>
+								<th className='px-4 py-3 font-mono'>Default</th>
+								<th className='px-4 py-3 font-mono'>Description</th>
+							</tr>
+						</thead>
+						<tbody className='divide-border divide-y'>
+							{component.props.map((p) => {
+								const isCustom = propValues[p.name] !== undefined && propValues[p.name] !== p.defaultValue;
+								return (
+									<tr key={p.name} className='hover:bg-muted/30 transition-colors'>
+										<td className='text-foreground px-4 py-3 font-mono font-bold whitespace-nowrap'>
+											<div className='flex items-center gap-2'>
+												<span>{p.name}</span>
+												{isCustom && <span className='bg-foreground/10 text-foreground text-4xs rounded-sm px-1.5 py-0.5 font-mono uppercase'>live</span>}
+											</div>
+										</td>
+										<td className='px-4 py-3 font-mono'>
+											<span
+												className={cn(
+													'text-3xs rounded-md border px-2 py-0.5 font-mono font-semibold',
+													p.type === 'number'
+														? 'border-sky-500/30 bg-sky-500/10 text-sky-600 dark:text-sky-400'
+														: p.type === 'boolean'
+															? 'border-amber-500/30 bg-amber-500/10 text-amber-600 dark:text-amber-400'
+															: p.type === 'string'
+																? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
+																: 'border-purple-500/30 bg-purple-500/10 text-purple-600 dark:text-purple-400'
+												)}
+											>
+												{p.type}
+											</span>
+										</td>
+										<td className='text-foreground px-4 py-3 font-mono font-semibold'>
+											<span className='kbd border-border bg-background/80 text-foreground text-3xs font-mono'>
+												{p.defaultValue !== undefined && p.defaultValue !== null && p.defaultValue !== '' ? String(p.defaultValue) : '—'}
+											</span>
+										</td>
+										<td className='text-muted-foreground px-4 py-3 font-mono text-xs leading-relaxed'>{p.description || 'Configures dynamic calculation parameters.'}</td>
+									</tr>
+								);
+							})}
+						</tbody>
+					</DocsTable>
+				</div>
+
+				{/* Mobile View: Dedicated Parameter Cards (Zero Horizontal Overflow) */}
+				<div className='space-y-3 md:hidden'>
+					{component.props.map((p) => {
+						const isCustom = propValues[p.name] !== undefined && propValues[p.name] !== p.defaultValue;
+						return (
+							<div key={p.name} className='border-border/80 bg-card/80 space-y-2 rounded-xl border p-3.5 shadow-xs'>
+								<div className='flex items-center justify-between gap-2'>
+									<div className='flex items-center gap-1.5'>
+										<span className='text-foreground font-mono text-xs font-bold'>{p.name}</span>
+										{isCustom && <span className='bg-foreground/10 text-foreground text-4xs rounded-sm px-1.5 py-0.5 font-mono uppercase'>live</span>}
+									</div>
+									<span
+										className={cn(
+											'text-3xs rounded-md border px-2 py-0.5 font-mono font-semibold',
+											p.type === 'number'
+												? 'border-sky-500/30 bg-sky-500/10 text-sky-600 dark:text-sky-400'
+												: p.type === 'boolean'
+													? 'border-amber-500/30 bg-amber-500/10 text-amber-600 dark:text-amber-400'
+													: p.type === 'string'
+														? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
+														: 'border-purple-500/30 bg-purple-500/10 text-purple-600 dark:text-purple-400'
+										)}
 									>
-										<SelectTrigger className='h-8 w-full min-w-0 sm:w-56 sm:min-w-[13.5rem]'>
-											<SelectValue />
-										</SelectTrigger>
-										<SelectContent>
-											{FLAVORS.map((flavor) => (
-												<SelectItem key={flavor} value={flavor}>
-													{ECOSYSTEM_LABELS[flavor]}
-												</SelectItem>
-											))}
-										</SelectContent>
-									</Select>
+										{p.type}
+									</span>
+								</div>
+								<p className='text-muted-foreground text-2xs font-mono leading-relaxed'>{p.description || 'Configures dynamic calculation parameters.'}</p>
+								<div className='border-border/60 text-muted-foreground text-2xs flex items-center justify-between border-t pt-2 font-mono'>
+									<span>Default:</span>
+									<span className='kbd border-border bg-background/80 text-foreground text-3xs font-mono font-bold'>
+										{p.defaultValue !== undefined && p.defaultValue !== null && p.defaultValue !== '' ? String(p.defaultValue) : '—'}
+									</span>
 								</div>
 							</div>
+						);
+					})}
+				</div>
+			</DocsSection>
 
-							<div className='flex items-center gap-2'>
+			{/* 4. Component Source Code Section */}
+			<DocsSection
+				id='source-code'
+				index={4}
+				label='Source Code'
+				title='Component Source'
+				description={`Component source definition for ${ECOSYSTEM_LABELS[selectedFlavor]}. ${
+					hasEjectedDifference ? 'Toggle between the clean wrapper and the standalone ejected engine micro-kernel.' : 'Direct drop-in implementation for your project.'
+				}`}
+			>
+				<div className='border-border/80 bg-card/75 relative overflow-hidden rounded-2xl border shadow-xs backdrop-blur-xl'>
+					<div className='via-foreground/20 absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent to-transparent' />
+					<div className='text-foreground/20 text-4xs pointer-events-none absolute top-2 left-2 font-mono select-none'>+</div>
+					<div className='text-foreground/20 text-4xs pointer-events-none absolute top-2 right-2 font-mono select-none'>+</div>
+
+					{/* File Header Bar */}
+					<div className='border-border/70 bg-muted/40 flex flex-wrap items-center justify-between gap-3 border-b px-4 py-2.5'>
+						<div className='flex flex-wrap items-center gap-2'>
+							<span className='kbd border-border bg-background/90 text-foreground text-3xs font-mono font-bold uppercase'>{activeSourceFile.filename}</span>
+
+							{/* Clean vs Ejected Mode Switcher - only rendered when there is an actual difference */}
+							{hasEjectedDifference && (
 								<div className='border-border/70 bg-background/80 flex items-center gap-0.5 rounded-lg border p-0.5'>
 									<button
 										type='button'
@@ -1270,124 +1708,89 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 										Ejected Engine
 									</button>
 								</div>
+							)}
 
-								{/* Icon-Only Download & Copy Buttons with Tooltips */}
-								<TooltipProvider delayDuration={150}>
-									<div className='flex items-center gap-1'>
-										<Tooltip>
-											<TooltipTrigger asChild>
-												<Button
-													variant='outline'
-													size='icon'
-													onClick={downloadFile}
-													className='border-border/80 hover:border-foreground/40 h-8 w-8 cursor-pointer'
-													aria-label={`Download ${activeFile.filename}`}
-												>
-													<Download className='h-3.5 w-3.5 shrink-0' />
-												</Button>
-											</TooltipTrigger>
-											<TooltipContent side='bottom'>Download {activeFile.filename}</TooltipContent>
-										</Tooltip>
-
-										<Tooltip>
-											<TooltipTrigger asChild>
-												<Button variant='outline' size='icon' onClick={copyCode} className='border-border/80 hover:border-foreground/40 h-8 w-8 cursor-pointer' aria-label='Copy code'>
-													{copiedCode ? <Check className='h-3.5 w-3.5 text-emerald-500' /> : <Copy className='h-3.5 w-3.5' />}
-												</Button>
-											</TooltipTrigger>
-											<TooltipContent side='bottom'>{copiedCode ? 'Copied to clipboard' : 'Copy code'}</TooltipContent>
-										</Tooltip>
-									</div>
-								</TooltipProvider>
-							</div>
+							{/* Multi-file Tabs */}
+							{generatedFiles.length > 1 && (
+								<div className='no-scrollbar flex items-center gap-1 overflow-x-auto'>
+									{generatedFiles.map((file, idx) => (
+										<button
+											key={file.filename}
+											type='button'
+											onClick={() => setSelectedFileIdx(idx)}
+											className={cn(
+												'text-2xs shrink-0 cursor-pointer rounded-md px-2.5 py-1 font-mono transition-colors',
+												selectedFileIdx === idx ? 'bg-muted text-foreground font-bold shadow-xs' : 'text-muted-foreground hover:text-foreground'
+											)}
+										>
+											{file.filename}
+										</button>
+									))}
+								</div>
+							)}
 						</div>
 
-						{/* Multi-File Tabs */}
-						{generatedFiles.length > 1 && (
-							<div className='border-border/70 bg-muted/20 no-scrollbar flex items-center gap-1.5 overflow-x-auto border-b px-4 py-2'>
-								<span className='text-muted-foreground text-3xs mr-2 shrink-0 font-mono'>Files ({generatedFiles.length}):</span>
-								{generatedFiles.map((file, idx) => (
-									<button
-										key={file.filename}
-										type='button'
-										onClick={() => setSelectedFileIdx(idx)}
-										className={cn(
-											'shrink-0 cursor-pointer rounded-md px-3 py-1 font-mono text-xs transition-colors',
-											selectedFileIdx === idx ? 'bg-foreground text-background font-bold shadow-xs' : 'text-muted-foreground hover:text-foreground'
-										)}
-									>
-										{file.filename}
-									</button>
-								))}
-							</div>
-						)}
+						{/* Action Buttons: Download & Copy */}
+						<div className='flex items-center gap-1.5'>
+							<TooltipProvider delayDuration={150}>
+								<Tooltip>
+									<TooltipTrigger asChild>
+										<Button
+											variant='outline'
+											size='icon'
+											onClick={downloadSourceFile}
+											className='border-border/80 hover:border-foreground/40 h-8 w-8 cursor-pointer'
+											aria-label={`Download ${activeSourceFile.filename}`}
+										>
+											<Download className='h-3.5 w-3.5 shrink-0' />
+										</Button>
+									</TooltipTrigger>
+									<TooltipContent side='bottom'>Download {activeSourceFile.filename}</TooltipContent>
+								</Tooltip>
 
-						{/* CodeBlock Display */}
-						<div className='bg-muted/10 p-4'>
-							<CodeBlock
-								code={activeFile.code}
-								filename={activeFile.filename}
-								language={
-									activeFile.filename.endsWith('.dart')
-										? 'dart'
-										: activeFile.filename.endsWith('.php')
-											? 'php'
-											: activeFile.filename.endsWith('.vue')
-												? 'vue'
-												: activeFile.filename.endsWith('.svelte')
-													? 'svelte'
-													: activeFile.filename.endsWith('.astro')
-														? 'astro'
-														: activeFile.filename.endsWith('.json')
-															? 'json'
-															: activeFile.filename.endsWith('.css')
-																? 'css'
-																: activeFile.filename.endsWith('.html')
-																	? 'html'
-																	: activeFile.filename.endsWith('.js')
-																		? 'js'
-																		: activeFile.filename.endsWith('.ts')
-																			? 'typescript'
-																			: 'tsx'
-								}
-							/>
+								<Tooltip>
+									<TooltipTrigger asChild>
+										<Button
+											variant='outline'
+											size='sm'
+											onClick={copySourceCode}
+											className='border-border/80 hover:border-foreground/40 h-8 cursor-pointer gap-1.5 font-mono text-xs'
+											aria-label='Copy source code'
+										>
+											{copiedSource ? (
+												<>
+													<Check className='h-3.5 w-3.5 text-emerald-500' />
+													<span className='font-semibold text-emerald-600 dark:text-emerald-400'>Copied!</span>
+												</>
+											) : (
+												<>
+													<Copy className='h-3.5 w-3.5' />
+													<span>Copy Code</span>
+												</>
+											)}
+										</Button>
+									</TooltipTrigger>
+									<TooltipContent side='bottom'>{copiedSource ? 'Copied to clipboard' : 'Copy source code'}</TooltipContent>
+								</Tooltip>
+							</TooltipProvider>
 						</div>
+					</div>
+
+					{/* Source CodeBlock Display */}
+					<div className='bg-muted/10 p-3 sm:p-4'>
+						<CodeBlock
+							code={activeSourceFile.code}
+							filename={activeSourceFile.filename}
+							language={getCodeLanguage(activeSourceFile.filename)}
+							showHeader={false}
+							className='border-0 bg-transparent shadow-none'
+						/>
 					</div>
 				</div>
 			</DocsSection>
 
-			{/* API Contract: Exhaustive Props Table */}
-			<DocsSection
-				id='props-api'
-				index={2}
-				label='API Contract'
-				title='Props & Configuration'
-				description={`Every parameter is validated in the live Studio workbench above and statically checked across all ${ECOSYSTEM_COUNT} ecosystem templates.`}
-			>
-				<DocsTable label={`${component.name} props`}>
-					<thead className={docsTableHeadClass}>
-						<tr>
-							<th className='px-4 py-3 font-mono'>Prop</th>
-							<th className='px-4 py-3 font-mono'>Type</th>
-							<th className='px-4 py-3 font-mono'>Default</th>
-							<th className='px-4 py-3 font-mono'>Description</th>
-						</tr>
-					</thead>
-					<tbody className='divide-border divide-y'>
-						{component.props.map((p) => (
-							<tr key={p.name} className='hover:bg-muted/30 transition-colors'>
-								<td className='text-foreground px-4 py-3 font-mono font-bold whitespace-nowrap'>{p.name}</td>
-								<td className='text-muted-foreground px-4 py-3 font-mono'>{p.type}</td>
-								<td className='text-foreground px-4 py-3 font-mono font-semibold'>{p.defaultValue !== undefined && p.defaultValue !== null && p.defaultValue !== '' ? String(p.defaultValue) : '—'}</td>
-								<td className='text-muted-foreground px-4 py-3 font-mono text-xs leading-relaxed'>{p.description || 'Configures dynamic calculation parameters.'}</td>
-							</tr>
-						))}
-					</tbody>
-				</DocsTable>
-			</DocsSection>
-
-			{/* Lifecycle & Performance Guarantees */}
-			<DocsSection id='lifecycle-safety' index={3} label='Architecture' title='Lifecycle Safety & Performance' description='Engineered for high-frequency user interactions with zero memory leaks.'>
+			{/* 5. Lifecycle & Performance Guarantees */}
+			<DocsSection id='lifecycle-safety' index={5} label='Architecture' title='Lifecycle Safety & Performance' description='Engineered for high-frequency user interactions with zero memory leaks.'>
 				<div className='grid grid-cols-1 gap-3 sm:grid-cols-2'>
 					<DocsSpecCard icon={ShieldCheck} tag='Teardown' title='Deterministic Cleanup'>
 						All pointer event listeners, scroll handlers, and resize observers are cleanly destroyed on component unmount, preventing lingering background processes.
@@ -1399,8 +1802,8 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 				</div>
 			</DocsSection>
 
-			{/* Accessibility Considerations */}
-			<DocsSection id='accessibility' index={4} label='a11y' title='Accessibility Considerations' description='Fully compliant with WCAG guidelines and respects user motion preferences.'>
+			{/* 6. Accessibility Considerations */}
+			<DocsSection id='accessibility' index={6} label='a11y' title='Accessibility Considerations' description='Fully compliant with WCAG guidelines and respects user motion preferences.'>
 				<DocsSpecCard icon={Accessibility} tag='Motion' title='prefers-reduced-motion Support'>
 					When a user has <code className='text-foreground font-mono'>prefers-reduced-motion: reduce</code> enabled in their operating system, Exhuma components automatically disable 3D gyroscope tilt and
 					spring animations, rendering static accessible content.

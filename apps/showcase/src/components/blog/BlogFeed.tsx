@@ -155,7 +155,7 @@ export function BlogFeed({ posts }: BlogFeedProps) {
 							{/* Bottom Author & Timing */}
 							<div className='border-border/60 mt-6 flex flex-wrap items-center justify-between gap-2 border-t pt-4 text-xs'>
 								<div className='flex items-center gap-2'>
-									<div className='border-border bg-background text-foreground text-3xs flex h-5 w-5 shrink-0 items-center justify-center rounded border font-mono font-bold'>{post.author.avatar}</div>
+									<div className='border-border bg-background text-foreground text-3xs flex h-5 w-5 shrink-0 items-center justify-center rounded-sm border font-mono font-bold'>{post.author.avatar}</div>
 									<span className='text-muted-foreground text-2xs font-mono'>{post.author.name}</span>
 								</div>
 								<span className='text-muted-foreground text-3xs flex items-center gap-1 font-mono'>

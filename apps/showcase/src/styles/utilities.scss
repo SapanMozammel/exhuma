@@ -61,7 +61,7 @@
 }
 
 @utility text-heading-xsmall {
-	@apply text-xs font-bold uppercase tracking-wider;
+	@apply text-xs font-bold tracking-wider uppercase;
 }
 
 // ── Auto-Fitting Grid Columns ──────────────────────────────────
@@ -138,4 +138,19 @@ html.dark .shiki span {
 	font-style: var(--shiki-dark-font-style) !important;
 	font-weight: var(--shiki-dark-font-weight) !important;
 	text-decoration: var(--shiki-dark-text-decoration) !important;
+}
+
+// ── Floating Sticky Dock Elevation ─────────────────────────────
+@utility shadow-sticky-dock {
+	box-shadow:
+		0 10px 30px -5px rgba(0, 0, 0, 0.15),
+		0 20px 40px -10px rgba(0, 0, 0, 0.2),
+		0 0 0 1px hsl(var(--border) / 0.8);
+}
+:where(.dark) .shadow-sticky-dock {
+	box-shadow:
+		0 10px 35px -5px rgba(0, 0, 0, 0.6),
+		0 25px 50px -12px rgba(0, 0, 0, 0.7),
+		0 0 0 1px hsl(var(--border) / 0.8),
+		0 0 25px -5px rgba(255, 255, 255, 0.05);
 }

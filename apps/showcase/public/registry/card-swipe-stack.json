@@ -1,157 +1,170 @@
 {
-	"name": "Card Swipe Stack",
-	"slug": "card-swipe-stack",
-	"category": "cards",
-	"description": "Velocity-sensitive multi-card swipe stack with Euler angular rotation, circular velocity ring buffer, and zero external animation libraries.",
-	"version": "1.0.0",
-	"props": [
-		{
-			"name": "thresholdDistance",
-			"label": "Swipe Threshold (px)",
-			"type": "number",
-			"defaultValue": 120,
-			"min": 60,
-			"max": 240,
-			"step": 10,
-			"description": "Minimum drag distance to trigger a card dismiss."
-		},
-		{
-			"name": "maxRotation",
-			"label": "Max Rotation (deg)",
-			"type": "number",
-			"defaultValue": 20,
-			"min": 5,
-			"max": 45,
-			"step": 1,
-			"description": "Maximum angular rotation coupled to horizontal translation."
-		},
-		{
-			"name": "scaleStep",
-			"label": "Scale Step",
-			"type": "number",
-			"defaultValue": 0.05,
-			"min": 0.02,
-			"max": 0.1,
-			"step": 0.01,
-			"description": "Scale reduction step between consecutive cards in the stack."
-		}
-	],
-	"dependencies": {
-		"react": ["@exhuma/core"],
-		"nextjs": ["@exhuma/core"],
-		"vue": ["@exhuma/core"],
-		"svelte": ["@exhuma/core"],
-		"solid": ["@exhuma/core"],
-		"angular": ["@exhuma/core"],
-		"astro": ["@exhuma/core"],
-		"vanilla": ["@exhuma/core"],
-		"react-native": ["@exhuma/core"],
-		"flutter": ["exhuma"]
-	},
-	"flavors": {
-		"react": [
-			{
-				"filename": "CardSwipeStack.tsx",
-				"language": "tsx",
-				"description": "Card Swipe Stack — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
-				"code": "import * as React from 'react';\nimport * as CardSwipeStackPrimitive from '@exhuma/core';\nimport { clsx } from 'clsx';\n\nexport interface CardSwipeStackProps extends React.ComponentPropsWithoutRef<typeof CardSwipeStackPrimitive.CardSwipeStack> {\n  className?: string;\n}\n\nexport const CardSwipeStack = React.forwardRef<HTMLDivElement, CardSwipeStackProps>(\n  ({ className, children, ...props }, ref) => (\n    <CardSwipeStackPrimitive.CardSwipeStack\n      ref={ref}\n      className={clsx(\n        'relative flex items-center justify-center min-h-[26.25rem] w-full',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </CardSwipeStackPrimitive.CardSwipeStack>\n  )\n);\nCardSwipeStack.displayName = 'CardSwipeStack';\n"
-			}
-		],
-		"nextjs": [
-			{
-				"filename": "CardSwipeStack.tsx",
-				"language": "tsx",
-				"description": "Card Swipe Stack — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
-				"code": "'use client';\n\nimport * as React from 'react';\nimport * as CardSwipeStackPrimitive from '@exhuma/core';\nimport { clsx } from 'clsx';\n\nexport interface CardSwipeStackProps extends React.ComponentPropsWithoutRef<typeof CardSwipeStackPrimitive.CardSwipeStack> {\n  className?: string;\n}\n\nexport const CardSwipeStack = React.forwardRef<HTMLDivElement, CardSwipeStackProps>(\n  ({ className, children, ...props }, ref) => (\n    <CardSwipeStackPrimitive.CardSwipeStack\n      ref={ref}\n      className={clsx(\n        'relative flex items-center justify-center min-h-[26.25rem] w-full',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </CardSwipeStackPrimitive.CardSwipeStack>\n  )\n);\nCardSwipeStack.displayName = 'CardSwipeStack';\n"
-			}
-		],
-		"vue": [
-			{
-				"filename": "CardSwipeStack.vue",
-				"language": "vue",
-				"description": "Vue 3 Card Swipe Stack outer adapter wrapping @exhuma/core headless primitive.",
-				"code": "<script setup lang=\"ts\">\nimport { CardSwipeStack as CardSwipeStackPrimitive } from '@exhuma/core';\nimport { clsx } from 'clsx';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst props = withDefaults(defineProps<Props>(), {\n  class: '',\n});\n</script>\n\n<template>\n  <CardSwipeStackPrimitive\n    v-bind=\"props\"\n    :class=\"clsx('relative flex items-center justify-center min-h-[26.25rem] w-full', props.class)\"\n  >\n    <slot />\n  </CardSwipeStackPrimitive>\n</template>\n"
-			}
-		],
-		"svelte": [
-			{
-				"filename": "CardSwipeStack.svelte",
-				"language": "svelte",
-				"description": "Svelte 5 Card Swipe Stack adapter using runes and @exhuma/core primitives.",
-				"code": "<script lang=\"ts\">\n  import { CardSwipeStack as CardSwipeStackPrimitive } from '@exhuma/core';\n  import { clsx } from 'clsx';\n\n  let {\n    class: className = '',\n    children,\n    ...restProps\n  }: {\n    class?: string;\n    children?: import('svelte').Snippet;\n    [key: string]: unknown;\n  } = $props();\n</script>\n\n<CardSwipeStackPrimitive\n  class={clsx('relative flex items-center justify-center min-h-[26.25rem] w-full', className)}\n  {...restProps}\n>\n  {@render children?.()}\n</CardSwipeStackPrimitive>\n"
-			}
-		],
-		"angular": [
-			{
-				"filename": "card-swipe-stack.component.ts",
-				"language": "typescript",
-				"description": "Angular 18+ Standalone Card Swipe Stack component.",
-				"code": "import { Component, input } from '@angular/core';\nimport { CommonModule } from '@angular/common';\n\n@Component({\n  selector: 'exhuma-card-swipe-stack',\n  standalone: true,\n  imports: [CommonModule],\n  template: `\n    <div\n      class=\"relative flex items-center justify-center min-h-[26.25rem] w-full {{ customClass() }}\"\n    >\n      <ng-content></ng-content>\n    </div>\n  `,\n})\nexport class ExhumaCardSwipeStackComponent {\n  readonly customClass = input<string>('');\n}\n"
-			}
-		],
-		"solid": [
-			{
-				"filename": "CardSwipeStack.tsx",
-				"language": "tsx",
-				"description": "SolidJS Card Swipe Stack adapter wrapping @exhuma/core headless primitive.",
-				"code": "import { Component, JSX, splitProps } from 'solid-js';\nimport * as CardSwipeStackPrimitive from '@exhuma/core';\n\nexport interface CardSwipeStackProps extends JSX.HTMLAttributes<HTMLDivElement> {\n  [key: string]: unknown;\n}\n\nexport const CardSwipeStack: Component<CardSwipeStackProps> = (props) => {\n  const [local, others] = splitProps(props, ['class', 'children']);\n  return (\n    <CardSwipeStackPrimitive.CardSwipeStack\n      class={`relative flex items-center justify-center min-h-[26.25rem] w-full ${local.class ?? ''}`}\n      {...others}\n    >\n      {local.children}\n    </CardSwipeStackPrimitive.CardSwipeStack>\n  );\n};\n"
-			}
-		],
-		"astro": [
-			{
-				"filename": "CardSwipeStack.astro",
-				"language": "astro",
-				"description": "Astro Card Swipe Stack component with @exhuma/core primitive.",
-				"code": "---\nimport * as CardSwipeStackPrimitive from '@exhuma/core';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst { class: className = '', ...props } = Astro.props;\n---\n\n<CardSwipeStackPrimitive.CardSwipeStack\n  client:visible\n  className={`relative flex items-center justify-center min-h-[26.25rem] w-full ${className}`}\n  {...props}\n>\n  <slot />\n</CardSwipeStackPrimitive.CardSwipeStack>\n"
-			}
-		],
-		"blade": [
-			{
-				"filename": "card-swipe-stack.blade.php",
-				"language": "php",
-				"description": "Laravel Blade component for Card Swipe Stack with Alpine / data attributes.",
-				"code": "@props([])\n\n<exhuma-card-swipe-stack\n    {{ $attributes->merge([\n        'class' => 'relative flex items-center justify-center min-h-[26.25rem] w-full block',\n    ]) }}\n>\n    {{ $slot }}\n</exhuma-card-swipe-stack>\n"
-			}
-		],
-		"vanilla": [
-			{
-				"filename": "exhuma-card-swipe-stack.js",
-				"language": "javascript",
-				"description": "Autonomous Vanilla JS Card Swipe Stack initialization module.",
-				"code": "import { CardSwipeStack } from '@exhuma/core';\n\nexport function initCardSwipeStack(selector = '[data-exhuma-card-swipe-stack]', options = {}) {\n  const elements = document.querySelectorAll(selector);\n  return Array.from(elements);\n}\n"
-			}
-		],
-		"wordpress": [
-			{
-				"filename": "block.json",
-				"language": "json",
-				"description": "WordPress Block API v3 definition for Card Swipe Stack.",
-				"code": "{\n  \"$schema\": \"https://schemas.wp.org/trunk/block.json\",\n  \"apiVersion\": 3,\n  \"name\": \"exhuma/card-swipe-stack\",\n  \"version\": \"1.0.0\",\n  \"title\": \"Exhuma Card Swipe Stack\",\n  \"category\": \"design\",\n  \"icon\": \"art\",\n  \"description\": \"Velocity-sensitive multi-card swipe stack with Euler angular rotation.\",\n  \"attributes\": {},\n  \"editorScript\": \"file:./index.js\",\n  \"viewScript\": \"exhuma-kinetic\"\n}"
-			}
-		],
-		"webcomponent": [
-			{
-				"filename": "exhuma-card-swipe-stack.js",
-				"language": "javascript",
-				"description": "Universal Web Component wrapper for <exhuma-card-swipe-stack>.",
-				"code": "import { CardSwipeStack } from '@exhuma/core';\n\nclass ExhumaCardSwipeStackElement extends HTMLElement {\n  connectedCallback() {\n    this.classList.add('exhuma-card-swipe-stack');\n    this.style.display = 'block';\n  }\n}\n\nif (!customElements.get('exhuma-card-swipe-stack')) {\n  customElements.define('exhuma-card-swipe-stack', ExhumaCardSwipeStackElement);\n}\n"
-			}
-		],
-		"react-native": [
-			{
-				"filename": "CardSwipeStack.tsx",
-				"language": "tsx",
-				"description": "React Native Card Swipe Stack adapter wrapping @exhuma/core touch primitive.",
-				"code": "import React from 'react';\nimport { View, StyleSheet, type ViewProps } from 'react-native';\nimport * as CardSwipeStackPrimitive from '@exhuma/core';\n\nexport interface CardSwipeStackProps extends ViewProps {\n  children?: React.ReactNode;\n}\n\nexport function CardSwipeStack({ style, children, ...props }: CardSwipeStackProps) {\n  return (\n    <View style={[styles.container, style]} {...props}>\n      {children}\n    </View>\n  );\n}\n\nconst styles = StyleSheet.create({\n  container: {\n    borderRadius: 16,\n    borderWidth: 1,\n    borderColor: '#e2e8f0',\n    backgroundColor: '#ffffff',\n    padding: 20,\n    overflow: 'hidden',\n  },\n});\n"
-			}
-		],
-		"flutter": [
-			{
-				"filename": "card_swipe_stack.dart",
-				"language": "dart",
-				"description": "Flutter Card Swipe Stack widget wrapping package:exhuma.",
-				"code": "import 'package:flutter/material.dart';\nimport 'package:exhuma/exhuma.dart' as exhuma;\n\nclass ExhumaCardSwipeStack extends StatelessWidget {\n  final Widget child;\n\n  const ExhumaCardSwipeStack({\n    super.key,\n    required this.child,\n  });\n\n  @override\n  Widget build(BuildContext context) {\n    return Container(\n      decoration: BoxDecoration(\n        borderRadius: BorderRadius.circular(16.0),\n        border: Border.all(color: Theme.of(context).dividerColor),\n        color: Theme.of(context).cardColor,\n      ),\n      padding: const EdgeInsets.all(20.0),\n      child: child,\n    );\n  }\n}\n"
-			}
-		]
-	}
+  "name": "Card Swipe Stack",
+  "slug": "card-swipe-stack",
+  "category": "cards",
+  "description": "Velocity-sensitive multi-card swipe stack with Euler angular rotation, circular velocity ring buffer, and zero external animation libraries.",
+  "version": "1.0.0",
+  "props": [
+    {
+      "name": "thresholdDistance",
+      "label": "Swipe Threshold (px)",
+      "type": "number",
+      "defaultValue": 120,
+      "min": 60,
+      "max": 240,
+      "step": 10,
+      "description": "Minimum drag distance to trigger a card dismiss."
+    },
+    {
+      "name": "maxRotation",
+      "label": "Max Rotation (deg)",
+      "type": "number",
+      "defaultValue": 20,
+      "min": 5,
+      "max": 45,
+      "step": 1,
+      "description": "Maximum angular rotation coupled to horizontal translation."
+    },
+    {
+      "name": "scaleStep",
+      "label": "Scale Step",
+      "type": "number",
+      "defaultValue": 0.05,
+      "min": 0.02,
+      "max": 0.1,
+      "step": 0.01,
+      "description": "Scale reduction step between consecutive cards in the stack."
+    }
+  ],
+  "dependencies": {
+    "react": [
+      "@exhuma/core"
+    ],
+    "nextjs": [
+      "@exhuma/core"
+    ],
+    "vue": [
+      "clsx"
+    ],
+    "svelte": [
+      "clsx"
+    ],
+    "solid": [
+      "clsx"
+    ],
+    "angular": [],
+    "astro": [],
+    "blade": [],
+    "vanilla": [],
+    "wordpress": [],
+    "webcomponent": [],
+    "react-native": [],
+    "flutter": []
+  },
+  "flavors": {
+    "react": [
+      {
+        "filename": "CardSwipeStack.tsx",
+        "language": "tsx",
+        "description": "Card Swipe Stack — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
+        "code": "import * as React from 'react';\nimport * as CardSwipeStackPrimitive from '@exhuma/core';\nimport { clsx } from 'clsx';\n\nexport interface CardSwipeStackProps extends React.ComponentPropsWithoutRef<typeof CardSwipeStackPrimitive.CardSwipeStack> {\n  className?: string;\n}\n\nexport const CardSwipeStack = React.forwardRef<HTMLDivElement, CardSwipeStackProps>(\n  ({ className, children, ...props }, ref) => (\n    <CardSwipeStackPrimitive.CardSwipeStack\n      ref={ref}\n      className={clsx(\n        'relative flex items-center justify-center min-h-[26.25rem] w-full',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </CardSwipeStackPrimitive.CardSwipeStack>\n  )\n);\nCardSwipeStack.displayName = 'CardSwipeStack';\n"
+      }
+    ],
+    "nextjs": [
+      {
+        "filename": "CardSwipeStack.tsx",
+        "language": "tsx",
+        "description": "Card Swipe Stack — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
+        "code": "'use client';\n\nimport * as React from 'react';\nimport * as CardSwipeStackPrimitive from '@exhuma/core';\nimport { clsx } from 'clsx';\n\nexport interface CardSwipeStackProps extends React.ComponentPropsWithoutRef<typeof CardSwipeStackPrimitive.CardSwipeStack> {\n  className?: string;\n}\n\nexport const CardSwipeStack = React.forwardRef<HTMLDivElement, CardSwipeStackProps>(\n  ({ className, children, ...props }, ref) => (\n    <CardSwipeStackPrimitive.CardSwipeStack\n      ref={ref}\n      className={clsx(\n        'relative flex items-center justify-center min-h-[26.25rem] w-full',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </CardSwipeStackPrimitive.CardSwipeStack>\n  )\n);\nCardSwipeStack.displayName = 'CardSwipeStack';\n"
+      }
+    ],
+    "vue": [
+      {
+        "filename": "CardSwipeStack.vue",
+        "language": "vue",
+        "description": "Vue 3 Native Card Swipe Stack component.",
+        "code": "<script setup lang=\"ts\">\nimport { clsx } from 'clsx';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst props = withDefaults(defineProps<Props>(), {\n  class: '',\n});\n</script>\n\n<template>\n  <div\n    :class=\"clsx('relative flex items-center justify-center min-h-[26.25rem] w-full', props.class)\"\n    v-bind=\"$attrs\"\n  >\n    <slot />\n  </div>\n</template>\n"
+      }
+    ],
+    "svelte": [
+      {
+        "filename": "CardSwipeStack.svelte",
+        "language": "svelte",
+        "description": "Svelte 5 Native Card Swipe Stack component using runes.",
+        "code": "<script lang=\"ts\">\n  import { clsx } from 'clsx';\n\n  let {\n    class: className = '',\n    children,\n    ...restProps\n  }: {\n    class?: string;\n    children?: import('svelte').Snippet;\n    [key: string]: unknown;\n  } = $props();\n</script>\n\n<div\n  class={clsx('relative flex items-center justify-center min-h-[26.25rem] w-full', className)}\n  {...restProps}\n>\n  {@render children?.()}\n</div>\n"
+      }
+    ],
+    "angular": [
+      {
+        "filename": "card-swipe-stack.component.ts",
+        "language": "typescript",
+        "description": "Angular 18+ Standalone Card Swipe Stack component.",
+        "code": "import { Component, input } from '@angular/core';\n\n@Component({\n  selector: 'exhuma-card-swipe-stack',\n  standalone: true,\n  template: `\n    <div\n      class=\"relative flex items-center justify-center min-h-[26.25rem] w-full {{ customClass() }}\"\n    >\n      <ng-content></ng-content>\n    </div>\n  `,\n})\nexport class ExhumaCardSwipeStackComponent {\n  readonly customClass = input<string>('');\n}\n"
+      }
+    ],
+    "solid": [
+      {
+        "filename": "CardSwipeStack.tsx",
+        "language": "tsx",
+        "description": "SolidJS Native Card Swipe Stack component.",
+        "code": "import { Component, JSX, splitProps } from 'solid-js';\n\nexport interface CardSwipeStackProps extends JSX.HTMLAttributes<HTMLDivElement> {\n  [key: string]: unknown;\n}\n\nexport const CardSwipeStack: Component<CardSwipeStackProps> = (props) => {\n  const [local, others] = splitProps(props, ['class', 'children']);\n  return (\n    <div\n      class={`relative flex items-center justify-center min-h-[26.25rem] w-full ${local.class ?? ''}`}\n      {...others}\n    >\n      {local.children}\n    </div>\n  );\n};\n"
+      }
+    ],
+    "astro": [
+      {
+        "filename": "CardSwipeStack.astro",
+        "language": "astro",
+        "description": "Pure Native Astro Card Swipe Stack component.",
+        "code": "---\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst { class: className = '', ...props } = Astro.props;\n---\n\n<div\n  class={`relative flex items-center justify-center min-h-[26.25rem] w-full ${className}`}\n  {...props}\n>\n  <slot />\n</div>\n"
+      }
+    ],
+    "blade": [
+      {
+        "filename": "card-swipe-stack.blade.php",
+        "language": "php",
+        "description": "Laravel Blade component for Card Swipe Stack.",
+        "code": "@props([])\n\n<div\n    {{ $attributes->merge([\n        'class' => 'relative flex items-center justify-center min-h-[26.25rem] w-full block',\n    ]) }}\n>\n    {{ $slot }}\n</div>\n"
+      }
+    ],
+    "vanilla": [
+      {
+        "filename": "card-swipe-stack.vanilla.js",
+        "language": "javascript",
+        "description": "Autonomous Vanilla JS Card Swipe Stack initialization module.",
+        "code": "export function initCardSwipeStack(selector = '[data-exhuma-card-swipe-stack]', options = {}) {\n  const elements = document.querySelectorAll(selector);\n  elements.forEach((container) => {\n    const topStart = parseFloat(container.getAttribute('data-top-start') || options.topStart || 20);\n    const topIncrement = parseFloat(container.getAttribute('data-top-increment') || options.topIncrement || 28);\n    const cardGap = parseFloat(container.getAttribute('data-card-gap') || options.cardGap || 20);\n\n    const cards = Array.from(container.children);\n    cards.forEach((card, i) => {\n      if (card instanceof HTMLElement) {\n        card.style.position = 'sticky';\n        card.style.top = `${topStart + i * topIncrement}px`;\n        card.style.marginBottom = `${cardGap}px`;\n      }\n    });\n  });\n  return Array.from(elements);\n}\n"
+      }
+    ],
+    "wordpress": [
+      {
+        "filename": "block.json",
+        "language": "json",
+        "description": "WordPress Block API v3 definition for Card Swipe Stack.",
+        "code": "{\n  \"$schema\": \"https://schemas.wp.org/trunk/block.json\",\n  \"apiVersion\": 3,\n  \"name\": \"exhuma/card-swipe-stack\",\n  \"version\": \"1.0.0\",\n  \"title\": \"Exhuma Card Swipe Stack\",\n  \"category\": \"design\",\n  \"icon\": \"art\",\n  \"description\": \"Velocity-sensitive multi-card swipe stack with Euler angular rotation.\",\n  \"attributes\": {\n    \"topStart\": {\n      \"type\": \"number\",\n      \"default\": 20\n    },\n    \"topIncrement\": {\n      \"type\": \"number\",\n      \"default\": 28\n    },\n    \"cardGap\": {\n      \"type\": \"number\",\n      \"default\": 20\n    },\n    \"scaleThreshold\": {\n      \"type\": \"number\",\n      \"default\": 150\n    },\n    \"minScale\": {\n      \"type\": \"number\",\n      \"default\": 0.9\n    },\n    \"reverseScale\": {\n      \"type\": \"boolean\",\n      \"default\": true\n    }\n  },\n  \"editorScript\": \"file:./index.js\",\n  \"viewScript\": \"exhuma-kinetic\"\n}"
+      }
+    ],
+    "webcomponent": [
+      {
+        "filename": "exhuma-card-swipe-stack.js",
+        "language": "javascript",
+        "description": "Universal Web Component wrapper for <exhuma-card-swipe-stack>.",
+        "code": "class ExhumaCardSwipeStackElement extends HTMLElement {\n  connectedCallback() {\n    this.classList.add('exhuma-card-swipe-stack');\n    this.style.display = 'block';\n\n    const topStart = parseFloat(this.getAttribute('top-start') || '20');\n    const topIncrement = parseFloat(this.getAttribute('top-increment') || '28');\n    const cardGap = parseFloat(this.getAttribute('card-gap') || '20');\n\n    const cards = Array.from(this.children);\n    cards.forEach((card, i) => {\n      if (card instanceof HTMLElement) {\n        card.style.position = 'sticky';\n        card.style.top = `${topStart + i * topIncrement}px`;\n        card.style.marginBottom = `${cardGap}px`;\n      }\n    });\n  }\n}\n\nif (!customElements.get('exhuma-card-swipe-stack')) {\n  customElements.define('exhuma-card-swipe-stack', ExhumaCardSwipeStackElement);\n}\n"
+      }
+    ],
+    "react-native": [
+      {
+        "filename": "CardSwipeStack.tsx",
+        "language": "tsx",
+        "description": "React Native Card Swipe Stack native component.",
+        "code": "import React from 'react';\nimport { View, StyleSheet, type ViewProps } from 'react-native';\n\nexport interface CardSwipeStackProps extends ViewProps {\n  topStart?: number;\n  topIncrement?: number;\n  cardGap?: number;\n  scaleThreshold?: number;\n  minScale?: number;\n  reverseScale?: boolean;\n  children?: React.ReactNode;\n}\n\nexport function CardSwipeStack({\n  topStart = 20,\n  topIncrement = 28,\n  cardGap = 20,\n  style,\n  children,\n  ...props\n}: CardSwipeStackProps) {\n  return (\n    <View style={[styles.container, style]} {...props}>\n      {React.Children.map(children, (child, index) => (\n        <View\n          key={index}\n          style={{\n            marginTop: index === 0 ? topStart : topIncrement,\n            marginBottom: cardGap,\n            zIndex: index + 1,\n          }}\n        >\n          {child}\n        </View>\n      ))}\n    </View>\n  );\n}\n\nconst styles = StyleSheet.create({\n  container: {\n    width: '100%',\n  },\n});\n"
+      }
+    ],
+    "flutter": [
+      {
+        "filename": "card_swipe_stack.dart",
+        "language": "dart",
+        "description": "Flutter Card Swipe Stack widget wrapping package:exhuma.",
+        "code": "import 'package:flutter/material.dart';\n\nclass ExhumaCardSwipeStack extends StatelessWidget {\n  final List<Widget> children;\n  final double topStart;\n  final double topIncrement;\n  final double cardGap;\n  final double scaleThreshold;\n  final double minScale;\n  final bool reverseScale;\n\n  const ExhumaCardSwipeStack({\n    super.key,\n    required this.children,\n    this.topStart = 20.0,\n    this.topIncrement = 28.0,\n    this.cardGap = 20.0,\n    this.scaleThreshold = 150.0,\n    this.minScale = 0.9,\n    this.reverseScale = true,\n  });\n\n  @override\n  Widget build(BuildContext context) {\n    return Column(\n      children: children.asMap().entries.map((entry) {\n        final index = entry.key;\n        final widget = entry.value;\n        return Container(\n          margin: EdgeInsets.only(\n            top: index == 0 ? topStart : topIncrement,\n            bottom: cardGap,\n          ),\n          child: widget,\n        );\n      }).toList(),\n    );\n  }\n}\n"
+      }
+    ]
+  }
 }

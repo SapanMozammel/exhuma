@@ -35,8 +35,7 @@ export const TiltCard = memo<TiltCardProps>(({ children, maxTilt = 15, perspecti
 	const isReducedMotionRef = useRef(false);
 
 	useEffect(() => {
-		isReducedMotionRef.current =
-			typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+		isReducedMotionRef.current = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 	}, []);
 
 	const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
@@ -133,14 +132,7 @@ export const TiltCard = memo<TiltCardProps>(({ children, maxTilt = 15, perspecti
 			{...props}
 		>
 			{children}
-			{glare && (
-				<div
-					ref={glareRef}
-					aria-hidden='true'
-					className='pointer-events-none absolute inset-0'
-					style={{ opacity: 0 }}
-				/>
-			)}
+			{glare && <div ref={glareRef} aria-hidden='true' className='pointer-events-none absolute inset-0' style={{ opacity: 0 }} />}
 		</div>
 	);
 });
