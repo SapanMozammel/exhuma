@@ -59,8 +59,8 @@ export function GlobalFooter() {
 			{/* Brand + Link Groups */}
 			<div className='container grid grid-cols-1 gap-7 py-10 text-xs md:grid-cols-[34fr_66fr] md:gap-5 lg:gap-10'>
 				<div className='space-y-3'>
-					<div className='flex items-start gap-1.5'>
-						<ExhumaLogo size={20} className='text-foreground -mr-0.5 shrink-0' />
+					<div className='flex items-center gap-2'>
+						<ExhumaLogo size={20} className='text-foreground shrink-0' />
 						<div className='flex items-center gap-1.5'>
 							<span className='font-display text-foreground text-base leading-none font-extrabold tracking-tight'>Exhuma</span>
 							<span className='border-border/70 bg-muted/60 text-muted-foreground text-4xs rounded-sm border px-1.5 py-0.5 font-mono font-medium'>v{APP_VERSION}</span>
@@ -104,8 +104,6 @@ export function GlobalFooter() {
 				<div className='container-fluid text-muted-foreground text-2xs flex flex-col items-center justify-between gap-3 py-4 md:flex-row'>
 					<div className='flex flex-wrap items-center justify-center gap-2 text-center'>
 						<span>MIT License © {new Date().getFullYear()} Sapan Mozammel</span>
-						<span>·</span>
-						<span className='font-mono'>v{APP_VERSION}</span>
 					</div>
 
 					<div className='flex items-center gap-3'>

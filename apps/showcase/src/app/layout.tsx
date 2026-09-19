@@ -16,7 +16,7 @@ const bricolageGrotesque = Bricolage_Grotesque({
 	display: 'swap',
 });
 
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://exhuma.dev';
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://exhuma.vercel.app';
 
 export const metadata: Metadata = {
 	metadataBase: new URL(siteUrl),
@@ -56,6 +56,14 @@ export const metadata: Metadata = {
 			'max-snippet': -1,
 		},
 	},
+	icons: {
+		icon: [
+			{ url: '/favicon.svg', type: 'image/svg+xml' },
+		],
+		apple: [
+			{ url: '/apple-icon.svg', type: 'image/svg+xml' },
+		],
+	},
 	openGraph: {
 		type: 'website',
 		locale: 'en_US',
@@ -63,11 +71,20 @@ export const metadata: Metadata = {
 		siteName: 'Exhuma',
 		title: 'Exhuma — Universal Component Architecture for 13 Ecosystems',
 		description: 'Autonomous tactile interactions, dynamic layout engines, and zero-runtime-dependency physics components adapted natively across 13 frontend ecosystems.',
+		images: [
+			{
+				url: '/og.png',
+				width: 1200,
+				height: 630,
+				alt: 'Exhuma — Universal Component Architecture for 13 Ecosystems',
+			},
+		],
 	},
 	twitter: {
 		card: 'summary_large_image',
 		title: 'Exhuma — Universal Component Architecture for 13 Ecosystems',
 		description: 'Autonomous tactile interactions, dynamic layout engines, and zero-runtime-dependency physics components adapted natively across 13 frontend ecosystems.',
+		images: ['/og.png'],
 		creator: '@sapanmozammel',
 	},
 };

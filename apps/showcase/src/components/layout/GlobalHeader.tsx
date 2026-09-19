@@ -9,7 +9,7 @@ import { ThemeSwitcher } from './ThemeSwitcher';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
 
-const BANNER_DISMISSED_KEY = 'exhuma-announcement-dismissed';
+const BANNER_DISMISSED_KEY = 'exhuma-repo-star-request-banner';
 
 export function GlobalHeader() {
 	const pathname = usePathname();
@@ -101,11 +101,11 @@ export function GlobalHeader() {
 				<div className='container-fluid flex h-14 items-center justify-between gap-4'>
 					{/* Brand Mark */}
 					<div className='flex items-center gap-3 lg:gap-6'>
-						<Link href='/' className='group flex items-center gap-1.5'>
-							<ExhumaLogo size={24} className='text-foreground -mr-0.5 shrink-0' />
-							<div className='flex items-start gap-0.5'>
-								<span className='font-display text-foreground group-hover:text-foreground/80 text-base leading-none font-extrabold tracking-tight transition-colors'>Exhuma</span>
-								<sup className='text-muted-foreground text-4xs hidden leading-none font-bold tracking-wider uppercase sm:inline-block'>Beta</sup>
+						<Link href='/' className='group flex items-center gap-2'>
+							<ExhumaLogo size={22} className='text-foreground shrink-0' />
+							<div className='flex items-center gap-1.5'>
+								<span className='font-display text-foreground group-hover:text-foreground/85 text-[16.5px] leading-none font-extrabold tracking-tight transition-colors'>Exhuma</span>
+								<span className='border-border/70 bg-muted/60 text-muted-foreground text-4xs hidden rounded-sm border px-1 py-0.5 font-mono font-medium sm:inline-block'>Beta</span>
 							</div>
 						</Link>
 
