@@ -24,16 +24,8 @@ const DEFAULT_TOP_INCREMENT = 24;
 const DEFAULT_MIN_SCALE = 0.9;
 const DEFAULT_ENABLED = true;
 
-export function useStackingCards(
-	count: number,
-	options: UseStackingCardsOptions = {}
-) {
-	const {
-		topStart = DEFAULT_TOP_START,
-		topIncrement = DEFAULT_TOP_INCREMENT,
-		defaultMinScale = DEFAULT_MIN_SCALE,
-		enabled = DEFAULT_ENABLED,
-	} = options;
+export function useStackingCards(count: number, options: UseStackingCardsOptions = {}) {
+	const { topStart = DEFAULT_TOP_START, topIncrement = DEFAULT_TOP_INCREMENT, defaultMinScale = DEFAULT_MIN_SCALE, enabled = DEFAULT_ENABLED } = options;
 
 	const containerRef = useRef<HTMLDivElement>(null);
 

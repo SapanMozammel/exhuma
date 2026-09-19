@@ -58,8 +58,8 @@ describe('Exhuma CLI Suite — Automated End-to-End Test Gate', () => {
 
     const code = readFileSync(componentPath, 'utf8');
     expect(code).toContain('$props()');
-    expect(code).toContain('$derived(');
-    expect(code).toContain('scaleDecay');
+    expect(code).toContain('onMount');
+    expect(code).toContain('reverseScale');
   });
 
   it('installs real React component via exhuma add with custom path', () => {
@@ -69,7 +69,8 @@ describe('Exhuma CLI Suite — Automated End-to-End Test Gate', () => {
 
     const code = readFileSync(componentPath, 'utf8');
     expect(code).toContain('AutoGrid');
-    expect(code).toContain('minItemWidth');
+    expect(code).toContain('@exhuma/core');
+    expect(code).toContain('AutoGridPrimitive');
   });
 
   it('executes exhuma build to generate static registry JSON', () => {

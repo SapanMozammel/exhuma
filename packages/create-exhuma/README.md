@@ -13,9 +13,11 @@ bun create exhuma
 ```
 
 ## Features
+
 - Interactive project scaffolding for **13 frontend ecosystems**.
 - Pre-configured `exhuma.json` directory paths and options.
 - 1-click installation of tactile components.
 
 ## License
+
 MIT

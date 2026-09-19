@@ -8,11 +8,7 @@ export async function generateStaticParams() {
 	}));
 }
 
-export default async function LegacyComponentRedirect({
-	params,
-}: {
-	params: Promise<{ category: string; slug: string }>;
-}) {
+export default async function LegacyComponentRedirect({ params }: { params: Promise<{ category: string; slug: string }> }) {
 	const { slug } = await params;
 	redirect(`/docs/components/${slug}`);
 }

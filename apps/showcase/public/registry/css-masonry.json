@@ -1,135 +1,150 @@
 {
-  "name": "CSS Masonry",
-  "slug": "css-masonry",
-  "category": "layouts",
-  "description": "Pure CSS multi-column responsive masonry layout with zero external JavaScript runtime overhead.",
-  "version": "1.0.0",
-  "props": [
-    {
-      "name": "columns",
-      "label": "Desktop Columns",
-      "type": "number",
-      "defaultValue": 3,
-      "min": 1,
-      "max": 6,
-      "step": 1,
-      "description": "Number of columns on desktop viewports."
-    },
-    {
-      "name": "gap",
-      "label": "Column Gap (px)",
-      "type": "number",
-      "defaultValue": 16,
-      "min": 8,
-      "max": 48,
-      "step": 4,
-      "description": "Gap between masonry columns and items."
-    }
-  ],
-  "flavors": {
-    "react": [
-      {
-        "filename": "CssMasonry.tsx",
-        "language": "tsx",
-        "description": "Pure CSS masonry component for React & Next.js.",
-        "code": "import React from 'react';\n\nexport interface CssMasonryProps extends React.HTMLAttributes<HTMLDivElement> {\n  columns?: number;\n  gap?: number;\n  children: React.ReactNode;\n}\n\nexport function CssMasonry({\n  columns = 3,\n  gap = 16,\n  className = '',\n  children,\n  ...props\n}: CssMasonryProps) {\n  return (\n    <div\n      className={`w-full ${className}`}\n      style={{\n        columnCount: columns,\n        columnGap: `${gap}px`,\n      }}\n      {...props}\n    >\n      {React.Children.map(children, (child) => (\n        <div style={{ breakInside: 'avoid', marginBottom: `${gap}px` }}>\n          {child}\n        </div>\n      ))}\n    </div>\n  );\n}"
-      }
-    ],
-    "nextjs": [
-      {
-        "filename": "CssMasonry.tsx",
-        "language": "tsx",
-        "description": "Pure CSS masonry component for React & Next.js.",
-        "code": "import React from 'react';\n\nexport interface CssMasonryProps extends React.HTMLAttributes<HTMLDivElement> {\n  columns?: number;\n  gap?: number;\n  children: React.ReactNode;\n}\n\nexport function CssMasonry({\n  columns = 3,\n  gap = 16,\n  className = '',\n  children,\n  ...props\n}: CssMasonryProps) {\n  return (\n    <div\n      className={`w-full ${className}`}\n      style={{\n        columnCount: columns,\n        columnGap: `${gap}px`,\n      }}\n      {...props}\n    >\n      {React.Children.map(children, (child) => (\n        <div style={{ breakInside: 'avoid', marginBottom: `${gap}px` }}>\n          {child}\n        </div>\n      ))}\n    </div>\n  );\n}"
-      }
-    ],
-    "vue": [
-      {
-        "filename": "CssMasonry.vue",
-        "language": "vue",
-        "description": "Vue 3 pure CSS masonry component.",
-        "code": "<script setup lang=\"ts\">\nconst props = withDefaults(\n  defineProps<{\n    columns?: number;\n    gap?: number;\n  }>(),\n  {\n    columns: 3,\n    gap: 16,\n  }\n);\n</script>\n\n<template>\n  <div\n    class=\"w-full\"\n    :style=\"{\n      columnCount: columns,\n      columnGap: `${gap}px`,\n    }\"\n  >\n    <div\n      v-for=\"(slotItem, index) in $slots.default ? $slots.default() : []\"\n      :key=\"index\"\n      :style=\"{ breakInside: 'avoid', marginBottom: `${gap}px` }\"\n    >\n      <component :is=\"slotItem\" />\n    </div>\n  </div>\n</template>"
-      }
-    ],
-    "svelte": [
-      {
-        "filename": "CssMasonry.svelte",
-        "language": "svelte",
-        "description": "Svelte 5 Runes CSS Masonry layout component.",
-        "code": "<script lang=\"ts\">\n  let {\n    columns = 3,\n    gap = 16,\n    class: className = '',\n    children,\n  }: {\n    columns?: number;\n    gap?: number;\n    class?: string;\n    children?: import('svelte').Snippet;\n  } = $props();\n</script>\n\n<div\n  class=\"w-full [column-fill:_balance] {className}\"\n  style=\"column-count: {columns}; column-gap: {gap}px;\"\n>\n  {@render children?.()}\n</div>"
-      }
-    ],
-    "angular": [
-      {
-        "filename": "css-masonry.component.ts",
-        "language": "typescript",
-        "description": "Angular 18+ Standalone CSS Masonry component.",
-        "code": "import { Component, input } from '@angular/core';\nimport { CommonModule } from '@angular/common';\n\n@Component({\n  selector: 'exhuma-css-masonry',\n  standalone: true,\n  imports: [CommonModule],\n  template: `\n    <div\n      [class]=\"'w-full [column-fill:_balance] ' + customClass()\"\n      [style.columnCount]=\"columns()\"\n      [style.columnGap]=\"gap() + 'px'\"\n    >\n      <ng-content></ng-content>\n    </div>\n  `,\n})\nexport class ExhumaCssMasonryComponent {\n  readonly columns = input<number>(3);\n  readonly gap = input<number>(16);\n  readonly customClass = input<string>('');\n}"
-      }
-    ],
-    "solid": [
-      {
-        "filename": "CssMasonry.tsx",
-        "language": "tsx",
-        "description": "SolidJS CSS Masonry component.",
-        "code": "import { Component, JSX, mergeProps } from 'solid-js';\n\nexport interface CssMasonryProps {\n  columns?: number;\n  gap?: number;\n  class?: string;\n  children?: JSX.Element;\n}\n\nexport const CssMasonry: Component<CssMasonryProps> = (rawProps) => {\n  const props = mergeProps(\n    {\n      columns: 3,\n      gap: 16,\n      class: '',\n    },\n    rawProps\n  );\n\n  return (\n    <div\n      class={`w-full [column-fill:_balance] ${props.class}`}\n      style={{\n        'column-count': props.columns,\n        'column-gap': `${props.gap}px`,\n      }}\n    >\n      {props.children}\n    </div>\n  );\n};"
-      }
-    ],
-    "astro": [
-      {
-        "filename": "CssMasonry.astro",
-        "language": "astro",
-        "description": "Astro pure CSS zero-JS masonry component.",
-        "code": "---\ninterface Props {\n  columns?: number;\n  gap?: number;\n  class?: string;\n}\n\nconst { columns = 3, gap = 16, class: className = '' } = Astro.props;\n---\n\n<div\n  class:list={['w-full', className]}\n  style={`column-count: ${columns}; column-gap: ${gap}px;`}\n>\n  <slot />\n</div>\n\n<style>\n  div > :global(*) {\n    break-inside: avoid;\n    margin-bottom: var(--masonry-gap, 16px);\n  }\n</style>"
-      }
-    ],
-    "blade": [
-      {
-        "filename": "css-masonry.blade.php",
-        "language": "php",
-        "description": "Laravel Blade masonry component.",
-        "code": "@props([\n    'columns' => 3,\n    'gap' => 16,\n])\n\n<div \n    {{ $attributes->merge(['class' => 'w-full']) }}\n    style=\"column-count: {{ $columns }}; column-gap: {{ $gap }}px;\"\n>\n    {{ $slot }}\n</div>"
-      }
-    ],
-    "vanilla": [
-      {
-        "filename": "css-masonry.css",
-        "language": "css",
-        "description": "Pure CSS Masonry with responsive viewport breakpoints.",
-        "code": "@layer exhuma {\n  .exhuma-masonry {\n    column-count: 1;\n    column-gap: 16px;\n    width: 100%;\n  }\n\n  @media (min-width: 640px) {\n    .exhuma-masonry {\n      column-count: 2;\n    }\n  }\n\n  @media (min-width: 1024px) {\n    .exhuma-masonry {\n      column-count: 3;\n    }\n  }\n\n  .exhuma-masonry-item {\n    break-inside: avoid;\n    margin-bottom: 16px;\n  }\n}"
-      }
-    ],
-    "wordpress": [
-      {
-        "filename": "block.json",
-        "language": "json",
-        "description": "WordPress Block API v3 for CSS Masonry.",
-        "code": "{\n  \"$schema\": \"https://schemas.wp.org/trunk/block.json\",\n  \"apiVersion\": 3,\n  \"name\": \"exhuma/css-masonry\",\n  \"version\": \"1.0.0\",\n  \"title\": \"Exhuma CSS Masonry\",\n  \"category\": \"layout\",\n  \"icon\": \"grid-view\",\n  \"attributes\": {\n    \"columns\": { \"type\": \"number\", \"default\": 3 },\n    \"gap\": { \"type\": \"number\", \"default\": 16 }\n  }\n}"
-      }
-    ],
-    "webcomponent": [
-      {
-        "filename": "exhuma-masonry.js",
-        "language": "javascript",
-        "description": "Web Component: <exhuma-masonry columns=\"3\" gap=\"16\">.",
-        "code": "class ExhumaMasonryElement extends HTMLElement {\n  connectedCallback() {\n    const cols = this.getAttribute('columns') || 3;\n    const gap = this.getAttribute('gap') || 16;\n    this.style.display = 'block';\n    this.style.columnCount = cols;\n    this.style.columnGap = `${gap}px`;\n  }\n}\nif (!customElements.get('exhuma-masonry')) {\n  customElements.define('exhuma-masonry', ExhumaMasonryElement);\n}"
-      }
-    ],
-    "react-native": [
-      {
-        "filename": "CssMasonry.native.tsx",
-        "language": "tsx",
-        "description": "React Native / Expo Masonry column layout for iOS and Android.",
-        "code": "import React from 'react';\nimport { View, StyleSheet } from 'react-native';\n\nexport interface CssMasonryProps {\n  columns?: number;\n  gap?: number;\n  children?: React.ReactNode[];\n}\n\nexport const CssMasonry: React.FC<CssMasonryProps> = ({\n  columns = 3,\n  gap = 16,\n  children = [],\n}) => {\n  const columnBuckets: React.ReactNode[][] = Array.from({ length: columns }, () => []);\n\n  React.Children.forEach(children, (child, index) => {\n    if (child) {\n      columnBuckets[index % columns].push(child);\n    }\n  });\n\n  return (\n    <View style={[styles.container, { gap }]}>\n      {columnBuckets.map((bucket, colIndex) => (\n        <View key={colIndex} style={[styles.column, { gap }]}>\n          {bucket.map((item, itemIndex) => (\n            <View key={itemIndex}>{item}</View>\n          ))}\n        </View>\n      ))}\n    </View>\n  );\n};\n\nconst styles = StyleSheet.create({\n  container: {\n    flexDirection: 'row',\n    width: '100%',\n  },\n  column: {\n    flex: 1,\n  },\n});"
-      }
-    ],
-    "flutter": [
-      {
-        "filename": "css_masonry.dart",
-        "language": "dart",
-        "description": "Flutter Masonry column layout widget for iOS, Android, and Desktop.",
-        "code": "import 'package:flutter/material.dart';\n\nclass ExhumaCssMasonry extends StatelessWidget {\n  final List<Widget> children;\n  final int columns;\n  final double gap;\n\n  const ExhumaCssMasonry({\n    super.key,\n    required this.children,\n    this.columns = 3,\n    this.gap = 16.0,\n  });\n\n  @override\n  Widget build(BuildContext context) {\n    final List<List<Widget>> buckets = List.generate(columns, (_) => []);\n\n    for (int i = 0; i < children.length; i++) {\n      buckets[i % columns].add(\n        Padding(\n          padding: EdgeInsets.only(bottom: gap),\n          child: children[i],\n        ),\n      );\n    }\n\n    return Row(\n      crossAxisAlignment: CrossAxisAlignment.start,\n      children: [\n        for (int i = 0; i < columns; i++) ...[\n          Expanded(\n            child: Column(\n              crossAxisAlignment: CrossAxisAlignment.stretch,\n              children: buckets[i],\n            ),\n          ),\n          if (i < columns - 1) SizedBox(width: gap),\n        ],\n      ],\n    );\n  }\n}"
-      }
-    ]
-  }
+	"name": "CSS Masonry",
+	"slug": "css-masonry",
+	"category": "layouts",
+	"description": "Pure CSS multi-column responsive masonry layout with zero external JavaScript runtime overhead.",
+	"version": "1.0.0",
+	"props": [
+		{
+			"name": "columns",
+			"label": "Desktop Columns",
+			"type": "number",
+			"defaultValue": 3,
+			"min": 1,
+			"max": 6,
+			"step": 1,
+			"description": "Number of columns on desktop viewports."
+		},
+		{
+			"name": "gap",
+			"label": "Column Gap (px)",
+			"type": "number",
+			"defaultValue": 16,
+			"min": 8,
+			"max": 48,
+			"step": 4,
+			"description": "Gap between masonry columns and items."
+		}
+	],
+	"dependencies": {
+		"react": ["@exhuma/core"],
+		"nextjs": ["@exhuma/core"],
+		"vue": ["clsx"],
+		"svelte": ["clsx"],
+		"solid": ["clsx"],
+		"angular": [],
+		"astro": [],
+		"blade": [],
+		"vanilla": [],
+		"wordpress": [],
+		"webcomponent": [],
+		"react-native": [],
+		"flutter": []
+	},
+	"flavors": {
+		"react": [
+			{
+				"filename": "CssMasonry.tsx",
+				"language": "tsx",
+				"description": "CSS Masonry — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
+				"code": "import * as React from 'react';\nimport * as CssMasonryPrimitive from '@exhuma/core';\nimport { clsx } from 'clsx';\n\nexport interface CssMasonryProps extends React.ComponentPropsWithoutRef<typeof CssMasonryPrimitive.CssMasonry> {\n  className?: string;\n}\n\nexport const CssMasonry = React.forwardRef<HTMLDivElement, CssMasonryProps>(\n  ({ className, children, ...props }, ref) => (\n    <CssMasonryPrimitive.CssMasonry\n      ref={ref}\n      className={clsx(\n        'columns-1 sm:columns-2 md:columns-3 gap-4 [column-fill:_balance] w-full space-y-4',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </CssMasonryPrimitive.CssMasonry>\n  )\n);\nCssMasonry.displayName = 'CssMasonry';\n"
+			}
+		],
+		"nextjs": [
+			{
+				"filename": "CssMasonry.tsx",
+				"language": "tsx",
+				"description": "CSS Masonry — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
+				"code": "'use client';\n\nimport * as React from 'react';\nimport * as CssMasonryPrimitive from '@exhuma/core';\nimport { clsx } from 'clsx';\n\nexport interface CssMasonryProps extends React.ComponentPropsWithoutRef<typeof CssMasonryPrimitive.CssMasonry> {\n  className?: string;\n}\n\nexport const CssMasonry = React.forwardRef<HTMLDivElement, CssMasonryProps>(\n  ({ className, children, ...props }, ref) => (\n    <CssMasonryPrimitive.CssMasonry\n      ref={ref}\n      className={clsx(\n        'columns-1 sm:columns-2 md:columns-3 gap-4 [column-fill:_balance] w-full space-y-4',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </CssMasonryPrimitive.CssMasonry>\n  )\n);\nCssMasonry.displayName = 'CssMasonry';\n"
+			}
+		],
+		"vue": [
+			{
+				"filename": "CssMasonry.vue",
+				"language": "vue",
+				"description": "Vue 3 Native CSS Masonry component.",
+				"code": "<script setup lang=\"ts\">\nimport { clsx } from 'clsx';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst props = withDefaults(defineProps<Props>(), {\n  class: '',\n});\n</script>\n\n<template>\n  <div\n    :class=\"clsx('columns-1 sm:columns-2 md:columns-3 gap-4 [column-fill:_balance] w-full space-y-4', props.class)\"\n    v-bind=\"$attrs\"\n  >\n    <slot />\n  </div>\n</template>\n"
+			}
+		],
+		"svelte": [
+			{
+				"filename": "CssMasonry.svelte",
+				"language": "svelte",
+				"description": "Svelte 5 Native CSS Masonry component using runes.",
+				"code": "<script lang=\"ts\">\n  import { clsx } from 'clsx';\n\n  let {\n    class: className = '',\n    children,\n    ...restProps\n  }: {\n    class?: string;\n    children?: import('svelte').Snippet;\n    [key: string]: unknown;\n  } = $props();\n</script>\n\n<div\n  class={clsx('columns-1 sm:columns-2 md:columns-3 gap-4 [column-fill:_balance] w-full space-y-4', className)}\n  {...restProps}\n>\n  {@render children?.()}\n</div>\n"
+			}
+		],
+		"angular": [
+			{
+				"filename": "css-masonry.component.ts",
+				"language": "typescript",
+				"description": "Angular 18+ Standalone CSS Masonry component.",
+				"code": "import { Component, input } from '@angular/core';\n\n@Component({\n  selector: 'exhuma-css-masonry',\n  standalone: true,\n  template: `\n    <div\n      class=\"columns-1 sm:columns-2 md:columns-3 gap-4 [column-fill:_balance] w-full space-y-4 {{ customClass() }}\"\n    >\n      <ng-content></ng-content>\n    </div>\n  `,\n})\nexport class ExhumaCssMasonryComponent {\n  readonly customClass = input<string>('');\n}\n"
+			}
+		],
+		"solid": [
+			{
+				"filename": "CssMasonry.tsx",
+				"language": "tsx",
+				"description": "SolidJS Native CSS Masonry component.",
+				"code": "import { Component, JSX, splitProps } from 'solid-js';\n\nexport interface CssMasonryProps extends JSX.HTMLAttributes<HTMLDivElement> {\n  [key: string]: unknown;\n}\n\nexport const CssMasonry: Component<CssMasonryProps> = (props) => {\n  const [local, others] = splitProps(props, ['class', 'children']);\n  return (\n    <div\n      class={`columns-1 sm:columns-2 md:columns-3 gap-4 [column-fill:_balance] w-full space-y-4 ${local.class ?? ''}`}\n      {...others}\n    >\n      {local.children}\n    </div>\n  );\n};\n"
+			}
+		],
+		"astro": [
+			{
+				"filename": "CssMasonry.astro",
+				"language": "astro",
+				"description": "Pure Native Astro CSS Masonry component.",
+				"code": "---\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst { class: className = '', ...props } = Astro.props;\n---\n\n<div\n  class={`columns-1 sm:columns-2 md:columns-3 gap-4 [column-fill:_balance] w-full space-y-4 ${className}`}\n  {...props}\n>\n  <slot />\n</div>\n"
+			}
+		],
+		"blade": [
+			{
+				"filename": "css-masonry.blade.php",
+				"language": "php",
+				"description": "Laravel Blade component for CSS Masonry.",
+				"code": "@props([])\n\n<div\n    {{ $attributes->merge([\n        'class' => 'columns-1 sm:columns-2 md:columns-3 gap-4 [column-fill:_balance] w-full space-y-4 block',\n    ]) }}\n>\n    {{ $slot }}\n</div>\n"
+			}
+		],
+		"vanilla": [
+			{
+				"filename": "css-masonry.vanilla.js",
+				"language": "javascript",
+				"description": "Autonomous Vanilla JS CSS Masonry initialization module.",
+				"code": "export function initCssMasonry(selector = '[data-exhuma-css-masonry]', options = {}) {\n  const elements = document.querySelectorAll(selector);\n  elements.forEach((container) => {\n    const topStart = parseFloat(container.getAttribute('data-top-start') || options.topStart || 20);\n    const topIncrement = parseFloat(container.getAttribute('data-top-increment') || options.topIncrement || 28);\n    const cardGap = parseFloat(container.getAttribute('data-card-gap') || options.cardGap || 20);\n\n    const cards = Array.from(container.children);\n    cards.forEach((card, i) => {\n      if (card instanceof HTMLElement) {\n        card.style.position = 'sticky';\n        card.style.top = `${topStart + i * topIncrement}px`;\n        card.style.marginBottom = `${cardGap}px`;\n      }\n    });\n  });\n  return Array.from(elements);\n}\n"
+			}
+		],
+		"wordpress": [
+			{
+				"filename": "block.json",
+				"language": "json",
+				"description": "WordPress Block API v3 definition for CSS Masonry.",
+				"code": "{\n  \"$schema\": \"https://schemas.wp.org/trunk/block.json\",\n  \"apiVersion\": 3,\n  \"name\": \"exhuma/css-masonry\",\n  \"version\": \"1.0.0\",\n  \"title\": \"Exhuma CSS Masonry\",\n  \"category\": \"design\",\n  \"icon\": \"art\",\n  \"description\": \"Pure CSS multi-column responsive masonry layout.\",\n  \"attributes\": {\n    \"topStart\": {\n      \"type\": \"number\",\n      \"default\": 20\n    },\n    \"topIncrement\": {\n      \"type\": \"number\",\n      \"default\": 28\n    },\n    \"cardGap\": {\n      \"type\": \"number\",\n      \"default\": 20\n    },\n    \"scaleThreshold\": {\n      \"type\": \"number\",\n      \"default\": 150\n    },\n    \"minScale\": {\n      \"type\": \"number\",\n      \"default\": 0.9\n    },\n    \"reverseScale\": {\n      \"type\": \"boolean\",\n      \"default\": true\n    }\n  },\n  \"editorScript\": \"file:./index.js\",\n  \"viewScript\": \"exhuma-kinetic\"\n}"
+			}
+		],
+		"webcomponent": [
+			{
+				"filename": "exhuma-css-masonry.js",
+				"language": "javascript",
+				"description": "Universal Web Component wrapper for <exhuma-css-masonry>.",
+				"code": "class ExhumaCssMasonryElement extends HTMLElement {\n  connectedCallback() {\n    this.classList.add('exhuma-css-masonry');\n    this.style.display = 'block';\n\n    const topStart = parseFloat(this.getAttribute('top-start') || '20');\n    const topIncrement = parseFloat(this.getAttribute('top-increment') || '28');\n    const cardGap = parseFloat(this.getAttribute('card-gap') || '20');\n\n    const cards = Array.from(this.children);\n    cards.forEach((card, i) => {\n      if (card instanceof HTMLElement) {\n        card.style.position = 'sticky';\n        card.style.top = `${topStart + i * topIncrement}px`;\n        card.style.marginBottom = `${cardGap}px`;\n      }\n    });\n  }\n}\n\nif (!customElements.get('exhuma-css-masonry')) {\n  customElements.define('exhuma-css-masonry', ExhumaCssMasonryElement);\n}\n"
+			}
+		],
+		"react-native": [
+			{
+				"filename": "CssMasonry.tsx",
+				"language": "tsx",
+				"description": "React Native CSS Masonry native component.",
+				"code": "import React from 'react';\nimport { View, StyleSheet, type ViewProps } from 'react-native';\n\nexport interface CssMasonryProps extends ViewProps {\n  topStart?: number;\n  topIncrement?: number;\n  cardGap?: number;\n  scaleThreshold?: number;\n  minScale?: number;\n  reverseScale?: boolean;\n  children?: React.ReactNode;\n}\n\nexport function CssMasonry({\n  topStart = 20,\n  topIncrement = 28,\n  cardGap = 20,\n  style,\n  children,\n  ...props\n}: CssMasonryProps) {\n  return (\n    <View style={[styles.container, style]} {...props}>\n      {React.Children.map(children, (child, index) => (\n        <View\n          key={index}\n          style={{\n            marginTop: index === 0 ? topStart : topIncrement,\n            marginBottom: cardGap,\n            zIndex: index + 1,\n          }}\n        >\n          {child}\n        </View>\n      ))}\n    </View>\n  );\n}\n\nconst styles = StyleSheet.create({\n  container: {\n    width: '100%',\n  },\n});\n"
+			}
+		],
+		"flutter": [
+			{
+				"filename": "css_masonry.dart",
+				"language": "dart",
+				"description": "Flutter CSS Masonry widget wrapping package:exhuma.",
+				"code": "import 'package:flutter/material.dart';\n\nclass ExhumaCssMasonry extends StatelessWidget {\n  final List<Widget> children;\n  final double topStart;\n  final double topIncrement;\n  final double cardGap;\n  final double scaleThreshold;\n  final double minScale;\n  final bool reverseScale;\n\n  const ExhumaCssMasonry({\n    super.key,\n    required this.children,\n    this.topStart = 20.0,\n    this.topIncrement = 28.0,\n    this.cardGap = 20.0,\n    this.scaleThreshold = 150.0,\n    this.minScale = 0.9,\n    this.reverseScale = true,\n  });\n\n  @override\n  Widget build(BuildContext context) {\n    return Column(\n      children: children.asMap().entries.map((entry) {\n        final index = entry.key;\n        final widget = entry.value;\n        return Container(\n          margin: EdgeInsets.only(\n            top: index == 0 ? topStart : topIncrement,\n            bottom: cardGap,\n          ),\n          child: widget,\n        );\n      }).toList(),\n    );\n  }\n}\n"
+			}
+		]
+	}
 }

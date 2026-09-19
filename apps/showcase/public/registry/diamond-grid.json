@@ -1,0 +1,137 @@
+{
+	"name": "Diamond Grid",
+	"slug": "diamond-grid",
+	"category": "layouts",
+	"description": "Rhombic symmetrical diamond column distribution [1, 2, 3, 4, 3, 2, 1] with responsive mobile collapse.",
+	"version": "1.0.0",
+	"props": [
+		{
+			"name": "gap",
+			"label": "Column Gap",
+			"type": "string",
+			"defaultValue": "0.75vw",
+			"description": "Spacing between diamond columns and elements."
+		}
+	],
+	"dependencies": {
+		"react": ["@exhuma/core"],
+		"nextjs": ["@exhuma/core"],
+		"vue": ["clsx"],
+		"svelte": ["clsx"],
+		"solid": ["clsx"],
+		"angular": [],
+		"astro": [],
+		"blade": [],
+		"vanilla": [],
+		"wordpress": [],
+		"webcomponent": [],
+		"react-native": [],
+		"flutter": []
+	},
+	"flavors": {
+		"react": [
+			{
+				"filename": "DiamondGrid.tsx",
+				"language": "tsx",
+				"description": "Diamond Grid — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
+				"code": "import * as React from 'react';\nimport * as DiamondGridPrimitive from '@exhuma/core';\nimport { clsx } from 'clsx';\n\nexport interface DiamondGridProps extends React.ComponentPropsWithoutRef<typeof DiamondGridPrimitive.DiamondGrid> {\n  className?: string;\n}\n\nexport const DiamondGrid = React.forwardRef<HTMLDivElement, DiamondGridProps>(\n  ({ className, children, ...props }, ref) => (\n    <DiamondGridPrimitive.DiamondGrid\n      ref={ref}\n      className={clsx(\n        'flex items-center justify-center w-full max-w-6xl mx-auto py-12 overflow-hidden',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </DiamondGridPrimitive.DiamondGrid>\n  )\n);\nDiamondGrid.displayName = 'DiamondGrid';\n"
+			}
+		],
+		"nextjs": [
+			{
+				"filename": "DiamondGrid.tsx",
+				"language": "tsx",
+				"description": "Diamond Grid — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
+				"code": "'use client';\n\nimport * as React from 'react';\nimport * as DiamondGridPrimitive from '@exhuma/core';\nimport { clsx } from 'clsx';\n\nexport interface DiamondGridProps extends React.ComponentPropsWithoutRef<typeof DiamondGridPrimitive.DiamondGrid> {\n  className?: string;\n}\n\nexport const DiamondGrid = React.forwardRef<HTMLDivElement, DiamondGridProps>(\n  ({ className, children, ...props }, ref) => (\n    <DiamondGridPrimitive.DiamondGrid\n      ref={ref}\n      className={clsx(\n        'flex items-center justify-center w-full max-w-6xl mx-auto py-12 overflow-hidden',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </DiamondGridPrimitive.DiamondGrid>\n  )\n);\nDiamondGrid.displayName = 'DiamondGrid';\n"
+			}
+		],
+		"vue": [
+			{
+				"filename": "DiamondGrid.vue",
+				"language": "vue",
+				"description": "Vue 3 Native Diamond Grid component.",
+				"code": "<script setup lang=\"ts\">\nimport { clsx } from 'clsx';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst props = withDefaults(defineProps<Props>(), {\n  class: '',\n});\n</script>\n\n<template>\n  <div\n    :class=\"clsx('flex items-center justify-center w-full max-w-6xl mx-auto py-12 overflow-hidden', props.class)\"\n    v-bind=\"$attrs\"\n  >\n    <slot />\n  </div>\n</template>\n"
+			}
+		],
+		"svelte": [
+			{
+				"filename": "DiamondGrid.svelte",
+				"language": "svelte",
+				"description": "Svelte 5 Native Diamond Grid component using runes.",
+				"code": "<script lang=\"ts\">\n  import { clsx } from 'clsx';\n\n  let {\n    class: className = '',\n    children,\n    ...restProps\n  }: {\n    class?: string;\n    children?: import('svelte').Snippet;\n    [key: string]: unknown;\n  } = $props();\n</script>\n\n<div\n  class={clsx('flex items-center justify-center w-full max-w-6xl mx-auto py-12 overflow-hidden', className)}\n  {...restProps}\n>\n  {@render children?.()}\n</div>\n"
+			}
+		],
+		"angular": [
+			{
+				"filename": "diamond-grid.component.ts",
+				"language": "typescript",
+				"description": "Angular 18+ Standalone Diamond Grid component.",
+				"code": "import { Component, input } from '@angular/core';\n\n@Component({\n  selector: 'exhuma-diamond-grid',\n  standalone: true,\n  template: `\n    <div\n      class=\"flex items-center justify-center w-full max-w-6xl mx-auto py-12 overflow-hidden {{ customClass() }}\"\n    >\n      <ng-content></ng-content>\n    </div>\n  `,\n})\nexport class ExhumaDiamondGridComponent {\n  readonly customClass = input<string>('');\n}\n"
+			}
+		],
+		"solid": [
+			{
+				"filename": "DiamondGrid.tsx",
+				"language": "tsx",
+				"description": "SolidJS Native Diamond Grid component.",
+				"code": "import { Component, JSX, splitProps } from 'solid-js';\n\nexport interface DiamondGridProps extends JSX.HTMLAttributes<HTMLDivElement> {\n  [key: string]: unknown;\n}\n\nexport const DiamondGrid: Component<DiamondGridProps> = (props) => {\n  const [local, others] = splitProps(props, ['class', 'children']);\n  return (\n    <div\n      class={`flex items-center justify-center w-full max-w-6xl mx-auto py-12 overflow-hidden ${local.class ?? ''}`}\n      {...others}\n    >\n      {local.children}\n    </div>\n  );\n};\n"
+			}
+		],
+		"astro": [
+			{
+				"filename": "DiamondGrid.astro",
+				"language": "astro",
+				"description": "Pure Native Astro Diamond Grid component.",
+				"code": "---\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst { class: className = '', ...props } = Astro.props;\n---\n\n<div\n  class={`flex items-center justify-center w-full max-w-6xl mx-auto py-12 overflow-hidden ${className}`}\n  {...props}\n>\n  <slot />\n</div>\n"
+			}
+		],
+		"blade": [
+			{
+				"filename": "diamond-grid.blade.php",
+				"language": "php",
+				"description": "Laravel Blade component for Diamond Grid.",
+				"code": "@props([])\n\n<div\n    {{ $attributes->merge([\n        'class' => 'flex items-center justify-center w-full max-w-6xl mx-auto py-12 overflow-hidden block',\n    ]) }}\n>\n    {{ $slot }}\n</div>\n"
+			}
+		],
+		"vanilla": [
+			{
+				"filename": "diamond-grid.vanilla.js",
+				"language": "javascript",
+				"description": "Autonomous Vanilla JS Diamond Grid initialization module.",
+				"code": "export function initDiamondGrid(selector = '[data-exhuma-diamond-grid]', options = {}) {\n  const elements = document.querySelectorAll(selector);\n  elements.forEach((container) => {\n    const topStart = parseFloat(container.getAttribute('data-top-start') || options.topStart || 20);\n    const topIncrement = parseFloat(container.getAttribute('data-top-increment') || options.topIncrement || 28);\n    const cardGap = parseFloat(container.getAttribute('data-card-gap') || options.cardGap || 20);\n\n    const cards = Array.from(container.children);\n    cards.forEach((card, i) => {\n      if (card instanceof HTMLElement) {\n        card.style.position = 'sticky';\n        card.style.top = `${topStart + i * topIncrement}px`;\n        card.style.marginBottom = `${cardGap}px`;\n      }\n    });\n  });\n  return Array.from(elements);\n}\n"
+			}
+		],
+		"wordpress": [
+			{
+				"filename": "block.json",
+				"language": "json",
+				"description": "WordPress Block API v3 definition for Diamond Grid.",
+				"code": "{\n  \"$schema\": \"https://schemas.wp.org/trunk/block.json\",\n  \"apiVersion\": 3,\n  \"name\": \"exhuma/diamond-grid\",\n  \"version\": \"1.0.0\",\n  \"title\": \"Exhuma Diamond Grid\",\n  \"category\": \"design\",\n  \"icon\": \"art\",\n  \"description\": \"Rhombic symmetrical diamond column distribution with responsive collapse.\",\n  \"attributes\": {\n    \"topStart\": {\n      \"type\": \"number\",\n      \"default\": 20\n    },\n    \"topIncrement\": {\n      \"type\": \"number\",\n      \"default\": 28\n    },\n    \"cardGap\": {\n      \"type\": \"number\",\n      \"default\": 20\n    },\n    \"scaleThreshold\": {\n      \"type\": \"number\",\n      \"default\": 150\n    },\n    \"minScale\": {\n      \"type\": \"number\",\n      \"default\": 0.9\n    },\n    \"reverseScale\": {\n      \"type\": \"boolean\",\n      \"default\": true\n    }\n  },\n  \"editorScript\": \"file:./index.js\",\n  \"viewScript\": \"exhuma-kinetic\"\n}"
+			}
+		],
+		"webcomponent": [
+			{
+				"filename": "exhuma-diamond-grid.js",
+				"language": "javascript",
+				"description": "Universal Web Component wrapper for <exhuma-diamond-grid>.",
+				"code": "class ExhumaDiamondGridElement extends HTMLElement {\n  connectedCallback() {\n    this.classList.add('exhuma-diamond-grid');\n    this.style.display = 'block';\n\n    const topStart = parseFloat(this.getAttribute('top-start') || '20');\n    const topIncrement = parseFloat(this.getAttribute('top-increment') || '28');\n    const cardGap = parseFloat(this.getAttribute('card-gap') || '20');\n\n    const cards = Array.from(this.children);\n    cards.forEach((card, i) => {\n      if (card instanceof HTMLElement) {\n        card.style.position = 'sticky';\n        card.style.top = `${topStart + i * topIncrement}px`;\n        card.style.marginBottom = `${cardGap}px`;\n      }\n    });\n  }\n}\n\nif (!customElements.get('exhuma-diamond-grid')) {\n  customElements.define('exhuma-diamond-grid', ExhumaDiamondGridElement);\n}\n"
+			}
+		],
+		"react-native": [
+			{
+				"filename": "DiamondGrid.tsx",
+				"language": "tsx",
+				"description": "React Native Diamond Grid native component.",
+				"code": "import React from 'react';\nimport { View, StyleSheet, type ViewProps } from 'react-native';\n\nexport interface DiamondGridProps extends ViewProps {\n  topStart?: number;\n  topIncrement?: number;\n  cardGap?: number;\n  scaleThreshold?: number;\n  minScale?: number;\n  reverseScale?: boolean;\n  children?: React.ReactNode;\n}\n\nexport function DiamondGrid({\n  topStart = 20,\n  topIncrement = 28,\n  cardGap = 20,\n  style,\n  children,\n  ...props\n}: DiamondGridProps) {\n  return (\n    <View style={[styles.container, style]} {...props}>\n      {React.Children.map(children, (child, index) => (\n        <View\n          key={index}\n          style={{\n            marginTop: index === 0 ? topStart : topIncrement,\n            marginBottom: cardGap,\n            zIndex: index + 1,\n          }}\n        >\n          {child}\n        </View>\n      ))}\n    </View>\n  );\n}\n\nconst styles = StyleSheet.create({\n  container: {\n    width: '100%',\n  },\n});\n"
+			}
+		],
+		"flutter": [
+			{
+				"filename": "diamond_grid.dart",
+				"language": "dart",
+				"description": "Flutter Diamond Grid widget wrapping package:exhuma.",
+				"code": "import 'package:flutter/material.dart';\n\nclass ExhumaDiamondGrid extends StatelessWidget {\n  final List<Widget> children;\n  final double topStart;\n  final double topIncrement;\n  final double cardGap;\n  final double scaleThreshold;\n  final double minScale;\n  final bool reverseScale;\n\n  const ExhumaDiamondGrid({\n    super.key,\n    required this.children,\n    this.topStart = 20.0,\n    this.topIncrement = 28.0,\n    this.cardGap = 20.0,\n    this.scaleThreshold = 150.0,\n    this.minScale = 0.9,\n    this.reverseScale = true,\n  });\n\n  @override\n  Widget build(BuildContext context) {\n    return Column(\n      children: children.asMap().entries.map((entry) {\n        final index = entry.key;\n        final widget = entry.value;\n        return Container(\n          margin: EdgeInsets.only(\n            top: index == 0 ? topStart : topIncrement,\n            bottom: cardGap,\n          ),\n          child: widget,\n        );\n      }).toList(),\n    );\n  }\n}\n"
+			}
+		]
+	}
+}

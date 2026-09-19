@@ -1,16 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import {
-	getComponentBySlug,
-	EcosystemFlavor,
-	ECOSYSTEM_LABELS,
-} from '@/registry';
+import { getComponentBySlug, EcosystemFlavor, ECOSYSTEM_LABELS } from '@/registry';
 
 const ALL_FLAVORS = Object.keys(ECOSYSTEM_LABELS) as EcosystemFlavor[];
 
-export async function GET(
-	request: NextRequest,
-	{ params }: { params: Promise<{ slug: string }> }
-) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ slug: string }> }) {
 	const { slug } = await params;
 	const component = getComponentBySlug(slug);
 
@@ -18,9 +11,7 @@ export async function GET(
 		return NextResponse.json({ error: 'Component not found' }, { status: 404 });
 	}
 
-	const requestedFlavor = request.nextUrl.searchParams.get(
-		'flavor'
-	) as EcosystemFlavor | null;
+	const requestedFlavor = request.nextUrl.searchParams.get('flavor') as EcosystemFlavor | null;
 
 	// Single-flavor query response for CLI: fetchComponentFromRegistry
 	if (requestedFlavor && ALL_FLAVORS.includes(requestedFlavor)) {

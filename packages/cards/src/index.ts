@@ -1,10 +1,14 @@
-export { HorizontalScroller } from './HorizontalScroller/HorizontalScroller';
-export { StackingCards } from './StackingCards/StackingCards';
+export { HorizontalScroller, calculateHorizontalDistance, calculateSectionHeight } from './HorizontalScroller/HorizontalScroller';
+export { StackingCards, calculateScaleValue, generateDefaultScaleValues, getReverseScale, smoothstep } from './StackingCards/StackingCards';
 export { TiltCard } from './TiltCard/TiltCard';
-export type {
-	HorizontalScrollerProps,
-	StackingCardItemProps,
-	StackingCardsProps,
-	TiltCardProps,
-} from './types';
-
+export { SpotlightCard } from './SpotlightCard/SpotlightCard';
+export { calculateSpotlightCoordinates, generateSpotlightStyle } from './SpotlightCard/spotlight-math';
+export type { SpotlightCoordinates } from './SpotlightCard/spotlight-math';
+export { BorderBeam } from './BorderBeam/BorderBeam';
+export { CardSwipeStack } from './CardSwipeStack/CardSwipeStack';
+export { calculateCardRotation, evaluateSwipeDecision, calculateStackedCardTransform, SwipeVelocityRingBuffer } from './CardSwipeStack/swipe-math';
+export { ComparisonSlider } from './ComparisonSlider/ComparisonSlider';
+export { calculateSplitPosition, generateClipPath, stepSliderPosition } from './ComparisonSlider/slider-math';
+export { ExpandableCard, ExpandableRoot, ExpandableTrigger, ExpandableContent, ExpandableClose } from './ExpandableCard/ExpandableCard';
+export { calculateFLIPDelta, generateInvertTransform } from './ExpandableCard/flip-math';
+export type { HorizontalScrollerProps, StackingCardItemProps, StackingCardsProps, TiltCardProps, SpotlightCardProps, BorderBeamProps, CardSwipeStackProps, ComparisonSliderProps, ExpandableCardProps } from './types';

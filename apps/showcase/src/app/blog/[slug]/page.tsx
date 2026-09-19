@@ -1,19 +1,15 @@
 import React from 'react';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import {
-	Calendar,
-	Clock,
-	ArrowLeft,
-	ArrowRight,
-	Share2,
-	Sparkles,
-} from 'lucide-react';
+import { IconArrowLeft as ArrowLeft, IconArrowRight as ArrowRight } from '@tabler/icons-react';
 import { BLOG_POSTS, getBlogPostBySlug } from '@/lib/blog-data';
 import { CodeBlock } from '@/components/showcase/CodeBlock';
 import { Callout } from '@/components/layout/Callout';
 import { DocsToc } from '@/components/layout/DocsToc';
-import { Badge } from '@/components/ui/badge';
+import { DocsPageHeader } from '@/components/docs/DocsPageHeader';
+import { DocsSection, DocsProse } from '@/components/docs/DocsSection';
+import { ReadingProgressBar } from '@/components/blog/ReadingProgressBar';
+import { ArticleShareButton } from '@/components/blog/ArticleShareButton';
 import { Button } from '@/components/ui/button';
 import type { Metadata } from 'next';
 
@@ -27,16 +23,26 @@ export async function generateStaticParams() {
 	}));
 }
 
-export async function generateMetadata({
-	params,
-}: BlogPostPageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
 	const { slug } = await params;
 	const post = getBlogPostBySlug(slug);
-	if (!post) return { title: 'Post Not Found | Exhuma Blog' };
+	if (!post) return { title: 'Post Not Found — Exhuma Journal' };
 
 	return {
-		title: `${post.title} — Exhuma Journal`,
+		title: { absolute: `${post.title} — Exhuma Journal` },
 		description: post.description,
+		openGraph: {
+			title: `${post.title} — Exhuma Journal`,
+			description: post.description,
+			type: 'article',
+			publishedTime: post.publishedAt,
+			authors: [post.author.name],
+		},
+		twitter: {
+			card: 'summary_large_image',
+			title: `${post.title} — Exhuma Journal`,
+			description: post.description,
+		},
 	};
 }
 
@@ -50,77 +56,35 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 
 	const currentIndex = BLOG_POSTS.findIndex((p) => p.slug === post.slug);
 	const prevPost = currentIndex > 0 ? BLOG_POSTS[currentIndex - 1] : null;
-	const nextPost =
-		currentIndex < BLOG_POSTS.length - 1 ? BLOG_POSTS[currentIndex + 1] : null;
+	const nextPost = currentIndex < BLOG_POSTS.length - 1 ? BLOG_POSTS[currentIndex + 1] : null;
+
+	const tocItems = post.content.headings.map((h) => ({
+		id: h.id,
+		title: h.title,
+	}));
 
 	return (
-		<div className="container py-10 sm:py-16">
-			<div className="flex gap-10">
-				{/* Main Article Content */}
-				<article className="flex-1 min-w-0 max-w-3xl space-y-8">
-					{/* Back Link & Breadcrumb */}
-					<div className="flex items-center gap-2 text-xs font-mono text-muted-foreground">
-						<Link
-							href="/blog"
-							className="inline-flex items-center gap-1 hover:text-foreground transition-colors"
-						>
-							<ArrowLeft className="h-3.5 w-3.5" />
-							<span>Back to Journal</span>
-						</Link>
-						<span>/</span>
-						<span className="text-foreground font-semibold truncate">{post.title}</span>
-					</div>
+		<div className='anchor-offset container min-h-screen py-8 sm:py-12 lg:py-16'>
+			{/* Top reading hairline progress bar */}
+			<ReadingProgressBar />
 
-					{/* Title & Metadata */}
-					<div className="space-y-4 border-b border-border pb-8">
-						<div className="flex flex-wrap gap-2">
-							{post.tags.map((tag) => (
-								<Badge key={tag} variant="secondary" className="text-[10px]">
-									{tag}
-								</Badge>
-							))}
-						</div>
+			<div className='flex gap-10'>
+				{/* Main Article Content matching DocsPage architecture */}
+				<article className='mx-auto max-w-3xl min-w-0 flex-1 space-y-12'>
+					{/* Header using DocsPageHeader specification */}
+					<DocsPageHeader
+						eyebrow={[{ label: 'Journal', href: '/blog' }, { label: post.tags[0] ?? 'Architecture' }]}
+						title={post.title}
+						description={post.description}
+						actions={<ArticleShareButton title={post.title} />}
+						meta={[post.readTime, post.publishedAt, `Authored by ${post.author.name}`, ...post.tags]}
+					/>
 
-						<h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-foreground leading-[1.15]">
-							{post.title}
-						</h1>
-
-						<p className="text-base sm:text-lg text-muted-foreground leading-relaxed">
-							{post.description}
-						</p>
-
-						<div className="flex items-center justify-between pt-4 text-xs">
-							<div className="flex items-center gap-3">
-								<div className="h-9 w-9 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xs">
-									{post.author.avatar}
-								</div>
-								<div>
-									<div className="font-semibold text-foreground">{post.author.name}</div>
-									<div className="text-[11px] text-muted-foreground">{post.author.role}</div>
-								</div>
-							</div>
-
-							<div className="flex items-center gap-2 text-muted-foreground font-mono text-[11px]">
-								<Calendar className="h-3.5 w-3.5" />
-								<span>{post.publishedAt}</span>
-								<span>·</span>
-								<Clock className="h-3.5 w-3.5" />
-								<span>{post.readTime}</span>
-							</div>
-						</div>
-					</div>
-
-					{/* Article Sections */}
-					<div className="space-y-10">
-						{post.content.sections.map((section) => (
-							<section key={section.id} id={section.id} className="space-y-4 pt-2">
-								<h2 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
-									{section.title}
-								</h2>
-
-								<p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
-									{section.content}
-								</p>
+					{/* Article Body Sections with DocsSection */}
+					<div className='space-y-12'>
+						{post.content.sections.map((section, idx) => (
+							<DocsSection key={section.id} id={section.id} index={idx + 1} label={`SECTION ${String(idx + 1).padStart(2, '0')}`} title={section.title}>
+								<DocsProse>{section.content}</DocsProse>
 
 								{section.callout && (
 									<Callout type={section.callout.type} title={section.callout.title}>
@@ -129,60 +93,38 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
 								)}
 
 								{section.codeSnippet && (
-									<div className="pt-2">
-										<CodeBlock
-											code={section.codeSnippet.code}
-											language={section.codeSnippet.language}
-											filename={section.codeSnippet.filename}
-										/>
+									<div className='pt-2'>
+										<CodeBlock code={section.codeSnippet.code} language={section.codeSnippet.language} filename={section.codeSnippet.filename} />
 									</div>
 								)}
-							</section>
+							</DocsSection>
 						))}
 					</div>
 
-					{/* Previous / Next Article Footer */}
-					<div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 pt-10 border-t border-border mt-12">
-						{prevPost ? (
-							<Link
-								href={`/blog/${prevPost.slug}`}
-								className="flex items-center gap-3 rounded-xl border border-border p-4 hover:bg-muted/50 transition-colors flex-1"
-							>
-								<ArrowLeft className="h-4 w-4 text-muted-foreground shrink-0" />
-								<div className="text-left">
-									<div className="text-[10px] uppercase font-mono text-muted-foreground">
-										Previous Article
-									</div>
-									<div className="text-xs font-bold text-foreground line-clamp-1">
-										{prevPost.title}
-									</div>
-								</div>
-							</Link>
-						) : (
-							<div className="flex-1" />
+					{/* Prev/Next Navigation in DocsPager style */}
+					<nav aria-label='Dispatch navigation' className='border-border/70 flex items-center justify-between gap-4 border-t pt-8'>
+						{prevPost && (
+							<Button variant='secondary' size='sm' asChild className='min-w-0'>
+								<Link href={`/blog/${prevPost.slug}`} aria-label={`Previous: ${prevPost.title}`}>
+									<ArrowLeft className='h-3.5 w-3.5 shrink-0' />
+									<span className='truncate'>{prevPost.title}</span>
+								</Link>
+							</Button>
 						)}
 
 						{nextPost && (
-							<Link
-								href={`/blog/${nextPost.slug}`}
-								className="flex items-center justify-end gap-3 rounded-xl border border-border p-4 hover:bg-muted/50 transition-colors flex-1"
-							>
-								<div className="text-right">
-									<div className="text-[10px] uppercase font-mono text-muted-foreground">
-										Next Article
-									</div>
-									<div className="text-xs font-bold text-foreground line-clamp-1">
-										{nextPost.title}
-									</div>
-								</div>
-								<ArrowRight className="h-4 w-4 text-muted-foreground shrink-0" />
-							</Link>
+							<Button variant='secondary' size='sm' asChild className='ml-auto min-w-0'>
+								<Link href={`/blog/${nextPost.slug}`} aria-label={`Next: ${nextPost.title}`}>
+									<span className='truncate'>{nextPost.title}</span>
+									<ArrowRight className='h-3.5 w-3.5 shrink-0' />
+								</Link>
+							</Button>
 						)}
-					</div>
+					</nav>
 				</article>
 
-				{/* On-This-Page Table of Contents */}
-				<DocsToc items={post.content.headings} />
+				{/* Desktop Sticky Table of Contents (xl+) matching DocsPage */}
+				<DocsToc items={tocItems} />
 			</div>
 		</div>
 	);

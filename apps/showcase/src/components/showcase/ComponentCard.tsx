@@ -2,8 +2,8 @@
 
 import * as React from 'react';
 import Link from 'next/link';
-import { Copy, Check, ArrowUpRight, Terminal } from 'lucide-react';
-import { Badge } from '@/components/ui/badge';
+import { IconCheck as Check, IconArrowUpRight as ArrowUpRight, IconTerminal2 as Terminal } from '@tabler/icons-react';
+import { ECOSYSTEM_LABELS } from '@/registry';
 import { cn } from '@/lib/utils';
 
 interface ComponentCardProps {
@@ -14,14 +14,9 @@ interface ComponentCardProps {
 	className?: string;
 }
 
-export function ComponentCard({
-	slug,
-	name,
-	category,
-	description,
-	className,
-}: ComponentCardProps) {
+export function ComponentCard({ slug, name, category, description, className }: ComponentCardProps) {
 	const [copied, setCopied] = React.useState(false);
+	const ecosystemCount = Object.keys(ECOSYSTEM_LABELS).length;
 
 	const cliCommand = `npx exhuma add ${slug}`;
 
@@ -36,55 +31,51 @@ export function ComponentCard({
 	return (
 		<div
 			className={cn(
-				'group relative flex flex-col justify-between rounded-2xl border border-border bg-card p-6 shadow-sm transition-all hover:border-input hover:shadow-md',
+				'border-border/80 bg-card/70 hover:bg-card/95 hover:border-foreground/30 group relative flex flex-col justify-between overflow-hidden rounded-2xl border p-6 shadow-xs backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-black/10',
 				className
 			)}
 		>
+			{/* Precision corner ticks */}
+			<div className='text-foreground/20 pointer-events-none absolute top-2 left-2 font-mono text-[9px] select-none'>+</div>
+			<div className='text-foreground/20 pointer-events-none absolute top-2 right-2 font-mono text-[9px] select-none'>+</div>
+
+			{/* Subtle top reflection shimmer on hover */}
+			<div className='via-foreground/20 absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100' />
+
 			<div>
-				{/* Header: Category & Studio Link */}
-				<div className="flex items-center justify-between gap-2 mb-3">
-					<Badge variant="ecosystem" className="capitalize text-[10px]">
-						{category}
-					</Badge>
-					<Link
-						href={`/studio?slug=${slug}`}
-						className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-primary transition-colors"
-					>
-						<span>Studio</span>
-						<ArrowUpRight className="h-3.5 w-3.5" />
+				{/* Header: Category Badge & Studio Link */}
+				<div className='mb-3.5 flex items-center justify-between gap-2'>
+					<span className='kbd border-border bg-background/90 text-foreground text-3xs font-mono font-bold tracking-wider uppercase'>{category}</span>
+					<Link href={`/docs/components/${slug}`} className='text-muted-foreground group-hover:text-foreground text-2xs inline-flex items-center gap-1 font-mono transition-colors'>
+						<span>Explore</span>
+						<ArrowUpRight className='h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5' />
 					</Link>
 				</div>
 
 				{/* Title & Description */}
-				<Link href={`/studio?slug=${slug}`} className="block">
-					<h4 className="text-lg font-bold tracking-tight text-foreground group-hover:text-primary transition-colors">
-						{name}
-					</h4>
-					<p className="mt-1.5 text-xs text-muted-foreground leading-relaxed line-clamp-2">
-						{description}
-					</p>
+				<Link href={`/docs/components/${slug}`} className='block'>
+					<h3 className='text-foreground text-base font-bold tracking-tight transition-colors sm:text-lg'>{name}</h3>
+					<p className='text-muted-foreground mt-2 line-clamp-2 text-xs leading-relaxed'>{description}</p>
 				</Link>
 			</div>
 
-			{/* Bottom: 13 Ecosystems tag + Quick CLI Add */}
-			<div className="mt-6 pt-4 border-t border-border flex items-center justify-between gap-2 text-xs">
-				<span className="text-[11px] font-mono text-muted-foreground">
-					13 Ecosystems
-				</span>
+			{/* Bottom: Ecosystem count + Quick CLI Add */}
+			<div className='border-border/60 mt-6 flex flex-wrap items-center justify-between gap-2 border-t pt-4 text-xs'>
+				<span className='text-muted-foreground text-3xs font-mono'>{ecosystemCount} Ecosystems</span>
 				<button
-					type="button"
+					type='button'
 					onClick={copyCli}
-					className="flex items-center gap-1.5 rounded-md border border-border bg-background px-2 py-1 text-[11px] font-mono text-foreground hover:bg-accent transition-colors cursor-pointer"
-					title="Copy CLI install command"
+					className='border-border/80 bg-background text-foreground hover:bg-foreground hover:text-background text-2xs flex cursor-pointer items-center gap-1.5 rounded-lg border px-2.5 py-1 font-mono font-medium transition-all active:scale-95'
+					title='Copy CLI install command'
 				>
 					{copied ? (
 						<>
-							<Check className="h-3 w-3 text-emerald-500" />
-							<span className="text-emerald-500 font-medium">Copied</span>
+							<Check className='h-3 w-3 text-emerald-500' />
+							<span className='font-semibold text-emerald-500'>Copied</span>
 						</>
 					) : (
 						<>
-							<Terminal className="h-3 w-3 text-muted-foreground" />
+							<Terminal className='text-muted-foreground h-3 w-3' />
 							<span>add {slug}</span>
 						</>
 					)}

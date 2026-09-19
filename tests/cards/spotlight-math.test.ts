@@ -1,0 +1,71 @@
+import { describe, it, expect } from 'vitest';
+import { calculateSpotlightCoordinates, generateSpotlightStyle } from '../../packages/cards/src/SpotlightCard/spotlight-math';
+import { solveCriticallyDampedSpring } from '../../packages/core/src/physics/spring';
+import { exponentialSmoothing, normalizeCoordinate, clamp } from '../../packages/core/src/physics/lerp';
+
+describe('Exhuma Kinetic Methodology — Spotlight Math & Physics', () => {
+	it('normalizes pointer coordinates accurately relative to bounding rect', () => {
+		const rect = { left: 100, top: 200, width: 400, height: 300 };
+		const result = calculateSpotlightCoordinates(200, 350, rect);
+
+		expect(result.x).toBe(100);
+		expect(result.y).toBe(150);
+		expect(result.normalizedX).toBe(0.25);
+		expect(result.normalizedY).toBe(0.5);
+		expect(result.isInside).toBe(true);
+	});
+
+	it('detects when pointer is outside bounding box', () => {
+		const rect = { left: 100, top: 200, width: 400, height: 300 };
+		const result = calculateSpotlightCoordinates(50, 600, rect);
+
+		expect(result.isInside).toBe(false);
+	});
+
+	it('computes frame-rate independent exponential smoothing filter (Big-Omega)', () => {
+		const current = 0;
+		const target = 100;
+		const decay = 10;
+		const dt = 0.016; // 60fps frame
+
+		const smoothed = exponentialSmoothing(current, target, decay, dt);
+		expect(smoothed).toBeGreaterThan(0);
+		expect(smoothed).toBeLessThan(100);
+
+		// Multiple steps should asymptotically approach target
+		let val = current;
+		for (let i = 0; i < 100; i++) {
+			val = exponentialSmoothing(val, target, decay, dt);
+		}
+		expect(Math.abs(val - target)).toBeLessThan(0.001);
+	});
+
+	it('generates valid radial gradient CSS strings', () => {
+		const style = generateSpotlightStyle(150, 200, 350, 'rgba(99, 102, 241, 0.25)', 0.8);
+		expect(style).toBe('radial-gradient(350px circle at 150px 200px, rgba(99, 102, 241, 0.25) 0%, transparent 100%)');
+	});
+});
+
+describe('Exhuma Kinetic Methodology — Analytical Spring Physics Kernel', () => {
+	it('settles critically damped spring to target position with zero oscillation', () => {
+		let current = 0;
+		const target = 100;
+		let velocity = 0;
+		const dt = 0.016;
+
+		let stepCount = 0;
+		let isSettled = false;
+
+		while (!isSettled && stepCount < 200) {
+			const state = solveCriticallyDampedSpring(current, target, velocity, dt, { omega: 26 });
+			current = state.position;
+			velocity = state.velocity;
+			isSettled = state.isSettled;
+			stepCount++;
+		}
+
+		expect(isSettled).toBe(true);
+		expect(Math.abs(current - target)).toBeLessThan(0.001);
+		expect(velocity).toBe(0);
+	});
+});

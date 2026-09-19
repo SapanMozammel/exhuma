@@ -15,12 +15,12 @@ Exhuma is a modern monorepo delivering reusable, zero-friction UI primitives and
 
 Exhuma is structured as a modular Turborepo workspace. You can consume packages all-in-one or via standalone scoped imports:
 
-| Package | Description | Status |
-| :--- | :--- | :---: |
-| **`@exhuma/core`** | Complete suite: cards, layouts, and router skeletons in a single tree-shakeable bundle. | `Ready` |
-| **`@exhuma/cards`** | Interactive card micro-interactions, stacking cards, and scroll carousels. | `Ready` |
-| **`@exhuma/layouts`** | High-performance CSS masonry grids, responsive auto-grids, and containers. | `Ready` |
-| **`@exhuma/router`** | Router skeletons, page layout guards, and transition containers. | `Ready` |
+| Package               | Description                                                                             | Status  |
+| :-------------------- | :-------------------------------------------------------------------------------------- | :-----: |
+| **`@exhuma/core`**    | Complete suite: cards, layouts, and router skeletons in a single tree-shakeable bundle. | `Ready` |
+| **`@exhuma/cards`**   | Interactive card micro-interactions, stacking cards, and scroll carousels.              | `Ready` |
+| **`@exhuma/layouts`** | High-performance CSS masonry grids, responsive auto-grids, and containers.              | `Ready` |
+| **`@exhuma/router`**  | Router skeletons, page layout guards, and transition containers.                        | `Ready` |
 
 ---
 
@@ -44,7 +44,7 @@ import { StackingCards, CssMasonry, LandingLayout } from '@exhuma/core';
 export default function Page() {
   return (
     <LandingLayout>
-      <CssMasonry columns={3} gap="1.5rem">
+      <CssMasonry columns={3} gap='1.5rem'>
         {/* Your masonry items */}
       </CssMasonry>
     </LandingLayout>
@@ -65,12 +65,12 @@ pnpm add @exhuma/layouts
 
 ## ⚡ Framework Compatibility
 
-| Environment | Support | Notes |
-| :--- | :---: | :--- |
-| **Next.js (App Router)** | ✅ Full | Client-side micro-interactions include `'use client'`; SSR and Server Components safe. |
-| **Next.js (Pages Router)** | ✅ Full | Out-of-the-box hydration support. |
-| **Vite / React 19** | ✅ Full | Dual ESM & CJS builds with `.d.ts` declaration maps. |
-| **React Router v7 / Remix** | ✅ Full | Framework-agnostic styling and lifecycle handling. |
+| Environment                 | Support | Notes                                                                                  |
+| :-------------------------- | :-----: | :------------------------------------------------------------------------------------- |
+| **Next.js (App Router)**    | ✅ Full | Client-side micro-interactions include `'use client'`; SSR and Server Components safe. |
+| **Next.js (Pages Router)**  | ✅ Full | Out-of-the-box hydration support.                                                      |
+| **Vite / React 19**         | ✅ Full | Dual ESM & CJS builds with `.d.ts` declaration maps.                                   |
+| **React Router v7 / Remix** | ✅ Full | Framework-agnostic styling and lifecycle handling.                                     |
 
 ---
 

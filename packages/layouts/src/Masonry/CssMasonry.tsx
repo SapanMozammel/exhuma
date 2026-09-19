@@ -1,13 +1,7 @@
 import React, { Children, useId } from 'react';
 import type { CssMasonryProps } from '../types';
 
-export const CssMasonry: React.FC<CssMasonryProps> = ({
-	children,
-	columns = 3,
-	gap = '1.5rem',
-	className = '',
-	style,
-}) => {
+export const CssMasonry: React.FC<CssMasonryProps> = ({ children, columns = 3, gap = '1.5rem', className = '', style }) => {
 	const uniqueId = useId().replace(/:/g, '');
 	const gapValue = typeof gap === 'number' ? `${gap}px` : gap;
 
@@ -47,12 +41,9 @@ export const CssMasonry: React.FC<CssMasonryProps> = ({
 					display: block;
 				}
 			`}</style>
-			<div
-				className={`exhuma-css-masonry exhuma-masonry-${uniqueId} w-full ${className}`}
-				style={style}
-			>
+			<div className={`exhuma-css-masonry exhuma-masonry-${uniqueId} w-full ${className}`} style={style}>
 				{Children.map(children, (child, idx) => (
-					<div key={idx} className="exhuma-masonry-item">
+					<div key={idx} className='exhuma-masonry-item'>
 						{child}
 					</div>
 				))}
