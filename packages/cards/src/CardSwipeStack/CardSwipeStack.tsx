@@ -341,8 +341,8 @@ export function CardSwipeStack<T>({
 			onPointerMove={handlePointerMove}
 			onPointerUp={handlePointerUp}
 			onPointerCancel={handlePointerCancel}
-			className={`relative select-none ${className}`}
-			style={{ minHeight: '22rem' }} // 352px — tighter vertical floor
+			className={`relative overflow-hidden select-none ${className}`}
+			style={{ minHeight: '22rem' }} // 352px — clips translated cards, prevents horizontal scrollbar
 		>
 			{/* Background cards — furthest back rendered first */}
 			{visibleItems.slice(1).map((item, idx) => {
