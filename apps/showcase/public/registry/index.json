@@ -1,7 +1,7 @@
 {
 	"$schema": "https://exhuma.dev/schema/registry-index.json",
 	"version": "1.0.0",
-	"generatedAt": "2026-09-20T17:30:49.929Z",
+	"generatedAt": "2026-09-20T17:55:55.219Z",
 	"components": [
 		{
 			"name": "Stacking Cards",
@@ -721,7 +721,27 @@
 					"step": 1,
 					"description": "Maximum angular rotation coupled to horizontal translation."
 				},
-				{ "name": "scaleStep", "label": "Scale Step", "type": "number", "defaultValue": 0.05, "min": 0.02, "max": 0.1, "step": 0.01, "description": "Scale reduction step between consecutive cards in the stack." }
+				{
+					"name": "scaleStep",
+					"label": "Scale Step",
+					"type": "number",
+					"defaultValue": 0.05,
+					"min": 0.02,
+					"max": 0.1,
+					"step": 0.01,
+					"description": "Scale reduction step between consecutive cards in the stack."
+				},
+				{
+					"name": "offsetStep",
+					"label": "Offset Step (px)",
+					"type": "number",
+					"defaultValue": 14,
+					"min": 4,
+					"max": 32,
+					"step": 2,
+					"description": "Vertical offset in pixels between consecutive cards in the stack."
+				},
+				{ "name": "scrollSwap", "label": "Scroll Swap", "type": "boolean", "defaultValue": false, "description": "Enable mouse wheel and trackpad scroll gestures to swap cards." }
 			],
 			"dependencies": {
 				"react": ["@exhuma/core"],

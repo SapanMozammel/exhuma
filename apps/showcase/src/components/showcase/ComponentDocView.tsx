@@ -174,9 +174,11 @@ const COMPONENT_PRESETS: Record<string, Record<string, Record<string, unknown>>>
 		Subtle: { strength: 0.2, radius: 80, springDamping: 14 },
 	},
 	'card-swipe-stack': {
-		Default: { thresholdDistance: 120, maxRotation: 20, scaleStep: 0.05 },
-		Snappy: { thresholdDistance: 90, maxRotation: 25, scaleStep: 0.06 },
-		Stiff: { thresholdDistance: 160, maxRotation: 15, scaleStep: 0.04 },
+		Default: { thresholdDistance: 120, maxRotation: 20, scaleStep: 0.05, offsetStep: 14, preventLastCardDismiss: true },
+		Snappy: { thresholdDistance: 80, maxRotation: 28, scaleStep: 0.06, offsetStep: 16, preventLastCardDismiss: true },
+		'Fluid Spring': { thresholdDistance: 150, maxRotation: 24, scaleStep: 0.04, offsetStep: 12, preventLastCardDismiss: true },
+		Minimalist: { thresholdDistance: 100, maxRotation: 12, scaleStep: 0.03, offsetStep: 8, preventLastCardDismiss: true },
+		'Free Swipe': { thresholdDistance: 120, maxRotation: 20, scaleStep: 0.05, offsetStep: 14, preventLastCardDismiss: false },
 	},
 	'comparison-slider': {
 		Default: { defaultPosition: 0.5, step: 0.05 },
@@ -276,6 +278,7 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 	const [viewportMode, setViewportMode] = React.useState<'fluid' | 'tablet' | 'mobile'>('fluid');
 	const [zoomScale, setZoomScale] = React.useState<number>(100);
 	const [isExpanded, setIsExpanded] = React.useState<boolean>(false);
+	const [cardSwipeResetKey, setCardSwipeResetKey] = React.useState<number>(0);
 
 	// Presets
 	const presets = COMPONENT_PRESETS[component.slug] || {};
@@ -1116,30 +1119,98 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 		if (component.slug === 'card-swipe-stack') {
 			const thresholdDistance = Number(propValues.thresholdDistance ?? 120);
 			const maxRotation = Number(propValues.maxRotation ?? 20);
+			const scaleStep = Number(propValues.scaleStep ?? 0.05);
+			const offsetStep = Number(propValues.offsetStep ?? 14);
+			const preventLastCardDismiss = propValues.preventLastCardDismiss !== false;
 
 			return (
-				<div className='mx-auto flex w-full max-w-sm flex-col items-center py-8'>
-					<p className='text-muted-foreground mb-4 font-mono text-xs'>Drag card left or right to dismiss with momentum fling</p>
-					<CardSwipeStack
-						thresholdDistance={thresholdDistance}
-						maxRotation={maxRotation}
-						items={[
-							{ id: 1, title: 'Big-Omega Guarantees', tag: 'MATHEMATICS', desc: 'Guaranteed lower bound frame rate floor of 120Hz.' },
-							{ id: 2, title: 'Zero Framework Locks', tag: 'COMPILERS', desc: `Pure AST universal generation targeting ${ECOSYSTEM_COUNT} ecosystems.` },
-							{ id: 3, title: 'Direct GPU Pipeline', tag: 'KINETICS', desc: 'Direct translate3d writes bypassing virtual DOM reconciliation.' },
-						]}
-						renderCard={(item) => (
-							<div className='border-border/80 bg-card rounded-2xl border p-6 shadow-2xl backdrop-blur-md'>
-								<span className='kbd border-border bg-background/80 text-foreground text-3xs font-mono font-bold'>{item.tag}</span>
-								<h4 className='text-foreground mt-2 text-lg font-bold'>{item.title}</h4>
-								<p className='text-muted-foreground mt-1 text-xs'>{item.desc}</p>
-								<div className='border-border/60 text-muted-foreground text-3xs mt-4 flex items-center justify-between border-t pt-3 font-mono'>
-									<span>← SWIPE LEFT</span>
-									<span>SWIPE RIGHT →</span>
+				<div className='relative max-h-[560px] w-full overflow-y-auto scroll-smooth px-4 py-4'>
+					{/* Stage 01: Card Swipe Stack Section */}
+					<div className='flex min-h-[460px] flex-col items-center justify-center py-6'>
+						<div className='mb-4 text-center'>
+							<span className='kbd text-primary text-3xs font-mono'>STAGE 01 // SWIPE STACK</span>
+							<h3 className='text-foreground mt-1 text-base font-bold'>Kinetic Card Swipe Stack</h3>
+							<p className='text-muted-foreground mt-1 font-mono text-xs'>
+								{preventLastCardDismiss ? 'Drag to swipe cards → last card anchors with elastic resistance' : 'Drag to swipe all cards → scroll moves to Stage 02'}
+							</p>
+						</div>
+
+						<CardSwipeStack
+							key={cardSwipeResetKey}
+							thresholdDistance={thresholdDistance}
+							maxRotation={maxRotation}
+							scaleStep={scaleStep}
+							offsetStep={offsetStep}
+							preventLastCardDismiss={preventLastCardDismiss}
+							className='w-full max-w-sm'
+							items={[
+								{ id: 1, title: 'Big-Omega Guarantees', tag: 'MATHEMATICS', desc: 'Guaranteed lower bound frame rate floor of 120Hz.' },
+								{ id: 2, title: 'Zero Framework Locks', tag: 'COMPILERS', desc: `Pure AST universal generation targeting ${ECOSYSTEM_COUNT} ecosystems.` },
+								{ id: 3, title: 'Direct GPU Pipeline', tag: 'KINETICS', desc: 'Direct translate3d writes bypassing virtual DOM reconciliation.' },
+							]}
+							renderCard={(item) => (
+								<div className='border-border/80 bg-card w-full rounded-2xl border p-6 shadow-2xl backdrop-blur-md'>
+									<span className='kbd border-border bg-background/80 text-foreground text-3xs font-mono font-bold'>{item.tag}</span>
+									<h4 className='text-foreground mt-2 text-lg font-bold'>{item.title}</h4>
+									<p className='text-muted-foreground mt-1 text-xs leading-relaxed'>{item.desc}</p>
+									<div className='border-border/60 text-muted-foreground text-3xs mt-4 flex items-center justify-between border-t pt-3 font-mono'>
+										<span>← SWIPE LEFT</span>
+										<span>SWIPE RIGHT →</span>
+									</div>
 								</div>
+							)}
+							emptyState={
+								<div className='border-border bg-card/80 flex flex-col items-center justify-center rounded-2xl border p-8 text-center shadow-xl backdrop-blur-md'>
+									<div className='bg-primary/10 text-primary mb-3 flex size-10 items-center justify-center rounded-full'>
+										<RefreshCw className='size-4' />
+									</div>
+									<h4 className='text-foreground text-sm font-semibold'>Stack Completed</h4>
+									<p className='text-muted-foreground mt-1 text-xs'>All cards have been swiped away.</p>
+									<button
+										type='button'
+										onClick={() => setCardSwipeResetKey((k) => k + 1)}
+										className='bg-primary text-primary-foreground hover:bg-primary/90 mt-4 inline-flex cursor-pointer items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors'
+									>
+										<RefreshCw className='size-3.5' /> Reset Stack
+									</button>
+								</div>
+							}
+						/>
+
+						<div className='text-muted-foreground/60 text-3xs mt-8 flex animate-bounce items-center gap-1.5 font-mono'>
+							<span>SCROLL FOR NEXT SECTION</span>
+							<span>↓</span>
+						</div>
+					</div>
+
+					{/* Stage 02: Next Section Below Stack */}
+					<div className='border-border/80 bg-card/70 mx-auto mt-6 max-w-md rounded-2xl border p-6 shadow-xl backdrop-blur-md'>
+						<div className='border-border/60 flex items-center justify-between border-b pb-3'>
+							<div>
+								<span className='kbd text-3xs font-mono text-emerald-400'>STAGE 02 // NEXT SECTION</span>
+								<h4 className='text-foreground mt-1 text-sm font-bold'>Hardware Telemetry & Runtime Invariants</h4>
 							</div>
-						)}
-					/>
+							<span className='kbd text-3xs border-emerald-500/30 bg-emerald-500/10 font-mono text-emerald-400'>PASS-THROUGH ACTIVE</span>
+						</div>
+						<p className='text-muted-foreground mt-3 text-xs leading-relaxed'>
+							You have scrolled past the card stack. Drag cards to dismiss them — scroll always moves here naturally.
+						</p>
+						<div className='mt-4 grid grid-cols-3 gap-2.5'>
+							<div className='border-border/60 bg-muted/20 rounded-xl border p-3'>
+								<span className='text-muted-foreground text-3xs font-mono'>FRAME FLOOR</span>
+								<p className='text-foreground mt-1 text-sm font-bold'>120 FPS</p>
+							</div>
+							<div className='border-border/60 bg-muted/20 rounded-xl border p-3'>
+								<span className='text-muted-foreground text-3xs font-mono'>GESTURE BUFFER</span>
+								<p className='text-foreground mt-1 text-sm font-bold'>Float64Array</p>
+							</div>
+							<div className='border-border/60 bg-muted/20 rounded-xl border p-3'>
+								<span className='text-muted-foreground text-3xs font-mono'>HEAP ALLOC</span>
+								<p className='text-foreground mt-1 text-sm font-bold'>Ω(1) ZERO</p>
+							</div>
+						</div>
+
+					</div>
 				</div>
 			);
 		}

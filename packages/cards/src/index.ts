@@ -8,7 +8,7 @@ export { calculateSpotlightCoordinates, generateSpotlightStyle, validateSpotligh
 export type { SpotlightCoordinates, RectBounds } from './SpotlightCard/spotlight-math';
 export { BorderBeam } from './BorderBeam/BorderBeam';
 export { CardSwipeStack } from './CardSwipeStack/CardSwipeStack';
-export { calculateCardRotation, evaluateSwipeDecision, calculateStackedCardTransform, SwipeVelocityRingBuffer } from './CardSwipeStack/swipe-math';
+export { calculateCardRotation, evaluateSwipeDecision, calculateStackedCardTransform, calculateFlingDuration, calculateElasticDamping, SwipeVelocityRingBuffer } from './CardSwipeStack/swipe-math';
 export { ComparisonSlider } from './ComparisonSlider/ComparisonSlider';
 export { calculateSplitPosition, generateClipPath, stepSliderPosition } from './ComparisonSlider/slider-math';
 export { ExpandableCard, ExpandableRoot, ExpandableTrigger, ExpandableContent, ExpandableClose } from './ExpandableCard/ExpandableCard';

@@ -7,7 +7,7 @@ export const cardSwipeStackComponent: UniversalComponent = {
 	name: 'Card Swipe Stack',
 	slug: 'card-swipe-stack',
 	category: 'cards',
-	description: 'Velocity-sensitive multi-card swipe stack with Euler angular rotation, circular velocity ring buffer, and zero external animation libraries.',
+	description: 'Velocity-sensitive multi-card swipe stack with Euler angular rotation, circular velocity ring buffer, elastic last-card resistance, and zero external animation libraries.',
 	version: '1.0.0',
 	props: [
 		{
@@ -40,11 +40,30 @@ export const cardSwipeStackComponent: UniversalComponent = {
 			step: 0.01,
 			description: 'Scale reduction step between consecutive cards in the stack.',
 		},
+		{
+			name: 'offsetStep',
+			label: 'Offset Step (px)',
+			type: 'number',
+			defaultValue: 14,
+			min: 4,
+			max: 32,
+			step: 2,
+			description: 'Vertical offset in pixels between consecutive cards in the stack.',
+		},
+		{
+			name: 'preventLastCardDismiss',
+			label: 'Anchor Last Card',
+			type: 'boolean',
+			defaultValue: true,
+			description: 'When enabled, the final card cannot be dismissed. Dragging it applies elastic rubber-band resistance and it snaps back to center on release.',
+		},
 	],
 	defaultProps: {
 		thresholdDistance: 120,
 		maxRotation: 20,
 		scaleStep: 0.05,
+		offsetStep: 14,
+		preventLastCardDismiss: true,
 	},
 	dependencies: CORE_COMPONENT_DEPENDENCIES,
 	generateCode: (flavor: EcosystemFlavor, props: Record<string, unknown>, options?: { eject?: boolean }): ComponentFilePayload[] => {
