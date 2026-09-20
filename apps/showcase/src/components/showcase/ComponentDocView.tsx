@@ -1124,9 +1124,9 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 			const preventLastCardDismiss = propValues.preventLastCardDismiss !== false;
 
 			return (
-				<div className='relative max-h-[560px] w-full overflow-y-auto scroll-smooth px-4 py-4'>
+				<div className='relative max-h-[480px] w-full overflow-y-auto scroll-smooth px-4 py-2'>
 					{/* Stage 01: Card Swipe Stack Section */}
-					<div className='flex min-h-[460px] flex-col items-center justify-center py-6'>
+					<div className='flex min-h-[380px] flex-col items-center justify-center py-3'>
 						<div className='mb-4 text-center'>
 							<span className='kbd text-primary text-3xs font-mono'>STAGE 01 // SWIPE STACK</span>
 							<h3 className='text-foreground mt-1 text-base font-bold'>Kinetic Card Swipe Stack</h3>
