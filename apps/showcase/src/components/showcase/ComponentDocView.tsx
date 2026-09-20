@@ -1124,7 +1124,7 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 			const preventLastCardDismiss = propValues.preventLastCardDismiss !== false;
 
 			return (
-				<div className='relative max-h-[480px] w-full overflow-y-auto scroll-smooth px-4 py-2'>
+				<div className='relative max-h-[480px] w-full overflow-x-hidden overflow-y-auto scroll-smooth px-4 py-2'>
 					{/* Stage 01: Card Swipe Stack Section */}
 					<div className='flex min-h-[380px] flex-col items-center justify-center py-3'>
 						<div className='mb-4 text-center'>

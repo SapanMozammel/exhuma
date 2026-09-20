@@ -257,8 +257,8 @@ export function CardSwipeStack<T>({
 	const handlePointerDown = useCallback(
 		(e: React.PointerEvent<HTMLDivElement>) => {
 			if (isAnimatingRef.current || visibleItems.length === 0) return;
-			// Only accept primary pointer (left mouse / first touch)
-			if (e.button !== 0 && e.pointerType === 'mouse') return;
+			// Only primary pointer (left mouse button / first touch / pen)
+			if (e.pointerType === 'mouse' && e.button !== 0) return;
 
 			isDraggingRef.current = true;
 			isLastCardRef.current = preventLastCardDismiss && currentIndexRef.current >= items.length - 1;
@@ -268,8 +268,9 @@ export function CardSwipeStack<T>({
 			ringBufferRef.current.clear();
 			ringBufferRef.current.push(e.clientX, e.clientY, performance.now());
 
-			// Capture on the outer div — survives child DOM mutations
-			outerRef.current?.setPointerCapture(e.pointerId);
+			// e.currentTarget is always the element that owns this handler — never stale, never null in a live event.
+			// Avoids the original bug where e.target (a child) could be unmounted mid-gesture, losing capture.
+			e.currentTarget.setPointerCapture(e.pointerId);
 		},
 		[items.length, preventLastCardDismiss, visibleItems.length]
 	);
@@ -314,9 +315,10 @@ export function CardSwipeStack<T>({
 		(e: React.PointerEvent<HTMLDivElement>) => {
 			if (e.pointerId !== activePointerIdRef.current) return;
 			try {
-				outerRef.current?.releasePointerCapture(e.pointerId);
+				// Must match the element that called setPointerCapture — e.currentTarget is always that element
+				e.currentTarget.releasePointerCapture(e.pointerId);
 			} catch {
-				// Already released
+				// Already released or not captured
 			}
 			finishDrag();
 		},
@@ -341,8 +343,8 @@ export function CardSwipeStack<T>({
 			onPointerMove={handlePointerMove}
 			onPointerUp={handlePointerUp}
 			onPointerCancel={handlePointerCancel}
-			className={`relative overflow-hidden select-none ${className}`}
-			style={{ minHeight: '22rem' }} // 352px — clips translated cards, prevents horizontal scrollbar
+			className={`relative select-none ${className}`}
+			style={{ minHeight: '22rem' }}
 		>
 			{/* Background cards — furthest back rendered first */}
 			{visibleItems.slice(1).map((item, idx) => {
