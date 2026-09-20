@@ -182,6 +182,7 @@ export const StackingCards = memo(
 			// The trigger position where the last card meets the second-to-last card in stack progression:
 			const secondLastCardStickyTop = topStart + Math.max(0, totalCards - 1) * topIncrement;
 			const triggerTop = totalCards > 1 ? secondLastCardStickyTop + topIncrement : topStart;
+			let isIntersecting = false;
 
 			const updateStackEffect = () => {
 				rafIdRef.current = null;
@@ -257,12 +258,20 @@ export const StackingCards = memo(
 
 			// 120 FPS rAF Coalescing: ensures at most 1 execution per display refresh frame
 			const handleScroll = () => {
-				if (rafIdRef.current === null) {
+				if (isIntersecting && rafIdRef.current === null) {
 					rafIdRef.current = requestAnimationFrame(updateStackEffect);
 				}
 			};
 
 			const target = scrollContainerRef?.current;
+			const observer = new IntersectionObserver(
+				(entries) => {
+					isIntersecting = entries[0]?.isIntersecting ?? false;
+					if (isIntersecting) updateStackEffect();
+				},
+				{ root: target ?? null, rootMargin: '100px 0px', threshold: 0 }
+			);
+			observer.observe(wrapper);
 			if (target) {
 				target.addEventListener('scroll', handleScroll, { passive: true });
 			}
@@ -278,6 +287,7 @@ export const StackingCards = memo(
 				}
 				window.removeEventListener('scroll', handleScroll, { capture: true });
 				window.removeEventListener('resize', handleScroll);
+				observer.disconnect();
 				if (rafIdRef.current !== null) {
 					cancelAnimationFrame(rafIdRef.current);
 					rafIdRef.current = null;

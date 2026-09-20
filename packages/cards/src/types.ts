@@ -3,10 +3,44 @@ import type { CSSProperties, ReactNode, HTMLAttributes } from 'react';
 export interface HorizontalScrollerProps {
 	children: ReactNode;
 	/**
-	 * Speed factor for scroll translation.
-	 * Default: 0.85
+	 * Speed factor for scroll translation distance multiplier.
+	 * Default: 1.0
 	 */
 	speed?: number;
+	/**
+	 * Gap in pixels between horizontal track cards.
+	 * Default: 28
+	 */
+	itemGap?: number;
+	/**
+	 * Fixed width in pixels of individual cards.
+	 * Default: 320
+	 */
+	cardWidth?: number | string;
+	/**
+	 * Whether to display a kinetic bottom progress indicator track.
+	 * Default: true
+	 */
+	showProgress?: boolean;
+	/**
+	 * Whether to apply gradient mask fading at horizontal boundaries.
+	 * Default: true
+	 */
+	showFadeEdges?: boolean;
+	/**
+	 * Width in pixels of the left and right gradient fade masks.
+	 * Default: 48
+	 */
+	fadeWidth?: number;
+	/**
+	 * Mobile fallback behavior below 768px ('scroll' = native horizontal swipe with snap, 'stack' = vertical list, 'pinned' = keep pin).
+	 * Default: 'scroll'
+	 */
+	mobileMode?: 'scroll' | 'stack' | 'pinned';
+	/**
+	 * Optional pinned header content (title, eyebrow, CTA) that remains fixed while cards scroll.
+	 */
+	header?: ReactNode;
 	/**
 	 * Optional scroll container reference (if inside an overflow scroll element rather than window).
 	 */
