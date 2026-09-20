@@ -95,6 +95,16 @@ describe('Exhuma CLI Suite — Automated End-to-End Test Gate', () => {
     expect(code).toContain('endOpacity');
   });
 
+  it('installs real Card Swipe Stack component via exhuma add', () => {
+    execSync(`node "${CLI_BIN}" add card-swipe-stack --flavor=react --yes`, { cwd: TEST_DIR });
+    const componentPath = resolve(TEST_DIR, 'src/lib/components/CardSwipeStack.tsx');
+    expect(existsSync(componentPath)).toBe(true);
+
+    const code = readFileSync(componentPath, 'utf8');
+    expect(code).toContain('CardSwipeStack');
+    expect(code).toContain('min-h-[14.5rem]');
+  });
+
   it('executes exhuma build to generate static registry JSON', () => {
     const buildOut = resolve(TEST_DIR, 'dist-registry');
     execSync(`node "${CLI_BIN}" build --output="${buildOut}"`, { cwd: TEST_DIR });

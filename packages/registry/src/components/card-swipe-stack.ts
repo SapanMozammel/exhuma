@@ -76,7 +76,7 @@ export const cardSwipeStackComponent: UniversalComponent = {
 				pascalName: 'CardSwipeStack',
 				snakeName: 'card_swipe_stack',
 				description: 'Velocity-sensitive multi-card swipe stack with Euler angular rotation.',
-				defaultTailwindClass: 'relative flex items-center justify-center min-h-[26.25rem] w-full',
+				defaultTailwindClass: 'relative flex items-center justify-center min-h-[14.5rem] w-full',
 			},
 			flavor,
 			props,

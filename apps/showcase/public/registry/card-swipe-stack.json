@@ -2,14 +2,20 @@
 	"name": "Card Swipe Stack",
 	"slug": "card-swipe-stack",
 	"category": "cards",
-	"description": "Velocity-sensitive multi-card swipe stack with Euler angular rotation, circular velocity ring buffer, and zero external animation libraries.",
+	"description": "Velocity-sensitive multi-card swipe stack with Euler angular rotation, circular velocity ring buffer, elastic last-card resistance, and zero external animation libraries.",
 	"version": "1.0.0",
 	"props": [
 		{ "name": "thresholdDistance", "label": "Swipe Threshold (px)", "type": "number", "defaultValue": 120, "min": 60, "max": 240, "step": 10, "description": "Minimum drag distance to trigger a card dismiss." },
 		{ "name": "maxRotation", "label": "Max Rotation (deg)", "type": "number", "defaultValue": 20, "min": 5, "max": 45, "step": 1, "description": "Maximum angular rotation coupled to horizontal translation." },
 		{ "name": "scaleStep", "label": "Scale Step", "type": "number", "defaultValue": 0.05, "min": 0.02, "max": 0.1, "step": 0.01, "description": "Scale reduction step between consecutive cards in the stack." },
 		{ "name": "offsetStep", "label": "Offset Step (px)", "type": "number", "defaultValue": 14, "min": 4, "max": 32, "step": 2, "description": "Vertical offset in pixels between consecutive cards in the stack." },
-		{ "name": "scrollSwap", "label": "Scroll Swap", "type": "boolean", "defaultValue": false, "description": "Enable mouse wheel and trackpad scroll gestures to swap cards." }
+		{
+			"name": "preventLastCardDismiss",
+			"label": "Anchor Last Card",
+			"type": "boolean",
+			"defaultValue": true,
+			"description": "When enabled, the final card cannot be dismissed. Dragging it applies elastic rubber-band resistance and it snaps back to center on release."
+		}
 	],
 	"dependencies": {
 		"react": ["@exhuma/core"],
@@ -32,7 +38,7 @@
 				"filename": "CardSwipeStack.tsx",
 				"language": "tsx",
 				"description": "Card Swipe Stack — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
-				"code": "import * as React from 'react';\nimport * as CardSwipeStackPrimitive from '@exhuma/core';\nimport { clsx } from 'clsx';\n\nexport interface CardSwipeStackProps extends React.ComponentPropsWithoutRef<typeof CardSwipeStackPrimitive.CardSwipeStack> {\n  className?: string;\n}\n\nexport const CardSwipeStack = React.forwardRef<HTMLDivElement, CardSwipeStackProps>(\n  ({ className, children, ...props }, ref) => (\n    <CardSwipeStackPrimitive.CardSwipeStack\n      ref={ref}\n      className={clsx(\n        'relative flex items-center justify-center min-h-[26.25rem] w-full',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </CardSwipeStackPrimitive.CardSwipeStack>\n  )\n);\nCardSwipeStack.displayName = 'CardSwipeStack';\n"
+				"code": "import * as React from 'react';\nimport * as CardSwipeStackPrimitive from '@exhuma/core';\nimport { clsx } from 'clsx';\n\nexport interface CardSwipeStackProps extends React.ComponentPropsWithoutRef<typeof CardSwipeStackPrimitive.CardSwipeStack> {\n  className?: string;\n}\n\nexport const CardSwipeStack = React.forwardRef<HTMLDivElement, CardSwipeStackProps>(\n  ({ className, children, ...props }, ref) => (\n    <CardSwipeStackPrimitive.CardSwipeStack\n      ref={ref}\n      className={clsx(\n        'relative flex items-center justify-center min-h-[14.5rem] w-full',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </CardSwipeStackPrimitive.CardSwipeStack>\n  )\n);\nCardSwipeStack.displayName = 'CardSwipeStack';\n"
 			}
 		],
 		"nextjs": [
@@ -40,7 +46,7 @@
 				"filename": "CardSwipeStack.tsx",
 				"language": "tsx",
 				"description": "Card Swipe Stack — Clean Shadcn-style outer layer powered by @exhuma/core kinetic primitives.",
-				"code": "'use client';\n\nimport * as React from 'react';\nimport * as CardSwipeStackPrimitive from '@exhuma/core';\nimport { clsx } from 'clsx';\n\nexport interface CardSwipeStackProps extends React.ComponentPropsWithoutRef<typeof CardSwipeStackPrimitive.CardSwipeStack> {\n  className?: string;\n}\n\nexport const CardSwipeStack = React.forwardRef<HTMLDivElement, CardSwipeStackProps>(\n  ({ className, children, ...props }, ref) => (\n    <CardSwipeStackPrimitive.CardSwipeStack\n      ref={ref}\n      className={clsx(\n        'relative flex items-center justify-center min-h-[26.25rem] w-full',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </CardSwipeStackPrimitive.CardSwipeStack>\n  )\n);\nCardSwipeStack.displayName = 'CardSwipeStack';\n"
+				"code": "'use client';\n\nimport * as React from 'react';\nimport * as CardSwipeStackPrimitive from '@exhuma/core';\nimport { clsx } from 'clsx';\n\nexport interface CardSwipeStackProps extends React.ComponentPropsWithoutRef<typeof CardSwipeStackPrimitive.CardSwipeStack> {\n  className?: string;\n}\n\nexport const CardSwipeStack = React.forwardRef<HTMLDivElement, CardSwipeStackProps>(\n  ({ className, children, ...props }, ref) => (\n    <CardSwipeStackPrimitive.CardSwipeStack\n      ref={ref}\n      className={clsx(\n        'relative flex items-center justify-center min-h-[14.5rem] w-full',\n        className\n      )}\n      {...props}\n    >\n      {children}\n    </CardSwipeStackPrimitive.CardSwipeStack>\n  )\n);\nCardSwipeStack.displayName = 'CardSwipeStack';\n"
 			}
 		],
 		"vue": [
@@ -48,7 +54,7 @@
 				"filename": "CardSwipeStack.vue",
 				"language": "vue",
 				"description": "Vue 3 Native Card Swipe Stack component.",
-				"code": "<script setup lang=\"ts\">\nimport { clsx } from 'clsx';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst props = withDefaults(defineProps<Props>(), {\n  class: '',\n});\n</script>\n\n<template>\n  <div\n    :class=\"clsx('relative flex items-center justify-center min-h-[26.25rem] w-full', props.class)\"\n    v-bind=\"$attrs\"\n  >\n    <slot />\n  </div>\n</template>\n"
+				"code": "<script setup lang=\"ts\">\nimport { clsx } from 'clsx';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst props = withDefaults(defineProps<Props>(), {\n  class: '',\n});\n</script>\n\n<template>\n  <div\n    :class=\"clsx('relative flex items-center justify-center min-h-[14.5rem] w-full', props.class)\"\n    v-bind=\"$attrs\"\n  >\n    <slot />\n  </div>\n</template>\n"
 			}
 		],
 		"svelte": [
@@ -56,7 +62,7 @@
 				"filename": "CardSwipeStack.svelte",
 				"language": "svelte",
 				"description": "Svelte 5 Native Card Swipe Stack component using runes.",
-				"code": "<script lang=\"ts\">\n  import { clsx } from 'clsx';\n\n  let {\n    class: className = '',\n    children,\n    ...restProps\n  }: {\n    class?: string;\n    children?: import('svelte').Snippet;\n    [key: string]: unknown;\n  } = $props();\n</script>\n\n<div\n  class={clsx('relative flex items-center justify-center min-h-[26.25rem] w-full', className)}\n  {...restProps}\n>\n  {@render children?.()}\n</div>\n"
+				"code": "<script lang=\"ts\">\n  import { clsx } from 'clsx';\n\n  let {\n    class: className = '',\n    children,\n    ...restProps\n  }: {\n    class?: string;\n    children?: import('svelte').Snippet;\n    [key: string]: unknown;\n  } = $props();\n</script>\n\n<div\n  class={clsx('relative flex items-center justify-center min-h-[14.5rem] w-full', className)}\n  {...restProps}\n>\n  {@render children?.()}\n</div>\n"
 			}
 		],
 		"angular": [
@@ -64,7 +70,7 @@
 				"filename": "card-swipe-stack.component.ts",
 				"language": "typescript",
 				"description": "Angular 18+ Standalone Card Swipe Stack component.",
-				"code": "import { Component, input } from '@angular/core';\n\n@Component({\n  selector: 'exhuma-card-swipe-stack',\n  standalone: true,\n  template: `\n    <div\n      class=\"relative flex items-center justify-center min-h-[26.25rem] w-full {{ customClass() }}\"\n    >\n      <ng-content></ng-content>\n    </div>\n  `,\n})\nexport class ExhumaCardSwipeStackComponent {\n  readonly customClass = input<string>('');\n}\n"
+				"code": "import { Component, input } from '@angular/core';\n\n@Component({\n  selector: 'exhuma-card-swipe-stack',\n  standalone: true,\n  template: `\n    <div\n      class=\"relative flex items-center justify-center min-h-[14.5rem] w-full {{ customClass() }}\"\n    >\n      <ng-content></ng-content>\n    </div>\n  `,\n})\nexport class ExhumaCardSwipeStackComponent {\n  readonly customClass = input<string>('');\n}\n"
 			}
 		],
 		"solid": [
@@ -72,7 +78,7 @@
 				"filename": "CardSwipeStack.tsx",
 				"language": "tsx",
 				"description": "SolidJS Native Card Swipe Stack component.",
-				"code": "import { Component, JSX, splitProps } from 'solid-js';\n\nexport interface CardSwipeStackProps extends JSX.HTMLAttributes<HTMLDivElement> {\n  [key: string]: unknown;\n}\n\nexport const CardSwipeStack: Component<CardSwipeStackProps> = (props) => {\n  const [local, others] = splitProps(props, ['class', 'children']);\n  return (\n    <div\n      class={`relative flex items-center justify-center min-h-[26.25rem] w-full ${local.class ?? ''}`}\n      {...others}\n    >\n      {local.children}\n    </div>\n  );\n};\n"
+				"code": "import { Component, JSX, splitProps } from 'solid-js';\n\nexport interface CardSwipeStackProps extends JSX.HTMLAttributes<HTMLDivElement> {\n  [key: string]: unknown;\n}\n\nexport const CardSwipeStack: Component<CardSwipeStackProps> = (props) => {\n  const [local, others] = splitProps(props, ['class', 'children']);\n  return (\n    <div\n      class={`relative flex items-center justify-center min-h-[14.5rem] w-full ${local.class ?? ''}`}\n      {...others}\n    >\n      {local.children}\n    </div>\n  );\n};\n"
 			}
 		],
 		"astro": [
@@ -80,7 +86,7 @@
 				"filename": "CardSwipeStack.astro",
 				"language": "astro",
 				"description": "Pure Native Astro Card Swipe Stack component.",
-				"code": "---\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst { class: className = '', ...props } = Astro.props;\n---\n\n<div\n  class={`relative flex items-center justify-center min-h-[26.25rem] w-full ${className}`}\n  {...props}\n>\n  <slot />\n</div>\n"
+				"code": "---\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst { class: className = '', ...props } = Astro.props;\n---\n\n<div\n  class={`relative flex items-center justify-center min-h-[14.5rem] w-full ${className}`}\n  {...props}\n>\n  <slot />\n</div>\n"
 			}
 		],
 		"blade": [
@@ -88,7 +94,7 @@
 				"filename": "card-swipe-stack.blade.php",
 				"language": "php",
 				"description": "Laravel Blade component for Card Swipe Stack.",
-				"code": "@props([])\n\n<div\n    {{ $attributes->merge([\n        'class' => 'relative flex items-center justify-center min-h-[26.25rem] w-full block',\n    ]) }}\n>\n    {{ $slot }}\n</div>\n"
+				"code": "@props([])\n\n<div\n    {{ $attributes->merge([\n        'class' => 'relative flex items-center justify-center min-h-[14.5rem] w-full block',\n    ]) }}\n>\n    {{ $slot }}\n</div>\n"
 			}
 		],
 		"vanilla": [
@@ -110,7 +116,7 @@
 				"filename": "render.php",
 				"language": "php",
 				"description": "WordPress render template for Card Swipe Stack.",
-				"code": "<?php\n/**\n * Card Swipe Stack Block Render Template\n */\n$wrapper_attributes = get_block_wrapper_attributes(['class' => 'relative flex items-center justify-center min-h-[26.25rem] w-full']);\n?>\n<div <?php echo $wrapper_attributes; ?>>\n  <?php echo $content; ?>\n</div>\n"
+				"code": "<?php\n/**\n * Card Swipe Stack Block Render Template\n */\n$wrapper_attributes = get_block_wrapper_attributes(['class' => 'relative flex items-center justify-center min-h-[14.5rem] w-full']);\n?>\n<div <?php echo $wrapper_attributes; ?>>\n  <?php echo $content; ?>\n</div>\n"
 			}
 		],
 		"webcomponent": [

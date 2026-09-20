@@ -1,7 +1,7 @@
 {
 	"$schema": "https://exhuma.dev/schema/registry-index.json",
 	"version": "1.0.0",
-	"generatedAt": "2026-09-20T17:55:55.219Z",
+	"generatedAt": "2026-09-20T18:59:08.335Z",
 	"components": [
 		{
 			"name": "Stacking Cards",
@@ -698,7 +698,7 @@
 			"name": "Card Swipe Stack",
 			"slug": "card-swipe-stack",
 			"category": "cards",
-			"description": "Velocity-sensitive multi-card swipe stack with Euler angular rotation, circular velocity ring buffer, and zero external animation libraries.",
+			"description": "Velocity-sensitive multi-card swipe stack with Euler angular rotation, circular velocity ring buffer, elastic last-card resistance, and zero external animation libraries.",
 			"version": "1.0.0",
 			"props": [
 				{
@@ -741,7 +741,13 @@
 					"step": 2,
 					"description": "Vertical offset in pixels between consecutive cards in the stack."
 				},
-				{ "name": "scrollSwap", "label": "Scroll Swap", "type": "boolean", "defaultValue": false, "description": "Enable mouse wheel and trackpad scroll gestures to swap cards." }
+				{
+					"name": "preventLastCardDismiss",
+					"label": "Anchor Last Card",
+					"type": "boolean",
+					"defaultValue": true,
+					"description": "When enabled, the final card cannot be dismissed. Dragging it applies elastic rubber-band resistance and it snaps back to center on release."
+				}
 			],
 			"dependencies": {
 				"react": ["@exhuma/core"],

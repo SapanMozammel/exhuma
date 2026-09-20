@@ -9,6 +9,7 @@ import {
 	SwipeVelocityRingBuffer,
 } from '../../packages/cards/src/index';
 import { cardSwipeStackComponent } from '../../packages/registry/src/components/card-swipe-stack';
+import { generateComponentUsage } from '../../packages/registry/src/templates/usage-generator';
 
 describe('Exhuma Kinetic Methodology — Card Swipe Stack (Big-Ω)', () => {
 	it('exports CardSwipeStack and mathematical kernel from @exhuma/cards', () => {
@@ -173,15 +174,62 @@ describe('Exhuma Kinetic Methodology — Card Swipe Stack (Big-Ω)', () => {
 		expect(lastCardProp?.defaultValue).toBe(true);
 	});
 
-	it('generates component code across ecosystems without errors', () => {
-		const reactFiles = cardSwipeStackComponent.generateCode('react', {
-			thresholdDistance: 100,
-			maxRotation: 25,
-			scaleStep: 0.06,
-			offsetStep: 16,
-			preventLastCardDismiss: true,
-		});
-		expect(reactFiles.length).toBeGreaterThan(0);
-		expect(reactFiles[0]?.code).toContain('CardSwipeStack');
+	it('generates component code across all 13 supported ecosystems without errors', () => {
+		const ecosystems = [
+			'react',
+			'nextjs',
+			'vue',
+			'svelte',
+			'angular',
+			'solid',
+			'astro',
+			'blade',
+			'vanilla',
+			'wordpress',
+			'webcomponent',
+			'react-native',
+			'flutter',
+		] as const;
+
+		for (const flavor of ecosystems) {
+			const files = cardSwipeStackComponent.generateCode(flavor, cardSwipeStackComponent.defaultProps);
+			expect(files.length).toBeGreaterThan(0);
+			for (const file of files) {
+				expect(file.code.length).toBeGreaterThan(50);
+			}
+		}
+	});
+
+	it('generates rich copy-paste Quick Start usage examples across all 13 ecosystems', () => {
+		const ecosystems = [
+			'react',
+			'nextjs',
+			'vue',
+			'svelte',
+			'angular',
+			'solid',
+			'astro',
+			'blade',
+			'vanilla',
+			'wordpress',
+			'webcomponent',
+			'react-native',
+			'flutter',
+		] as const;
+
+		for (const flavor of ecosystems) {
+			const usage = generateComponentUsage(cardSwipeStackComponent, flavor, {
+				thresholdDistance: 120,
+				maxRotation: 20,
+				scaleStep: 0.05,
+				offsetStep: 14,
+				preventLastCardDismiss: true,
+			});
+
+			expect(usage.filename).toBeDefined();
+			expect(usage.language).toBeDefined();
+			expect(usage.code.toLowerCase()).toMatch(/card-?swipe-?stack/);
+			expect(usage.code.length).toBeGreaterThan(100);
+		}
 	});
 });
