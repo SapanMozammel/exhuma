@@ -83,10 +83,12 @@ const COMPONENT_PRESETS: Record<string, Record<string, Record<string, unknown>>>
 		'High Velocity': { itemGap: 32, speed: 1.8, cardWidth: 320, showProgress: true, showFadeEdges: true, fadeWidth: 64, mobileMode: 'scroll' },
 	},
 	'tilt-card': {
-		Default: { maxTilt: 15, perspective: 1000, scale: 1.02, speed: 0.12, glare: true, maxGlareOpacity: 0.3, reverse: false, disabled: false, axis: 'all' },
-		'Subtle Glare': { maxTilt: 10, perspective: 1200, scale: 1.01, speed: 0.08, glare: true, maxGlareOpacity: 0.15, reverse: false, disabled: false, axis: 'all' },
-		'Aggressive 3D': { maxTilt: 30, perspective: 800, scale: 1.06, speed: 0.18, glare: true, maxGlareOpacity: 0.5, reverse: false, disabled: false, axis: 'all' },
-		'Magnetic Lift (Reverse)': { maxTilt: 20, perspective: 900, scale: 1.04, speed: 0.15, glare: true, maxGlareOpacity: 0.4, reverse: true, disabled: false, axis: 'all' },
+		Default: { maxTilt: 15, perspective: 1000, scale: 1.02, speed: 0.12, reverse: false, disabled: false, axis: 'all' },
+		'Subtle Float': { maxTilt: 8, perspective: 1200, scale: 1.01, speed: 0.08, reverse: false, disabled: false, axis: 'all' },
+		'Aggressive 3D': { maxTilt: 30, perspective: 800, scale: 1.06, speed: 0.18, reverse: false, disabled: false, axis: 'all' },
+		'Magnetic Lift (Reverse)': { maxTilt: 20, perspective: 900, scale: 1.04, speed: 0.15, reverse: true, disabled: false, axis: 'all' },
+		'Pitch Only (X-Axis)': { maxTilt: 20, perspective: 1000, scale: 1.02, speed: 0.12, reverse: false, disabled: false, axis: 'x' },
+		'Yaw Only (Y-Axis)': { maxTilt: 20, perspective: 1000, scale: 1.02, speed: 0.12, reverse: false, disabled: false, axis: 'y' },
 	},
 	'css-masonry': {
 		Default: { columns: 3, gap: 16 },
@@ -94,9 +96,9 @@ const COMPONENT_PRESETS: Record<string, Record<string, Record<string, unknown>>>
 		Spacious: { columns: 2, gap: 24 },
 	},
 	'auto-grid': {
-		Default: { minItemWidth: 200, gap: 16 },
-		Compact: { minItemWidth: 160, gap: 12 },
-		Cards: { minItemWidth: 280, gap: 24 },
+		Default: { minItemWidth: 280, gap: 24 },
+		Compact: { minItemWidth: 200, gap: 16 },
+		Cards: { minItemWidth: 320, gap: 28 },
 	},
 	'spotlight-card': {
 		Default: { radius: 350, opacity: 0.8, color: '#6366f1', borderColor: '#818cf8', spread: 80, mode: 'both', smoothing: 0.2, disabled: false },
@@ -110,8 +112,9 @@ const COMPONENT_PRESETS: Record<string, Record<string, Record<string, unknown>>>
 		Gentle: { springStiffness: 16 },
 	},
 	accordion: {
-		Default: { mode: 'single' },
-		Multiple: { mode: 'multiple' },
+		Default: { mode: 'single', duration: 300 },
+		Multiple: { mode: 'multiple', duration: 300 },
+		Fast: { mode: 'single', duration: 200 },
 	},
 	'infinite-marquee': {
 		Default: { speed: 40, pauseOnHover: true },
@@ -119,9 +122,9 @@ const COMPONENT_PRESETS: Record<string, Record<string, Record<string, unknown>>>
 		Gentle: { speed: 20, pauseOnHover: false },
 	},
 	'bento-grid': {
-		Default: { cols: 3 },
-		Dense: { cols: 4 },
-		Spacious: { cols: 2 },
+		Default: { cols: 3, gap: '1.5rem' },
+		Dense: { cols: 4, gap: '1rem' },
+		Spacious: { cols: 2, gap: '2rem' },
 	},
 	'diamond-grid': {
 		Default: { gap: '0.75vw' },
@@ -129,19 +132,26 @@ const COMPONENT_PRESETS: Record<string, Record<string, Record<string, unknown>>>
 		Spacious: { gap: '1.2vw' },
 	},
 	'scroll-timeline': {
-		Default: {},
+		Default: { curveWidth: 24, curveHeight: 40, accentColor: '#6366f1' },
+		Wider: { curveWidth: 36, curveHeight: 50, accentColor: '#8b5cf6' },
+		Subtle: { curveWidth: 16, curveHeight: 30, accentColor: '#06b6d4' },
 	},
 	'sticky-parallax': {
-		Default: {},
+		Default: { trackHeight: '250vh' },
+		Short: { trackHeight: '180vh' },
+		Deep: { trackHeight: '350vh' },
 	},
 	'border-beam': {
-		Default: { size: 200, duration: 8, borderWidth: 2 },
-		Fast: { size: 200, duration: 4, borderWidth: 2 },
-		Subtle: { size: 300, duration: 12, borderWidth: 1.5 },
+		Default: { size: 200, duration: 8, borderWidth: 2, colorFrom: '#ffaa40', colorTo: '#9c40ff', doubleBeam: false, endOpacity: 0, opacity: 1, blur: 0, borderRadius: 16 },
+		'Dual Orbital': { size: 200, duration: 8, borderWidth: 2, colorFrom: '#06b6d4', colorTo: '#3b82f6', doubleBeam: true, endOpacity: 0, opacity: 1, blur: 0, borderRadius: 16 },
+		Hyperdrive: { size: 180, duration: 4, borderWidth: 2.5, colorFrom: '#ec4899', colorTo: '#8b5cf6', doubleBeam: true, endOpacity: 0.05, opacity: 1, blur: 1, borderRadius: 16 },
+		'Subtle Glow': { size: 180, duration: 12, borderWidth: 1.5, colorFrom: '#6366f1', colorTo: '#a855f7', doubleBeam: false, endOpacity: 0, opacity: 0.85, blur: 0, borderRadius: 16 },
+		'Neon Emerald': { size: 200, duration: 6, borderWidth: 2, colorFrom: '#10b981', colorTo: '#06b6d4', doubleBeam: false, endOpacity: 0, opacity: 1, blur: 0, borderRadius: 16 },
 	},
 	'animated-sphere': {
-		Default: { color: '#ffffff', speed: 1.0, radiusScale: 0.475 },
-		Rapid: { color: '#ffffff', speed: 2.0, radiusScale: 0.475 },
+		Default: { color: '#6366f1', speed: 1.0, radiusScale: 0.475 },
+		Rapid: { color: '#8b5cf6', speed: 2.0, radiusScale: 0.475 },
+		Subtle: { color: '#06b6d4', speed: 0.5, radiusScale: 0.4 },
 	},
 	'floating-dock': {
 		Default: { baseSize: 44, maxMagnification: 0.6, influenceRadius: 70 },
@@ -164,17 +174,19 @@ const COMPONENT_PRESETS: Record<string, Record<string, Record<string, unknown>>>
 		Subtle: { strength: 0.2, radius: 80, springDamping: 14 },
 	},
 	'card-swipe-stack': {
-		Default: { thresholdDistance: 120, maxRotation: 20 },
-		Snappy: { thresholdDistance: 90, maxRotation: 25 },
-		Stiff: { thresholdDistance: 160, maxRotation: 15 },
+		Default: { thresholdDistance: 120, maxRotation: 20, scaleStep: 0.05 },
+		Snappy: { thresholdDistance: 90, maxRotation: 25, scaleStep: 0.06 },
+		Stiff: { thresholdDistance: 160, maxRotation: 15, scaleStep: 0.04 },
 	},
 	'comparison-slider': {
-		Default: { defaultPosition: 0.5 },
-		SplitQuarter: { defaultPosition: 0.25 },
-		SplitThreeQuarters: { defaultPosition: 0.75 },
+		Default: { defaultPosition: 0.5, step: 0.05 },
+		SplitQuarter: { defaultPosition: 0.25, step: 0.05 },
+		SplitThreeQuarters: { defaultPosition: 0.75, step: 0.05 },
 	},
 	'expandable-card': {
-		Default: {},
+		Default: { duration: 360 },
+		Fast: { duration: 240 },
+		Cinematic: { duration: 480 },
 	},
 	'cursor-tooltip': {
 		Default: { springDamping: 22 },
@@ -280,7 +292,7 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 		setActivePreset('Default');
 	}, [component]);
 
-	// Sticky dock elevation observer with exact header clearance offset
+	// Sticky dock elevation observer with exact header clearance offset (Big-Ω rAF batching)
 	const stickyDockRef = React.useRef<HTMLDivElement>(null);
 	const [isDockSticky, setIsDockSticky] = React.useState(false);
 
@@ -288,21 +300,28 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 		const dock = stickyDockRef.current;
 		if (!dock) return;
 
-		// Calculate sticky position dynamically based on current header offset
-		const checkSticky = () => {
-			const dockTop = dock.getBoundingClientRect().top;
-			const root = document.documentElement;
-			const rootFontSize = parseFloat(getComputedStyle(root).fontSize) || 16;
-			const rawHeaderHeight = getComputedStyle(root).getPropertyValue('--header-height').trim();
-			const headerRem = parseFloat(rawHeaderHeight) || 5.4375;
-			const isMobile = window.innerWidth < 1024;
-			// Match CSS top offsets: top-header-mobile-gap (header + 3.75rem) vs lg:top-header-gap (header + 0.75rem)
-			const gapRem = isMobile ? 3.75 : 0.75;
-			const targetTopPx = (headerRem + gapRem) * rootFontSize;
+		let rafId: number | null = null;
 
-			// If dock has reached or stuck at its target top position (within 1.5px tolerance)
-			const isStuck = dockTop <= targetTopPx + 1.5;
-			setIsDockSticky(isStuck);
+		// Calculate sticky position dynamically based on current header offset with zero layout thrashing
+		const checkSticky = () => {
+			if (rafId !== null) return;
+			rafId = requestAnimationFrame(() => {
+				rafId = null;
+				if (!dock) return;
+				const dockTop = dock.getBoundingClientRect().top;
+				const root = document.documentElement;
+				const rootFontSize = parseFloat(getComputedStyle(root).fontSize) || 16;
+				const rawHeaderHeight = getComputedStyle(root).getPropertyValue('--header-height').trim();
+				const headerRem = parseFloat(rawHeaderHeight) || 5.4375;
+				const isMobile = window.innerWidth < 1024;
+				// Match CSS top offsets: top-header-mobile-gap (header + 3.75rem) vs lg:top-header-gap (header + 0.75rem)
+				const gapRem = isMobile ? 3.75 : 0.75;
+				const targetTopPx = (headerRem + gapRem) * rootFontSize;
+
+				// If dock has reached or stuck at its target top position (within 1.5px tolerance)
+				const isStuck = dockTop <= targetTopPx + 1.5;
+				setIsDockSticky((prev) => (prev !== isStuck ? isStuck : prev));
+			});
 		};
 
 		checkSticky();
@@ -310,6 +329,7 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 		window.addEventListener('resize', checkSticky, { passive: true });
 
 		return () => {
+			if (rafId !== null) cancelAnimationFrame(rafId);
 			window.removeEventListener('scroll', checkSticky);
 			window.removeEventListener('resize', checkSticky);
 		};
@@ -601,8 +621,6 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 			const perspective = Number(propValues.perspective ?? 1000);
 			const scale = Number(propValues.scale ?? 1.02);
 			const speed = Number(propValues.speed ?? 0.12);
-			const glare = Boolean(propValues.glare ?? true);
-			const maxGlareOpacity = Number(propValues.maxGlareOpacity ?? 0.3);
 			const reverse = Boolean(propValues.reverse ?? false);
 			const disabled = Boolean(propValues.disabled ?? false);
 			const axis = (propValues.axis as 'all' | 'x' | 'y') ?? 'all';
@@ -614,8 +632,6 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 						perspective={perspective}
 						scale={scale}
 						speed={speed}
-						glare={glare}
-						maxGlareOpacity={maxGlareOpacity}
 						reverse={reverse}
 						disabled={disabled}
 						axis={axis}
@@ -659,8 +675,8 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 
 		// 5. Auto Grid
 		if (component.slug === 'auto-grid') {
-			const minItemWidth = Number(propValues.minItemWidth ?? 200);
-			const gap = Number(propValues.gap ?? 16);
+			const minItemWidth = Number(propValues.minItemWidth ?? 280);
+			const gap = Number(propValues.gap ?? 24);
 
 			return (
 				<AutoGrid minItemWidth={minItemWidth} gap={gap} className='w-full p-4'>
@@ -932,20 +948,78 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 			const size = Number(propValues.size ?? 200);
 			const duration = Number(propValues.duration ?? 8);
 			const borderWidth = Number(propValues.borderWidth ?? 2);
+			const colorFrom = String(propValues.colorFrom ?? '#ffaa40');
+			const colorTo = String(propValues.colorTo ?? '#9c40ff');
+			const doubleBeam = Boolean(propValues.doubleBeam ?? false);
+			const endOpacity = Number(propValues.endOpacity ?? 0);
+			const opacity = Number(propValues.opacity ?? 1);
+			const blur = Number(propValues.blur ?? 0);
+			const borderRadius = Number(propValues.borderRadius ?? 16);
 
 			return (
-				<div className='border-border/80 bg-card relative mx-auto flex h-64 w-full max-w-sm flex-col items-center justify-center overflow-hidden rounded-2xl border p-6 shadow-xl'>
-					<span className='kbd border-border bg-background/80 text-foreground text-3xs font-mono font-bold uppercase'>PERIMETER TRACE</span>
-					<h4 className='text-foreground mt-2 text-xl font-bold'>Border Beam</h4>
-					<p className='text-muted-foreground mt-1 text-center text-xs'>Conic gradient perimeter trace with sub-pixel exclusion mask.</p>
-					<BorderBeam size={size} duration={duration} borderWidth={borderWidth} />
+				<div
+					className='border-border/80 bg-card/95 relative mx-auto flex min-h-[220px] w-full max-w-md flex-col justify-between overflow-hidden border p-5 shadow-2xl backdrop-blur-xl sm:min-h-[240px] sm:p-6'
+					style={{ borderRadius: `${borderRadius}px` }}
+				>
+					<div className='flex items-center justify-between gap-3'>
+						<div className='flex items-center gap-3'>
+							<div className='flex size-9 items-center justify-center rounded-xl border border-amber-500/20 bg-linear-to-br from-amber-500/10 via-purple-500/10 to-indigo-500/10 text-amber-500 shadow-sm'>
+								<Sparkles className='size-4' />
+							</div>
+							<div>
+								<h4 className='text-foreground text-sm font-semibold tracking-tight'>Quantum Laser Perimeter</h4>
+								<p className='text-muted-foreground text-xs'>Sub-pixel hardware composite</p>
+							</div>
+						</div>
+						<span className='border-border/80 bg-muted/40 text-muted-foreground text-3xs inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 font-mono font-medium'>
+							<span className='size-1.5 animate-pulse rounded-full bg-emerald-500' />
+							{doubleBeam ? 'DUAL BEAM // 120 FPS' : '120 FPS'}
+						</span>
+					</div>
+
+					<div className='my-auto py-3'>
+						<div className='text-muted-foreground text-3xs font-mono tracking-wider uppercase'>Kinetic Orbital Vector</div>
+						<div className='text-foreground mt-1 flex items-baseline gap-2 text-xl font-semibold tracking-tight sm:text-2xl'>
+							<span>
+								{duration > 0 ? (360 / duration).toFixed(0) : '0'} <span className='text-muted-foreground font-mono text-xs font-normal'>deg/s</span>
+							</span>
+							<span className='font-mono text-xs font-medium text-emerald-500'>• {doubleBeam ? 'Dual Phase (180°)' : 'Single Phase'}</span>
+						</div>
+					</div>
+
+					<div className='border-border/40 text-3xs text-muted-foreground flex items-center justify-between border-t pt-3 font-mono'>
+						<div className='flex items-center gap-2'>
+							<span>{borderWidth}px stroke</span>
+							<span>•</span>
+							<span>{duration}s cycle</span>
+							<span>•</span>
+							<span>{size}px arc</span>
+						</div>
+						<div className='flex items-center gap-1.5'>
+							<span className='border-border/60 size-2.5 rounded-full border' style={{ backgroundColor: colorFrom }} title={`From: ${colorFrom}`} />
+							<span className='border-border/60 size-2.5 rounded-full border' style={{ backgroundColor: colorTo }} title={`To: ${colorTo}`} />
+						</div>
+					</div>
+
+					<BorderBeam
+						size={size}
+						duration={duration}
+						borderWidth={borderWidth}
+						colorFrom={colorFrom}
+						colorTo={colorTo}
+						doubleBeam={doubleBeam}
+						endOpacity={endOpacity}
+						opacity={opacity}
+						blur={blur}
+						borderRadius={Number(propValues.borderRadius ?? 16)}
+					/>
 				</div>
 			);
 		}
 
 		// 15. Animated Sphere
 		if (component.slug === 'animated-sphere') {
-			const color = String(propValues.color ?? '#ffffff');
+			const color = String(propValues.color ?? '#6366f1');
 			const speed = Number(propValues.speed ?? 1.0);
 			const radiusScale = Number(propValues.radiusScale ?? 0.475);
 

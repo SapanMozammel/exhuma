@@ -76,10 +76,12 @@ const COMPONENT_PRESETS: Record<string, Record<string, Record<string, unknown>>>
 		'High Velocity': { itemGap: 32, speed: 1.8, cardWidth: 320, showProgress: true, showFadeEdges: true, fadeWidth: 64, mobileMode: 'scroll' },
 	},
 	'tilt-card': {
-		Default: { maxTilt: 15, perspective: 1000, scale: 1.02, speed: 0.12, glare: true, maxGlareOpacity: 0.3, reverse: false, disabled: false, axis: 'all' },
-		'Subtle Glare': { maxTilt: 10, perspective: 1200, scale: 1.01, speed: 0.08, glare: true, maxGlareOpacity: 0.15, reverse: false, disabled: false, axis: 'all' },
-		'Aggressive 3D': { maxTilt: 30, perspective: 800, scale: 1.06, speed: 0.18, glare: true, maxGlareOpacity: 0.5, reverse: false, disabled: false, axis: 'all' },
-		'Magnetic Lift (Reverse)': { maxTilt: 20, perspective: 900, scale: 1.04, speed: 0.15, glare: true, maxGlareOpacity: 0.4, reverse: true, disabled: false, axis: 'all' },
+		Default: { maxTilt: 15, perspective: 1000, scale: 1.02, speed: 0.12, reverse: false, disabled: false, axis: 'all' },
+		'Subtle Float': { maxTilt: 8, perspective: 1200, scale: 1.01, speed: 0.08, reverse: false, disabled: false, axis: 'all' },
+		'Aggressive 3D': { maxTilt: 30, perspective: 800, scale: 1.06, speed: 0.18, reverse: false, disabled: false, axis: 'all' },
+		'Magnetic Lift (Reverse)': { maxTilt: 20, perspective: 900, scale: 1.04, speed: 0.15, reverse: true, disabled: false, axis: 'all' },
+		'Pitch Only (X-Axis)': { maxTilt: 20, perspective: 1000, scale: 1.02, speed: 0.12, reverse: false, disabled: false, axis: 'x' },
+		'Yaw Only (Y-Axis)': { maxTilt: 20, perspective: 1000, scale: 1.02, speed: 0.12, reverse: false, disabled: false, axis: 'y' },
 	},
 	'css-masonry': {
 		Default: { columns: 3, gap: 16 },
@@ -87,9 +89,9 @@ const COMPONENT_PRESETS: Record<string, Record<string, Record<string, unknown>>>
 		Spacious: { columns: 2, gap: 24 },
 	},
 	'auto-grid': {
-		Default: { minItemWidth: 220, gap: 16 },
-		Compact: { minItemWidth: 160, gap: 12 },
-		Cards: { minItemWidth: 280, gap: 24 },
+		Default: { minItemWidth: 280, gap: 24 },
+		Compact: { minItemWidth: 200, gap: 16 },
+		Cards: { minItemWidth: 320, gap: 28 },
 	},
 	'spotlight-card': {
 		Default: { radius: 350, opacity: 0.8, color: '#6366f1', borderColor: '#818cf8', spread: 80, mode: 'both', smoothing: 0.2, disabled: false },
@@ -115,7 +117,7 @@ const COMPONENT_PRESETS: Record<string, Record<string, Record<string, unknown>>>
 	'bento-grid': {
 		Default: { cols: 3, gap: '1.5rem' },
 		Dense: { cols: 4, gap: '1rem' },
-		Spacious: { cols: 3, gap: '2rem' },
+		Spacious: { cols: 2, gap: '2rem' },
 	},
 	'diamond-grid': {
 		Default: { gap: '0.75vw' },
@@ -123,9 +125,9 @@ const COMPONENT_PRESETS: Record<string, Record<string, Record<string, unknown>>>
 		Spacious: { gap: '1.2vw' },
 	},
 	'scroll-timeline': {
-		Default: { curveWidth: 24, curveHeight: 40 },
-		Wider: { curveWidth: 36, curveHeight: 50 },
-		Subtle: { curveWidth: 16, curveHeight: 30 },
+		Default: { curveWidth: 24, curveHeight: 40, accentColor: '#6366f1' },
+		Wider: { curveWidth: 36, curveHeight: 50, accentColor: '#8b5cf6' },
+		Subtle: { curveWidth: 16, curveHeight: 30, accentColor: '#06b6d4' },
 	},
 	'sticky-parallax': {
 		Default: { trackHeight: '250vh' },
@@ -133,19 +135,21 @@ const COMPONENT_PRESETS: Record<string, Record<string, Record<string, unknown>>>
 		Deep: { trackHeight: '350vh' },
 	},
 	'border-beam': {
-		Default: { size: 200, duration: 8, borderWidth: 2 },
-		Fast: { size: 200, duration: 4, borderWidth: 2 },
-		Subtle: { size: 300, duration: 12, borderWidth: 1.5 },
+		Default: { size: 200, duration: 8, borderWidth: 2, colorFrom: '#ffaa40', colorTo: '#9c40ff', doubleBeam: false, endOpacity: 0, opacity: 1, blur: 0, borderRadius: 16 },
+		'Dual Orbital': { size: 200, duration: 8, borderWidth: 2, colorFrom: '#06b6d4', colorTo: '#3b82f6', doubleBeam: true, endOpacity: 0, opacity: 1, blur: 0, borderRadius: 16 },
+		Hyperdrive: { size: 180, duration: 4, borderWidth: 2.5, colorFrom: '#ec4899', colorTo: '#8b5cf6', doubleBeam: true, endOpacity: 0.05, opacity: 1, blur: 1, borderRadius: 16 },
+		'Subtle Glow': { size: 180, duration: 12, borderWidth: 1.5, colorFrom: '#6366f1', colorTo: '#a855f7', doubleBeam: false, endOpacity: 0, opacity: 0.85, blur: 0, borderRadius: 16 },
+		'Neon Emerald': { size: 200, duration: 6, borderWidth: 2, colorFrom: '#10b981', colorTo: '#06b6d4', doubleBeam: false, endOpacity: 0, opacity: 1, blur: 0, borderRadius: 16 },
 	},
 	'animated-sphere': {
-		Default: { radius: 100, rotationSpeedX: 0.008, rotationSpeedY: 0.012, asciiMode: false },
-		ASCII: { radius: 100, rotationSpeedX: 0.008, rotationSpeedY: 0.012, asciiMode: true },
-		Rapid: { radius: 100, rotationSpeedX: 0.02, rotationSpeedY: 0.03, asciiMode: false },
+		Default: { color: '#6366f1', speed: 1.0, radiusScale: 0.475 },
+		Rapid: { color: '#8b5cf6', speed: 2.0, radiusScale: 0.475 },
+		Subtle: { color: '#06b6d4', speed: 0.5, radiusScale: 0.4 },
 	},
 	'floating-dock': {
-		Default: { maxDistance: 140, baseWidth: 44, magnifiedWidth: 72 },
-		Compact: { maxDistance: 100, baseWidth: 36, magnifiedWidth: 56 },
-		Dramatic: { maxDistance: 180, baseWidth: 44, magnifiedWidth: 88 },
+		Default: { baseSize: 44, maxMagnification: 0.6, influenceRadius: 70 },
+		Compact: { baseSize: 36, maxMagnification: 0.5, influenceRadius: 55 },
+		Dramatic: { baseSize: 44, maxMagnification: 0.9, influenceRadius: 90 },
 	},
 	'interactive-grid': {
 		Default: { width: 32, height: 32 },
@@ -239,12 +243,13 @@ export function StudioWorkbench({ initialSlug = 'stacking-cards' }: { initialSlu
 		setActivePreset(presetName);
 		const presetValues = presets[presetName];
 		if (presetValues) {
-			setPropValues((prev) => ({ ...prev, ...presetValues }));
+			setPropValues({ ...component.defaultProps, ...presetValues });
 		}
 	};
 
 	const handlePropChange = (name: string, value: unknown) => {
 		setPropValues((prev) => ({ ...prev, [name]: value }));
+		setActivePreset('Custom');
 	};
 
 	const resetProps = () => {
@@ -433,8 +438,6 @@ export function StudioWorkbench({ initialSlug = 'stacking-cards' }: { initialSlu
 			const perspective = Number(propValues.perspective ?? 1000);
 			const scale = Number(propValues.scale ?? 1.02);
 			const speed = Number(propValues.speed ?? 0.12);
-			const glare = Boolean(propValues.glare ?? true);
-			const maxGlareOpacity = Number(propValues.maxGlareOpacity ?? 0.3);
 			const reverse = Boolean(propValues.reverse ?? false);
 			const disabled = Boolean(propValues.disabled ?? false);
 			const axis = (propValues.axis as 'all' | 'x' | 'y') ?? 'all';
@@ -446,8 +449,6 @@ export function StudioWorkbench({ initialSlug = 'stacking-cards' }: { initialSlu
 						perspective={perspective}
 						scale={scale}
 						speed={speed}
-						glare={glare}
-						maxGlareOpacity={maxGlareOpacity}
 						reverse={reverse}
 						disabled={disabled}
 						axis={axis}
@@ -459,7 +460,7 @@ export function StudioWorkbench({ initialSlug = 'stacking-cards' }: { initialSlu
 						</div>
 						<h4 className='text-foreground text-2xl font-black tracking-tight'>Tactile 3D Tilt Card</h4>
 						<p className='text-muted-foreground mt-2 text-xs leading-relaxed'>
-							Perspective: {perspective}px | Glare: {glare ? 'Active' : 'Disabled'} | Axis: {axis}
+							Perspective: {perspective}px | Scale: {scale}x | Axis: {axis}
 						</p>
 						<div className='border-border text-muted-foreground mt-6 flex items-center justify-between border-t pt-4 font-mono text-xs'>
 							<span>Physics: Spring Math ({speed})</span>
@@ -489,7 +490,7 @@ export function StudioWorkbench({ initialSlug = 'stacking-cards' }: { initialSlu
 
 		if (selectedSlug === 'auto-grid') {
 			return (
-				<AutoGrid minItemWidth={Number(propValues.minItemWidth ?? 200)} gap={Number(propValues.gap ?? 16)} className='w-full p-6'>
+				<AutoGrid minItemWidth={Number(propValues.minItemWidth ?? 280)} gap={Number(propValues.gap ?? 24)} className='w-full p-6'>
 					{Array.from({ length: 6 }).map((_, idx) => (
 						<div key={idx} className='border-border bg-card hover:border-input rounded-2xl border p-5 shadow-sm transition-all'>
 							<span className='kbd text-primary text-3xs'>GRID #{idx + 1}</span>
@@ -715,12 +716,71 @@ export function StudioWorkbench({ initialSlug = 'stacking-cards' }: { initialSlu
 			const size = Number(propValues.size ?? 200);
 			const duration = Number(propValues.duration ?? 8);
 			const borderWidth = Number(propValues.borderWidth ?? 2);
+			const colorFrom = String(propValues.colorFrom ?? '#ffaa40');
+			const colorTo = String(propValues.colorTo ?? '#9c40ff');
+			const doubleBeam = Boolean(propValues.doubleBeam ?? false);
+			const endOpacity = Number(propValues.endOpacity ?? 0);
+			const opacity = Number(propValues.opacity ?? 1);
+			const blur = Number(propValues.blur ?? 0);
+			const borderRadius = Number(propValues.borderRadius ?? 16);
+
 			return (
-				<div className='border-border bg-card relative mx-auto flex h-64 w-full max-w-sm flex-col items-center justify-center overflow-hidden rounded-2xl border p-6 shadow-xl'>
-					<span className='kbd text-primary text-3xs'>PERIMETER TRACE</span>
-					<h4 className='text-foreground mt-2 text-xl font-bold'>Border Beam</h4>
-					<p className='text-muted-foreground mt-1 text-center text-xs'>Hardware-accelerated conic perimeter trace with zero GC pauses.</p>
-					<BorderBeam size={size} duration={duration} borderWidth={borderWidth} />
+				<div
+					className='border-border/80 bg-card/95 relative mx-auto flex min-h-[220px] w-full max-w-md flex-col justify-between overflow-hidden border p-5 shadow-2xl backdrop-blur-xl sm:min-h-[240px] sm:p-6'
+					style={{ borderRadius: `${borderRadius}px` }}
+				>
+					<div className='flex items-center justify-between gap-3'>
+						<div className='flex items-center gap-3'>
+							<div className='flex size-9 items-center justify-center rounded-xl border border-amber-500/20 bg-linear-to-br from-amber-500/10 via-purple-500/10 to-indigo-500/10 text-amber-500 shadow-sm'>
+								<Sparkles className='size-4' />
+							</div>
+							<div>
+								<h4 className='text-foreground text-sm font-semibold tracking-tight'>Quantum Laser Perimeter</h4>
+								<p className='text-muted-foreground text-xs'>Sub-pixel hardware composite</p>
+							</div>
+						</div>
+						<span className='border-border/80 bg-muted/40 text-muted-foreground text-3xs inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 font-mono font-medium'>
+							<span className='size-1.5 animate-pulse rounded-full bg-emerald-500' />
+							{doubleBeam ? 'DUAL BEAM // 120 FPS' : '120 FPS'}
+						</span>
+					</div>
+
+					<div className='my-auto py-3'>
+						<div className='text-muted-foreground text-3xs font-mono tracking-wider uppercase'>Kinetic Orbital Vector</div>
+						<div className='text-foreground mt-1 flex items-baseline gap-2 text-xl font-semibold tracking-tight sm:text-2xl'>
+							<span>
+								{duration > 0 ? (360 / duration).toFixed(0) : '0'} <span className='text-muted-foreground font-mono text-xs font-normal'>deg/s</span>
+							</span>
+							<span className='font-mono text-xs font-medium text-emerald-500'>• {doubleBeam ? 'Dual Phase (180°)' : 'Single Phase'}</span>
+						</div>
+					</div>
+
+					<div className='border-border/40 text-3xs text-muted-foreground flex items-center justify-between border-t pt-3 font-mono'>
+						<div className='flex items-center gap-2'>
+							<span>{borderWidth}px stroke</span>
+							<span>•</span>
+							<span>{duration}s cycle</span>
+							<span>•</span>
+							<span>{size}px arc</span>
+						</div>
+						<div className='flex items-center gap-1.5'>
+							<span className='border-border/60 size-2.5 rounded-full border' style={{ backgroundColor: colorFrom }} title={`From: ${colorFrom}`} />
+							<span className='border-border/60 size-2.5 rounded-full border' style={{ backgroundColor: colorTo }} title={`To: ${colorTo}`} />
+						</div>
+					</div>
+
+					<BorderBeam
+						size={size}
+						duration={duration}
+						borderWidth={borderWidth}
+						colorFrom={colorFrom}
+						colorTo={colorTo}
+						doubleBeam={doubleBeam}
+						endOpacity={endOpacity}
+						opacity={opacity}
+						blur={blur}
+						borderRadius={Number(propValues.borderRadius ?? 16)}
+					/>
 				</div>
 			);
 		}
@@ -1126,7 +1186,18 @@ export function StudioWorkbench({ initialSlug = 'stacking-cards' }: { initialSlu
 							<Sliders className='text-primary h-4 w-4 shrink-0' />
 							<span className='text-foreground font-mono text-xs font-bold tracking-wider uppercase'>Property Inspector</span>
 						</div>
-						<span className='kbd text-4xs'>{component.props.length} PROPS</span>
+						<div className='flex items-center gap-2'>
+							<span className='kbd text-4xs'>{component.props.length} PROPS</span>
+							<button
+								type='button'
+								onClick={resetProps}
+								className='text-muted-foreground hover:text-foreground text-3xs flex cursor-pointer items-center gap-1 font-mono transition-colors'
+								title='Reset properties to default'
+							>
+								<RefreshCw className='h-3 w-3' />
+								<span>Reset</span>
+							</button>
+						</div>
 					</div>
 
 					{/* Prop Controls List */}
@@ -1166,28 +1237,40 @@ export function StudioWorkbench({ initialSlug = 'stacking-cards' }: { initialSlu
 											))}
 										</select>
 									) : propDef.type === 'number' ? (
-										/* Slider + Numerical Input Sync */
-										<div className='flex items-center gap-2 pt-0.5'>
-											<input
-												type='range'
-												id={`prop-${propDef.name}`}
-												min={propDef.min ?? 0}
-												max={propDef.max ?? 100}
-												step={propDef.step ?? 1}
-												value={Number(val)}
-												onChange={(e) => handlePropChange(propDef.name, Number(e.target.value))}
-												className='accent-primary h-1 flex-1 cursor-pointer'
-											/>
-											<input
-												type='number'
-												min={propDef.min ?? 0}
-												max={propDef.max ?? 100}
-												step={propDef.step ?? 1}
-												value={Number(val)}
-												onChange={(e) => handlePropChange(propDef.name, Number(e.target.value))}
-												className='border-input bg-background text-foreground text-3xs w-12 rounded-sm border px-1 py-0.5 text-right font-mono'
-											/>
-										</div>
+										/* Slider + Numerical Input Sync (Big-Ω NaN-immune) */
+										(() => {
+											const parsed = typeof val === 'number' ? val : parseFloat(String(val));
+											const min = propDef.min ?? 0;
+											const max = propDef.max ?? 100;
+											const step = propDef.step ?? 1;
+											const num = Number.isFinite(parsed) ? parsed : min;
+											return (
+												<div className='flex items-center gap-2 pt-0.5'>
+													<input
+														type='range'
+														id={`prop-${propDef.name}`}
+														min={min}
+														max={max}
+														step={step}
+														value={num}
+														onChange={(e) => handlePropChange(propDef.name, Number(e.target.value))}
+														className='accent-primary h-1 flex-1 cursor-pointer'
+													/>
+													<input
+														type='number'
+														min={min}
+														max={max}
+														step={step}
+														value={Number.isFinite(parsed) ? parsed : ''}
+														onChange={(e) => {
+															const parsedVal = parseFloat(e.target.value);
+															handlePropChange(propDef.name, Number.isFinite(parsedVal) ? parsedVal : min);
+														}}
+														className='border-input bg-background text-foreground text-3xs w-12 rounded-sm border px-1 py-0.5 text-right font-mono'
+													/>
+												</div>
+											);
+										})()
 									) : propDef.type === 'color' ? (
 										<div className='flex flex-col gap-1 pt-1'>
 											<div className='flex items-center gap-1.5'>

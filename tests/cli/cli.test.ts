@@ -84,6 +84,17 @@ describe('Exhuma CLI Suite — Automated End-to-End Test Gate', () => {
     expect(code).toContain('updateFrame');
   });
 
+  it('installs real Border Beam component via exhuma add', () => {
+    execSync(`node "${CLI_BIN}" add border-beam --flavor=svelte --yes`, { cwd: TEST_DIR });
+    const componentPath = resolve(TEST_DIR, 'src/lib/components/BorderBeam.svelte');
+    expect(existsSync(componentPath)).toBe(true);
+
+    const code = readFileSync(componentPath, 'utf8');
+    expect(code).toContain('exhuma-border-beam');
+    expect(code).toContain('doubleBeam');
+    expect(code).toContain('endOpacity');
+  });
+
   it('executes exhuma build to generate static registry JSON', () => {
     const buildOut = resolve(TEST_DIR, 'dist-registry');
     execSync(`node "${CLI_BIN}" build --output="${buildOut}"`, { cwd: TEST_DIR });

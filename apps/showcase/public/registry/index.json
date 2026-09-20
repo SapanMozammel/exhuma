@@ -1,7 +1,7 @@
 {
 	"$schema": "https://exhuma.dev/schema/registry-index.json",
 	"version": "1.0.0",
-	"generatedAt": "2026-09-20T11:15:18.911Z",
+	"generatedAt": "2026-09-20T17:30:49.929Z",
 	"components": [
 		{
 			"name": "Stacking Cards",
@@ -180,7 +180,7 @@
 			"name": "Tilt Card",
 			"slug": "tilt-card",
 			"category": "cards",
-			"description": "Interactive 3D mouse-tracking card tilt with dynamic glare effect, spring damping, and reverse mode.",
+			"description": "Interactive 3D mouse-tracking card tilt with smooth gyroscopic physics, spring damping, and reverse mode.",
 			"version": "1.0.0",
 			"props": [
 				{ "name": "maxTilt", "label": "Max Tilt (deg)", "type": "number", "defaultValue": 15, "min": 5, "max": 45, "step": 1, "description": "Maximum 3D tilt rotation in degrees at card boundary edges." },
@@ -205,19 +205,8 @@
 					"step": 0.01,
 					"description": "Kinetic spring lerp damping factor (higher = snappier, lower = smoother glide)."
 				},
-				{ "name": "glare", "label": "Enable Glare", "type": "boolean", "defaultValue": true, "description": "Dynamic specular glare reflection tracking mouse position." },
-				{
-					"name": "maxGlareOpacity",
-					"label": "Max Glare Opacity",
-					"type": "number",
-					"defaultValue": 0.3,
-					"min": 0.05,
-					"max": 0.8,
-					"step": 0.05,
-					"description": "Peak opacity for the specular radial glare reflection."
-				},
 				{ "name": "reverse", "label": "Reverse Tilt", "type": "boolean", "defaultValue": false, "description": "Invert tilt direction (tilts towards cursor instead of sinking away)." },
-				{ "name": "disabled", "label": "Disabled", "type": "boolean", "defaultValue": false, "description": "Programmatically disable 3D tilt and specular glare reflections." },
+				{ "name": "disabled", "label": "Disabled", "type": "boolean", "defaultValue": false, "description": "Programmatically disable 3D tilt tracking." },
 				{
 					"name": "axis",
 					"label": "Tilt Axis",
@@ -510,14 +499,34 @@
 			"name": "Border Beam",
 			"slug": "border-beam",
 			"category": "cards",
-			"description": "Zero-runtime CSS conic perimeter laser trace with hardware mask clipping and sub-pixel compositing.",
+			"description": "Zero-runtime CSS perimeter laser trace with hardware mask clipping and sub-pixel compositing.",
 			"version": "1.0.0",
 			"props": [
-				{ "name": "size", "label": "Beam Length (px)", "type": "number", "defaultValue": 250, "min": 100, "max": 600, "step": 25, "description": "Length/size of the perimeter laser trace." },
-				{ "name": "duration", "label": "Duration (s)", "type": "number", "defaultValue": 12, "min": 2, "max": 30, "step": 1, "description": "Loop duration for one full border sweep." },
-				{ "name": "borderWidth", "label": "Border Width (px)", "type": "number", "defaultValue": 1.5, "min": 1, "max": 4, "step": 0.5, "description": "Perimeter border stroke width." },
-				{ "name": "colorFrom", "label": "Color From", "type": "string", "defaultValue": "#ffaa40", "description": "Starting gradient color." },
-				{ "name": "colorTo", "label": "Color To", "type": "string", "defaultValue": "#9c40ff", "description": "Ending gradient color." }
+				{ "name": "size", "label": "Beam Length (px)", "type": "number", "defaultValue": 200, "min": 50, "max": 200, "step": 10, "description": "Length/size of the perimeter laser trace." },
+				{ "name": "duration", "label": "Duration (s)", "type": "number", "defaultValue": 8, "min": 2, "max": 30, "step": 1, "description": "Loop duration for one full border sweep." },
+				{ "name": "borderWidth", "label": "Border Width (px)", "type": "number", "defaultValue": 2, "min": 1, "max": 8, "step": 0.5, "description": "Perimeter border stroke width." },
+				{ "name": "colorFrom", "label": "Color From", "type": "color", "defaultValue": "#ffaa40", "description": "Starting gradient color." },
+				{ "name": "colorTo", "label": "Color To", "type": "color", "defaultValue": "#9c40ff", "description": "Ending gradient color." },
+				{
+					"name": "doubleBeam",
+					"label": "Double Beam",
+					"type": "boolean",
+					"defaultValue": false,
+					"description": "Render a secondary beam located on the opposite side of the perimeter, orbiting in the same direction (180° phase offset)."
+				},
+				{
+					"name": "endOpacity",
+					"label": "End Opacity",
+					"type": "number",
+					"defaultValue": 0,
+					"min": 0,
+					"max": 1,
+					"step": 0.05,
+					"description": "Opacity of the beam tail at its trailing edge (0 for pure transparent)."
+				},
+				{ "name": "opacity", "label": "Opacity", "type": "number", "defaultValue": 1, "min": 0, "max": 1, "step": 0.05, "description": "Overall opacity of the border beam trace." },
+				{ "name": "blur", "label": "Glow Blur (px)", "type": "number", "defaultValue": 0, "min": 0, "max": 12, "step": 1, "description": "Specular diffuse blur applied to the perimeter laser trace." },
+				{ "name": "borderRadius", "label": "Corner Radius (px)", "type": "number", "defaultValue": 16, "min": 0, "max": 48, "step": 2, "description": "Corner radius of the perimeter path matching card borders." }
 			],
 			"dependencies": {
 				"react": ["@exhuma/core"],

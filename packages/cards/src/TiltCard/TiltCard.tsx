@@ -2,7 +2,7 @@
 
 import React, { useRef, useEffect, useCallback, memo } from 'react';
 import type { TiltCardProps } from '../types';
-import { calculateTilt, calculateGlare, generateTiltTransform, generateGlareStyle, lerp } from './tilt-math';
+import { calculateTilt, generateTiltTransform, lerp } from './tilt-math';
 
 /**
  * TiltCard — Exhuma Kinetic Methodology (EKM)
@@ -14,9 +14,8 @@ import { calculateTilt, calculateGlare, generateTiltTransform, generateGlareStyl
  * - Accessibility: WCAG 2.2 AA prefers-reduced-motion fallback.
  */
 export const TiltCard = memo<TiltCardProps>(
-	({ children, maxTilt = 15, perspective = 1000, scale = 1.02, speed = 0.12, glare = true, maxGlareOpacity = 0.3, reverse = false, disabled = false, axis = 'all', className = '', style, ...props }) => {
+	({ children, maxTilt = 15, perspective = 1000, scale = 1.02, speed = 0.12, reverse = false, disabled = false, axis = 'all', className = '', style, ...props }) => {
 		const cardRef = useRef<HTMLDivElement>(null);
-		const glareRef = useRef<HTMLDivElement>(null);
 		const rafIdRef = useRef<number | null>(null);
 		const rectRef = useRef<{ left: number; top: number; width: number; height: number } | null>(null);
 
@@ -24,17 +23,11 @@ export const TiltCard = memo<TiltCardProps>(
 		const targetRotX = useRef(0);
 		const targetRotY = useRef(0);
 		const targetScale = useRef(1);
-		const targetGlareX = useRef(50);
-		const targetGlareY = useRef(50);
-		const targetGlareOpacity = useRef(0);
 
 		// Current animated values
 		const currentRotX = useRef(0);
 		const currentRotY = useRef(0);
 		const currentScale = useRef(1);
-		const currentGlareX = useRef(50);
-		const currentGlareY = useRef(50);
-		const currentGlareOpacity = useRef(0);
 
 		const isHoveredRef = useRef(false);
 		const isReducedMotionRef = useRef(false);
@@ -49,7 +42,6 @@ export const TiltCard = memo<TiltCardProps>(
 
 			if (disabled || isReducedMotionRef.current) {
 				card.style.transform = '';
-				if (glareRef.current) glareRef.current.style.opacity = '0';
 				rafIdRef.current = null;
 				return;
 			}
@@ -59,30 +51,20 @@ export const TiltCard = memo<TiltCardProps>(
 			currentRotX.current = lerp(currentRotX.current, targetRotX.current, lerpFactor);
 			currentRotY.current = lerp(currentRotY.current, targetRotY.current, lerpFactor);
 			currentScale.current = lerp(currentScale.current, targetScale.current, lerpFactor);
-			currentGlareX.current = lerp(currentGlareX.current, targetGlareX.current, lerpFactor);
-			currentGlareY.current = lerp(currentGlareY.current, targetGlareY.current, lerpFactor);
-			currentGlareOpacity.current = lerp(currentGlareOpacity.current, targetGlareOpacity.current, lerpFactor);
 
 			card.style.transform = generateTiltTransform(perspective, currentRotX.current, currentRotY.current, currentScale.current);
-
-			if (glare && glareRef.current) {
-				const glareStyle = generateGlareStyle(currentGlareX.current, currentGlareY.current, currentGlareOpacity.current);
-				glareRef.current.style.opacity = glareStyle.opacity;
-				glareRef.current.style.background = glareStyle.background;
-			}
 
 			// Check convergence
 			const diffRotX = Math.abs(targetRotX.current - currentRotX.current);
 			const diffRotY = Math.abs(targetRotY.current - currentRotY.current);
 			const diffScale = Math.abs(targetScale.current - currentScale.current);
-			const diffOp = Math.abs(targetGlareOpacity.current - currentGlareOpacity.current);
 
-			if (diffRotX > 0.01 || diffRotY > 0.01 || diffScale > 0.001 || diffOp > 0.002 || isHoveredRef.current) {
+			if (diffRotX > 0.01 || diffRotY > 0.01 || diffScale > 0.001 || isHoveredRef.current) {
 				rafIdRef.current = requestAnimationFrame(updateFrame);
 			} else {
 				rafIdRef.current = null;
 			}
-		}, [perspective, speed, glare, disabled]);
+		}, [perspective, speed, disabled]);
 
 		const scheduleRaf = useCallback(() => {
 			if (rafIdRef.current === null) {
@@ -111,16 +93,9 @@ export const TiltCard = memo<TiltCardProps>(
 				targetRotX.current = tilt.rotX;
 				targetRotY.current = tilt.rotY;
 
-				if (glare) {
-					const glareCalc = calculateGlare(x, y, rect.width, rect.height, maxGlareOpacity);
-					targetGlareX.current = glareCalc.glareX;
-					targetGlareY.current = glareCalc.glareY;
-					targetGlareOpacity.current = glareCalc.glareOpacity;
-				}
-
 				scheduleRaf();
 			},
-			[disabled, maxTilt, reverse, axis, glare, maxGlareOpacity, measureRect, scheduleRaf]
+			[disabled, maxTilt, reverse, axis, measureRect, scheduleRaf]
 		);
 
 		const handlePointerEnter = useCallback(() => {
@@ -137,7 +112,6 @@ export const TiltCard = memo<TiltCardProps>(
 			targetRotX.current = 0;
 			targetRotY.current = 0;
 			targetScale.current = 1.0;
-			targetGlareOpacity.current = 0;
 			scheduleRaf();
 		}, [scheduleRaf]);
 
@@ -170,7 +144,6 @@ export const TiltCard = memo<TiltCardProps>(
 				{...props}
 			>
 				{children}
-				{glare && <div ref={glareRef} aria-hidden='true' className='pointer-events-none absolute inset-0' style={{ opacity: 0 }} />}
 			</div>
 		);
 	}

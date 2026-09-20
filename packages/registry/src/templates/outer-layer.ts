@@ -385,7 +385,7 @@ onUnmounted(() => {
 					{
 						filename: `${pascalName}.vue`,
 						language: 'vue',
-						description: `Vue 3 Native ${name} component with interactive 3D perspective Euler matrix and dynamic specular glare.`,
+						description: `Vue 3 Native ${name} component with interactive 3D perspective Euler matrix and zero layout thrashing.`,
 						code: `<script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
 
@@ -394,8 +394,6 @@ interface Props {
   perspective?: number;
   scale?: number;
   speed?: number;
-  glare?: boolean;
-  maxGlareOpacity?: number;
   reverse?: boolean;
   disabled?: boolean;
   axis?: 'all' | 'x' | 'y';
@@ -407,8 +405,6 @@ const props = withDefaults(defineProps<Props>(), {
   perspective: 1000,
   scale: 1.02,
   speed: 0.12,
-  glare: true,
-  maxGlareOpacity: 0.3,
   reverse: false,
   disabled: false,
   axis: 'all',
@@ -416,22 +412,15 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const cardRef = ref<HTMLDivElement | null>(null);
-const glareRef = ref<HTMLDivElement | null>(null);
 
 let rect: { left: number; top: number; width: number; height: number } | null = null;
 let targetRotX = 0;
 let targetRotY = 0;
 let targetScale = 1.0;
-let targetGlareX = 50;
-let targetGlareY = 50;
-let targetGlareOpacity = 0;
 
 let currentRotX = 0;
 let currentRotY = 0;
 let currentScale = 1.0;
-let currentGlareX = 50;
-let currentGlareY = 50;
-let currentGlareOpacity = 0;
 
 let isHovered = false;
 let rafId: number | null = null;
@@ -451,7 +440,6 @@ const updateFrame = () => {
 
   if (props.disabled || isReducedMotion) {
     card.style.transform = '';
-    if (glareRef.value) glareRef.value.style.opacity = '0';
     rafId = null;
     return;
   }
@@ -460,23 +448,14 @@ const updateFrame = () => {
   currentRotX = lerp(currentRotX, targetRotX, factor);
   currentRotY = lerp(currentRotY, targetRotY, factor);
   currentScale = lerp(currentScale, targetScale, factor);
-  currentGlareX = lerp(currentGlareX, targetGlareX, factor);
-  currentGlareY = lerp(currentGlareY, targetGlareY, factor);
-  currentGlareOpacity = lerp(currentGlareOpacity, targetGlareOpacity, factor);
 
   card.style.transform = \`perspective(\${props.perspective}px) rotateX(\${currentRotX.toFixed(2)}deg) rotateY(\${currentRotY.toFixed(2)}deg) scale3d(\${currentScale.toFixed(3)}, \${currentScale.toFixed(3)}, \${currentScale.toFixed(3)})\`;
-
-  if (props.glare && glareRef.value) {
-    glareRef.value.style.opacity = currentGlareOpacity.toFixed(3);
-    glareRef.value.style.background = \`radial-gradient(circle at \${currentGlareX.toFixed(1)}% \${currentGlareY.toFixed(1)}%, rgba(255,255,255,0.8), transparent 60%)\`;
-  }
 
   const diffX = Math.abs(targetRotX - currentRotX);
   const diffY = Math.abs(targetRotY - currentRotY);
   const diffScale = Math.abs(targetScale - currentScale);
-  const diffOp = Math.abs(targetGlareOpacity - currentGlareOpacity);
 
-  if (diffX > 0.01 || diffY > 0.01 || diffScale > 0.001 || diffOp > 0.002 || isHovered) {
+  if (diffX > 0.01 || diffY > 0.01 || diffScale > 0.001 || isHovered) {
     rafId = requestAnimationFrame(updateFrame);
   } else {
     rafId = null;
@@ -515,14 +494,6 @@ const onPointerMove = (e: PointerEvent) => {
   targetRotX = props.axis === 'y' ? 0 : rawRotX;
   targetRotY = props.axis === 'x' ? 0 : rawRotY;
 
-  if (props.glare) {
-    const clampedX = Math.max(0, Math.min(rect.width, x));
-    const clampedY = Math.max(0, Math.min(rect.height, y));
-    targetGlareX = (clampedX / rect.width) * 100;
-    targetGlareY = (clampedY / rect.height) * 100;
-    targetGlareOpacity = Math.max(0, Math.min(1, props.maxGlareOpacity));
-  }
-
   scheduleRaf();
 };
 
@@ -532,7 +503,6 @@ const onPointerLeave = () => {
   targetRotX = 0;
   targetRotY = 0;
   targetScale = 1.0;
-  targetGlareOpacity = 0;
   scheduleRaf();
 };
 
@@ -562,13 +532,6 @@ onUnmounted(() => {
     :class="['exhuma-tilt-card relative overflow-hidden rounded-2xl will-change-transform', props.class]"
   >
     <slot />
-    <div
-      v-if="props.glare"
-      ref="glareRef"
-      aria-hidden="true"
-      class="pointer-events-none absolute inset-0 transition-opacity"
-      style="opacity: 0"
-    />
   </div>
 </template>
 `,
@@ -757,6 +720,123 @@ onUnmounted(() => {
     </div>
   </div>
 </template>
+`,
+					},
+				];
+			}
+			if (slug === 'border-beam') {
+				const size = Number(props.size ?? 200);
+				const duration = Number(props.duration ?? 8);
+				const borderWidth = Number(props.borderWidth ?? 2);
+				const colorFrom = String(props.colorFrom ?? '#ffaa40');
+				const colorTo = String(props.colorTo ?? '#9c40ff');
+				const doubleBeam = Boolean(props.doubleBeam ?? false);
+				const endOpacity = Number(props.endOpacity ?? 0);
+				const opacity = Number(props.opacity ?? 1);
+				const blur = Number(props.blur ?? 0);
+				const borderRadius = Number(props.borderRadius ?? 16);
+
+				return [
+					{
+						filename: `${pascalName}.vue`,
+						language: 'vue',
+						description: `Vue 3 Native ${name} component with hardware mask clipping and sub-pixel laser trace.`,
+						code: `<script setup lang="ts">
+import { computed } from 'vue';
+
+interface Props {
+  size?: number;
+  duration?: number;
+  borderWidth?: number;
+  colorFrom?: string;
+  colorTo?: string;
+  doubleBeam?: boolean;
+  endOpacity?: number;
+  opacity?: number;
+  blur?: number;
+  borderRadius?: number;
+  class?: string;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  size: ${size},
+  duration: ${duration},
+  borderWidth: ${borderWidth},
+  colorFrom: '${colorFrom}',
+  colorTo: '${colorTo}',
+  doubleBeam: ${doubleBeam},
+  endOpacity: ${endOpacity},
+  opacity: ${opacity},
+  blur: ${blur},
+  borderRadius: ${borderRadius},
+  class: '',
+});
+
+const endColor = computed(() => {
+  const op = Math.max(0, Math.min(1, props.endOpacity));
+  return op <= 0 ? 'transparent' : op >= 1 ? props.colorTo : \`color-mix(in srgb, \${props.colorTo} \${Math.round(op * 100)}%, transparent)\`;
+});
+
+const pathRadius = computed(() => Math.min(props.size, 200));
+</script>
+
+<template>
+  <div
+    aria-hidden="true"
+    :class="['exhuma-border-beam pointer-events-none absolute inset-0 rounded-[inherit]', props.class]"
+    :style="{
+      border: \`\${props.borderWidth}px solid transparent\`,
+      WebkitMask: 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)',
+      WebkitMaskComposite: 'destination-out',
+      mask: 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)',
+      maskComposite: 'exclude',
+      opacity: props.opacity !== 1 ? props.opacity : undefined,
+      filter: props.blur > 0 ? \`blur(\${props.blur}px)\` : undefined,
+    }"
+  >
+    <div
+      class="exhuma-border-beam-trace"
+      :style="{
+        position: 'absolute',
+        aspectRatio: '1 / 1',
+        width: \`\${props.size}px\`,
+        offsetPath: \`rect(0 auto auto 0 round \${pathRadius}px)\`,
+        offsetAnchor: \`\${props.size / 2}px \${props.size / 2}px\`,
+        background: \`linear-gradient(to left, \${props.colorFrom}, \${props.colorTo}, \${endColor})\`,
+        animation: \`exhuma-border-beam \${props.duration}s linear infinite\`,
+      }"
+    />
+    <div
+      v-if="props.doubleBeam"
+      class="exhuma-border-beam-trace"
+      :style="{
+        position: 'absolute',
+        aspectRatio: '1 / 1',
+        width: \`\${props.size}px\`,
+        offsetPath: \`rect(0 auto auto 0 round \${pathRadius}px)\`,
+        offsetAnchor: \`\${props.size / 2}px \${props.size / 2}px\`,
+        background: \`linear-gradient(to left, \${props.colorFrom}, \${props.colorTo}, \${endColor})\`,
+        animation: \`exhuma-border-beam \${props.duration}s linear -\${props.duration / 2}s infinite\`,
+      }"
+    />
+  </div>
+</template>
+
+<style scoped>
+@keyframes exhuma-border-beam {
+  from {
+    offset-distance: 0%;
+  }
+  to {
+    offset-distance: 100%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .exhuma-border-beam-trace {
+    animation-play-state: paused !important;
+  }
+}
+</style>
 `,
 					},
 				];
@@ -1068,7 +1148,7 @@ const props = withDefaults(defineProps<Props>(), {
 					{
 						filename: `${pascalName}.svelte`,
 						language: 'svelte',
-						description: `Svelte 5 Native ${name} component with interactive 3D perspective Euler matrix and dynamic specular glare.`,
+						description: `Svelte 5 Native ${name} component with interactive 3D perspective Euler matrix and zero layout thrashing.`,
 						code: `<script lang="ts">
   import { onMount } from 'svelte';
   import { clsx } from 'clsx';
@@ -1078,8 +1158,6 @@ const props = withDefaults(defineProps<Props>(), {
     perspective?: number;
     scale?: number;
     speed?: number;
-    glare?: boolean;
-    maxGlareOpacity?: number;
     reverse?: boolean;
     disabled?: boolean;
     axis?: 'all' | 'x' | 'y';
@@ -1093,8 +1171,6 @@ const props = withDefaults(defineProps<Props>(), {
     perspective = 1000,
     scale = 1.02,
     speed = 0.12,
-    glare = true,
-    maxGlareOpacity = 0.3,
     reverse = false,
     disabled = false,
     axis = 'all',
@@ -1104,22 +1180,15 @@ const props = withDefaults(defineProps<Props>(), {
   }: Props = $props();
 
   let cardEl = $state<HTMLDivElement | null>(null);
-  let glareEl = $state<HTMLDivElement | null>(null);
 
   let rect: { left: number; top: number; width: number; height: number } | null = null;
   let targetRotX = 0;
   let targetRotY = 0;
   let targetScale = 1.0;
-  let targetGlareX = 50;
-  let targetGlareY = 50;
-  let targetGlareOpacity = 0;
 
   let currentRotX = 0;
   let currentRotY = 0;
   let currentScale = 1.0;
-  let currentGlareX = 50;
-  let currentGlareY = 50;
-  let currentGlareOpacity = 0;
 
   let isHovered = false;
   let rafId: number | null = null;
@@ -1138,7 +1207,6 @@ const props = withDefaults(defineProps<Props>(), {
 
     if (disabled || isReducedMotion) {
       cardEl.style.transform = '';
-      if (glareEl) glareEl.style.opacity = '0';
       rafId = null;
       return;
     }
@@ -1147,23 +1215,14 @@ const props = withDefaults(defineProps<Props>(), {
     currentRotX = lerp(currentRotX, targetRotX, factor);
     currentRotY = lerp(currentRotY, targetRotY, factor);
     currentScale = lerp(currentScale, targetScale, factor);
-    currentGlareX = lerp(currentGlareX, targetGlareX, factor);
-    currentGlareY = lerp(currentGlareY, targetGlareY, factor);
-    currentGlareOpacity = lerp(currentGlareOpacity, targetGlareOpacity, factor);
 
     cardEl.style.transform = \`perspective(\${perspective}px) rotateX(\${currentRotX.toFixed(2)}deg) rotateY(\${currentRotY.toFixed(2)}deg) scale3d(\${currentScale.toFixed(3)}, \${currentScale.toFixed(3)}, \${currentScale.toFixed(3)})\`;
-
-    if (glare && glareEl) {
-      glareEl.style.opacity = currentGlareOpacity.toFixed(3);
-      glareEl.style.background = \`radial-gradient(circle at \${currentGlareX.toFixed(1)}% \${currentGlareY.toFixed(1)}%, rgba(255,255,255,0.8), transparent 60%)\`;
-    }
 
     const diffX = Math.abs(targetRotX - currentRotX);
     const diffY = Math.abs(targetRotY - currentRotY);
     const diffScale = Math.abs(targetScale - currentScale);
-    const diffOp = Math.abs(targetGlareOpacity - currentGlareOpacity);
 
-    if (diffX > 0.01 || diffY > 0.01 || diffScale > 0.001 || diffOp > 0.002 || isHovered) {
+    if (diffX > 0.01 || diffY > 0.01 || diffScale > 0.001 || isHovered) {
       rafId = requestAnimationFrame(updateFrame);
     } else {
       rafId = null;
@@ -1202,14 +1261,6 @@ const props = withDefaults(defineProps<Props>(), {
     targetRotX = axis === 'y' ? 0 : rawRotX;
     targetRotY = axis === 'x' ? 0 : rawRotY;
 
-    if (glare) {
-      const clampedX = Math.max(0, Math.min(rect.width, x));
-      const clampedY = Math.max(0, Math.min(rect.height, y));
-      targetGlareX = (clampedX / rect.width) * 100;
-      targetGlareY = (clampedY / rect.height) * 100;
-      targetGlareOpacity = Math.max(0, Math.min(1, maxGlareOpacity));
-    }
-
     scheduleRaf();
   };
 
@@ -1219,7 +1270,6 @@ const props = withDefaults(defineProps<Props>(), {
     targetRotX = 0;
     targetRotY = 0;
     targetScale = 1.0;
-    targetGlareOpacity = 0;
     scheduleRaf();
   };
 
@@ -1247,14 +1297,6 @@ const props = withDefaults(defineProps<Props>(), {
   {...restProps}
 >
   {@render children?.()}
-  {#if glare}
-    <div
-      bind:this={glareEl}
-      aria-hidden="true"
-      class="pointer-events-none absolute inset-0 transition-opacity"
-      style="opacity: 0"
-    ></div>
-  {/if}
 </div>
 `,
 					},
@@ -1439,6 +1481,102 @@ const props = withDefaults(defineProps<Props>(), {
     {@render children?.()}
   </div>
 </div>
+`,
+					},
+				];
+			}
+			if (slug === 'border-beam') {
+				const size = Number(props.size ?? 200);
+				const duration = Number(props.duration ?? 8);
+				const borderWidth = Number(props.borderWidth ?? 2);
+				const colorFrom = String(props.colorFrom ?? '#ffaa40');
+				const colorTo = String(props.colorTo ?? '#9c40ff');
+				const doubleBeam = Boolean(props.doubleBeam ?? false);
+				const endOpacity = Number(props.endOpacity ?? 0);
+				const opacity = Number(props.opacity ?? 1);
+				const blur = Number(props.blur ?? 0);
+				const borderRadius = Number(props.borderRadius ?? 16);
+
+				return [
+					{
+						filename: `${pascalName}.svelte`,
+						language: 'svelte',
+						description: `Svelte 5 Native ${name} component with hardware mask clipping and sub-pixel laser trace.`,
+						code: `<script lang="ts">
+  import { clsx } from 'clsx';
+
+  let {
+    size = ${size},
+    duration = ${duration},
+    borderWidth = ${borderWidth},
+    colorFrom = '${colorFrom}',
+    colorTo = '${colorTo}',
+    doubleBeam = ${doubleBeam},
+    endOpacity = ${endOpacity},
+    opacity = ${opacity},
+    blur = ${blur},
+    borderRadius = ${borderRadius},
+    class: className = '',
+    style = '',
+  }: {
+    size?: number;
+    duration?: number;
+    borderWidth?: number;
+    colorFrom?: string;
+    colorTo?: string;
+    doubleBeam?: boolean;
+    endOpacity?: number;
+    opacity?: number;
+    blur?: number;
+    borderRadius?: number;
+    class?: string;
+    style?: string;
+  } = $props();
+
+  const clampedEndOpacity = $derived(Math.max(0, Math.min(1, endOpacity)));
+  const endColor = $derived(
+    clampedEndOpacity <= 0
+      ? 'transparent'
+      : clampedEndOpacity >= 1
+        ? colorTo
+        : \`color-mix(in srgb, \${colorTo} \${Math.round(clampedEndOpacity * 100)}%, transparent)\`
+  );
+  const pathRadius = $derived(Math.min(size, 200));
+</script>
+
+<div
+  aria-hidden="true"
+  class={clsx('exhuma-border-beam pointer-events-none absolute inset-0 rounded-[inherit]', className)}
+  style="border: {borderWidth}px solid transparent; -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0); -webkit-mask-composite: destination-out; mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0); mask-composite: exclude; {opacity !== 1 ? \`opacity: \${opacity};\` : ''} {blur > 0 ? \`filter: blur(\${blur}px);\` : ''} {style}"
+>
+  <div
+    class="exhuma-border-beam-trace"
+    style="position: absolute; aspect-ratio: 1 / 1; width: {size}px; offset-path: rect(0 auto auto 0 round {pathRadius}px); offset-anchor: {size / 2}px {size / 2}px; background: linear-gradient(to left, {colorFrom}, {colorTo}, {endColor}); animation: exhuma-border-beam {duration}s linear infinite;"
+  ></div>
+
+  {#if doubleBeam}
+    <div
+      class="exhuma-border-beam-trace"
+      style="position: absolute; aspect-ratio: 1 / 1; width: {size}px; offset-path: rect(0 auto auto 0 round {pathRadius}px); offset-anchor: {size / 2}px {size / 2}px; background: linear-gradient(to left, {colorFrom}, {colorTo}, {endColor}); animation: exhuma-border-beam {duration}s linear -{duration / 2}s infinite;"
+    ></div>
+  {/if}
+</div>
+
+<style>
+  @keyframes exhuma-border-beam {
+    from {
+      offset-distance: 0%;
+    }
+    to {
+      offset-distance: 100%;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .exhuma-border-beam-trace {
+      animation-play-state: paused !important;
+    }
+  }
+</style>
 `,
 					},
 				];
@@ -1766,7 +1904,7 @@ export const ${pascalName}: Component<${pascalName}Props> = (props) => {
 					{
 						filename: `${pascalName}.tsx`,
 						language: 'tsx',
-						description: `SolidJS Native ${name} component with interactive 3D perspective Euler matrix and dynamic specular glare.`,
+						description: `SolidJS Native ${name} component with interactive 3D perspective Euler matrix and zero layout thrashing.`,
 						code: `import { Component, JSX, onMount, onCleanup, splitProps } from 'solid-js';
 
 export interface TiltCardProps extends JSX.HTMLAttributes<HTMLDivElement> {
@@ -1774,8 +1912,6 @@ export interface TiltCardProps extends JSX.HTMLAttributes<HTMLDivElement> {
   perspective?: number;
   scale?: number;
   speed?: number;
-  glare?: boolean;
-  maxGlareOpacity?: number;
   reverse?: boolean;
   disabled?: boolean;
   axis?: 'all' | 'x' | 'y';
@@ -1789,8 +1925,6 @@ export const TiltCard: Component<TiltCardProps> = (props) => {
     'perspective',
     'scale',
     'speed',
-    'glare',
-    'maxGlareOpacity',
     'reverse',
     'disabled',
     'axis',
@@ -1802,29 +1936,20 @@ export const TiltCard: Component<TiltCardProps> = (props) => {
   const perspective = () => local.perspective ?? 1000;
   const scale = () => local.scale ?? 1.02;
   const speed = () => local.speed ?? 0.12;
-  const glare = () => local.glare !== false;
-  const maxGlareOpacity = () => local.maxGlareOpacity ?? 0.3;
   const reverse = () => local.reverse ?? false;
   const disabled = () => local.disabled ?? false;
   const axis = () => local.axis ?? 'all';
 
   let cardRef: HTMLDivElement | undefined;
-  let glareRef: HTMLDivElement | undefined;
 
   let rect: { left: number; top: number; width: number; height: number } | null = null;
   let targetRotX = 0;
   let targetRotY = 0;
   let targetScale = 1.0;
-  let targetGlareX = 50;
-  let targetGlareY = 50;
-  let targetGlareOpacity = 0;
 
   let currentRotX = 0;
   let currentRotY = 0;
   let currentScale = 1.0;
-  let currentGlareX = 50;
-  let currentGlareY = 50;
-  let currentGlareOpacity = 0;
 
   let isHovered = false;
   let rafId: number | null = null;
@@ -1843,7 +1968,6 @@ export const TiltCard: Component<TiltCardProps> = (props) => {
 
     if (disabled() || isReducedMotion) {
       cardRef.style.transform = '';
-      if (glareRef) glareRef.style.opacity = '0';
       rafId = null;
       return;
     }
@@ -1852,23 +1976,14 @@ export const TiltCard: Component<TiltCardProps> = (props) => {
     currentRotX = lerp(currentRotX, targetRotX, factor);
     currentRotY = lerp(currentRotY, targetRotY, factor);
     currentScale = lerp(currentScale, targetScale, factor);
-    currentGlareX = lerp(currentGlareX, targetGlareX, factor);
-    currentGlareY = lerp(currentGlareY, targetGlareY, factor);
-    currentGlareOpacity = lerp(currentGlareOpacity, targetGlareOpacity, factor);
 
     cardRef.style.transform = \`perspective(\${perspective()}px) rotateX(\${currentRotX.toFixed(2)}deg) rotateY(\${currentRotY.toFixed(2)}deg) scale3d(\${currentScale.toFixed(3)}, \${currentScale.toFixed(3)}, \${currentScale.toFixed(3)})\`;
-
-    if (glare() && glareRef) {
-      glareRef.style.opacity = currentGlareOpacity.toFixed(3);
-      glareRef.style.background = \`radial-gradient(circle at \${currentGlareX.toFixed(1)}% \${currentGlareY.toFixed(1)}%, rgba(255,255,255,0.8), transparent 60%)\`;
-    }
 
     const diffX = Math.abs(targetRotX - currentRotX);
     const diffY = Math.abs(targetRotY - currentRotY);
     const diffScale = Math.abs(targetScale - currentScale);
-    const diffOp = Math.abs(targetGlareOpacity - currentGlareOpacity);
 
-    if (diffX > 0.01 || diffY > 0.01 || diffScale > 0.001 || diffOp > 0.002 || isHovered) {
+    if (diffX > 0.01 || diffY > 0.01 || diffScale > 0.001 || isHovered) {
       rafId = requestAnimationFrame(updateFrame);
     } else {
       rafId = null;
@@ -1907,14 +2022,6 @@ export const TiltCard: Component<TiltCardProps> = (props) => {
     targetRotX = axis() === 'y' ? 0 : rawRotX;
     targetRotY = axis() === 'x' ? 0 : rawRotY;
 
-    if (glare()) {
-      const clampedX = Math.max(0, Math.min(rect.width, x));
-      const clampedY = Math.max(0, Math.min(rect.height, y));
-      targetGlareX = (clampedX / rect.width) * 100;
-      targetGlareY = (clampedY / rect.height) * 100;
-      targetGlareOpacity = Math.max(0, Math.min(1, maxGlareOpacity()));
-    }
-
     scheduleRaf();
   };
 
@@ -1924,7 +2031,6 @@ export const TiltCard: Component<TiltCardProps> = (props) => {
     targetRotX = 0;
     targetRotY = 0;
     targetScale = 1.0;
-    targetGlareOpacity = 0;
     scheduleRaf();
   };
 
@@ -1953,14 +2059,6 @@ export const TiltCard: Component<TiltCardProps> = (props) => {
       {...others}
     >
       {local.children}
-      {glare() && (
-        <div
-          ref={glareRef}
-          aria-hidden="true"
-          class="pointer-events-none absolute inset-0 transition-opacity"
-          style={{ opacity: '0' }}
-        />
-      )}
     </div>
   );
 };
@@ -2167,6 +2265,141 @@ export const SpotlightCard: Component<SpotlightCardProps> = (props) => {
       )}
 
       <div class="relative z-20">{local.children}</div>
+    </div>
+  );
+};
+`,
+					},
+				];
+			}
+			if (slug === 'border-beam') {
+				const size = Number(props.size ?? 200);
+				const duration = Number(props.duration ?? 8);
+				const borderWidth = Number(props.borderWidth ?? 2);
+				const colorFrom = String(props.colorFrom ?? '#ffaa40');
+				const colorTo = String(props.colorTo ?? '#9c40ff');
+				const doubleBeam = Boolean(props.doubleBeam ?? false);
+				const endOpacity = Number(props.endOpacity ?? 0);
+				const opacity = Number(props.opacity ?? 1);
+				const blur = Number(props.blur ?? 0);
+				const borderRadius = Number(props.borderRadius ?? 16);
+
+				return [
+					{
+						filename: `${pascalName}.tsx`,
+						language: 'tsx',
+						description: `SolidJS Native ${name} component with fine-grained reactive laser trace.`,
+						code: `import { Component, JSX, mergeProps, splitProps } from 'solid-js';
+import { clsx } from 'clsx';
+
+export interface BorderBeamProps extends JSX.HTMLAttributes<HTMLDivElement> {
+  size?: number;
+  duration?: number;
+  borderWidth?: number;
+  colorFrom?: string;
+  colorTo?: string;
+  doubleBeam?: boolean;
+  endOpacity?: number;
+  opacity?: number;
+  blur?: number;
+  borderRadius?: number;
+}
+
+export const BorderBeam: Component<BorderBeamProps> = (rawProps) => {
+  const props = mergeProps(
+    {
+      size: ${size},
+      duration: ${duration},
+      borderWidth: ${borderWidth},
+      colorFrom: '${colorFrom}',
+      colorTo: '${colorTo}',
+      doubleBeam: ${doubleBeam},
+      endOpacity: ${endOpacity},
+      opacity: ${opacity},
+      blur: ${blur},
+      borderRadius: ${borderRadius},
+    },
+    rawProps
+  );
+
+  const [local, others] = splitProps(props, [
+    'size',
+    'duration',
+    'borderWidth',
+    'colorFrom',
+    'colorTo',
+    'doubleBeam',
+    'endOpacity',
+    'opacity',
+    'blur',
+    'borderRadius',
+    'class',
+    'style',
+  ]);
+
+  const endColor = () => {
+    const op = Math.max(0, Math.min(1, local.endOpacity));
+    return op <= 0 ? 'transparent' : op >= 1 ? local.colorTo : \`color-mix(in srgb, \${local.colorTo} \${Math.round(op * 100)}%, transparent)\`;
+  };
+  const pathRadius = () => Math.min(local.size, 200);
+
+  return (
+    <div
+      aria-hidden="true"
+      class={clsx('exhuma-border-beam pointer-events-none absolute inset-0 rounded-[inherit]', local.class)}
+      style={{
+        border: \`\${local.borderWidth}px solid transparent\`,
+        '-webkit-mask': 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)',
+        '-webkit-mask-composite': 'destination-out',
+        mask: 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)',
+        'mask-composite': 'exclude',
+        opacity: local.opacity !== 1 ? local.opacity : undefined,
+        filter: local.blur > 0 ? \`blur(\${local.blur}px)\` : undefined,
+        ...(typeof local.style === 'object' ? local.style : {}),
+      }}
+      {...others}
+    >
+      <div
+        class="exhuma-border-beam-trace"
+        style={{
+          position: 'absolute',
+          'aspect-ratio': '1 / 1',
+          width: \`\${local.size}px\`,
+          'offset-path': \`rect(0 auto auto 0 round \${pathRadius()}px)\`,
+          'offset-anchor': \`\${local.size / 2}px \${local.size / 2}px\`,
+          background: \`linear-gradient(to left, \${local.colorFrom}, \${local.colorTo}, \${endColor()})\`,
+          animation: \`exhuma-border-beam \${local.duration}s linear infinite\`,
+        }}
+      />
+      {local.doubleBeam && (
+        <div
+          class="exhuma-border-beam-trace"
+          style={{
+            position: 'absolute',
+            'aspect-ratio': '1 / 1',
+            width: \`\${local.size}px\`,
+            'offset-path': \`rect(0 auto auto 0 round \${pathRadius()}px)\`,
+            'offset-anchor': \`\${local.size / 2}px \${local.size / 2}px\`,
+            background: \`linear-gradient(to left, \${local.colorFrom}, \${local.colorTo}, \${endColor()})\`,
+            animation: \`exhuma-border-beam \${local.duration}s linear -\${local.duration / 2}s infinite\`,
+          }}
+        />
+      )}
+      <style>{\`
+        @keyframes exhuma-border-beam {
+          from {
+            offset-distance: 0%;
+          }
+          to {
+            offset-distance: 100%;
+          }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .exhuma-border-beam-trace {
+            animation-play-state: paused !important;
+          }
+        }
+      \`}</style>
     </div>
   );
 };
@@ -2474,14 +2707,6 @@ import { CommonModule } from '@angular/common';
       [class]="'exhuma-tilt-card relative overflow-hidden rounded-2xl will-change-transform ' + customClass()"
     >
       <ng-content></ng-content>
-      @if (glare()) {
-        <div
-          #glareEl
-          aria-hidden="true"
-          class="pointer-events-none absolute inset-0 transition-opacity"
-          style="opacity: 0"
-        ></div>
-      }
     </div>
   \`,
 })
@@ -2490,15 +2715,12 @@ export class ExhumaTiltCardComponent implements OnInit, OnDestroy {
   readonly perspective = input<number>(1000);
   readonly scale = input<number>(1.02);
   readonly speed = input<number>(0.12);
-  readonly glare = input<boolean>(true);
-  readonly maxGlareOpacity = input<number>(0.3);
   readonly reverse = input<boolean>(false);
   readonly disabled = input<boolean>(false);
   readonly axis = input<'all' | 'x' | 'y'>('all');
   readonly customClass = input<string>('');
 
   readonly cardEl = viewChild<ElementRef<HTMLDivElement>>('cardEl');
-  readonly glareEl = viewChild<ElementRef<HTMLDivElement>>('glareEl');
 
   private rafId: number | null = null;
   private cleanups: Array<() => void> = [];
@@ -2516,16 +2738,10 @@ export class ExhumaTiltCardComponent implements OnInit, OnDestroy {
       let targetRotX = 0;
       let targetRotY = 0;
       let targetScale = 1.0;
-      let targetGlareX = 50;
-      let targetGlareY = 50;
-      let targetGlareOpacity = 0;
 
       let currentRotX = 0;
       let currentRotY = 0;
       let currentScale = 1.0;
-      let currentGlareX = 50;
-      let currentGlareY = 50;
-      let currentGlareOpacity = 0;
 
       let isHovered = false;
 
@@ -2539,8 +2755,6 @@ export class ExhumaTiltCardComponent implements OnInit, OnDestroy {
       const updateFrame = () => {
         if (this.disabled() || isReducedMotion) {
           card.style.transform = '';
-          const glareDom = this.glareEl()?.nativeElement;
-          if (glareDom) glareDom.style.opacity = '0';
           this.rafId = null;
           return;
         }
@@ -2549,24 +2763,14 @@ export class ExhumaTiltCardComponent implements OnInit, OnDestroy {
         currentRotX = lerp(currentRotX, targetRotX, factor);
         currentRotY = lerp(currentRotY, targetRotY, factor);
         currentScale = lerp(currentScale, targetScale, factor);
-        currentGlareX = lerp(currentGlareX, targetGlareX, factor);
-        currentGlareY = lerp(currentGlareY, targetGlareY, factor);
-        currentGlareOpacity = lerp(currentGlareOpacity, targetGlareOpacity, factor);
 
         card.style.transform = 'perspective(' + this.perspective() + 'px) rotateX(' + currentRotX.toFixed(2) + 'deg) rotateY(' + currentRotY.toFixed(2) + 'deg) scale3d(' + currentScale.toFixed(3) + ', ' + currentScale.toFixed(3) + ', ' + currentScale.toFixed(3) + ')';
-
-        const glareDom = this.glareEl()?.nativeElement;
-        if (this.glare() && glareDom) {
-          glareDom.style.opacity = currentGlareOpacity.toFixed(3);
-          glareDom.style.background = 'radial-gradient(circle at ' + currentGlareX.toFixed(1) + '% ' + currentGlareY.toFixed(1) + '%, rgba(255,255,255,0.8), transparent 60%)';
-        }
 
         const diffX = Math.abs(targetRotX - currentRotX);
         const diffY = Math.abs(targetRotY - currentRotY);
         const diffScale = Math.abs(targetScale - currentScale);
-        const diffOp = Math.abs(targetGlareOpacity - currentGlareOpacity);
 
-        if (diffX > 0.01 || diffY > 0.01 || diffScale > 0.001 || diffOp > 0.002 || isHovered) {
+        if (diffX > 0.01 || diffY > 0.01 || diffScale > 0.001 || isHovered) {
           this.rafId = window.requestAnimationFrame(updateFrame);
         } else {
           this.rafId = null;
@@ -2605,14 +2809,6 @@ export class ExhumaTiltCardComponent implements OnInit, OnDestroy {
         targetRotX = this.axis() === 'y' ? 0 : rawRotX;
         targetRotY = this.axis() === 'x' ? 0 : rawRotY;
 
-        if (this.glare()) {
-          const clampedX = Math.max(0, Math.min(rect.width, x));
-          const clampedY = Math.max(0, Math.min(rect.height, y));
-          targetGlareX = (clampedX / rect.width) * 100;
-          targetGlareY = (clampedY / rect.height) * 100;
-          targetGlareOpacity = Math.max(0, Math.min(1, this.maxGlareOpacity()));
-        }
-
         scheduleRaf();
       };
 
@@ -2622,7 +2818,6 @@ export class ExhumaTiltCardComponent implements OnInit, OnDestroy {
         targetRotX = 0;
         targetRotY = 0;
         targetScale = 1.0;
-        targetGlareOpacity = 0;
         scheduleRaf();
       };
 
@@ -2839,6 +3034,104 @@ export class ExhumaSpotlightCardComponent implements OnInit, OnDestroy {
     if (this.rafId !== null) window.cancelAnimationFrame(this.rafId);
     this.cleanups.forEach((cleanup) => cleanup());
   }
+}
+`,
+					},
+				];
+			}
+			if (slug === 'border-beam') {
+				const size = Number(props.size ?? 200);
+				const duration = Number(props.duration ?? 8);
+				const borderWidth = Number(props.borderWidth ?? 2);
+				const colorFrom = String(props.colorFrom ?? '#ffaa40');
+				const colorTo = String(props.colorTo ?? '#9c40ff');
+				const doubleBeam = Boolean(props.doubleBeam ?? false);
+				const endOpacity = Number(props.endOpacity ?? 0);
+				const opacity = Number(props.opacity ?? 1);
+				const blur = Number(props.blur ?? 0);
+				const borderRadius = Number(props.borderRadius ?? 16);
+
+				return [
+					{
+						filename: `${pascalName}.component.ts`,
+						language: 'typescript',
+						description: `Angular 18+ Standalone ${name} component with hardware mask clipping and sub-pixel laser trace.`,
+						code: `import { Component, input, computed } from '@angular/core';
+
+@Component({
+  selector: 'exhuma-border-beam',
+  standalone: true,
+  template: \`
+    <div
+      aria-hidden="true"
+      class="exhuma-border-beam pointer-events-none absolute inset-0 rounded-[inherit] {{ customClass() }}"
+      [style.border]="borderWidth() + 'px solid transparent'"
+      [style.WebkitMask]="'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)'"
+      [style.WebkitMaskComposite]="'destination-out'"
+      [style.mask]="'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)'"
+      [style.maskComposite]="'exclude'"
+      [style.opacity]="opacity() !== 1 ? opacity() : null"
+      [style.filter]="blur() > 0 ? 'blur(' + blur() + 'px)' : null"
+    >
+      <div
+        class="exhuma-border-beam-trace"
+        [style.position]="'absolute'"
+        [style.aspectRatio]="'1 / 1'"
+        [style.width.px]="size()"
+        [style.offsetPath]="'rect(0 auto auto 0 round ' + pathRadius() + 'px)'"
+        [style.offsetAnchor]="(size() / 2) + 'px ' + (size() / 2) + 'px'"
+        [style.background]="'linear-gradient(to left, ' + colorFrom() + ', ' + colorTo() + ', ' + endColor() + ')'"
+        [style.animation]="'exhuma-border-beam ' + duration() + 's linear infinite'"
+      ></div>
+
+      @if (doubleBeam()) {
+        <div
+          class="exhuma-border-beam-trace"
+          [style.position]="'absolute'"
+          [style.aspectRatio]="'1 / 1'"
+          [style.width.px]="size()"
+          [style.offsetPath]="'rect(0 auto auto 0 round ' + pathRadius() + 'px)'"
+          [style.offsetAnchor]="(size() / 2) + 'px ' + (size() / 2) + 'px'"
+          [style.background]="'linear-gradient(to left, ' + colorFrom() + ', ' + colorTo() + ', ' + endColor() + ')'"
+          [style.animation]="'exhuma-border-beam ' + duration() + 's linear -' + (duration() / 2) + 's infinite'"
+        ></div>
+      }
+    </div>
+  \`,
+  styles: [\`
+    @keyframes exhuma-border-beam {
+      from {
+        offset-distance: 0%;
+      }
+      to {
+        offset-distance: 100%;
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .exhuma-border-beam-trace {
+        animation-play-state: paused !important;
+      }
+    }
+  \`],
+})
+export class ExhumaBorderBeamComponent {
+  readonly size = input<number>(${size});
+  readonly duration = input<number>(${duration});
+  readonly borderWidth = input<number>(${borderWidth});
+  readonly colorFrom = input<string>('${colorFrom}');
+  readonly colorTo = input<string>('${colorTo}');
+  readonly doubleBeam = input<boolean>(${doubleBeam});
+  readonly endOpacity = input<number>(${endOpacity});
+  readonly opacity = input<number>(${opacity});
+  readonly blur = input<number>(${blur});
+  readonly borderRadius = input<number>(${borderRadius});
+  readonly customClass = input<string>('');
+
+  readonly pathRadius = computed(() => Math.min(this.size(), 200));
+  readonly endColor = computed(() => {
+    const op = Math.max(0, Math.min(1, this.endOpacity()));
+    return op <= 0 ? 'transparent' : op >= 1 ? this.colorTo() : \`color-mix(in srgb, \${this.colorTo()} \${Math.round(op * 100)}%, transparent)\`;
+  });
 }
 `,
 					},
@@ -3145,15 +3438,13 @@ const {
 					{
 						filename: `${pascalName}.astro`,
 						language: 'astro',
-						description: `Pure Native Astro ${name} component with interactive 3D Euler matrix and specular glare.`,
+						description: `Pure Native Astro ${name} component with interactive 3D Euler matrix and zero layout thrashing.`,
 						code: `---
 interface Props {
   maxTilt?: number;
   perspective?: number;
   scale?: number;
   speed?: number;
-  glare?: boolean;
-  maxGlareOpacity?: number;
   reverse?: boolean;
   disabled?: boolean;
   axis?: 'all' | 'x' | 'y';
@@ -3166,8 +3457,6 @@ const {
   perspective = 1000,
   scale = 1.02,
   speed = 0.12,
-  glare = true,
-  maxGlareOpacity = 0.3,
   reverse = false,
   disabled = false,
   axis = 'all',
@@ -3183,21 +3472,12 @@ const {
   data-perspective={perspective}
   data-scale={scale}
   data-speed={speed}
-  data-glare={glare}
-  data-max-glare-opacity={maxGlareOpacity}
   data-reverse={reverse}
   data-disabled={disabled}
   data-axis={axis}
   {...props}
 >
   <slot />
-  {glare && (
-    <div
-      aria-hidden="true"
-      class="exhuma-tilt-glare pointer-events-none absolute inset-0 transition-opacity"
-      style="opacity: 0"
-    />
-  )}
 </div>
 
 <script>
@@ -3205,13 +3485,10 @@ const {
     const cards = document.querySelectorAll<HTMLElement>('[data-exhuma-tilt-card]');
 
     cards.forEach((card) => {
-      const glareEl = card.querySelector<HTMLElement>('.exhuma-tilt-glare');
       const maxTilt = parseFloat(card.getAttribute('data-max-tilt') || '15');
       const perspective = parseFloat(card.getAttribute('data-perspective') || '1000');
       const scale = parseFloat(card.getAttribute('data-scale') || '1.02');
       const speed = parseFloat(card.getAttribute('data-speed') || '0.12');
-      const glare = card.getAttribute('data-glare') !== 'false';
-      const maxGlareOpacity = parseFloat(card.getAttribute('data-max-glare-opacity') || '0.3');
       const reverse = card.getAttribute('data-reverse') === 'true';
       const disabled = card.getAttribute('data-disabled') === 'true';
       const axis = card.getAttribute('data-axis') || 'all';
@@ -3222,16 +3499,10 @@ const {
       let targetRotX = 0;
       let targetRotY = 0;
       let targetScale = 1.0;
-      let targetGlareX = 50;
-      let targetGlareY = 50;
-      let targetGlareOpacity = 0;
 
       let currentRotX = 0;
       let currentRotY = 0;
       let currentScale = 1.0;
-      let currentGlareX = 50;
-      let currentGlareY = 50;
-      let currentGlareOpacity = 0;
 
       let isHovered = false;
       let rafId: number | null = null;
@@ -3246,7 +3517,6 @@ const {
       const updateFrame = () => {
         if (disabled || isReducedMotion) {
           card.style.transform = '';
-          if (glareEl) glareEl.style.opacity = '0';
           rafId = null;
           return;
         }
@@ -3255,23 +3525,14 @@ const {
         currentRotX = lerp(currentRotX, targetRotX, factor);
         currentRotY = lerp(currentRotY, targetRotY, factor);
         currentScale = lerp(currentScale, targetScale, factor);
-        currentGlareX = lerp(currentGlareX, targetGlareX, factor);
-        currentGlareY = lerp(currentGlareY, targetGlareY, factor);
-        currentGlareOpacity = lerp(currentGlareOpacity, targetGlareOpacity, factor);
 
         card.style.transform = \`perspective(\${perspective}px) rotateX(\${currentRotX.toFixed(2)}deg) rotateY(\${currentRotY.toFixed(2)}deg) scale3d(\${currentScale.toFixed(3)}, \${currentScale.toFixed(3)}, \${currentScale.toFixed(3)})\`;
-
-        if (glare && glareEl) {
-          glareEl.style.opacity = currentGlareOpacity.toFixed(3);
-          glareEl.style.background = \`radial-gradient(circle at \${currentGlareX.toFixed(1)}% \${currentGlareY.toFixed(1)}%, rgba(255,255,255,0.8), transparent 60%)\`;
-        }
 
         const diffX = Math.abs(targetRotX - currentRotX);
         const diffY = Math.abs(targetRotY - currentRotY);
         const diffScale = Math.abs(targetScale - currentScale);
-        const diffOp = Math.abs(targetGlareOpacity - currentGlareOpacity);
 
-        if (diffX > 0.01 || diffY > 0.01 || diffScale > 0.001 || diffOp > 0.002 || isHovered) {
+        if (diffX > 0.01 || diffY > 0.01 || diffScale > 0.001 || isHovered) {
           rafId = requestAnimationFrame(updateFrame);
         } else {
           rafId = null;
@@ -3310,14 +3571,6 @@ const {
         targetRotX = axis === 'y' ? 0 : rawRotX;
         targetRotY = axis === 'x' ? 0 : rawRotY;
 
-        if (glare) {
-          const clampedX = Math.max(0, Math.min(rect.width, x));
-          const clampedY = Math.max(0, Math.min(rect.height, y));
-          targetGlareX = (clampedX / rect.width) * 100;
-          targetGlareY = (clampedY / rect.height) * 100;
-          targetGlareOpacity = Math.max(0, Math.min(1, maxGlareOpacity));
-        }
-
         scheduleRaf();
       };
 
@@ -3327,7 +3580,6 @@ const {
         targetRotX = 0;
         targetRotY = 0;
         targetScale = 1.0;
-        targetGlareOpacity = 0;
         scheduleRaf();
       };
 
@@ -3577,6 +3829,94 @@ const cardId = 'exhuma-spotlight-' + Math.random().toString(36).substring(2, 9);
 					},
 				];
 			}
+			if (slug === 'border-beam') {
+				const size = Number(props.size ?? 200);
+				const duration = Number(props.duration ?? 8);
+				const borderWidth = Number(props.borderWidth ?? 2);
+				const colorFrom = String(props.colorFrom ?? '#ffaa40');
+				const colorTo = String(props.colorTo ?? '#9c40ff');
+				const doubleBeam = Boolean(props.doubleBeam ?? false);
+				const endOpacity = Number(props.endOpacity ?? 0);
+				const opacity = Number(props.opacity ?? 1);
+				const blur = Number(props.blur ?? 0);
+				const borderRadius = Number(props.borderRadius ?? 16);
+
+				return [
+					{
+						filename: `${pascalName}.astro`,
+						language: 'astro',
+						description: `Pure Native Astro ${name} component with hardware mask clipping and sub-pixel laser trace.`,
+						code: `---
+interface Props {
+  size?: number;
+  duration?: number;
+  borderWidth?: number;
+  colorFrom?: string;
+  colorTo?: string;
+  doubleBeam?: boolean;
+  endOpacity?: number;
+  opacity?: number;
+  blur?: number;
+  borderRadius?: number;
+  class?: string;
+}
+
+const {
+  size = ${size},
+  duration = ${duration},
+  borderWidth = ${borderWidth},
+  colorFrom = '${colorFrom}',
+  colorTo = '${colorTo}',
+  doubleBeam = ${doubleBeam},
+  endOpacity = ${endOpacity},
+  opacity = ${opacity},
+  blur = ${blur},
+  borderRadius = ${borderRadius},
+  class: className = '',
+} = Astro.props;
+
+const clampedEndOpacity = Math.max(0, Math.min(1, endOpacity));
+const endColor = clampedEndOpacity <= 0 ? 'transparent' : clampedEndOpacity >= 1 ? colorTo : \`color-mix(in srgb, \${colorTo} \${Math.round(clampedEndOpacity * 100)}%, transparent)\`;
+const pathRadius = Math.min(size, 200);
+---
+
+<div
+  aria-hidden="true"
+  class={\`exhuma-border-beam pointer-events-none absolute inset-0 rounded-[inherit] \${className}\`}
+  style={\`border: \${borderWidth}px solid transparent; -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0); -webkit-mask-composite: destination-out; mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0); mask-composite: exclude; \${opacity !== 1 ? \`opacity: \${opacity};\` : ''} \${blur > 0 ? \`filter: blur(\${blur}px);\` : ''}\`}
+>
+  <div
+    class="exhuma-border-beam-trace"
+    style={\`position: absolute; aspect-ratio: 1 / 1; width: \${size}px; offset-path: rect(0 auto auto 0 round \${pathRadius}px); offset-anchor: \${size / 2}px \${size / 2}px; background: linear-gradient(to left, \${colorFrom}, \${colorTo}, \${endColor}); animation: exhuma-border-beam \${duration}s linear infinite;\`}
+  ></div>
+
+  {doubleBeam && (
+    <div
+      class="exhuma-border-beam-trace"
+      style={\`position: absolute; aspect-ratio: 1 / 1; width: \${size}px; offset-path: rect(0 auto auto 0 round \${pathRadius}px); offset-anchor: \${size / 2}px \${size / 2}px; background: linear-gradient(to left, \${colorFrom}, \${colorTo}, \${endColor}); animation: exhuma-border-beam \${duration}s linear -\${duration / 2}s infinite;\`}
+    ></div>
+  )}
+</div>
+
+<style>
+  @keyframes exhuma-border-beam {
+    from {
+      offset-distance: 0%;
+    }
+    to {
+      offset-distance: 100%;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .exhuma-border-beam-trace {
+      animation-play-state: paused !important;
+    }
+  }
+</style>
+`,
+					},
+				];
+			}
 			return [
 				{
 					filename: `${pascalName}.astro`,
@@ -3822,7 +4162,7 @@ if (!customElements.get('exhuma-${slug}')) {
 					{
 						filename: `exhuma-${slug}.js`,
 						language: 'javascript',
-						description: `Universal Web Component <exhuma-${slug}> with interactive 3D perspective Euler matrix.`,
+						description: `Universal Web Component <exhuma-${slug}> with interactive 3D perspective Euler matrix and zero layout thrashing.`,
 						code: `class ExhumaTiltCardElement extends HTMLElement {
   connectedCallback() {
     if (this._cleanup) this._cleanup();
@@ -3836,24 +4176,9 @@ if (!customElements.get('exhuma-${slug}')) {
     const perspective = parseFloat(this.getAttribute('perspective') || '1000');
     const scale = parseFloat(this.getAttribute('scale') || '1.02');
     const speed = parseFloat(this.getAttribute('speed') || '0.12');
-    const glare = this.getAttribute('glare') !== 'false';
-    const maxGlareOpacity = parseFloat(this.getAttribute('max-glare-opacity') || '0.3');
     const reverse = this.getAttribute('reverse') === 'true';
     const disabled = this.getAttribute('disabled') === 'true';
     const axis = this.getAttribute('axis') || 'all';
-
-    let glareEl = null;
-    if (glare) {
-      glareEl = document.createElement('div');
-      glareEl.setAttribute('aria-hidden', 'true');
-      glareEl.className = 'exhuma-tilt-glare';
-      glareEl.style.position = 'absolute';
-      glareEl.style.inset = '0';
-      glareEl.style.pointerEvents = 'none';
-      glareEl.style.opacity = '0';
-      glareEl.style.transition = 'opacity 150ms ease-out';
-      this.appendChild(glareEl);
-    }
 
     const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     let rect = null;
@@ -3861,16 +4186,10 @@ if (!customElements.get('exhuma-${slug}')) {
     let targetRotX = 0;
     let targetRotY = 0;
     let targetScale = 1.0;
-    let targetGlareX = 50;
-    let targetGlareY = 50;
-    let targetGlareOpacity = 0;
 
     let currentRotX = 0;
     let currentRotY = 0;
     let currentScale = 1.0;
-    let currentGlareX = 50;
-    let currentGlareY = 50;
-    let currentGlareOpacity = 0;
 
     let isHovered = false;
     let rafId = null;
@@ -3885,7 +4204,6 @@ if (!customElements.get('exhuma-${slug}')) {
     const updateFrame = () => {
       if (disabled || isReducedMotion) {
         this.style.transform = '';
-        if (glareEl) glareEl.style.opacity = '0';
         rafId = null;
         return;
       }
@@ -3894,23 +4212,14 @@ if (!customElements.get('exhuma-${slug}')) {
       currentRotX = lerp(currentRotX, targetRotX, factor);
       currentRotY = lerp(currentRotY, targetRotY, factor);
       currentScale = lerp(currentScale, targetScale, factor);
-      currentGlareX = lerp(currentGlareX, targetGlareX, factor);
-      currentGlareY = lerp(currentGlareY, targetGlareY, factor);
-      currentGlareOpacity = lerp(currentGlareOpacity, targetGlareOpacity, factor);
 
       this.style.transform = 'perspective(' + perspective + 'px) rotateX(' + currentRotX.toFixed(2) + 'deg) rotateY(' + currentRotY.toFixed(2) + 'deg) scale3d(' + currentScale.toFixed(3) + ', ' + currentScale.toFixed(3) + ', ' + currentScale.toFixed(3) + ')';
-
-      if (glare && glareEl) {
-        glareEl.style.opacity = currentGlareOpacity.toFixed(3);
-        glareEl.style.background = 'radial-gradient(circle at ' + currentGlareX.toFixed(1) + '% ' + currentGlareY.toFixed(1) + '%, rgba(255,255,255,0.8), transparent 60%)';
-      }
 
       const diffX = Math.abs(targetRotX - currentRotX);
       const diffY = Math.abs(targetRotY - currentRotY);
       const diffScale = Math.abs(targetScale - currentScale);
-      const diffOp = Math.abs(targetGlareOpacity - currentGlareOpacity);
 
-      if (diffX > 0.01 || diffY > 0.01 || diffScale > 0.001 || diffOp > 0.002 || isHovered) {
+      if (diffX > 0.01 || diffY > 0.01 || diffScale > 0.001 || isHovered) {
         rafId = requestAnimationFrame(updateFrame);
       } else {
         rafId = null;
@@ -3949,14 +4258,6 @@ if (!customElements.get('exhuma-${slug}')) {
       targetRotX = axis === 'y' ? 0 : rawRotX;
       targetRotY = axis === 'x' ? 0 : rawRotY;
 
-      if (glare) {
-        const clampedX = Math.max(0, Math.min(rect.width, x));
-        const clampedY = Math.max(0, Math.min(rect.height, y));
-        targetGlareX = (clampedX / rect.width) * 100;
-        targetGlareY = (clampedY / rect.height) * 100;
-        targetGlareOpacity = Math.max(0, Math.min(1, maxGlareOpacity));
-      }
-
       scheduleRaf();
     };
 
@@ -3966,7 +4267,6 @@ if (!customElements.get('exhuma-${slug}')) {
       targetRotX = 0;
       targetRotY = 0;
       targetScale = 1.0;
-      targetGlareOpacity = 0;
       scheduleRaf();
     };
 
@@ -3987,9 +4287,6 @@ if (!customElements.get('exhuma-${slug}')) {
       this.removeEventListener('pointerleave', onPointerLeave);
       window.removeEventListener('scroll', onScrollOrResize);
       window.removeEventListener('resize', onScrollOrResize);
-      if (glareEl && glareEl.parentNode === this) {
-        this.removeChild(glareEl);
-      }
     };
   }
 
@@ -4191,6 +4488,85 @@ if (!customElements.get('exhuma-tilt-card')) {
 
 if (!customElements.get('exhuma-spotlight-card')) {
   customElements.define('exhuma-spotlight-card', ExhumaSpotlightCardElement);
+}
+`,
+					},
+				];
+			}
+			if (slug === 'border-beam') {
+				const size = Number(props.size ?? 200);
+				const duration = Number(props.duration ?? 8);
+				const borderWidth = Number(props.borderWidth ?? 2);
+				const colorFrom = String(props.colorFrom ?? '#ffaa40');
+				const colorTo = String(props.colorTo ?? '#9c40ff');
+				const doubleBeam = Boolean(props.doubleBeam ?? false);
+				const endOpacity = Number(props.endOpacity ?? 0);
+				const opacity = Number(props.opacity ?? 1);
+				const blur = Number(props.blur ?? 0);
+				const borderRadius = Number(props.borderRadius ?? 16);
+
+				return [
+					{
+						filename: 'exhuma-border-beam.js',
+						language: 'javascript',
+						description: `Autonomous Web Component <exhuma-border-beam> with hardware mask clipping and sub-pixel laser trace.`,
+						code: `class ExhumaBorderBeamElement extends HTMLElement {
+  connectedCallback() {
+    this.classList.add('exhuma-border-beam');
+    this.style.position = 'absolute';
+    this.style.inset = '0';
+    this.style.pointerEvents = 'none';
+    this.style.borderRadius = 'inherit';
+
+    const size = this.getAttribute('size') || '${size}';
+    const duration = this.getAttribute('duration') || '${duration}';
+    const borderWidth = this.getAttribute('border-width') || '${borderWidth}';
+    const colorFrom = this.getAttribute('color-from') || '${colorFrom}';
+    const colorTo = this.getAttribute('color-to') || '${colorTo}';
+    const doubleBeam = this.hasAttribute('double-beam') || ${doubleBeam};
+    const endOpacity = parseFloat(this.getAttribute('end-opacity') || '${endOpacity}');
+    const opacity = this.getAttribute('opacity') || '${opacity}';
+    const blur = parseFloat(this.getAttribute('blur') || '${blur}');
+    const borderRadius = this.getAttribute('border-radius') || '${borderRadius}';
+
+    const clampedEndOpacity = Math.max(0, Math.min(1, endOpacity));
+    const endColor = clampedEndOpacity <= 0 ? 'transparent' : clampedEndOpacity >= 1 ? colorTo : \`color-mix(in srgb, \${colorTo} \${Math.round(clampedEndOpacity * 100)}%, transparent)\`;
+
+    this.style.border = \`\${borderWidth}px solid transparent\`;
+    this.style.webkitMask = 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)';
+    this.style.webkitMaskComposite = 'destination-out';
+    this.style.mask = 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)';
+    this.style.maskComposite = 'exclude';
+    if (opacity !== '1') this.style.opacity = opacity;
+    if (blur > 0) this.style.filter = \`blur(\${blur}px)\`;
+
+    if (!document.getElementById('exhuma-border-beam-keyframes')) {
+      const style = document.createElement('style');
+      style.id = 'exhuma-border-beam-keyframes';
+      style.textContent = \`
+        @keyframes exhuma-border-beam {
+          from { offset-distance: 0%; }
+          to { offset-distance: 100%; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .exhuma-border-beam-trace { animation-play-state: paused !important; }
+        }
+      \`;
+      document.head.appendChild(style);
+    }
+
+    const pathRadius = Math.min(parseFloat(size) || 200, 200);
+    const sizeNum = parseFloat(size) || 200;
+
+    this.innerHTML = \`
+      <div class="exhuma-border-beam-trace" style="position: absolute; aspect-ratio: 1 / 1; width: \${size}px; offset-path: rect(0 auto auto 0 round \${pathRadius}px); offset-anchor: \${sizeNum / 2}px \${sizeNum / 2}px; background: linear-gradient(to left, \${colorFrom}, \${colorTo}, \${endColor}); animation: exhuma-border-beam \${duration}s linear infinite;"></div>
+      \${doubleBeam ? \`<div class="exhuma-border-beam-trace" style="position: absolute; aspect-ratio: 1 / 1; width: \${size}px; offset-path: rect(0 auto auto 0 round \${pathRadius}px); offset-anchor: \${sizeNum / 2}px \${sizeNum / 2}px; background: linear-gradient(to left, \${colorFrom}, \${colorTo}, \${endColor}); animation: exhuma-border-beam \${duration}s linear -\${parseFloat(duration) / 2}s infinite;"></div>\` : ''}
+    \`;
+  }
+}
+
+if (!customElements.get('exhuma-border-beam')) {
+  customElements.define('exhuma-border-beam', ExhumaBorderBeamElement);
 }
 `,
 					},
@@ -4406,7 +4782,7 @@ if (!customElements.get('exhuma-${slug}')) {
 					{
 						filename: `${slug}.vanilla.js`,
 						language: 'javascript',
-						description: `Autonomous Vanilla JS ${name} initialization module with 120 FPS rAF tilt engine.`,
+						description: `Pure Vanilla JS high-performance 120 FPS tilt engine with zero layout thrashing.`,
 						code: `export function initTiltCard(selector = '[data-exhuma-tilt-card]', options = {}) {
   const elements = document.querySelectorAll(selector);
   const cleanups = [];
@@ -4416,24 +4792,9 @@ if (!customElements.get('exhuma-${slug}')) {
     const perspective = parseFloat(card.getAttribute('data-perspective') || options.perspective || 1000);
     const scale = parseFloat(card.getAttribute('data-scale') || options.scale || 1.02);
     const speed = parseFloat(card.getAttribute('data-speed') || options.speed || 0.12);
-    const glare = card.getAttribute('data-glare') !== 'false' && options.glare !== false;
-    const maxGlareOpacity = parseFloat(card.getAttribute('data-max-glare-opacity') || options.maxGlareOpacity || 0.3);
     const reverse = card.getAttribute('data-reverse') === 'true' || options.reverse === true;
     const disabled = card.getAttribute('data-disabled') === 'true' || options.disabled === true;
     const axis = card.getAttribute('data-axis') || options.axis || 'all';
-
-    let glareEl = card.querySelector('.exhuma-tilt-glare');
-    if (glare && !glareEl) {
-      glareEl = document.createElement('div');
-      glareEl.setAttribute('aria-hidden', 'true');
-      glareEl.className = 'exhuma-tilt-glare';
-      glareEl.style.position = 'absolute';
-      glareEl.style.inset = '0';
-      glareEl.style.pointerEvents = 'none';
-      glareEl.style.opacity = '0';
-      glareEl.style.transition = 'opacity 150ms ease-out';
-      card.appendChild(glareEl);
-    }
 
     const isReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     let rect = null;
@@ -4441,16 +4802,10 @@ if (!customElements.get('exhuma-${slug}')) {
     let targetRotX = 0;
     let targetRotY = 0;
     let targetScale = 1.0;
-    let targetGlareX = 50;
-    let targetGlareY = 50;
-    let targetGlareOpacity = 0;
 
     let currentRotX = 0;
     let currentRotY = 0;
     let currentScale = 1.0;
-    let currentGlareX = 50;
-    let currentGlareY = 50;
-    let currentGlareOpacity = 0;
 
     let isHovered = false;
     let rafId = null;
@@ -4465,7 +4820,6 @@ if (!customElements.get('exhuma-${slug}')) {
     const updateFrame = () => {
       if (disabled || isReducedMotion) {
         card.style.transform = '';
-        if (glareEl) glareEl.style.opacity = '0';
         rafId = null;
         return;
       }
@@ -4474,23 +4828,14 @@ if (!customElements.get('exhuma-${slug}')) {
       currentRotX = lerp(currentRotX, targetRotX, factor);
       currentRotY = lerp(currentRotY, targetRotY, factor);
       currentScale = lerp(currentScale, targetScale, factor);
-      currentGlareX = lerp(currentGlareX, targetGlareX, factor);
-      currentGlareY = lerp(currentGlareY, targetGlareY, factor);
-      currentGlareOpacity = lerp(currentGlareOpacity, targetGlareOpacity, factor);
 
       card.style.transform = 'perspective(' + perspective + 'px) rotateX(' + currentRotX.toFixed(2) + 'deg) rotateY(' + currentRotY.toFixed(2) + 'deg) scale3d(' + currentScale.toFixed(3) + ', ' + currentScale.toFixed(3) + ', ' + currentScale.toFixed(3) + ')';
-
-      if (glare && glareEl) {
-        glareEl.style.opacity = currentGlareOpacity.toFixed(3);
-        glareEl.style.background = 'radial-gradient(circle at ' + currentGlareX.toFixed(1) + '% ' + currentGlareY.toFixed(1) + '%, rgba(255,255,255,0.8), transparent 60%)';
-      }
 
       const diffX = Math.abs(targetRotX - currentRotX);
       const diffY = Math.abs(targetRotY - currentRotY);
       const diffScale = Math.abs(targetScale - currentScale);
-      const diffOp = Math.abs(targetGlareOpacity - currentGlareOpacity);
 
-      if (diffX > 0.01 || diffY > 0.01 || diffScale > 0.001 || diffOp > 0.002 || isHovered) {
+      if (diffX > 0.01 || diffY > 0.01 || diffScale > 0.001 || isHovered) {
         rafId = requestAnimationFrame(updateFrame);
       } else {
         rafId = null;
@@ -4529,14 +4874,6 @@ if (!customElements.get('exhuma-${slug}')) {
       targetRotX = axis === 'y' ? 0 : rawRotX;
       targetRotY = axis === 'x' ? 0 : rawRotY;
 
-      if (glare) {
-        const clampedX = Math.max(0, Math.min(rect.width, x));
-        const clampedY = Math.max(0, Math.min(rect.height, y));
-        targetGlareX = (clampedX / rect.width) * 100;
-        targetGlareY = (clampedY / rect.height) * 100;
-        targetGlareOpacity = Math.max(0, Math.min(1, maxGlareOpacity));
-      }
-
       scheduleRaf();
     };
 
@@ -4546,7 +4883,6 @@ if (!customElements.get('exhuma-${slug}')) {
       targetRotX = 0;
       targetRotY = 0;
       targetScale = 1.0;
-      targetGlareOpacity = 0;
       scheduleRaf();
     };
 
@@ -4567,9 +4903,6 @@ if (!customElements.get('exhuma-${slug}')) {
       card.removeEventListener('pointerleave', onPointerLeave);
       window.removeEventListener('scroll', onScrollOrResize);
       window.removeEventListener('resize', onScrollOrResize);
-      if (glareEl && glareEl.parentNode === card) {
-        card.removeChild(glareEl);
-      }
     });
   });
 
@@ -4747,6 +5080,111 @@ if (!customElements.get('exhuma-${slug}')) {
       if (sheenEl && sheenEl.parentNode === card) {
         card.removeChild(sheenEl);
       }
+    });
+  });
+
+  return () => cleanups.forEach((c) => c());
+}
+`,
+					},
+				];
+			}
+			if (slug === 'border-beam') {
+				const size = Number(props.size ?? 200);
+				const duration = Number(props.duration ?? 8);
+				const borderWidth = Number(props.borderWidth ?? 2);
+				const colorFrom = String(props.colorFrom ?? '#ffaa40');
+				const colorTo = String(props.colorTo ?? '#9c40ff');
+				const doubleBeam = Boolean(props.doubleBeam ?? false);
+				const endOpacity = Number(props.endOpacity ?? 0);
+				const opacity = Number(props.opacity ?? 1);
+				const blur = Number(props.blur ?? 0);
+				const borderRadius = Number(props.borderRadius ?? 16);
+
+				return [
+					{
+						filename: 'border-beam.vanilla.js',
+						language: 'javascript',
+						description: `Vanilla JS ${name} module with hardware mask clipping and sub-pixel laser trace.`,
+						code: `export function initBorderBeam(selector = '[data-exhuma-border-beam]', options = {}) {
+  const elements = document.querySelectorAll(selector);
+  const cleanups = [];
+
+  if (!document.getElementById('exhuma-border-beam-keyframes')) {
+    const style = document.createElement('style');
+    style.id = 'exhuma-border-beam-keyframes';
+    style.textContent = \`
+      @keyframes exhuma-border-beam {
+        from { offset-distance: 0%; }
+        to { offset-distance: 100%; }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .exhuma-border-beam-trace { animation-play-state: paused !important; }
+      }
+    \`;
+    document.head.appendChild(style);
+  }
+
+  elements.forEach((el) => {
+    if (!(el instanceof HTMLElement)) return;
+
+    const size = options.size ?? ${size};
+    const duration = options.duration ?? ${duration};
+    const borderWidth = options.borderWidth ?? ${borderWidth};
+    const colorFrom = options.colorFrom ?? '${colorFrom}';
+    const colorTo = options.colorTo ?? '${colorTo}';
+    const doubleBeam = options.doubleBeam ?? ${doubleBeam};
+    const endOpacity = options.endOpacity ?? ${endOpacity};
+    const opacity = options.opacity ?? ${opacity};
+    const blur = options.blur ?? ${blur};
+    const borderRadius = options.borderRadius ?? ${borderRadius};
+
+    const clampedEndOpacity = Math.max(0, Math.min(1, endOpacity));
+    const endColor = clampedEndOpacity <= 0 ? 'transparent' : clampedEndOpacity >= 1 ? colorTo : \`color-mix(in srgb, \${colorTo} \${Math.round(clampedEndOpacity * 100)}%, transparent)\`;
+    const pathRadius = Math.min(size, 200);
+
+    const container = document.createElement('div');
+    container.className = 'exhuma-border-beam';
+    container.setAttribute('aria-hidden', 'true');
+    container.style.position = 'absolute';
+    container.style.inset = '0';
+    container.style.pointerEvents = 'none';
+    container.style.borderRadius = 'inherit';
+    container.style.border = \`\${borderWidth}px solid transparent\`;
+    container.style.webkitMask = 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)';
+    container.style.webkitMaskComposite = 'destination-out';
+    container.style.mask = 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)';
+    container.style.maskComposite = 'exclude';
+    if (opacity !== 1) container.style.opacity = opacity.toString();
+    if (blur > 0) container.style.filter = \`blur(\${blur}px)\`;
+
+    const beam1 = document.createElement('div');
+    beam1.className = 'exhuma-border-beam-trace';
+    beam1.style.position = 'absolute';
+    beam1.style.aspectRatio = '1 / 1';
+    beam1.style.width = \`\${size}px\`;
+    beam1.style.offsetPath = \`rect(0 auto auto 0 round \${pathRadius}px)\`;
+    beam1.style.offsetAnchor = \`\${size / 2}px \${size / 2}px\`;
+    beam1.style.background = \`linear-gradient(to left, \${colorFrom}, \${colorTo}, \${endColor})\`;
+    beam1.style.animation = \`exhuma-border-beam \${duration}s linear infinite\`;
+    container.appendChild(beam1);
+
+    if (doubleBeam) {
+      const beam2 = document.createElement('div');
+      beam2.className = 'exhuma-border-beam-trace';
+      beam2.style.position = 'absolute';
+      beam2.style.aspectRatio = '1 / 1';
+      beam2.style.width = \`\${size}px\`;
+      beam2.style.offsetPath = \`rect(0 auto auto 0 round \${pathRadius}px)\`;
+      beam2.style.offsetAnchor = \`\${size / 2}px \${size / 2}px\`;
+      beam2.style.background = \`linear-gradient(to left, \${colorFrom}, \${colorTo}, \${endColor})\`;
+      beam2.style.animation = \`exhuma-border-beam \${duration}s linear -\${duration / 2}s infinite\`;
+      container.appendChild(beam2);
+    }
+
+    el.appendChild(container);
+    cleanups.push(() => {
+      if (container.parentNode === el) el.removeChild(container);
     });
   });
 
@@ -5033,8 +5471,6 @@ if (!customElements.get('exhuma-${slug}')) {
     'perspective' => 1000,
     'scale' => 1.02,
     'speed' => 0.12,
-    'glare' => true,
-    'maxGlareOpacity' => 0.3,
     'reverse' => false,
     'disabled' => false,
     'axis' => 'all',
@@ -5052,8 +5488,6 @@ $id = 'exhuma-tilt-' . uniqid();
     data-perspective="{{ $perspective }}"
     data-scale="{{ $scale }}"
     data-speed="{{ $speed }}"
-    data-glare="{{ $glare ? 'true' : 'false' }}"
-    data-max-glare-opacity="{{ $maxGlareOpacity }}"
     data-reverse="{{ $reverse ? 'true' : 'false' }}"
     data-disabled="{{ $disabled ? 'true' : 'false' }}"
     data-axis="{{ $axis }}"
@@ -5062,13 +5496,6 @@ $id = 'exhuma-tilt-' . uniqid();
     ]) }}
 >
     {{ $slot }}
-    @if($glare)
-        <div
-            aria-hidden="true"
-            class="exhuma-tilt-glare pointer-events-none absolute inset-0 transition-opacity"
-            style="opacity: 0"
-        ></div>
-    @endif
 </div>
 
 <script>
@@ -5082,20 +5509,15 @@ $id = 'exhuma-tilt-' . uniqid();
         var perspective = parseFloat(card.getAttribute('data-perspective') || '1000');
         var scale = parseFloat(card.getAttribute('data-scale') || '1.02');
         var speed = parseFloat(card.getAttribute('data-speed') || '0.12');
-        var glare = card.getAttribute('data-glare') !== 'false';
-        var maxGlareOpacity = parseFloat(card.getAttribute('data-max-glare-opacity') || '0.3');
         var reverse = card.getAttribute('data-reverse') === 'true';
         var disabled = card.getAttribute('data-disabled') === 'true';
         var axis = card.getAttribute('data-axis') || 'all';
 
-        var glareEl = card.querySelector('.exhuma-tilt-glare');
         var isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         var rect = null;
 
         var targetRotX = 0, targetRotY = 0, targetScale = 1.0;
-        var targetGlareX = 50, targetGlareY = 50, targetGlareOpacity = 0;
         var currentRotX = 0, currentRotY = 0, currentScale = 1.0;
-        var currentGlareX = 50, currentGlareY = 50, currentGlareOpacity = 0;
 
         var isHovered = false;
         var rafId = null;
@@ -5110,7 +5532,6 @@ $id = 'exhuma-tilt-' . uniqid();
         function updateFrame() {
             if (disabled || isReducedMotion) {
                 card.style.transform = '';
-                if (glareEl) glareEl.style.opacity = '0';
                 rafId = null;
                 return;
             }
@@ -5119,23 +5540,14 @@ $id = 'exhuma-tilt-' . uniqid();
             currentRotX = lerp(currentRotX, targetRotX, factor);
             currentRotY = lerp(currentRotY, targetRotY, factor);
             currentScale = lerp(currentScale, targetScale, factor);
-            currentGlareX = lerp(currentGlareX, targetGlareX, factor);
-            currentGlareY = lerp(currentGlareY, targetGlareY, factor);
-            currentGlareOpacity = lerp(currentGlareOpacity, targetGlareOpacity, factor);
 
             card.style.transform = 'perspective(' + perspective + 'px) rotateX(' + currentRotX.toFixed(2) + 'deg) rotateY(' + currentRotY.toFixed(2) + 'deg) scale3d(' + currentScale.toFixed(3) + ', ' + currentScale.toFixed(3) + ', ' + currentScale.toFixed(3) + ')';
-
-            if (glare && glareEl) {
-                glareEl.style.opacity = currentGlareOpacity.toFixed(3);
-                glareEl.style.background = 'radial-gradient(circle at ' + currentGlareX.toFixed(1) + '% ' + currentGlareY.toFixed(1) + '%, rgba(255,255,255,0.8), transparent 60%)';
-            }
 
             var diffX = Math.abs(targetRotX - currentRotX);
             var diffY = Math.abs(targetRotY - currentRotY);
             var diffScale = Math.abs(targetScale - currentScale);
-            var diffOp = Math.abs(targetGlareOpacity - currentGlareOpacity);
 
-            if (diffX > 0.01 || diffY > 0.01 || diffScale > 0.001 || diffOp > 0.002 || isHovered) {
+            if (diffX > 0.01 || diffY > 0.01 || diffScale > 0.001 || isHovered) {
                 rafId = requestAnimationFrame(updateFrame);
             } else {
                 rafId = null;
@@ -5174,14 +5586,6 @@ $id = 'exhuma-tilt-' . uniqid();
             targetRotX = axis === 'y' ? 0 : rawRotX;
             targetRotY = axis === 'x' ? 0 : rawRotY;
 
-            if (glare) {
-                var clampedX = Math.max(0, Math.min(rect.width, x));
-                var clampedY = Math.max(0, Math.min(rect.height, y));
-                targetGlareX = (clampedX / rect.width) * 100;
-                targetGlareY = (clampedY / rect.height) * 100;
-                targetGlareOpacity = Math.max(0, Math.min(1, maxGlareOpacity));
-            }
-
             scheduleRaf();
         }
 
@@ -5191,7 +5595,6 @@ $id = 'exhuma-tilt-' . uniqid();
             targetRotX = 0;
             targetRotY = 0;
             targetScale = 1.0;
-            targetGlareOpacity = 0;
             scheduleRaf();
         }
 
@@ -5416,6 +5819,80 @@ $id = 'exhuma-spotlight-' . uniqid();
 					},
 				];
 			}
+			if (slug === 'border-beam') {
+				const size = Number(props.size ?? 200);
+				const duration = Number(props.duration ?? 8);
+				const borderWidth = Number(props.borderWidth ?? 2);
+				const colorFrom = String(props.colorFrom ?? '#ffaa40');
+				const colorTo = String(props.colorTo ?? '#9c40ff');
+				const doubleBeam = Boolean(props.doubleBeam ?? false);
+				const endOpacity = Number(props.endOpacity ?? 0);
+				const opacity = Number(props.opacity ?? 1);
+				const blur = Number(props.blur ?? 0);
+				const borderRadius = Number(props.borderRadius ?? 16);
+
+				return [
+					{
+						filename: `${slug}.blade.php`,
+						language: 'php',
+						description: `Laravel Blade component for ${name} with hardware mask clipping.`,
+						code: `@props([
+    'size' => ${size},
+    'duration' => ${duration},
+    'borderWidth' => ${borderWidth},
+    'colorFrom' => '${colorFrom}',
+    'colorTo' => '${colorTo}',
+    'doubleBeam' => ${doubleBeam ? 'true' : 'false'},
+    'endOpacity' => ${endOpacity},
+    'opacity' => ${opacity},
+    'blur' => ${blur},
+    'borderRadius' => ${borderRadius},
+    'class' => '',
+])
+
+@php
+    $clampedEndOpacity = max(0, min(1, (float)$endOpacity));
+    $endColor = $clampedEndOpacity <= 0 ? 'transparent' : ($clampedEndOpacity >= 1 ? $colorTo : "color-mix(in srgb, {$colorTo} " . round($clampedEndOpacity * 100) . "%, transparent)");
+    $pathRadius = min((int)$size, 200);
+@endphp
+
+<div
+    aria-hidden="true"
+    {{ $attributes->merge(['class' => 'exhuma-border-beam pointer-events-none absolute inset-0 rounded-[inherit] ' . $class]) }}
+    style="border: {{ $borderWidth }}px solid transparent; -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0); -webkit-mask-composite: destination-out; mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0); mask-composite: exclude; {{ $opacity != 1 ? 'opacity: ' . $opacity . ';' : '' }} {{ $blur > 0 ? 'filter: blur(' . $blur . 'px);' : '' }}"
+>
+    <div
+        class="exhuma-border-beam-trace"
+        style="position: absolute; aspect-ratio: 1 / 1; width: {{ $size }}px; offset-path: rect(0 auto auto 0 round {{ $pathRadius }}px); offset-anchor: {{ $size / 2 }}px {{ $size / 2 }}px; background: linear-gradient(to left, {{ $colorFrom }}, {{ $colorTo }}, {{ $endColor }}); animation: exhuma-border-beam {{ $duration }}s linear infinite;"
+    ></div>
+
+    @if ($doubleBeam)
+        <div
+            class="exhuma-border-beam-trace"
+            style="position: absolute; aspect-ratio: 1 / 1; width: {{ $size }}px; offset-path: rect(0 auto auto 0 round {{ $pathRadius }}px); offset-anchor: {{ $size / 2 }}px {{ $size / 2 }}px; background: linear-gradient(to left, {{ $colorFrom }}, {{ $colorTo }}, {{ $endColor }}); animation: exhuma-border-beam {{ $duration }}s linear -{{ $duration / 2 }}s infinite;"
+        ></div>
+    @endif
+
+    <style>
+        @keyframes exhuma-border-beam {
+            from {
+                offset-distance: 0%;
+            }
+            to {
+                offset-distance: 100%;
+            }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .exhuma-border-beam-trace {
+                animation-play-state: paused !important;
+            }
+        }
+    </style>
+</div>
+`,
+					},
+				];
+			}
 			return [
 				{
 					filename: `${slug}.blade.php`,
@@ -5581,8 +6058,6 @@ $reverse_scale = ($attributes['reverseScale'] ?? true) ? 'true' : 'false';
 									perspective: { type: 'number', default: 1000 },
 									scale: { type: 'number', default: 1.02 },
 									speed: { type: 'number', default: 0.12 },
-									glare: { type: 'boolean', default: true },
-									maxGlareOpacity: { type: 'number', default: 0.3 },
 									reverse: { type: 'boolean', default: false },
 									disabled: { type: 'boolean', default: false },
 									axis: { type: 'string', default: 'all' },
@@ -5607,8 +6082,6 @@ $max_tilt = $attributes['maxTilt'] ?? 15;
 $perspective = $attributes['perspective'] ?? 1000;
 $scale = $attributes['scale'] ?? 1.02;
 $speed = $attributes['speed'] ?? 0.12;
-$glare = ($attributes['glare'] ?? true) ? 'true' : 'false';
-$max_glare_opacity = $attributes['maxGlareOpacity'] ?? 0.3;
 $reverse = ($attributes['reverse'] ?? false) ? 'true' : 'false';
 $disabled = ($attributes['disabled'] ?? false) ? 'true' : 'false';
 $axis = $attributes['axis'] ?? 'all';
@@ -5620,8 +6093,6 @@ $axis = $attributes['axis'] ?? 'all';
   data-perspective="<?php echo esc_attr($perspective); ?>"
   data-scale="<?php echo esc_attr($scale); ?>"
   data-speed="<?php echo esc_attr($speed); ?>"
-  data-glare="<?php echo esc_attr($glare); ?>"
-  data-max-glare-opacity="<?php echo esc_attr($max_glare_opacity); ?>"
   data-reverse="<?php echo esc_attr($reverse); ?>"
   data-disabled="<?php echo esc_attr($disabled); ?>"
   data-axis="<?php echo esc_attr($axis); ?>"
@@ -5629,13 +6100,6 @@ $axis = $attributes['axis'] ?? 'all';
   <div class="exhuma-tilt-card-inner">
     <?php echo $content; ?>
   </div>
-  <?php if ($glare === 'true'): ?>
-    <div
-      aria-hidden="true"
-      class="exhuma-tilt-glare pointer-events-none absolute inset-0 transition-opacity"
-      style="opacity: 0"
-    ></div>
-  <?php endif; ?>
 </div>
 `,
 					},
@@ -5722,6 +6186,77 @@ $disabled = ($attributes['disabled'] ?? false) ? 'true' : 'false';
   <div class="relative z-20">
     <?php echo $content; ?>
   </div>
+</div>
+`,
+					},
+				];
+			}
+			if (slug === 'border-beam') {
+				const size = Number(props.size ?? 200);
+				const duration = Number(props.duration ?? 8);
+				const borderWidth = Number(props.borderWidth ?? 2);
+				const colorFrom = String(props.colorFrom ?? '#ffaa40');
+				const colorTo = String(props.colorTo ?? '#9c40ff');
+				const borderRadius = Number(props.borderRadius ?? 16);
+
+				return [
+					{
+						filename: 'block.json',
+						language: 'json',
+						description: `WordPress Block API v3 definition for ${name}.`,
+						code: JSON.stringify(
+							{
+								$schema: 'https://schemas.wp.org/trunk/block.json',
+								apiVersion: 3,
+								name: 'exhuma/border-beam',
+								version: '1.0.0',
+								title: 'Exhuma Border Beam',
+								category: 'widgets',
+								description: 'Perimeter laser trace with hardware mask clipping.',
+								attributes: {
+									size: { type: 'number', default: size },
+									duration: { type: 'number', default: duration },
+									borderWidth: { type: 'number', default: borderWidth },
+									colorFrom: { type: 'string', default: colorFrom },
+									colorTo: { type: 'string', default: colorTo },
+									borderRadius: { type: 'number', default: borderRadius },
+								},
+								render: 'file:./render.php',
+							},
+							null,
+							2
+						),
+					},
+					{
+						filename: 'render.php',
+						language: 'php',
+						description: `WordPress render template for ${name}.`,
+						code: `<?php
+/**
+ * Exhuma Border Beam Block Render Template
+ */
+$size = $attributes['size'] ?? ${size};
+$duration = $attributes['duration'] ?? ${duration};
+$borderWidth = $attributes['borderWidth'] ?? ${borderWidth};
+$colorFrom = $attributes['colorFrom'] ?? '${colorFrom}';
+$colorTo = $attributes['colorTo'] ?? '${colorTo}';
+$borderRadius = $attributes['borderRadius'] ?? ${borderRadius};
+$pathRadius = min((int)$size, 200);
+?>
+<div
+  class="exhuma-border-beam pointer-events-none absolute inset-0 rounded-[inherit]"
+  style="border: <?php echo esc_attr($borderWidth); ?>px solid transparent; -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0); -webkit-mask-composite: destination-out; mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0); mask-composite: exclude;"
+>
+  <div
+    class="exhuma-border-beam-trace"
+    style="position: absolute; aspect-ratio: 1 / 1; width: <?php echo esc_attr($size); ?>px; offset-path: rect(0 auto auto 0 round <?php echo esc_attr($pathRadius); ?>px); offset-anchor: <?php echo esc_attr($size / 2); ?>px <?php echo esc_attr($size / 2); ?>px; background: linear-gradient(to left, <?php echo esc_attr($colorFrom); ?>, <?php echo esc_attr($colorTo); ?>, transparent); animation: exhuma-border-beam <?php echo esc_attr($duration); ?>s linear infinite;"
+  ></div>
+  <style>
+    @keyframes exhuma-border-beam {
+      from { offset-distance: 0%; }
+      to { offset-distance: 100%; }
+    }
+  </style>
 </div>
 `,
 					},
@@ -5950,8 +6485,6 @@ export interface TiltCardProps extends ViewProps {
   perspective?: number;
   scale?: number;
   speed?: number;
-  glare?: boolean;
-  maxGlareOpacity?: number;
   reverse?: boolean;
   disabled?: boolean;
   axis?: 'all' | 'x' | 'y';
@@ -5963,8 +6496,6 @@ export function TiltCard({
   perspective = 1000,
   scale = 1.02,
   speed = 0.12,
-  glare = true,
-  maxGlareOpacity = 0.3,
   reverse = false,
   disabled = false,
   axis = 'all',
@@ -6249,6 +6780,92 @@ const styles = StyleSheet.create({
 					},
 				];
 			}
+			if (slug === 'border-beam') {
+				const size = Number(props.size ?? 200);
+				const duration = Number(props.duration ?? 8);
+				const borderWidth = Number(props.borderWidth ?? 2);
+				const colorFrom = String(props.colorFrom ?? '#ffaa40');
+				const colorTo = String(props.colorTo ?? '#9c40ff');
+
+				return [
+					{
+						filename: `${pascalName}.tsx`,
+						language: 'tsx',
+						description: `React Native ${name} perimeter laser trace component.`,
+						code: `import React, { useEffect, useRef } from 'react';
+import { View, StyleSheet, Animated, Easing, type ViewProps } from 'react-native';
+
+export interface BorderBeamProps extends ViewProps {
+  size?: number;
+  duration?: number;
+  borderWidth?: number;
+  colorFrom?: string;
+  colorTo?: string;
+}
+
+export const BorderBeam: React.FC<BorderBeamProps> = ({
+  size = ${size},
+  duration = ${duration},
+  borderWidth = ${borderWidth},
+  colorFrom = '${colorFrom}',
+  colorTo = '${colorTo}',
+  style,
+  ...props
+}) => {
+  const anim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    const loop = Animated.loop(
+      Animated.timing(anim, {
+        toValue: 1,
+        duration: duration * 1000,
+        easing: Easing.linear,
+        useNativeDriver: true,
+      })
+    );
+    loop.start();
+    return () => loop.stop();
+  }, [duration]);
+
+  const rotate = anim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '360deg'],
+  });
+
+  return (
+    <View pointerEvents="none" style={[styles.container, { borderWidth }, style]} {...props}>
+      <Animated.View
+        style={[
+          styles.beam,
+          {
+            width: size,
+            height: size,
+            backgroundColor: colorFrom,
+            transform: [{ rotate }],
+          },
+        ]}
+      />
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    ...StyleSheet.absoluteFillObject,
+    borderRadius: 16,
+    borderColor: 'transparent',
+    overflow: 'hidden',
+  },
+  beam: {
+    position: 'absolute',
+    borderRadius: 9999,
+    opacity: 0.8,
+  },
+});
+`,
+					},
+				];
+			}
 			return [
 				{
 					filename: `${pascalName}.tsx`,
@@ -6415,8 +7032,6 @@ class ExhumaTiltCard extends StatefulWidget {
   final double perspective;
   final double scale;
   final double speed;
-  final bool glare;
-  final double maxGlareOpacity;
   final bool reverse;
   final bool disabled;
   final String axis;
@@ -6428,8 +7043,6 @@ class ExhumaTiltCard extends StatefulWidget {
     this.perspective = 1000.0,
     this.scale = 1.02,
     this.speed = 0.12,
-    this.glare = true,
-    this.maxGlareOpacity = 0.3,
     this.reverse = false,
     this.disabled = false,
     this.axis = 'all',
@@ -6444,9 +7057,6 @@ class _ExhumaTiltCardState extends State<ExhumaTiltCard> with SingleTickerProvid
   double _rotX = 0.0;
   double _rotY = 0.0;
   double _scale = 1.0;
-  double _glareX = 50.0;
-  double _glareY = 50.0;
-  double _glareOpacity = 0.0;
   bool _isHovered = false;
 
   @override
@@ -6489,12 +7099,6 @@ class _ExhumaTiltCardState extends State<ExhumaTiltCard> with SingleTickerProvid
     setState(() {
       _rotX = widget.axis == 'y' ? 0.0 : rawRotX;
       _rotY = widget.axis == 'x' ? 0.0 : rawRotY;
-
-      if (widget.glare) {
-        _glareX = (x / constraints.maxWidth * 100.0).clamp(0.0, 100.0);
-        _glareY = (y / constraints.maxHeight * 100.0).clamp(0.0, 100.0);
-        _glareOpacity = widget.maxGlareOpacity.clamp(0.0, 1.0);
-      }
     });
   }
 
@@ -6504,7 +7108,6 @@ class _ExhumaTiltCardState extends State<ExhumaTiltCard> with SingleTickerProvid
       _rotX = 0.0;
       _rotY = 0.0;
       _scale = 1.0;
-      _glareOpacity = 0.0;
     });
   }
 
@@ -6525,36 +7128,7 @@ class _ExhumaTiltCardState extends State<ExhumaTiltCard> with SingleTickerProvid
           child: Transform(
             transform: transform,
             alignment: FractionalOffset.center,
-            child: Stack(
-              children: [
-                widget.child,
-                if (widget.glare)
-                  Positioned.fill(
-                    child: IgnorePointer(
-                      child: AnimatedOpacity(
-                        duration: const Duration(milliseconds: 150),
-                        opacity: _glareOpacity,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            gradient: RadialGradient(
-                              center: Alignment(
-                                (_glareX / 50.0) - 1.0,
-                                (_glareY / 50.0) - 1.0,
-                              ),
-                              radius: 0.8,
-                              colors: const [
-                                Colors.white54,
-                                Colors.transparent,
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-              ],
-            ),
+            child: widget.child,
           ),
         );
       },
@@ -6734,6 +7308,127 @@ class _SpotlightPainter extends CustomPainter {
 					},
 				];
 			}
+			if (slug === 'border-beam') {
+				const size = Number(props.size ?? 200);
+				const duration = Number(props.duration ?? 8);
+				const borderWidth = Number(props.borderWidth ?? 2);
+				const borderRadius = Number(props.borderRadius ?? 16);
+
+				return [
+					{
+						filename: `${snakeName}.dart`,
+						language: 'dart',
+						description: `Flutter ${name} perimeter laser trace widget.`,
+						code: `import 'dart:math' as math;
+import 'package:flutter/material.dart';
+
+class ExhumaBorderBeam extends StatefulWidget {
+  final double size;
+  final double duration;
+  final double borderWidth;
+  final double borderRadius;
+  final Color colorFrom;
+  final Color colorTo;
+
+  const ExhumaBorderBeam({
+    super.key,
+    this.size = ${size}.0,
+    this.duration = ${duration}.0,
+    this.borderWidth = ${borderWidth},
+    this.borderRadius = ${borderRadius}.0,
+    this.colorFrom = const Color(0xFFFFAA40),
+    this.colorTo = const Color(0xFF9C40FF),
+  });
+
+  @override
+  State<ExhumaBorderBeam> createState() => _ExhumaBorderBeamState();
+}
+
+class _ExhumaBorderBeamState extends State<ExhumaBorderBeam>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: Duration(seconds: widget.duration.toInt()),
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        return CustomPaint(
+          painter: _BorderBeamPainter(
+            progress: _controller.value,
+            borderWidth: widget.borderWidth,
+            borderRadius: widget.borderRadius,
+            colorFrom: widget.colorFrom,
+            colorTo: widget.colorTo,
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _BorderBeamPainter extends CustomPainter {
+  final double progress;
+  final double borderWidth;
+  final double borderRadius;
+  final Color colorFrom;
+  final Color colorTo;
+
+  _BorderBeamPainter({
+    required this.progress,
+    required this.borderWidth,
+    required this.borderRadius,
+    required this.colorFrom,
+    required this.colorTo,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final rect = Offset.zero & size;
+    final rrect = RRect.fromRectAndRadius(rect, Radius.circular(borderRadius));
+
+    final paint = Paint()
+      ..shader = SweepGradient(
+        startAngle: 0.0,
+        endAngle: math.pi * 2,
+        colors: [colorFrom, colorTo, Colors.transparent],
+        stops: const [0.0, 0.25, 0.5],
+        transform: GradientRotation(progress * math.pi * 2),
+      ).createShader(rect)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = borderWidth;
+
+    canvas.drawRRect(rrect, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant _BorderBeamPainter oldDelegate) {
+    return oldDelegate.progress != progress ||
+        oldDelegate.borderWidth != borderWidth ||
+        oldDelegate.borderRadius != borderRadius ||
+        oldDelegate.colorFrom != colorFrom ||
+        oldDelegate.colorTo != colorTo;
+  }
+}
+`,
+					},
+				];
+			}
 			return [
 				{
 					filename: `${snakeName}.dart`,
@@ -6755,8 +7450,6 @@ function getEjectedReactCode(slug: string, pascalName: string, defaultClass: str
 			const perspective = Number(props.perspective ?? 1000);
 			const scale = Number(props.scale ?? 1.02);
 			const speed = Number(props.speed ?? 0.12);
-			const glare = Boolean(props.glare ?? true);
-			const maxGlareOpacity = Number(props.maxGlareOpacity ?? 0.3);
 			const reverse = Boolean(props.reverse ?? false);
 			const disabled = Boolean(props.disabled ?? false);
 			const axis = (props.axis as string) ?? 'all';
@@ -6766,8 +7459,6 @@ function getEjectedReactCode(slug: string, pascalName: string, defaultClass: str
   perspective?: number;
   scale?: number;
   speed?: number;
-  glare?: boolean;
-  maxGlareOpacity?: number;
   reverse?: boolean;
   disabled?: boolean;
   axis?: 'all' | 'x' | 'y';
@@ -6775,7 +7466,7 @@ function getEjectedReactCode(slug: string, pascalName: string, defaultClass: str
 
 /**
  * TiltCard — Standalone Ejected Engine (Zero-Dependency)
- * Inlines 3D Euler matrix transformation and dynamic radial glare with Ω(1) cached bounds
+ * Inlines 3D Euler matrix transformation with Ω(1) cached bounds
  * and frame-coalesced 120 FPS requestAnimationFrame physics loop.
  */
 export const TiltCard = React.forwardRef<HTMLDivElement, TiltCardProps>(
@@ -6785,8 +7476,6 @@ export const TiltCard = React.forwardRef<HTMLDivElement, TiltCardProps>(
       perspective = ${perspective},
       scale = ${scale},
       speed = ${speed},
-      glare = ${glare},
-      maxGlareOpacity = ${maxGlareOpacity},
       reverse = ${reverse},
       disabled = ${disabled},
       axis = '${axis}',
@@ -6799,20 +7488,15 @@ export const TiltCard = React.forwardRef<HTMLDivElement, TiltCardProps>(
   ) => {
     const internalRef = React.useRef<HTMLDivElement>(null);
     const cardRef = (forwardedRef as React.RefObject<HTMLDivElement>) || internalRef;
-    const glareRef = React.useRef<HTMLDivElement>(null);
     const rectRef = React.useRef<{ left: number; top: number; width: number; height: number } | null>(null);
     const rafIdRef = React.useRef<number | null>(null);
 
     const currentRotX = React.useRef(0);
     const currentRotY = React.useRef(0);
     const currentScale = React.useRef(1);
-    const currentGlareOpacity = React.useRef(0);
     const targetRotX = React.useRef(0);
     const targetRotY = React.useRef(0);
     const targetScale = React.useRef(1);
-    const targetGlareX = React.useRef(50);
-    const targetGlareY = React.useRef(50);
-    const targetGlareOpacity = React.useRef(0);
     const isHovered = React.useRef(false);
 
     const updatePhysics = React.useCallback(() => {
@@ -6825,20 +7509,13 @@ export const TiltCard = React.forwardRef<HTMLDivElement, TiltCardProps>(
       currentRotX.current += (targetRotX.current - currentRotX.current) * speed;
       currentRotY.current += (targetRotY.current - currentRotY.current) * speed;
       currentScale.current += (targetScale.current - currentScale.current) * speed;
-      currentGlareOpacity.current += (targetGlareOpacity.current - currentGlareOpacity.current) * speed;
 
       el.style.transform = \`perspective(\${perspective}px) rotateX(\${currentRotX.current.toFixed(2)}deg) rotateY(\${currentRotY.current.toFixed(2)}deg) scale3d(\${currentScale.current.toFixed(4)}, \${currentScale.current.toFixed(4)}, \${currentScale.current.toFixed(4)})\`;
 
-      if (glareRef.current) {
-        glareRef.current.style.opacity = String(currentGlareOpacity.current.toFixed(3));
-        glareRef.current.style.background = \`radial-gradient(circle at \${targetGlareX.current.toFixed(1)}% \${targetGlareY.current.toFixed(1)}%, rgba(255,255,255,0.8), transparent 60%)\`;
-      }
-
       const diffRot = Math.abs(targetRotX.current - currentRotX.current) + Math.abs(targetRotY.current - currentRotY.current);
       const diffScale = Math.abs(targetScale.current - currentScale.current);
-      const diffGlare = Math.abs(targetGlareOpacity.current - currentGlareOpacity.current);
 
-      if (isHovered.current || diffRot > 0.01 || diffScale > 0.001 || diffGlare > 0.01) {
+      if (isHovered.current || diffRot > 0.01 || diffScale > 0.001) {
         rafIdRef.current = requestAnimationFrame(updatePhysics);
       } else {
         rafIdRef.current = null;
@@ -6888,17 +7565,9 @@ export const TiltCard = React.forwardRef<HTMLDivElement, TiltCardProps>(
         targetRotX.current = axis === 'y' ? 0 : rawRotX;
         targetRotY.current = axis === 'x' ? 0 : rawRotY;
 
-        if (glare) {
-          const clampedX = Math.max(0, Math.min(rect.width, x));
-          const clampedY = Math.max(0, Math.min(rect.height, y));
-          targetGlareX.current = (clampedX / rect.width) * 100;
-          targetGlareY.current = (clampedY / rect.height) * 100;
-          targetGlareOpacity.current = Math.max(0, Math.min(1, maxGlareOpacity));
-        }
-
         scheduleRaf();
       },
-      [disabled, maxTilt, reverse, axis, glare, maxGlareOpacity, cardRef, scheduleRaf]
+      [disabled, maxTilt, reverse, axis, cardRef, scheduleRaf]
     );
 
     const handlePointerLeave = React.useCallback(() => {
@@ -6907,7 +7576,6 @@ export const TiltCard = React.forwardRef<HTMLDivElement, TiltCardProps>(
       targetRotX.current = 0;
       targetRotY.current = 0;
       targetScale.current = 1;
-      targetGlareOpacity.current = 0;
       scheduleRaf();
     }, [scheduleRaf]);
 
@@ -6934,13 +7602,6 @@ export const TiltCard = React.forwardRef<HTMLDivElement, TiltCardProps>(
         {...props}
       >
         {children}
-        {glare && (
-          <div
-            ref={glareRef}
-            className="pointer-events-none absolute inset-0 transition-opacity duration-150"
-            style={{ opacity: 0 }}
-          />
-        )}
       </div>
     );
   }
@@ -7203,6 +7864,127 @@ export const SpotlightCard = React.forwardRef<HTMLDivElement, SpotlightCardProps
   }
 );
 SpotlightCard.displayName = 'SpotlightCard';
+`;
+		}
+
+		case 'border-beam': {
+			const size = Number(props.size ?? 200);
+			const duration = Number(props.duration ?? 8);
+			const borderWidth = Number(props.borderWidth ?? 2);
+			const colorFrom = String(props.colorFrom ?? '#ffaa40');
+			const colorTo = String(props.colorTo ?? '#9c40ff');
+			const doubleBeam = Boolean(props.doubleBeam ?? false);
+			const endOpacity = Number(props.endOpacity ?? 0);
+			const opacity = Number(props.opacity ?? 1);
+			const blur = Number(props.blur ?? 0);
+			const borderRadius = Number(props.borderRadius ?? 16);
+
+			return `${header}export interface BorderBeamProps extends React.HTMLAttributes<HTMLDivElement> {
+  size?: number;
+  duration?: number;
+  borderWidth?: number;
+  borderRadius?: number;
+  colorFrom?: string;
+  colorTo?: string;
+  doubleBeam?: boolean;
+  endOpacity?: number;
+  opacity?: number;
+  blur?: number;
+}
+
+/**
+ * BorderBeam — Standalone Ejected Engine (Zero-Dependency)
+ * Zero-runtime GPU perimeter laser trace with hardware mask clipping and sub-pixel compositing.
+ */
+export const BorderBeam = React.forwardRef<HTMLDivElement, BorderBeamProps>(
+  (
+    {
+      size = ${size},
+      duration = ${duration},
+      borderWidth = ${borderWidth},
+      borderRadius = ${borderRadius},
+      colorFrom = '${colorFrom}',
+      colorTo = '${colorTo}',
+      doubleBeam = ${doubleBeam},
+      endOpacity = ${endOpacity},
+      opacity = ${opacity},
+      blur = ${blur},
+      className,
+      style,
+      ...props
+    },
+    ref
+  ) => {
+    const clampedEndOpacity = Math.max(0, Math.min(1, endOpacity));
+    const endColor = clampedEndOpacity <= 0 ? 'transparent' : clampedEndOpacity >= 1 ? colorTo : \`color-mix(in srgb, \${colorTo} \${Math.round(clampedEndOpacity * 100)}%, transparent)\`;
+    const pathRadius = Math.min(size, 200);
+
+    return (
+      <div
+        ref={ref}
+        key={\`\${duration}-\${doubleBeam}-\${borderRadius}\`}
+        aria-hidden="true"
+        className={clsx('${defaultClass}', className)}
+        style={{
+          border: \`\${borderWidth}px solid transparent\`,
+          WebkitMask: 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)',
+          WebkitMaskComposite: 'destination-out',
+          mask: 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)',
+          maskComposite: 'exclude',
+          opacity: opacity !== 1 ? opacity : undefined,
+          filter: blur > 0 ? \`blur(\${blur}px)\` : undefined,
+          ...style,
+        }}
+        {...props}
+      >
+        <div
+          className="exhuma-border-beam-trace"
+          style={{
+            position: 'absolute',
+            aspectRatio: '1 / 1',
+            width: \`\${size}px\`,
+            offsetPath: \`rect(0 auto auto 0 round \${pathRadius}px)\`,
+            offsetAnchor: \`\${size / 2}px \${size / 2}px\`,
+            background: \`linear-gradient(to left, \${colorFrom}, \${colorTo}, \${endColor})\`,
+            animation: \`exhuma-border-beam \${duration}s linear infinite\`,
+          }}
+        />
+
+        {doubleBeam && (
+          <div
+            className="exhuma-border-beam-trace"
+            style={{
+              position: 'absolute',
+              aspectRatio: '1 / 1',
+              width: \`\${size}px\`,
+              offsetPath: \`rect(0 auto auto 0 round \${pathRadius}px)\`,
+              offsetAnchor: \`\${size / 2}px \${size / 2}px\`,
+              background: \`linear-gradient(to left, \${colorFrom}, \${colorTo}, \${endColor})\`,
+              animation: \`exhuma-border-beam \${duration}s linear -\${duration / 2}s infinite\`,
+            }}
+          />
+        )}
+
+        <style>{\`
+          @keyframes exhuma-border-beam {
+            from {
+              offset-distance: 0%;
+            }
+            to {
+              offset-distance: 100%;
+            }
+          }
+          @media (prefers-reduced-motion: reduce) {
+            .exhuma-border-beam-trace {
+              animation-play-state: paused !important;
+            }
+          }
+        \`}</style>
+      </div>
+    );
+  }
+);
+BorderBeam.displayName = 'BorderBeam';
 `;
 		}
 
