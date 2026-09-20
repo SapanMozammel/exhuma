@@ -1,14 +1,7 @@
 'use client';
 
 import React, { useRef, useState, useCallback, useEffect, type ReactNode } from 'react';
-import {
-	SwipeVelocityRingBuffer,
-	calculateCardRotation,
-	evaluateSwipeDecision,
-	calculateStackedCardTransform,
-	calculateFlingDuration,
-	calculateElasticDamping,
-} from './swipe-math';
+import { SwipeVelocityRingBuffer, calculateCardRotation, evaluateSwipeDecision, calculateStackedCardTransform, calculateFlingDuration, calculateElasticDamping } from './swipe-math';
 
 export interface CardSwipeStackProps<T> {
 	items: T[];
@@ -25,17 +18,24 @@ export interface CardSwipeStackProps<T> {
 	emptyState?: ReactNode;
 }
 
+function getItemKey<T>(item: T, fallbackIndex: number): string | number {
+	if (item && typeof item === 'object') {
+		if ('id' in item && item.id != null) return String(item.id);
+		if ('key' in item && (item as Record<string, unknown>).key != null) return String((item as Record<string, unknown>).key);
+	}
+	return `card-${fallbackIndex}`;
+}
+
 /**
  * CardSwipeStack — Exhuma Kinetic Methodology (EKM)
  *
  * Big-Omega (Ω) Guarantees:
  * - VelocityRingBuffer pre-allocated Float64Array circular buffer for O(1) fling velocity tracking.
- * - Zero layout thrashing: All cards are absolute-positioned in a stable container. No relative/absolute
- *   switching on card advance. Direct GPU transform writes (translate3d, rotate) via rAF.
- * - Hermite smoothstep (3t²-2t³) layer elevation without CSS transition fighting.
- * - Last card elastic rubber-band resistance via power-law damping.
- * - Pointer capture on outer container div — immune to child element unmount races.
- * - Zero external animation libraries.
+ * - Single unified card list with stable item-based keys: zero DOM thrashing, zero component remounting,
+ *   zero 1-frame reconciliation jumps during card promotions.
+ * - Smooth quartic ease-out kinematics for fluid, natural fling and spring return.
+ * - Ironclad pointer lifecycle: lostpointercapture + buttons===0 validation + window listeners eliminate stickiness.
+ * - Zero external animation libraries (Framer Motion, GSAP, etc.).
  */
 export function CardSwipeStack<T>({
 	items,
@@ -55,9 +55,7 @@ export function CardSwipeStack<T>({
 	const currentIndexRef = useRef(currentIndex);
 	currentIndexRef.current = currentIndex;
 
-	// The outer wrapper captures all pointer events — immune to child remount races
-	const outerRef = useRef<HTMLDivElement>(null);
-	// Card slot refs: 0 = top card, 1 = next, 2 = third
+	// Refs to current rendered card DOM elements (index 0 = top, index 1 = next, ...)
 	const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
 
 	const startPosRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
@@ -66,12 +64,13 @@ export function CardSwipeStack<T>({
 	const isAnimatingRef = useRef<boolean>(false);
 	const isLastCardRef = useRef<boolean>(false);
 	const activePointerIdRef = useRef<number | null>(null);
+	const activeTargetRef = useRef<HTMLElement | null>(null);
+	const dragProgressRef = useRef<number>(0);
 	const ringBufferRef = useRef<SwipeVelocityRingBuffer>(new SwipeVelocityRingBuffer());
 	const rafIdRef = useRef<number | null>(null);
 
 	const visibleItems = items.slice(currentIndex, currentIndex + maxVisible);
 
-	// ─── Ω(1) rAF helpers ───────────────────────────────────────────────────
 	const cancelRaf = useCallback(() => {
 		if (rafIdRef.current !== null) {
 			cancelAnimationFrame(rafIdRef.current);
@@ -79,262 +78,181 @@ export function CardSwipeStack<T>({
 		}
 	}, []);
 
-	// Apply resting stack transforms to all background layers
-	const applyRestingTransforms = useCallback(
-		(count: number) => {
-			for (let idx = 1; idx <= count; idx++) {
-				const el = cardRefs.current[idx];
-				if (!el) continue;
-				const t = calculateStackedCardTransform(idx, 0, scaleStep, offsetStep);
-				el.style.transform = `translate3d(0,${t.translateY.toFixed(2)}px,0) scale(${t.scale.toFixed(3)})`;
-				el.style.opacity = `${t.opacity.toFixed(2)}`;
-			}
-		},
-		[scaleStep, offsetStep]
-	);
+	// Reset card refs array length on render
+	cardRefs.current = cardRefs.current.slice(0, visibleItems.length);
 
-	// Elevation sweep for all background layers at dismiss/drag progress p∈[0,1]
-	const applyBackgroundElevation = useCallback(
-		(p: number, count: number) => {
-			for (let idx = 1; idx <= count; idx++) {
-				const el = cardRefs.current[idx];
-				if (!el) continue;
-				const t = calculateStackedCardTransform(idx, p, scaleStep, offsetStep);
-				el.style.transform = `translate3d(0,${t.translateY.toFixed(2)}px,0) scale(${t.scale.toFixed(3)})`;
-				el.style.opacity = `${t.opacity.toFixed(2)}`;
-			}
-		},
-		[scaleStep, offsetStep]
-	);
+	// Apply resting transforms to background cards
+	const applyRestingTransforms = useCallback(() => {
+		for (let i = 1; i < cardRefs.current.length; i++) {
+			const el = cardRefs.current[i];
+			if (!el) continue;
+			const t = calculateStackedCardTransform(i, 0, scaleStep, offsetStep);
+			el.style.transform = `translate3d(0, ${t.translateY.toFixed(2)}px, 0) scale(${t.scale.toFixed(3)})`;
+			el.style.opacity = `${t.opacity.toFixed(2)}`;
+		}
+	}, [scaleStep, offsetStep]);
 
-	// ─── Drag DOM update (called inside rAF) ────────────────────────────────
+	// Update DOM during active drag
 	const updateDOM = useCallback(() => {
-		const el = cardRefs.current[0];
-		if (!el) return;
+		const topEl = cardRefs.current[0];
+		if (!topEl) return;
 
 		const rawDx = currentPosRef.current.x - startPosRef.current.x;
-		const dy = currentPosRef.current.y - startPosRef.current.y;
-		const bgCount = Math.min(maxVisible - 1, visibleItems.length - 1);
+		// Dampen vertical displacement so gestures feel stable and weighted
+		const dy = (currentPosRef.current.y - startPosRef.current.y) * 0.35;
 
 		let dx: number;
 		let rot: number;
 
 		if (isLastCardRef.current) {
 			dx = calculateElasticDamping(rawDx, 80);
-			rot = calculateCardRotation(dx, maxRotation * 0.4, thresholdDistance * 1.5);
+			rot = calculateCardRotation(dx, maxRotation * 0.35, thresholdDistance * 1.5);
 		} else {
 			dx = rawDx;
 			rot = calculateCardRotation(dx, maxRotation, thresholdDistance * 1.5);
 		}
 
-		el.style.transform = `translate3d(${dx.toFixed(2)}px,${dy.toFixed(2)}px,0) rotate(${rot.toFixed(2)}deg)`;
+		topEl.style.transform = `translate3d(${dx.toFixed(2)}px, ${dy.toFixed(2)}px, 0) rotate(${rot.toFixed(2)}deg)`;
 
-		const progress = isLastCardRef.current ? 0 : Math.min(1, Math.abs(rawDx) / thresholdDistance);
-		applyBackgroundElevation(progress, bgCount);
-	}, [maxRotation, thresholdDistance, maxVisible, visibleItems.length, applyBackgroundElevation]);
+		// Background cards preview forward up to 50% during drag
+		const progress = isLastCardRef.current ? 0 : Math.min(0.5, (Math.abs(rawDx) / (thresholdDistance * 2)) * 0.5);
+		dragProgressRef.current = progress;
 
-	// ─── Spring return: quintic ease-out for snappy settle ──────────────────
+		for (let i = 1; i < cardRefs.current.length; i++) {
+			const bgEl = cardRefs.current[i];
+			if (!bgEl) continue;
+			const t = calculateStackedCardTransform(i, progress, scaleStep, offsetStep);
+			bgEl.style.transform = `translate3d(0, ${t.translateY.toFixed(2)}px, 0) scale(${t.scale.toFixed(3)})`;
+			bgEl.style.opacity = `${t.opacity.toFixed(2)}`;
+		}
+	}, [maxRotation, thresholdDistance, scaleStep, offsetStep]);
+
+	// Spring return animation (release without dismiss)
 	const animateReturn = useCallback(() => {
-		const el = cardRefs.current[0];
-		if (!el) return;
+		const topEl = cardRefs.current[0];
+		if (!topEl) return;
 
 		cancelRaf();
 		isAnimatingRef.current = true;
 
 		const rawDx = currentPosRef.current.x - startPosRef.current.x;
-		const rawDy = currentPosRef.current.y - startPosRef.current.y;
+		const rawDy = (currentPosRef.current.y - startPosRef.current.y) * 0.35;
 		const startX = isLastCardRef.current ? calculateElasticDamping(rawDx, 80) : rawDx;
 		const startY = rawDy;
-		const bgCount = Math.min(maxVisible - 1, visibleItems.length - 1);
-		// Duration scales with how far away the card is — snappier for short drags
+		const startProgress = dragProgressRef.current;
+
 		const dist = Math.sqrt(startX * startX + startY * startY);
-		const duration = Math.max(160, Math.min(260, dist * 0.9));
+		const duration = Math.max(180, Math.min(260, dist * 0.85));
 		let start: number | null = null;
 
 		const step = (timestamp: number) => {
 			if (!start) start = timestamp;
 			const p = Math.min(1, (timestamp - start) / duration);
-			// Quintic ease-out: fast snap, smooth decel
-			const ease = 1 - Math.pow(1 - p, 5);
+			// Quartic ease-out for a crisp, organic settle
+			const ease = 1 - Math.pow(1 - p, 4);
 
 			const curX = startX * (1 - ease);
 			const curY = startY * (1 - ease);
-			const rot = isLastCardRef.current
-				? calculateCardRotation(curX, maxRotation * 0.4, thresholdDistance * 1.5)
-				: calculateCardRotation(curX, maxRotation, thresholdDistance * 1.5);
+			const rot = isLastCardRef.current ? calculateCardRotation(curX, maxRotation * 0.35, thresholdDistance * 1.5) : calculateCardRotation(curX, maxRotation, thresholdDistance * 1.5);
 
-			el.style.transform = `translate3d(${curX.toFixed(2)}px,${curY.toFixed(2)}px,0) rotate(${rot.toFixed(2)}deg)`;
+			topEl.style.transform = `translate3d(${curX.toFixed(2)}px, ${curY.toFixed(2)}px, 0) rotate(${rot.toFixed(2)}deg)`;
 
-			const progress = isLastCardRef.current ? 0 : Math.min(1, Math.abs(curX) / thresholdDistance);
-			applyBackgroundElevation(progress, bgCount);
+			// Background cards ease back to resting state
+			const curProgress = startProgress * (1 - ease);
+			for (let i = 1; i < cardRefs.current.length; i++) {
+				const bgEl = cardRefs.current[i];
+				if (!bgEl) continue;
+				const t = calculateStackedCardTransform(i, curProgress, scaleStep, offsetStep);
+				bgEl.style.transform = `translate3d(0, ${t.translateY.toFixed(2)}px, 0) scale(${t.scale.toFixed(3)})`;
+				bgEl.style.opacity = `${t.opacity.toFixed(2)}`;
+			}
 
 			if (p < 1) {
 				rafIdRef.current = requestAnimationFrame(step);
 			} else {
-				el.style.transform = 'translate3d(0,0,0) rotate(0deg)';
-				applyRestingTransforms(bgCount);
+				topEl.style.transform = 'translate3d(0, 0, 0) rotate(0deg)';
+				applyRestingTransforms();
+				dragProgressRef.current = 0;
 				rafIdRef.current = null;
 				isAnimatingRef.current = false;
 			}
 		};
 
 		rafIdRef.current = requestAnimationFrame(step);
-	}, [maxRotation, thresholdDistance, maxVisible, visibleItems.length, applyBackgroundElevation, applyRestingTransforms, cancelRaf]);
+	}, [maxRotation, thresholdDistance, scaleStep, offsetStep, applyRestingTransforms, cancelRaf]);
 
-	// ─── Dismiss fling: quintic ease-out from current position ──────────────
+	// Fling dismiss animation
 	const animateDismiss = useCallback(
 		(direction: 'left' | 'right', initialVelocityX: number = 0) => {
-			const el = cardRefs.current[0];
-			if (!el) return;
+			const topEl = cardRefs.current[0];
+			if (!topEl) return;
 
 			cancelRaf();
 			isAnimatingRef.current = true;
 
-			const exitDistance = Math.min(500, Math.max(360, typeof window !== 'undefined' ? window.innerWidth * 0.38 : 420));
+			const exitDistance = Math.min(520, Math.max(380, typeof window !== 'undefined' ? window.innerWidth * 0.45 : 440));
 			const targetX = direction === 'right' ? exitDistance : -exitDistance;
 			const startX = currentPosRef.current.x - startPosRef.current.x;
-			const startY = currentPosRef.current.y - startPosRef.current.y;
+			const startY = (currentPosRef.current.y - startPosRef.current.y) * 0.35;
+			const startProgress = dragProgressRef.current;
+
 			const distRemaining = Math.abs(targetX - startX);
-			const bgCount = Math.min(maxVisible - 1, visibleItems.length - 1);
-			// Faster fling for higher velocity; floor of 180ms for natural feel
-			const duration = calculateFlingDuration(distRemaining, initialVelocityX, 180, 300);
+			const duration = calculateFlingDuration(distRemaining, initialVelocityX, 190, 280);
 			let start: number | null = null;
 
 			const step = (timestamp: number) => {
 				if (!start) start = timestamp;
 				const p = Math.min(1, (timestamp - start) / duration);
-				// Quintic ease-out: immediate momentum from release point, smooth exit arc
-				const ease = 1 - Math.pow(1 - p, 5);
+				// Quartic ease-out: immediate momentum preservation and graceful exit arc
+				const ease = 1 - Math.pow(1 - p, 4);
 
 				const curX = startX + (targetX - startX) * ease;
-				const curRot = calculateCardRotation(curX, maxRotation * 1.15, thresholdDistance * 1.5);
+				const curY = startY * (1 - ease); // Smoothly glides back to center on exit
+				const curRot = calculateCardRotation(curX, maxRotation * 1.25, thresholdDistance * 1.5);
+				// Fade out during the second half of the exit
+				const fadeOut = Math.max(0, 1 - Math.max(0, p - 0.4) / 0.6);
 
-				el.style.transform = `translate3d(${curX.toFixed(2)}px,${startY.toFixed(2)}px,0) rotate(${curRot.toFixed(2)}deg)`;
-				// Fade starts at 60% travel, reaches 0 at exit
-				el.style.opacity = `${Math.max(0, 1 - Math.max(0, p - 0.4) * (1 / 0.6)).toFixed(2)}`;
+				topEl.style.transform = `translate3d(${curX.toFixed(2)}px, ${curY.toFixed(2)}px, 0) rotate(${curRot.toFixed(2)}deg)`;
+				topEl.style.opacity = `${fadeOut.toFixed(2)}`;
 
-				applyBackgroundElevation(p, bgCount);
+				// Background cards interpolate seamlessly to their next resting layer (progress -> 1.0)
+				const bgProgress = startProgress + (1 - startProgress) * ease;
+				for (let i = 1; i < cardRefs.current.length; i++) {
+					const bgEl = cardRefs.current[i];
+					if (!bgEl) continue;
+					const t = calculateStackedCardTransform(i, bgProgress, scaleStep, offsetStep);
+					bgEl.style.transform = `translate3d(0, ${t.translateY.toFixed(2)}px, 0) scale(${t.scale.toFixed(3)})`;
+					bgEl.style.opacity = `${t.opacity.toFixed(2)}`;
+				}
 
 				if (p < 1) {
 					rafIdRef.current = requestAnimationFrame(step);
 				} else {
-					// ── Pre-write the NEXT resting state onto every slot before React re-renders ──
-					// React reuses the same DOM nodes (stable slot-0/1/2 keys), so writing transforms
-					// here means the nodes are already in the correct position when React commits —
-					// eliminating the 1-frame jump that would occur if we waited for useEffect.
-					const nextBgCount = Math.min(maxVisible - 1, items.length - currentIndexRef.current - 2);
-
-					// slot-0 becomes the next top card: hide it while content swaps, then reveal
-					const nextTopEl = cardRefs.current[1]; // slot-1 was next-in-line
-					if (nextTopEl) {
-						// slot-1 is already at the promoted top position (p=1 above), set to identity
-						nextTopEl.style.transform = 'translate3d(0,0,0) rotate(0deg)';
-						nextTopEl.style.opacity = '1';
-					}
-					// Background slots: apply resting transforms for N+1 stack depth
-					for (let i = 2; i <= nextBgCount + 1; i++) {
-						const bgEl = cardRefs.current[i];
-						if (!bgEl) continue;
-						const t = calculateStackedCardTransform(i - 1, 0, scaleStep, offsetStep);
-						bgEl.style.transform = `translate3d(0,${t.translateY.toFixed(2)}px,0) scale(${t.scale.toFixed(3)})`;
-						bgEl.style.opacity = `${t.opacity.toFixed(2)}`;
-					}
-
-					// Hide the exiting card (slot-0 is still showing it)
-					el.style.opacity = '0';
-					el.style.pointerEvents = 'none';
-
+					// Dismiss complete: background cards have reached 100% resting position for (index - 1)
+					topEl.style.opacity = '0';
+					dragProgressRef.current = 0;
 					rafIdRef.current = null;
+					isAnimatingRef.current = false;
+
 					const dismissedItem = items[currentIndexRef.current];
-					if (onSwipe && dismissedItem) onSwipe(dismissedItem, direction);
+					if (onSwipe && dismissedItem) {
+						onSwipe(dismissedItem, direction);
+					}
+					// State advance: React updates. Because keys are item-based, next card was already
+					// sitting at (translateY: 0, scale: 1, opacity: 1) and remains completely uninterrupted!
 					setCurrentIndex((prev) => prev + 1);
 				}
 			};
 
 			rafIdRef.current = requestAnimationFrame(step);
 		},
-		[items, maxRotation, onSwipe, thresholdDistance, maxVisible, visibleItems.length, scaleStep, offsetStep, applyBackgroundElevation, cancelRaf]
+		[items, maxRotation, onSwipe, thresholdDistance, scaleStep, offsetStep, cancelRaf]
 	);
 
-	// ─── DOM handover after React reconciles new visibleItems ───────────────
-	// animateDismiss pre-writes transforms before this runs, so this is a
-	// safe-guard for initial mount and edge cases.
-	useEffect(() => {
-		let cleanupFn: (() => void) | undefined;
-		const topEl = cardRefs.current[0];
-		if (topEl) {
-			topEl.style.transform = 'translate3d(0,0,0) rotate(0deg)';
-			topEl.style.pointerEvents = 'auto';
-			// Cross-fade in: if the card slot was hidden (from a dismiss fling),
-			// animate opacity 0→1 over 60ms so the content swap is imperceptible.
-			if (topEl.style.opacity === '0' || topEl.style.opacity === '') {
-				topEl.style.transition = 'opacity 60ms linear';
-				topEl.style.opacity = '1';
-				const tid = setTimeout(() => {
-					topEl.style.transition = '';
-				}, 70);
-				cleanupFn = () => clearTimeout(tid);
-			} else {
-				topEl.style.opacity = '1';
-			}
-		}
-		const bgCount = Math.min(maxVisible - 1, items.length - currentIndex - 1);
-		applyRestingTransforms(bgCount);
-		isAnimatingRef.current = false;
-		rafIdRef.current = null;
-		return cleanupFn;
-	}, [currentIndex, maxVisible, items.length, applyRestingTransforms]);
-
-	// ─── Cleanup on unmount ──────────────────────────────────────────────────
-	useEffect(() => {
-		return cancelRaf;
-	}, [cancelRaf]);
-
-	// ─── Pointer event handlers ──────────────────────────────────────────────
-	// Capture is set on the outer div element — NOT on e.target (child).
-	// This means even if renderCard's internal nodes are remounted/unmounted,
-	// we never lose the pointer capture and cards never "stick" to the cursor.
-
-	const handlePointerDown = useCallback(
-		(e: React.PointerEvent<HTMLDivElement>) => {
-			if (isAnimatingRef.current || visibleItems.length === 0) return;
-			// Only primary pointer (left mouse button / first touch / pen)
-			if (e.pointerType === 'mouse' && e.button !== 0) return;
-
-			isDraggingRef.current = true;
-			isLastCardRef.current = preventLastCardDismiss && currentIndexRef.current >= items.length - 1;
-			activePointerIdRef.current = e.pointerId;
-			startPosRef.current = { x: e.clientX, y: e.clientY };
-			currentPosRef.current = { x: e.clientX, y: e.clientY };
-			ringBufferRef.current.clear();
-			ringBufferRef.current.push(e.clientX, e.clientY, performance.now());
-
-			// e.currentTarget is always the element that owns this handler — never stale, never null in a live event.
-			// Avoids the original bug where e.target (a child) could be unmounted mid-gesture, losing capture.
-			e.currentTarget.setPointerCapture(e.pointerId);
-		},
-		[items.length, preventLastCardDismiss, visibleItems.length]
-	);
-
-	const handlePointerMove = useCallback(
-		(e: React.PointerEvent<HTMLDivElement>) => {
-			if (!isDraggingRef.current || e.pointerId !== activePointerIdRef.current) return;
-			currentPosRef.current = { x: e.clientX, y: e.clientY };
-			ringBufferRef.current.push(e.clientX, e.clientY, performance.now());
-			if (rafIdRef.current === null) {
-				rafIdRef.current = requestAnimationFrame(() => {
-					updateDOM();
-					rafIdRef.current = null;
-				});
-			}
-		},
-		[updateDOM]
-	);
-
+	// Safe completion of drag gesture
 	const finishDrag = useCallback(() => {
 		if (!isDraggingRef.current) return;
 		isDraggingRef.current = false;
-		activePointerIdRef.current = null;
 
 		if (isLastCardRef.current) {
 			animateReturn();
@@ -352,56 +270,135 @@ export function CardSwipeStack<T>({
 		}
 	}, [animateReturn, animateDismiss, thresholdDistance, thresholdVelocity]);
 
-	const handlePointerUp = useCallback(
-		(e: React.PointerEvent<HTMLDivElement>) => {
-			if (e.pointerId !== activePointerIdRef.current) return;
-			try {
-				// Must match the element that called setPointerCapture — e.currentTarget is always that element
-				e.currentTarget.releasePointerCapture(e.pointerId);
-			} catch {
-				// Already released or not captured
+	const handleEnd = useCallback(
+		(pointerId?: number) => {
+			if (!isDraggingRef.current) return;
+			if (pointerId !== undefined && activeTargetRef.current) {
+				try {
+					activeTargetRef.current.releasePointerCapture(pointerId);
+				} catch {
+					// Ignore if capture was already released
+				}
 			}
+			activePointerIdRef.current = null;
+			activeTargetRef.current = null;
 			finishDrag();
 		},
 		[finishDrag]
 	);
 
-	const handlePointerCancel = useCallback(
-		(e: React.PointerEvent<HTMLDivElement>) => {
-			if (e.pointerId !== activePointerIdRef.current) return;
-			isDraggingRef.current = false;
-			activePointerIdRef.current = null;
-			animateReturn();
-		},
-		[animateReturn]
-	);
+	const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+		if (isAnimatingRef.current || visibleItems.length === 0) return;
+		if (e.pointerType === 'mouse' && e.button !== 0) return;
 
-	// ─── Render ──────────────────────────────────────────────────────────────
+		isDraggingRef.current = true;
+		isLastCardRef.current = preventLastCardDismiss && currentIndexRef.current >= items.length - 1;
+		activePointerIdRef.current = e.pointerId;
+		activeTargetRef.current = e.currentTarget;
+
+		try {
+			e.currentTarget.setPointerCapture(e.pointerId);
+		} catch {
+			// Ignore if pointer capture is unavailable
+		}
+
+		startPosRef.current = { x: e.clientX, y: e.clientY };
+		currentPosRef.current = { x: e.clientX, y: e.clientY };
+		ringBufferRef.current.clear();
+		ringBufferRef.current.push(e.clientX, e.clientY, performance.now());
+	};
+
+	const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+		if (!isDraggingRef.current) return;
+
+		// Ironclad stickiness guard: If mouse button was released outside, stop dragging immediately
+		if (e.pointerType === 'mouse' && e.buttons === 0) {
+			handleEnd(e.pointerId);
+			return;
+		}
+
+		if (activePointerIdRef.current !== null && e.pointerId !== activePointerIdRef.current) return;
+
+		currentPosRef.current = { x: e.clientX, y: e.clientY };
+		ringBufferRef.current.push(e.clientX, e.clientY, performance.now());
+
+		if (rafIdRef.current === null) {
+			rafIdRef.current = requestAnimationFrame(() => {
+				updateDOM();
+				rafIdRef.current = null;
+			});
+		}
+	};
+
+	const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+		handleEnd(e.pointerId);
+	};
+
+	const handlePointerCancel = (e: React.PointerEvent<HTMLDivElement>) => {
+		handleEnd(e.pointerId);
+	};
+
+	const handleLostPointerCapture = (e: React.PointerEvent<HTMLDivElement>) => {
+		handleEnd(e.pointerId);
+	};
+
+	// Global window listener: safety net for mouse/pointer released anywhere outside the browser/iframe
+	useEffect(() => {
+		const onGlobalPointerUp = (e: PointerEvent) => {
+			if (isDraggingRef.current) {
+				handleEnd(e.pointerId);
+			}
+		};
+		window.addEventListener('pointerup', onGlobalPointerUp);
+		window.addEventListener('pointercancel', onGlobalPointerUp);
+		return () => {
+			window.removeEventListener('pointerup', onGlobalPointerUp);
+			window.removeEventListener('pointercancel', onGlobalPointerUp);
+		};
+	}, [handleEnd]);
+
+	// Cleanup rAF on unmount
+	useEffect(() => {
+		return cancelRaf;
+	}, [cancelRaf]);
+
+	// Ensure top card transform is clean on index change
+	useEffect(() => {
+		const topEl = cardRefs.current[0];
+		if (topEl) {
+			topEl.style.transform = 'translate3d(0, 0, 0) scale(1)';
+			topEl.style.opacity = '1';
+		}
+		applyRestingTransforms();
+	}, [currentIndex, applyRestingTransforms]);
+
 	return (
 		<div
-			ref={outerRef}
-			onPointerDown={handlePointerDown}
-			onPointerMove={handlePointerMove}
-			onPointerUp={handlePointerUp}
-			onPointerCancel={handlePointerCancel}
 			className={`relative select-none ${className}`}
-			style={{ minHeight: '22rem' }}
+			style={{ minHeight: '14.5rem' }} // 232px — perfectly hugs card height + background peek
 		>
-			{/* Background cards — furthest back rendered first */}
-			{visibleItems.slice(1).map((item, idx) => {
-				const stackIdx = idx + 1;
+			{/* Unified card stack rendering: back-to-front by visual index */}
+			{visibleItems.map((item, stackIdx) => {
+				const isTop = stackIdx === 0;
+				const itemKey = getItemKey(item, currentIndex + stackIdx);
 				const t = calculateStackedCardTransform(stackIdx, 0, scaleStep, offsetStep);
+
 				return (
 					<div
-						key={`slot-${stackIdx}`}
+						key={itemKey}
 						ref={(node) => {
 							cardRefs.current[stackIdx] = node;
 						}}
-						className='pointer-events-none absolute inset-0 flex items-center justify-center will-change-transform'
+						onPointerDown={isTop ? handlePointerDown : undefined}
+						onPointerMove={isTop ? handlePointerMove : undefined}
+						onPointerUp={isTop ? handlePointerUp : undefined}
+						onPointerCancel={isTop ? handlePointerCancel : undefined}
+						onLostPointerCapture={isTop ? handleLostPointerCapture : undefined}
+						className={`absolute inset-0 flex items-center justify-center will-change-transform ${isTop ? 'cursor-grab touch-none active:cursor-grabbing' : 'pointer-events-none'}`}
 						style={{
-							transform: `translate3d(0,${t.translateY.toFixed(2)}px,0) scale(${t.scale.toFixed(3)})`,
+							zIndex: 30 - stackIdx * 10,
+							transform: `translate3d(0, ${t.translateY.toFixed(2)}px, 0) scale(${t.scale.toFixed(3)})`,
 							opacity: t.opacity.toFixed(2),
-							zIndex: 10 - stackIdx,
 						}}
 					>
 						{renderCard(item, currentIndex + stackIdx)}
@@ -409,27 +406,9 @@ export function CardSwipeStack<T>({
 				);
 			})}
 
-			{/* Empty state */}
+			{/* Empty state when all cards are dismissed */}
 			{visibleItems.length === 0 &&
-				(emptyState || (
-					<div className='border-border bg-card text-muted-foreground absolute inset-0 flex items-center justify-center rounded-2xl border p-8 text-center text-sm'>
-						No more cards in stack.
-					</div>
-				))}
-
-			{/* Top (active) card — slot 0, always absolute */}
-			{visibleItems[0] && (
-				<div
-					key='slot-0'
-					ref={(node) => {
-						cardRefs.current[0] = node;
-					}}
-					className='absolute inset-0 flex cursor-grab items-center justify-center touch-none will-change-transform active:cursor-grabbing'
-					style={{ zIndex: 20 }}
-				>
-					{renderCard(visibleItems[0], currentIndex)}
-				</div>
-			)}
+				(emptyState || <div className='border-border bg-card text-muted-foreground absolute inset-0 flex items-center justify-center rounded-2xl border p-8 text-center text-sm'>No more cards in stack.</div>)}
 		</div>
 	);
 }
