@@ -218,8 +218,33 @@ export function CardSwipeStack<T>({
 				if (p < 1) {
 					rafIdRef.current = requestAnimationFrame(step);
 				} else {
+					// ── Pre-write the NEXT resting state onto every slot before React re-renders ──
+					// React reuses the same DOM nodes (stable slot-0/1/2 keys), so writing transforms
+					// here means the nodes are already in the correct position when React commits —
+					// eliminating the 1-frame jump that would occur if we waited for useEffect.
+					const nextBgCount = Math.min(maxVisible - 1, items.length - currentIndexRef.current - 2);
+
+					// slot-0 becomes the next top card: hide it while content swaps, then reveal
+					const nextTopEl = cardRefs.current[1]; // slot-1 was next-in-line
+					if (nextTopEl) {
+						// slot-1 is already at the promoted top position (p=1 above), set to identity
+						nextTopEl.style.transform = 'translate3d(0,0,0) rotate(0deg)';
+						nextTopEl.style.opacity = '1';
+					}
+					// Background slots: apply resting transforms for N+1 stack depth
+					for (let i = 2; i <= nextBgCount + 1; i++) {
+						const bgEl = cardRefs.current[i];
+						if (!bgEl) continue;
+						const t = calculateStackedCardTransform(i - 1, 0, scaleStep, offsetStep);
+						bgEl.style.transform = `translate3d(0,${t.translateY.toFixed(2)}px,0) scale(${t.scale.toFixed(3)})`;
+						bgEl.style.opacity = `${t.opacity.toFixed(2)}`;
+					}
+
+					// Hide the exiting card (slot-0 is still showing it)
 					el.style.opacity = '0';
 					el.style.pointerEvents = 'none';
+
+					rafIdRef.current = null;
 					const dismissedItem = items[currentIndexRef.current];
 					if (onSwipe && dismissedItem) onSwipe(dismissedItem, direction);
 					setCurrentIndex((prev) => prev + 1);
@@ -228,20 +253,36 @@ export function CardSwipeStack<T>({
 
 			rafIdRef.current = requestAnimationFrame(step);
 		},
-		[items, maxRotation, onSwipe, thresholdDistance, maxVisible, visibleItems.length, applyBackgroundElevation, cancelRaf]
+		[items, maxRotation, onSwipe, thresholdDistance, maxVisible, visibleItems.length, scaleStep, offsetStep, applyBackgroundElevation, cancelRaf]
 	);
 
 	// ─── DOM handover after React reconciles new visibleItems ───────────────
+	// animateDismiss pre-writes transforms before this runs, so this is a
+	// safe-guard for initial mount and edge cases.
 	useEffect(() => {
+		let cleanupFn: (() => void) | undefined;
 		const topEl = cardRefs.current[0];
 		if (topEl) {
 			topEl.style.transform = 'translate3d(0,0,0) rotate(0deg)';
-			topEl.style.opacity = '1';
 			topEl.style.pointerEvents = 'auto';
+			// Cross-fade in: if the card slot was hidden (from a dismiss fling),
+			// animate opacity 0→1 over 60ms so the content swap is imperceptible.
+			if (topEl.style.opacity === '0' || topEl.style.opacity === '') {
+				topEl.style.transition = 'opacity 60ms linear';
+				topEl.style.opacity = '1';
+				const tid = setTimeout(() => {
+					topEl.style.transition = '';
+				}, 70);
+				cleanupFn = () => clearTimeout(tid);
+			} else {
+				topEl.style.opacity = '1';
+			}
 		}
-		applyRestingTransforms(Math.min(maxVisible - 1, items.length - currentIndex - 1));
+		const bgCount = Math.min(maxVisible - 1, items.length - currentIndex - 1);
+		applyRestingTransforms(bgCount);
 		isAnimatingRef.current = false;
 		rafIdRef.current = null;
+		return cleanupFn;
 	}, [currentIndex, maxVisible, items.length, applyRestingTransforms]);
 
 	// ─── Cleanup on unmount ──────────────────────────────────────────────────
