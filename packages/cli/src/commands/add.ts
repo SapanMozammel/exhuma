@@ -18,6 +18,10 @@ export interface AddCommandOptions {
 	vendor?: boolean;
 }
 
+export function requiresCoreDependency(flavor: EcosystemFlavor): boolean {
+	return flavor === 'react' || flavor === 'nextjs';
+}
+
 export async function addCommand(components: string[], options: AddCommandOptions): Promise<void> {
 	console.log(pc.bold(pc.cyan('\n  ▲ Exhuma CLI — Component Installer\n')));
 
@@ -49,8 +53,8 @@ export async function addCommand(components: string[], options: AddCommandOption
 		selectedSlugs = response.selected;
 	}
 
-	// Ensure core packages for modern frameworks
-	if (['react', 'nextjs', 'vue', 'svelte', 'solid', 'angular'].includes(flavor)) {
+	// Ensure core packages for React/Next.js frameworks
+	if (requiresCoreDependency(flavor)) {
 		ensureCoreDependency(process.cwd());
 	}
 

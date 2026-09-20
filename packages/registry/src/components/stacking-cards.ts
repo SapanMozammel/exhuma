@@ -76,7 +76,12 @@ export const stackingCardsComponent: UniversalComponent = {
 		minScale: 0.9,
 		reverseScale: true,
 	},
-	dependencies: CORE_COMPONENT_DEPENDENCIES,
+	dependencies: {
+		...CORE_COMPONENT_DEPENDENCIES,
+		vue: [],
+		svelte: [],
+		solid: [],
+	},
 	generateCode: (flavor: EcosystemFlavor, props: Record<string, unknown>, options?: { eject?: boolean }): ComponentFilePayload[] => {
 		return generateOuterLayerFiles(
 			{

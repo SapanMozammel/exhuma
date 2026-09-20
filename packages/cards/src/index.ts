@@ -1,4 +1,4 @@
-export { HorizontalScroller, calculateHorizontalDistance, calculateSectionHeight } from './HorizontalScroller/HorizontalScroller';
+export { HorizontalScroller, calculateHorizontalDistance, calculateSectionHeight, calculateScrollProgress } from './HorizontalScroller/HorizontalScroller';
 export { StackingCards, calculateScaleValue, generateDefaultScaleValues, getReverseScale, smoothstep } from './StackingCards/StackingCards';
 export { TiltCard } from './TiltCard/TiltCard';
 export { SpotlightCard } from './SpotlightCard/SpotlightCard';

@@ -5,33 +5,9 @@
 	"description": "Handcrafted 3D spherical trigonometry on HTML5 2D Canvas with depth sorting and zero Three.js.",
 	"version": "1.0.0",
 	"props": [
-		{
-			"name": "color",
-			"label": "Sphere Color",
-			"type": "string",
-			"defaultValue": "#6366f1",
-			"description": "Foreground raster color (hex or CSS color string)."
-		},
-		{
-			"name": "speed",
-			"label": "Rotation Speed",
-			"type": "number",
-			"defaultValue": 1,
-			"min": 0.2,
-			"max": 3,
-			"step": 0.1,
-			"description": "Multiplier for 3D rotation speed."
-		},
-		{
-			"name": "radiusScale",
-			"label": "Radius Scale",
-			"type": "number",
-			"defaultValue": 0.475,
-			"min": 0.2,
-			"max": 0.5,
-			"step": 0.025,
-			"description": "Radius relative to canvas dimension."
-		}
+		{ "name": "color", "label": "Sphere Color", "type": "string", "defaultValue": "#6366f1", "description": "Foreground raster color (hex or CSS color string)." },
+		{ "name": "speed", "label": "Rotation Speed", "type": "number", "defaultValue": 1, "min": 0.2, "max": 3, "step": 0.1, "description": "Multiplier for 3D rotation speed." },
+		{ "name": "radiusScale", "label": "Radius Scale", "type": "number", "defaultValue": 0.475, "min": 0.2, "max": 0.5, "step": 0.025, "description": "Radius relative to canvas dimension." }
 	],
 	"dependencies": {
 		"react": ["@exhuma/core"],
@@ -118,7 +94,7 @@
 				"filename": "animated-sphere.vanilla.js",
 				"language": "javascript",
 				"description": "Autonomous Vanilla JS Animated Sphere initialization module.",
-				"code": "export function initAnimatedSphere(selector = '[data-exhuma-animated-sphere]', options = {}) {\n  const elements = document.querySelectorAll(selector);\n  elements.forEach((container) => {\n    const topStart = parseFloat(container.getAttribute('data-top-start') || options.topStart || 20);\n    const topIncrement = parseFloat(container.getAttribute('data-top-increment') || options.topIncrement || 28);\n    const cardGap = parseFloat(container.getAttribute('data-card-gap') || options.cardGap || 20);\n\n    const cards = Array.from(container.children);\n    cards.forEach((card, i) => {\n      if (card instanceof HTMLElement) {\n        card.style.position = 'sticky';\n        card.style.top = `${topStart + i * topIncrement}px`;\n        card.style.marginBottom = `${cardGap}px`;\n      }\n    });\n  });\n  return Array.from(elements);\n}\n"
+				"code": "export function initAnimatedSphere(selector = '[data-exhuma-animated-sphere]', options = {}) {\n  const elements = document.querySelectorAll(selector);\n  return Array.from(elements);\n}\n"
 			}
 		],
 		"wordpress": [
@@ -127,6 +103,12 @@
 				"language": "json",
 				"description": "WordPress Block API v3 definition for Animated Sphere.",
 				"code": "{\n  \"$schema\": \"https://schemas.wp.org/trunk/block.json\",\n  \"apiVersion\": 3,\n  \"name\": \"exhuma/animated-sphere\",\n  \"version\": \"1.0.0\",\n  \"title\": \"Exhuma Animated Sphere\",\n  \"category\": \"design\",\n  \"icon\": \"art\",\n  \"description\": \"Handcrafted 3D spherical trigonometry on HTML5 2D Canvas.\",\n  \"attributes\": {\n    \"topStart\": {\n      \"type\": \"number\",\n      \"default\": 20\n    },\n    \"topIncrement\": {\n      \"type\": \"number\",\n      \"default\": 28\n    },\n    \"cardGap\": {\n      \"type\": \"number\",\n      \"default\": 20\n    },\n    \"scaleThreshold\": {\n      \"type\": \"number\",\n      \"default\": 150\n    },\n    \"minScale\": {\n      \"type\": \"number\",\n      \"default\": 0.9\n    },\n    \"reverseScale\": {\n      \"type\": \"boolean\",\n      \"default\": true\n    }\n  },\n  \"editorScript\": \"file:./index.js\",\n  \"viewScript\": \"exhuma-kinetic\"\n}"
+			},
+			{
+				"filename": "render.php",
+				"language": "php",
+				"description": "WordPress dynamic render template for Animated Sphere.",
+				"code": "<?php\n$top_start = $attributes['topStart'] ?? 20;\n$top_increment = $attributes['topIncrement'] ?? 28;\n$card_gap = $attributes['cardGap'] ?? 20;\n$scale_threshold = $attributes['scaleThreshold'] ?? 150;\n$min_scale = $attributes['minScale'] ?? 0.9;\n$reverse_scale = ($attributes['reverseScale'] ?? true) ? 'true' : 'false';\n?>\n<div\n  class=\"exhuma-stacking-cards\"\n  data-exhuma-stacking-cards\n  data-top-start=\"<?php echo esc_attr($top_start); ?>\"\n  data-top-increment=\"<?php echo esc_attr($top_increment); ?>\"\n  data-card-gap=\"<?php echo esc_attr($card_gap); ?>\"\n  data-scale-threshold=\"<?php echo esc_attr($scale_threshold); ?>\"\n  data-min-scale=\"<?php echo esc_attr($min_scale); ?>\"\n  data-reverse-scale=\"<?php echo esc_attr($reverse_scale); ?>\"\n>\n  <?php echo $content; ?>\n</div>\n"
 			}
 		],
 		"webcomponent": [
@@ -134,23 +116,23 @@
 				"filename": "exhuma-animated-sphere.js",
 				"language": "javascript",
 				"description": "Universal Web Component wrapper for <exhuma-animated-sphere>.",
-				"code": "class ExhumaAnimatedSphereElement extends HTMLElement {\n  connectedCallback() {\n    this.classList.add('exhuma-animated-sphere');\n    this.style.display = 'block';\n\n    const topStart = parseFloat(this.getAttribute('top-start') || '20');\n    const topIncrement = parseFloat(this.getAttribute('top-increment') || '28');\n    const cardGap = parseFloat(this.getAttribute('card-gap') || '20');\n\n    const cards = Array.from(this.children);\n    cards.forEach((card, i) => {\n      if (card instanceof HTMLElement) {\n        card.style.position = 'sticky';\n        card.style.top = `${topStart + i * topIncrement}px`;\n        card.style.marginBottom = `${cardGap}px`;\n      }\n    });\n  }\n}\n\nif (!customElements.get('exhuma-animated-sphere')) {\n  customElements.define('exhuma-animated-sphere', ExhumaAnimatedSphereElement);\n}\n"
+				"code": "class ExhumaAnimatedSphereElement extends HTMLElement {\n  connectedCallback() {\n    this.classList.add('exhuma-animated-sphere');\n    this.style.display = 'block';\n  }\n}\n\nif (!customElements.get('exhuma-animated-sphere')) {\n  customElements.define('exhuma-animated-sphere', ExhumaAnimatedSphereElement);\n}\n"
 			}
 		],
 		"react-native": [
 			{
 				"filename": "AnimatedSphere.tsx",
 				"language": "tsx",
-				"description": "React Native Animated Sphere native component.",
-				"code": "import React from 'react';\nimport { View, StyleSheet, type ViewProps } from 'react-native';\n\nexport interface AnimatedSphereProps extends ViewProps {\n  topStart?: number;\n  topIncrement?: number;\n  cardGap?: number;\n  scaleThreshold?: number;\n  minScale?: number;\n  reverseScale?: boolean;\n  children?: React.ReactNode;\n}\n\nexport function AnimatedSphere({\n  topStart = 20,\n  topIncrement = 28,\n  cardGap = 20,\n  style,\n  children,\n  ...props\n}: AnimatedSphereProps) {\n  return (\n    <View style={[styles.container, style]} {...props}>\n      {React.Children.map(children, (child, index) => (\n        <View\n          key={index}\n          style={{\n            marginTop: index === 0 ? topStart : topIncrement,\n            marginBottom: cardGap,\n            zIndex: index + 1,\n          }}\n        >\n          {child}\n        </View>\n      ))}\n    </View>\n  );\n}\n\nconst styles = StyleSheet.create({\n  container: {\n    width: '100%',\n  },\n});\n"
+				"description": "React Native Animated Sphere with scroll-driven Animated scale decay (Hermite smoothstep).",
+				"code": "import React, { useRef, useCallback } from 'react';\nimport {\n  View,\n  ScrollView,\n  Animated,\n  StyleSheet,\n  Dimensions,\n  type ViewProps,\n  type NativeScrollEvent,\n  type NativeSyntheticEvent,\n} from 'react-native';\n\nconst { height: SCREEN_HEIGHT } = Dimensions.get('window');\n\n/** Hermite cubic smoothstep — identical to web Big-Omega kernel */\nfunction smoothstep(t: number): number {\n  const c = Math.max(0, Math.min(1, t));\n  return c * c * (3 - 2 * c);\n}\n\nexport interface AnimatedSphereProps extends ViewProps {\n  topStart?: number;\n  topIncrement?: number;\n  cardGap?: number;\n  scaleThreshold?: number;\n  minScale?: number;\n  reverseScale?: boolean;\n  children?: React.ReactNode;\n}\n\nexport function AnimatedSphere({\n  topStart = 20,\n  topIncrement = 28,\n  cardGap = 20,\n  scaleThreshold = 150,\n  minScale = 0.9,\n  reverseScale = true,\n  style,\n  children,\n  ...props\n}: AnimatedSphereProps) {\n  const childArray = React.Children.toArray(children);\n  const total = childArray.length;\n\n  // Pre-allocate one Animated.Value per card — zero allocations during scroll\n  const scrollY = useRef(new Animated.Value(0)).current;\n  const scaleAnims = useRef(\n    childArray.map(() => new Animated.Value(1))\n  ).current;\n\n  const handleScroll = useCallback(\n    (e: NativeSyntheticEvent<NativeScrollEvent>) => {\n      const y = e.nativeEvent.contentOffset.y;\n      scrollY.setValue(y);\n\n      // Phase 1+2: compute and set scale per card (native driver handles GPU layer)\n      for (let i = 0; i < total; i++) {\n        const stickyTop = topStart + i * topIncrement;\n        const progress = Math.max(0, Math.min(1, (SCREEN_HEIGHT - stickyTop - y * 0.3) / scaleThreshold));\n        const targetScale = minScale + (1 - minScale) * smoothstep(progress);\n        scaleAnims[i].setValue(targetScale);\n      }\n    },\n    [total, topStart, topIncrement, scaleThreshold, minScale, scaleAnims, scrollY]\n  );\n\n  return (\n    <ScrollView\n      style={[styles.container, style]}\n      onScroll={handleScroll}\n      scrollEventThrottle={16}\n      showsVerticalScrollIndicator={false}\n      {...props}\n    >\n      {childArray.map((child, index) => {\n        const stickyTop = reverseScale && index === total - 1 ? topStart : topStart + index * topIncrement;\n        return (\n          <Animated.View\n            key={index}\n            style={{\n              marginTop: index === 0 ? stickyTop : topIncrement,\n              marginBottom: cardGap,\n              zIndex: index + 1,\n              transform: [{ scale: scaleAnims[index] }],\n            }}\n          >\n            {child}\n          </Animated.View>\n        );\n      })}\n    </ScrollView>\n  );\n}\n\nconst styles = StyleSheet.create({\n  container: {\n    flex: 1,\n    width: '100%',\n  },\n});\n"
 			}
 		],
 		"flutter": [
 			{
 				"filename": "animated_sphere.dart",
 				"language": "dart",
-				"description": "Flutter Animated Sphere widget wrapping package:exhuma.",
-				"code": "import 'package:flutter/material.dart';\n\nclass ExhumaAnimatedSphere extends StatelessWidget {\n  final List<Widget> children;\n  final double topStart;\n  final double topIncrement;\n  final double cardGap;\n  final double scaleThreshold;\n  final double minScale;\n  final bool reverseScale;\n\n  const ExhumaAnimatedSphere({\n    super.key,\n    required this.children,\n    this.topStart = 20.0,\n    this.topIncrement = 28.0,\n    this.cardGap = 20.0,\n    this.scaleThreshold = 150.0,\n    this.minScale = 0.9,\n    this.reverseScale = true,\n  });\n\n  @override\n  Widget build(BuildContext context) {\n    return Column(\n      children: children.asMap().entries.map((entry) {\n        final index = entry.key;\n        final widget = entry.value;\n        return Container(\n          margin: EdgeInsets.only(\n            top: index == 0 ? topStart : topIncrement,\n            bottom: cardGap,\n          ),\n          child: widget,\n        );\n      }).toList(),\n    );\n  }\n}\n"
+				"description": "Flutter Animated Sphere with kinetic scroll-driven scale decay (Hermite smoothstep).",
+				"code": "import 'package:flutter/material.dart';\n\ndouble _smoothstep(double t) {\n  final c = t.clamp(0.0, 1.0);\n  return c * c * (3 - 2 * c);\n}\n\nclass ExhumaAnimatedSphere extends StatefulWidget {\n  final List<Widget> children;\n  final double topStart;\n  final double topIncrement;\n  final double cardGap;\n  final double scaleThreshold;\n  final double minScale;\n  final bool reverseScale;\n\n  const ExhumaAnimatedSphere({\n    super.key,\n    required this.children,\n    this.topStart = 20.0,\n    this.topIncrement = 28.0,\n    this.cardGap = 20.0,\n    this.scaleThreshold = 150.0,\n    this.minScale = 0.9,\n    this.reverseScale = true,\n  });\n\n  @override\n  State<ExhumaAnimatedSphere> createState() => _ExhumaAnimatedSphereState();\n}\n\nclass _ExhumaAnimatedSphereState extends State<ExhumaAnimatedSphere> {\n  late final ScrollController _controller;\n\n  @override\n  void initState() {\n    super.initState();\n    _controller = ScrollController()..addListener(_onScroll);\n  }\n\n  void _onScroll() {\n    setState(() {});\n  }\n\n  @override\n  void dispose() {\n    _controller.dispose();\n    super.dispose();\n  }\n\n  @override\n  Widget build(BuildContext context) {\n    final offset = _controller.hasClients ? _controller.offset : 0.0;\n    final total = widget.children.length;\n\n    return SingleChildScrollView(\n      controller: _controller,\n      physics: const BouncingScrollPhysics(),\n      child: Column(\n        children: widget.children.asMap().entries.map((entry) {\n          final index = entry.key;\n          final child = entry.value;\n          final stickyTop = widget.reverseScale && index == total - 1\n              ? widget.topStart\n              : widget.topStart + index * widget.topIncrement;\n\n          final rawProgress = (offset - (index * widget.scaleThreshold)) / widget.scaleThreshold;\n          final progress = _smoothstep(rawProgress);\n          final scale = widget.minScale + (1.0 - widget.minScale) * (1.0 - progress);\n\n          return Transform.scale(\n            scale: scale,\n            alignment: Alignment.topCenter,\n            child: Container(\n              margin: EdgeInsets.only(\n                top: index == 0 ? stickyTop : widget.topIncrement,\n                bottom: widget.cardGap,\n              ),\n              child: child,\n            ),\n          );\n        }).toList(),\n      ),\n    );\n  }\n}\n"
 			}
 		]
 	}
