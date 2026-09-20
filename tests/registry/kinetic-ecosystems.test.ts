@@ -4,28 +4,29 @@ import { describe, expect, it } from 'vitest';
 import { generateComponentUsage, getComponentBySlug, SUPPORTED_ECOSYSTEMS, type EcosystemFlavor } from '@exhuma/registry';
 import { requiresCoreDependency } from '../../packages/cli/src/commands/add';
 
-const expectedFiles: Record<EcosystemFlavor, { horizontal: string[]; stacking: string[]; tilt: string[] }> = {
-	react: { horizontal: ['HorizontalScroller.tsx'], stacking: ['StackingCards.tsx'], tilt: ['TiltCard.tsx'] },
-	nextjs: { horizontal: ['HorizontalScroller.tsx'], stacking: ['StackingCards.tsx'], tilt: ['TiltCard.tsx'] },
-	vue: { horizontal: ['HorizontalScroller.vue'], stacking: ['StackingCards.vue'], tilt: ['TiltCard.vue'] },
-	svelte: { horizontal: ['HorizontalScroller.svelte'], stacking: ['StackingCards.svelte'], tilt: ['TiltCard.svelte'] },
-	angular: { horizontal: ['horizontal-scroller.component.ts'], stacking: ['stacking-cards.component.ts'], tilt: ['tilt-card.component.ts'] },
-	solid: { horizontal: ['HorizontalScroller.tsx'], stacking: ['StackingCards.tsx'], tilt: ['TiltCard.tsx'] },
-	astro: { horizontal: ['HorizontalScroller.astro'], stacking: ['StackingCards.astro'], tilt: ['TiltCard.astro'] },
-	blade: { horizontal: ['horizontal-scroller.blade.php'], stacking: ['stacking-cards.blade.php'], tilt: ['tilt-card.blade.php'] },
-	vanilla: { horizontal: ['horizontal-scroller.vanilla.js'], stacking: ['stacking-cards.vanilla.js'], tilt: ['tilt-card.vanilla.js'] },
-	wordpress: { horizontal: ['block.json', 'render.php'], stacking: ['block.json', 'render.php'], tilt: ['block.json', 'render.php'] },
-	webcomponent: { horizontal: ['exhuma-horizontal-scroller.js'], stacking: ['exhuma-stacking-cards.js'], tilt: ['exhuma-tilt-card.js'] },
-	'react-native': { horizontal: ['HorizontalScroller.tsx'], stacking: ['StackingCards.tsx'], tilt: ['TiltCard.tsx'] },
-	flutter: { horizontal: ['horizontal_scroller.dart'], stacking: ['stacking_cards.dart'], tilt: ['tilt_card.dart'] },
+const expectedFiles: Record<EcosystemFlavor, { horizontal: string[]; stacking: string[]; tilt: string[]; spotlight: string[] }> = {
+	react: { horizontal: ['HorizontalScroller.tsx'], stacking: ['StackingCards.tsx'], tilt: ['TiltCard.tsx'], spotlight: ['SpotlightCard.tsx'] },
+	nextjs: { horizontal: ['HorizontalScroller.tsx'], stacking: ['StackingCards.tsx'], tilt: ['TiltCard.tsx'], spotlight: ['SpotlightCard.tsx'] },
+	vue: { horizontal: ['HorizontalScroller.vue'], stacking: ['StackingCards.vue'], tilt: ['TiltCard.vue'], spotlight: ['SpotlightCard.vue'] },
+	svelte: { horizontal: ['HorizontalScroller.svelte'], stacking: ['StackingCards.svelte'], tilt: ['TiltCard.svelte'], spotlight: ['SpotlightCard.svelte'] },
+	angular: { horizontal: ['horizontal-scroller.component.ts'], stacking: ['stacking-cards.component.ts'], tilt: ['tilt-card.component.ts'], spotlight: ['spotlight-card.component.ts'] },
+	solid: { horizontal: ['HorizontalScroller.tsx'], stacking: ['StackingCards.tsx'], tilt: ['TiltCard.tsx'], spotlight: ['SpotlightCard.tsx'] },
+	astro: { horizontal: ['HorizontalScroller.astro'], stacking: ['StackingCards.astro'], tilt: ['TiltCard.astro'], spotlight: ['SpotlightCard.astro'] },
+	blade: { horizontal: ['horizontal-scroller.blade.php'], stacking: ['stacking-cards.blade.php'], tilt: ['tilt-card.blade.php'], spotlight: ['spotlight-card.blade.php'] },
+	vanilla: { horizontal: ['horizontal-scroller.vanilla.js'], stacking: ['stacking-cards.vanilla.js'], tilt: ['tilt-card.vanilla.js'], spotlight: ['spotlight-card.vanilla.js'] },
+	wordpress: { horizontal: ['block.json', 'render.php'], stacking: ['block.json', 'render.php'], tilt: ['block.json', 'render.php'], spotlight: ['block.json', 'render.php'] },
+	webcomponent: { horizontal: ['exhuma-horizontal-scroller.js'], stacking: ['exhuma-stacking-cards.js'], tilt: ['exhuma-tilt-card.js'], spotlight: ['exhuma-spotlight-card.js'] },
+	'react-native': { horizontal: ['HorizontalScroller.tsx'], stacking: ['StackingCards.tsx'], tilt: ['TiltCard.tsx'], spotlight: ['SpotlightCard.tsx'] },
+	flutter: { horizontal: ['horizontal_scroller.dart'], stacking: ['stacking_cards.dart'], tilt: ['tilt_card.dart'], spotlight: ['spotlight_card.dart'] },
 };
 
 describe('kinetic cards ecosystem parity', () => {
 	const horizontalScrollerComponent = getComponentBySlug('horizontal-scroller');
 	const stackingCardsComponent = getComponentBySlug('stacking-cards');
 	const tiltCardComponent = getComponentBySlug('tilt-card');
+	const spotlightCardComponent = getComponentBySlug('spotlight-card');
 
-	if (!horizontalScrollerComponent || !stackingCardsComponent || !tiltCardComponent) {
+	if (!horizontalScrollerComponent || !stackingCardsComponent || !tiltCardComponent || !spotlightCardComponent) {
 		throw new Error('Kinetic card components must be registered');
 	}
 
@@ -34,11 +35,13 @@ describe('kinetic cards ecosystem parity', () => {
 			const horizontal = horizontalScrollerComponent.generateCode(flavor, horizontalScrollerComponent.defaultProps, { eject: true });
 			const stacking = stackingCardsComponent.generateCode(flavor, stackingCardsComponent.defaultProps, { eject: true });
 			const tilt = tiltCardComponent.generateCode(flavor, tiltCardComponent.defaultProps, { eject: true });
+			const spotlight = spotlightCardComponent.generateCode(flavor, spotlightCardComponent.defaultProps, { eject: true });
 
 			expect(horizontal.map((file) => file.filename)).toEqual(expectedFiles[flavor].horizontal);
 			expect(stacking.map((file) => file.filename)).toEqual(expectedFiles[flavor].stacking);
 			expect(tilt.map((file) => file.filename)).toEqual(expectedFiles[flavor].tilt);
-			for (const file of [...horizontal, ...stacking, ...tilt]) {
+			expect(spotlight.map((file) => file.filename)).toEqual(expectedFiles[flavor].spotlight);
+			for (const file of [...horizontal, ...stacking, ...tilt, ...spotlight]) {
 				expect(file.code.trim().length).toBeGreaterThan(100);
 			}
 		});
@@ -49,6 +52,7 @@ describe('kinetic cards ecosystem parity', () => {
 			const horizontal = horizontalScrollerComponent.generateCode(flavor, horizontalScrollerComponent.defaultProps, { eject: true })[0]?.code ?? '';
 			const stacking = stackingCardsComponent.generateCode(flavor, stackingCardsComponent.defaultProps, { eject: true })[0]?.code ?? '';
 			const tilt = tiltCardComponent.generateCode(flavor, tiltCardComponent.defaultProps, { eject: true })[0]?.code ?? '';
+			const spotlight = spotlightCardComponent.generateCode(flavor, spotlightCardComponent.defaultProps, { eject: true })[0]?.code ?? '';
 
 			expect(horizontal).toMatch(/requestAnimationFrame/);
 			expect(horizontal).toMatch(/IntersectionObserver/);
@@ -60,6 +64,8 @@ describe('kinetic cards ecosystem parity', () => {
 			expect(stacking).toMatch(/3\s*-\s*2\s*\*/);
 			expect(tilt).toMatch(/requestAnimationFrame/);
 			expect(tilt).toMatch(/cancelAnimationFrame/);
+			expect(spotlight).toMatch(/requestAnimationFrame/);
+			expect(spotlight).toMatch(/cancelAnimationFrame/);
 		}
 	});
 
@@ -67,6 +73,7 @@ describe('kinetic cards ecosystem parity', () => {
 		const horizontalUsage = (flavor: EcosystemFlavor) => generateComponentUsage(horizontalScrollerComponent, flavor, horizontalScrollerComponent.defaultProps).code;
 		const stackingFlutter = generateComponentUsage(stackingCardsComponent, 'flutter', stackingCardsComponent.defaultProps).code;
 		const tiltUsage = (flavor: EcosystemFlavor) => generateComponentUsage(tiltCardComponent, flavor, tiltCardComponent.defaultProps).code;
+		const spotlightUsage = (flavor: EcosystemFlavor) => generateComponentUsage(spotlightCardComponent, flavor, spotlightCardComponent.defaultProps).code;
 
 		expect(horizontalUsage('angular')).toContain('import { ExhumaHorizontalScrollerComponent }');
 		expect(horizontalUsage('astro')).toContain("import HorizontalScroller from '@/components/ui/HorizontalScroller.astro';");
@@ -84,6 +91,14 @@ describe('kinetic cards ecosystem parity', () => {
 		expect(tiltUsage('vanilla')).toContain("import { initTiltCard } from './tilt-card.vanilla.js';");
 		expect(tiltUsage('react-native')).toContain("import { TiltCard } from './components/TiltCard';");
 		expect(tiltUsage('flutter')).toContain("import 'tilt_card.dart';");
+
+		expect(spotlightUsage('angular')).toContain('import { ExhumaSpotlightCardComponent }');
+		expect(spotlightUsage('astro')).toContain("import SpotlightCard from '@/components/ui/SpotlightCard.astro';");
+		expect(spotlightUsage('astro')).not.toContain('client:load');
+		expect(spotlightUsage('webcomponent')).toContain('<script type="module" src="./exhuma-spotlight-card.js"></script>');
+		expect(spotlightUsage('vanilla')).toContain("import { initSpotlightCard } from './spotlight-card.vanilla.js';");
+		expect(spotlightUsage('react-native')).toContain("import { SpotlightCard } from './components/SpotlightCard';");
+		expect(spotlightUsage('flutter')).toContain("import 'spotlight_card.dart';");
 	});
 
 	it('keeps non-React framework sources independent from @exhuma/core', () => {
@@ -92,11 +107,13 @@ describe('kinetic cards ecosystem parity', () => {
 				...horizontalScrollerComponent.generateCode(flavor, horizontalScrollerComponent.defaultProps),
 				...stackingCardsComponent.generateCode(flavor, stackingCardsComponent.defaultProps),
 				...tiltCardComponent.generateCode(flavor, tiltCardComponent.defaultProps),
+				...spotlightCardComponent.generateCode(flavor, spotlightCardComponent.defaultProps),
 			];
 			for (const file of files) expect(file.code).not.toContain('@exhuma/core');
 			expect(horizontalScrollerComponent.dependencies?.[flavor] ?? []).not.toContain('@exhuma/core');
 			expect(stackingCardsComponent.dependencies?.[flavor] ?? []).not.toContain('@exhuma/core');
 			expect(tiltCardComponent.dependencies?.[flavor] ?? []).not.toContain('@exhuma/core');
+			expect(spotlightCardComponent.dependencies?.[flavor] ?? []).not.toContain('@exhuma/core');
 		}
 	});
 
@@ -109,7 +126,7 @@ describe('kinetic cards ecosystem parity', () => {
 	});
 
 	it('keeps published kinetic registry artifacts synchronized with source generation', () => {
-		for (const component of [horizontalScrollerComponent, stackingCardsComponent, tiltCardComponent]) {
+		for (const component of [horizontalScrollerComponent, stackingCardsComponent, tiltCardComponent, spotlightCardComponent]) {
 			const artifactPath = resolve(process.cwd(), 'apps/showcase/public/registry', `${component.slug}.json`);
 			const artifact = JSON.parse(readFileSync(artifactPath, 'utf8')) as { flavors: Record<EcosystemFlavor, Array<{ filename: string; code: string }>> };
 			for (const flavor of SUPPORTED_ECOSYSTEMS) {

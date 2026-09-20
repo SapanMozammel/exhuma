@@ -38,6 +38,7 @@ describe('Exhuma CLI Suite — Automated End-to-End Test Gate', () => {
     expect(stdout).toContain('css-masonry');
     expect(stdout).toContain('auto-grid');
     expect(stdout).toContain('tilt-card');
+    expect(stdout).toContain('spotlight-card');
     expect(stdout).toContain('react • nextjs • vue • svelte • angular • solid • astro • blade • vanilla • wordpress • webcomponent • react-native • flutter');
   });
 
@@ -73,6 +74,16 @@ describe('Exhuma CLI Suite — Automated End-to-End Test Gate', () => {
     expect(code).toContain('AutoGridPrimitive');
   });
 
+  it('installs real Spotlight Card component via exhuma add', () => {
+    execSync(`node "${CLI_BIN}" add spotlight-card --flavor=svelte --yes`, { cwd: TEST_DIR });
+    const componentPath = resolve(TEST_DIR, 'src/lib/components/SpotlightCard.svelte');
+    expect(existsSync(componentPath)).toBe(true);
+
+    const code = readFileSync(componentPath, 'utf8');
+    expect(code).toContain('exhuma-spotlight-card');
+    expect(code).toContain('updateFrame');
+  });
+
   it('executes exhuma build to generate static registry JSON', () => {
     const buildOut = resolve(TEST_DIR, 'dist-registry');
     execSync(`node "${CLI_BIN}" build --output="${buildOut}"`, { cwd: TEST_DIR });
@@ -80,6 +91,7 @@ describe('Exhuma CLI Suite — Automated End-to-End Test Gate', () => {
     expect(existsSync(resolve(buildOut, 'index.json'))).toBe(true);
     expect(existsSync(resolve(buildOut, 'stacking-cards.json'))).toBe(true);
     expect(existsSync(resolve(buildOut, 'tilt-card.json'))).toBe(true);
+    expect(existsSync(resolve(buildOut, 'spotlight-card.json'))).toBe(true);
 
     const indexJson = JSON.parse(readFileSync(resolve(buildOut, 'index.json'), 'utf8'));
     expect(indexJson.components.length).toBeGreaterThanOrEqual(5);

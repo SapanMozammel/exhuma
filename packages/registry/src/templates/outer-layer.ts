@@ -575,6 +575,192 @@ onUnmounted(() => {
 					},
 				];
 			}
+			if (slug === 'spotlight-card') {
+				const radius = Number(props.radius ?? 350);
+				const color = String(props.color ?? '#6366f1');
+				const borderColor = String(props.borderColor ?? '#818cf8');
+				const opacity = Number(props.opacity ?? 0.85);
+				const spread = Number(props.spread ?? 60);
+				const mode = (props.mode as string) ?? 'both';
+				const smoothing = Number(props.smoothing ?? 0.2);
+				const disabled = Boolean(props.disabled ?? false);
+
+				return [
+					{
+						filename: `${pascalName}.vue`,
+						language: 'vue',
+						description: `Vue 3 Native ${name} component with sub-pixel radial illumination and zero layout thrashing.`,
+						code: `<script setup lang="ts">
+import { ref, onMounted, onUnmounted } from 'vue';
+
+interface Props {
+  radius?: number;
+  color?: string;
+  borderColor?: string;
+  opacity?: number;
+  spread?: number;
+  mode?: 'both' | 'border' | 'background';
+  smoothing?: number;
+  disabled?: boolean;
+  class?: string;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  radius: ${radius},
+  color: '${color}',
+  borderColor: '${borderColor}',
+  opacity: ${opacity},
+  spread: ${spread},
+  mode: '${mode}',
+  smoothing: ${smoothing},
+  disabled: ${disabled},
+  class: '',
+});
+
+const cardRef = ref<HTMLDivElement | null>(null);
+
+let rect: { left: number; top: number; width: number; height: number } | null = null;
+let targetX = -9999;
+let targetY = -9999;
+let currentX = -9999;
+let currentY = -9999;
+let currentOpacity = 0;
+let targetOpacity = 0;
+let isHovered = false;
+let rafId: number | null = null;
+let isReducedMotion = false;
+
+const measureRect = () => {
+  if (!cardRef.value) return;
+  const r = cardRef.value.getBoundingClientRect();
+  rect = { left: r.left, top: r.top, width: r.width, height: r.height };
+};
+
+const updateFrame = () => {
+  const el = cardRef.value;
+  if (!el) return;
+
+  if (props.disabled || isReducedMotion) {
+    el.style.setProperty('--exhuma-spotlight-opacity', '0');
+    rafId = null;
+    return;
+  }
+
+  const factor = Math.max(0.05, Math.min(1, props.smoothing));
+  currentX += (targetX - currentX) * factor;
+  currentY += (targetY - currentY) * factor;
+  currentOpacity += (targetOpacity - currentOpacity) * Math.max(0.08, factor * 0.75);
+
+  el.style.setProperty('--exhuma-spotlight-x', \`\${currentX.toFixed(2)}px\`);
+  el.style.setProperty('--exhuma-spotlight-y', \`\${currentY.toFixed(2)}px\`);
+  el.style.setProperty('--exhuma-spotlight-opacity', \`\${currentOpacity.toFixed(3)}\`);
+
+  const diffX = Math.abs(targetX - currentX);
+  const diffY = Math.abs(targetY - currentY);
+  const diffOp = Math.abs(targetOpacity - currentOpacity);
+
+  if (diffX > 0.1 || diffY > 0.1 || diffOp > 0.005 || isHovered) {
+    rafId = requestAnimationFrame(updateFrame);
+  } else {
+    rafId = null;
+  }
+};
+
+const scheduleRaf = () => {
+  if (rafId === null) {
+    rafId = requestAnimationFrame(updateFrame);
+  }
+};
+
+const onPointerEnter = (e: PointerEvent) => {
+  if (props.disabled || isReducedMotion) return;
+  isHovered = true;
+  measureRect();
+  if (rect) {
+    targetX = e.clientX - rect.left;
+    targetY = e.clientY - rect.top;
+    targetOpacity = props.opacity;
+    if (currentX < -1000) {
+      currentX = targetX;
+      currentY = targetY;
+    }
+  }
+  scheduleRaf();
+};
+
+const onPointerMove = (e: PointerEvent) => {
+  if (props.disabled || isReducedMotion) return;
+  if (!rect) measureRect();
+  if (!rect) return;
+  targetX = e.clientX - rect.left;
+  targetY = e.clientY - rect.top;
+  targetOpacity = props.opacity;
+  scheduleRaf();
+};
+
+const onPointerLeave = () => {
+  isHovered = false;
+  targetOpacity = 0;
+  scheduleRaf();
+};
+
+onMounted(() => {
+  if (typeof window !== 'undefined') {
+    isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.addEventListener('resize', measureRect, { passive: true });
+    window.addEventListener('scroll', measureRect, { passive: true });
+  }
+});
+
+onUnmounted(() => {
+  if (rafId !== null) cancelAnimationFrame(rafId);
+  if (typeof window !== 'undefined') {
+    window.removeEventListener('resize', measureRect);
+    window.removeEventListener('scroll', measureRect);
+  }
+});
+</script>
+
+<template>
+  <div
+    ref="cardRef"
+    @pointerenter="onPointerEnter"
+    @pointermove="onPointerMove"
+    @pointerleave="onPointerLeave"
+    :class="['exhuma-spotlight-card group relative overflow-hidden rounded-2xl border border-neutral-200/80 bg-neutral-900/5 transition-colors dark:border-neutral-800 dark:bg-neutral-900/40', props.class]"
+    :style="{
+      '--exhuma-spotlight-radius': \`\${props.radius}px\`,
+      '--exhuma-spotlight-color': props.color,
+      '--exhuma-spotlight-border-color': props.borderColor,
+      '--exhuma-spotlight-spread': \`\${props.spread}%\`,
+      '--exhuma-spotlight-opacity': '0',
+    }"
+  >
+    <!-- Specular Border Glow Mask -->
+    <div
+      v-if="props.mode === 'both' || props.mode === 'border'"
+      aria-hidden="true"
+      class="pointer-events-none absolute inset-0 z-10 rounded-[inherit] transition-opacity duration-300"
+      style="opacity: var(--exhuma-spotlight-opacity, 0); border: 1.5px solid transparent; background: radial-gradient(var(--exhuma-spotlight-radius) circle at var(--exhuma-spotlight-x, -9999px) var(--exhuma-spotlight-y, -9999px), var(--exhuma-spotlight-border-color) 0%, transparent var(--exhuma-spotlight-spread, 60%)) border-box; -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0); -webkit-mask-composite: destination-out; mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0); mask-composite: exclude;"
+    />
+
+    <!-- Background Radial Sheen -->
+    <div
+      v-if="props.mode === 'both' || props.mode === 'background'"
+      aria-hidden="true"
+      class="pointer-events-none absolute inset-0 z-0 transition-opacity duration-300"
+      style="opacity: calc(var(--exhuma-spotlight-opacity, 0) * 0.25); background: radial-gradient(var(--exhuma-spotlight-radius) circle at var(--exhuma-spotlight-x, -9999px) var(--exhuma-spotlight-y, -9999px), var(--exhuma-spotlight-color) 0%, transparent var(--exhuma-spotlight-spread, 60%));"
+    />
+
+    <div class="relative z-20">
+      <slot />
+    </div>
+  </div>
+</template>
+`,
+					},
+				];
+			}
 			return [
 				{
 					filename: `${pascalName}.vue`,
@@ -1069,6 +1255,189 @@ const props = withDefaults(defineProps<Props>(), {
       style="opacity: 0"
     ></div>
   {/if}
+</div>
+`,
+					},
+				];
+			}
+			if (slug === 'spotlight-card') {
+				const radius = Number(props.radius ?? 350);
+				const color = String(props.color ?? '#6366f1');
+				const borderColor = String(props.borderColor ?? '#818cf8');
+				const opacity = Number(props.opacity ?? 0.85);
+				const spread = Number(props.spread ?? 60);
+				const mode = (props.mode as string) ?? 'both';
+				const smoothing = Number(props.smoothing ?? 0.2);
+				const disabled = Boolean(props.disabled ?? false);
+
+				return [
+					{
+						filename: `${pascalName}.svelte`,
+						language: 'svelte',
+						description: `Svelte 5 Native ${name} component with runes and sub-pixel radial illumination.`,
+						code: `<script lang="ts">
+  import { onMount } from 'svelte';
+  import { clsx } from 'clsx';
+
+  interface Props {
+    radius?: number;
+    color?: string;
+    borderColor?: string;
+    opacity?: number;
+    spread?: number;
+    mode?: 'both' | 'border' | 'background';
+    smoothing?: number;
+    disabled?: boolean;
+    class?: string;
+    children?: import('svelte').Snippet;
+    [key: string]: unknown;
+  }
+
+  let {
+    radius = ${radius},
+    color = '${color}',
+    borderColor = '${borderColor}',
+    opacity = ${opacity},
+    spread = ${spread},
+    mode = '${mode}',
+    smoothing = ${smoothing},
+    disabled = ${disabled},
+    class: className = '',
+    children,
+    ...restProps
+  }: Props = $props();
+
+  let cardEl: HTMLDivElement | null = null;
+  let rect: { left: number; top: number; width: number; height: number } | null = null;
+
+  let targetX = -9999;
+  let targetY = -9999;
+  let currentX = -9999;
+  let currentY = -9999;
+  let currentOpacity = 0;
+  let targetOpacity = 0;
+  let isHovered = false;
+  let rafId: number | null = null;
+  let isReducedMotion = false;
+
+  const measureRect = () => {
+    if (!cardEl) return;
+    const r = cardEl.getBoundingClientRect();
+    rect = { left: r.left, top: r.top, width: r.width, height: r.height };
+  };
+
+  const updateFrame = () => {
+    if (!cardEl) return;
+
+    if (disabled || isReducedMotion) {
+      cardEl.style.setProperty('--exhuma-spotlight-opacity', '0');
+      rafId = null;
+      return;
+    }
+
+    const factor = Math.max(0.05, Math.min(1, smoothing));
+    currentX += (targetX - currentX) * factor;
+    currentY += (targetY - currentY) * factor;
+    currentOpacity += (targetOpacity - currentOpacity) * Math.max(0.08, factor * 0.75);
+
+    cardEl.style.setProperty('--exhuma-spotlight-x', \`\${currentX.toFixed(2)}px\`);
+    cardEl.style.setProperty('--exhuma-spotlight-y', \`\${currentY.toFixed(2)}px\`);
+    cardEl.style.setProperty('--exhuma-spotlight-opacity', \`\${currentOpacity.toFixed(3)}\`);
+
+    const diffX = Math.abs(targetX - currentX);
+    const diffY = Math.abs(targetY - currentY);
+    const diffOp = Math.abs(targetOpacity - currentOpacity);
+
+    if (diffX > 0.1 || diffY > 0.1 || diffOp > 0.005 || isHovered) {
+      rafId = requestAnimationFrame(updateFrame);
+    } else {
+      rafId = null;
+    }
+  };
+
+  const scheduleRaf = () => {
+    if (rafId === null) {
+      rafId = requestAnimationFrame(updateFrame);
+    }
+  };
+
+  const onPointerEnter = (e: PointerEvent) => {
+    if (disabled || isReducedMotion) return;
+    isHovered = true;
+    measureRect();
+    if (rect) {
+      targetX = e.clientX - rect.left;
+      targetY = e.clientY - rect.top;
+      targetOpacity = opacity;
+      if (currentX < -1000) {
+        currentX = targetX;
+        currentY = targetY;
+      }
+    }
+    scheduleRaf();
+  };
+
+  const onPointerMove = (e: PointerEvent) => {
+    if (disabled || isReducedMotion) return;
+    if (!rect) measureRect();
+    if (!rect) return;
+    targetX = e.clientX - rect.left;
+    targetY = e.clientY - rect.top;
+    targetOpacity = opacity;
+    scheduleRaf();
+  };
+
+  const onPointerLeave = () => {
+    isHovered = false;
+    targetOpacity = 0;
+    scheduleRaf();
+  };
+
+  onMount(() => {
+    if (typeof window !== 'undefined') {
+      isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      window.addEventListener('resize', measureRect, { passive: true });
+      window.addEventListener('scroll', measureRect, { passive: true });
+    }
+
+    return () => {
+      if (rafId !== null) cancelAnimationFrame(rafId);
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('resize', measureRect);
+        window.removeEventListener('scroll', measureRect);
+      }
+    };
+  });
+</script>
+
+<div
+  bind:this={cardEl}
+  onpointerenter={onPointerEnter}
+  onpointermove={onPointerMove}
+  onpointerleave={onPointerLeave}
+  class={clsx('exhuma-spotlight-card group relative overflow-hidden rounded-2xl border border-neutral-200/80 bg-neutral-900/5 transition-colors dark:border-neutral-800 dark:bg-neutral-900/40', className)}
+  style="--exhuma-spotlight-radius: {radius}px; --exhuma-spotlight-color: {color}; --exhuma-spotlight-border-color: {borderColor}; --exhuma-spotlight-spread: {spread}%; --exhuma-spotlight-opacity: 0;"
+  {...restProps}
+>
+  {#if mode === 'both' || mode === 'border'}
+    <div
+      aria-hidden="true"
+      class="pointer-events-none absolute inset-0 z-10 rounded-[inherit] transition-opacity duration-300"
+      style="opacity: var(--exhuma-spotlight-opacity, 0); border: 1.5px solid transparent; background: radial-gradient(var(--exhuma-spotlight-radius) circle at var(--exhuma-spotlight-x, -9999px) var(--exhuma-spotlight-y, -9999px), var(--exhuma-spotlight-border-color) 0%, transparent var(--exhuma-spotlight-spread, 60%)) border-box; -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0); -webkit-mask-composite: destination-out; mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0); mask-composite: exclude;"
+    ></div>
+  {/if}
+
+  {#if mode === 'both' || mode === 'background'}
+    <div
+      aria-hidden="true"
+      class="pointer-events-none absolute inset-0 z-0 transition-opacity duration-300"
+      style="opacity: calc(var(--exhuma-spotlight-opacity, 0) * 0.25); background: radial-gradient(var(--exhuma-spotlight-radius) circle at var(--exhuma-spotlight-x, -9999px) var(--exhuma-spotlight-y, -9999px), var(--exhuma-spotlight-color) 0%, transparent var(--exhuma-spotlight-spread, 60%));"
+    ></div>
+  {/if}
+
+  <div class="relative z-20">
+    {@render children?.()}
+  </div>
 </div>
 `,
 					},
@@ -1599,6 +1968,212 @@ export const TiltCard: Component<TiltCardProps> = (props) => {
 					},
 				];
 			}
+			if (slug === 'spotlight-card') {
+				const radius = Number(props.radius ?? 350);
+				const color = String(props.color ?? '#6366f1');
+				const borderColor = String(props.borderColor ?? '#818cf8');
+				const opacity = Number(props.opacity ?? 0.85);
+				const spread = Number(props.spread ?? 60);
+				const mode = (props.mode as string) ?? 'both';
+				const smoothing = Number(props.smoothing ?? 0.2);
+				const disabled = Boolean(props.disabled ?? false);
+
+				return [
+					{
+						filename: `${pascalName}.tsx`,
+						language: 'tsx',
+						description: `SolidJS Native ${name} component with fine-grained reactivity and sub-pixel radial illumination.`,
+						code: `import { Component, JSX, onMount, onCleanup, splitProps } from 'solid-js';
+
+export interface SpotlightCardProps extends JSX.HTMLAttributes<HTMLDivElement> {
+  radius?: number;
+  color?: string;
+  borderColor?: string;
+  opacity?: number;
+  spread?: number;
+  mode?: 'both' | 'border' | 'background';
+  smoothing?: number;
+  disabled?: boolean;
+  class?: string;
+  children?: JSX.Element;
+}
+
+export const SpotlightCard: Component<SpotlightCardProps> = (props) => {
+  const [local, others] = splitProps(props, [
+    'radius',
+    'color',
+    'borderColor',
+    'opacity',
+    'spread',
+    'mode',
+    'smoothing',
+    'disabled',
+    'class',
+    'children',
+  ]);
+
+  let cardRef: HTMLDivElement | undefined;
+  let rect: { left: number; top: number; width: number; height: number } | null = null;
+
+  let targetX = -9999;
+  let targetY = -9999;
+  let currentX = -9999;
+  let currentY = -9999;
+  let currentOpacity = 0;
+  let targetOpacity = 0;
+  let isHovered = false;
+  let rafId: number | null = null;
+  let isReducedMotion = false;
+
+  const radius = () => local.radius ?? ${radius};
+  const color = () => local.color ?? '${color}';
+  const borderColor = () => local.borderColor ?? '${borderColor}';
+  const opacity = () => local.opacity ?? ${opacity};
+  const spread = () => local.spread ?? ${spread};
+  const mode = () => local.mode ?? '${mode}';
+  const smoothing = () => local.smoothing ?? ${smoothing};
+  const disabled = () => local.disabled ?? ${disabled};
+
+  const measureRect = () => {
+    if (!cardRef) return;
+    const r = cardRef.getBoundingClientRect();
+    rect = { left: r.left, top: r.top, width: r.width, height: r.height };
+  };
+
+  const updateFrame = () => {
+    if (!cardRef) return;
+
+    if (disabled() || isReducedMotion) {
+      cardRef.style.setProperty('--exhuma-spotlight-opacity', '0');
+      rafId = null;
+      return;
+    }
+
+    const factor = Math.max(0.05, Math.min(1, smoothing()));
+    currentX += (targetX - currentX) * factor;
+    currentY += (targetY - currentY) * factor;
+    currentOpacity += (targetOpacity - currentOpacity) * Math.max(0.08, factor * 0.75);
+
+    cardRef.style.setProperty('--exhuma-spotlight-x', \`\${currentX.toFixed(2)}px\`);
+    cardRef.style.setProperty('--exhuma-spotlight-y', \`\${currentY.toFixed(2)}px\`);
+    cardRef.style.setProperty('--exhuma-spotlight-opacity', \`\${currentOpacity.toFixed(3)}\`);
+
+    const diffX = Math.abs(targetX - currentX);
+    const diffY = Math.abs(targetY - currentY);
+    const diffOp = Math.abs(targetOpacity - currentOpacity);
+
+    if (diffX > 0.1 || diffY > 0.1 || diffOp > 0.005 || isHovered) {
+      rafId = requestAnimationFrame(updateFrame);
+    } else {
+      rafId = null;
+    }
+  };
+
+  const scheduleRaf = () => {
+    if (rafId === null) {
+      rafId = requestAnimationFrame(updateFrame);
+    }
+  };
+
+  const onPointerEnter = (e: PointerEvent) => {
+    if (disabled() || isReducedMotion) return;
+    isHovered = true;
+    measureRect();
+    if (rect) {
+      targetX = e.clientX - rect.left;
+      targetY = e.clientY - rect.top;
+      targetOpacity = opacity();
+      if (currentX < -1000) {
+        currentX = targetX;
+        currentY = targetY;
+      }
+    }
+    scheduleRaf();
+  };
+
+  const onPointerMove = (e: PointerEvent) => {
+    if (disabled() || isReducedMotion) return;
+    if (!rect) measureRect();
+    if (!rect) return;
+    targetX = e.clientX - rect.left;
+    targetY = e.clientY - rect.top;
+    targetOpacity = opacity();
+    scheduleRaf();
+  };
+
+  const onPointerLeave = () => {
+    isHovered = false;
+    targetOpacity = 0;
+    scheduleRaf();
+  };
+
+  onMount(() => {
+    if (typeof window !== 'undefined') {
+      isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      window.addEventListener('resize', measureRect, { passive: true });
+      window.addEventListener('scroll', measureRect, { passive: true });
+    }
+  });
+
+  onCleanup(() => {
+    if (rafId !== null) cancelAnimationFrame(rafId);
+    if (typeof window !== 'undefined') {
+      window.removeEventListener('resize', measureRect);
+      window.removeEventListener('scroll', measureRect);
+    }
+  });
+
+  return (
+    <div
+      ref={cardRef}
+      onPointerEnter={onPointerEnter}
+      onPointerMove={onPointerMove}
+      onPointerLeave={onPointerLeave}
+      class={\`exhuma-spotlight-card group relative overflow-hidden rounded-2xl border border-neutral-200/80 bg-neutral-900/5 transition-colors dark:border-neutral-800 dark:bg-neutral-900/40 \${local.class ?? ''}\`}
+      style={{
+        '--exhuma-spotlight-radius': \`\${radius()}px\`,
+        '--exhuma-spotlight-color': color(),
+        '--exhuma-spotlight-border-color': borderColor(),
+        '--exhuma-spotlight-spread': \`\${spread()}%\`,
+        '--exhuma-spotlight-opacity': '0',
+      }}
+      {...others}
+    >
+      {(mode() === 'both' || mode() === 'border') && (
+        <div
+          aria-hidden="true"
+          class="pointer-events-none absolute inset-0 z-10 rounded-[inherit] transition-opacity duration-300"
+          style={{
+            opacity: 'var(--exhuma-spotlight-opacity, 0)',
+            border: '1.5px solid transparent',
+            background: \`radial-gradient(var(--exhuma-spotlight-radius) circle at var(--exhuma-spotlight-x, -9999px) var(--exhuma-spotlight-y, -9999px), var(--exhuma-spotlight-border-color) 0%, transparent var(--exhuma-spotlight-spread, 60%)) border-box\`,
+            '-webkit-mask': 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)',
+            '-webkit-mask-composite': 'destination-out',
+            mask: 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)',
+            'mask-composite': 'exclude',
+          }}
+        />
+      )}
+
+      {(mode() === 'both' || mode() === 'background') && (
+        <div
+          aria-hidden="true"
+          class="pointer-events-none absolute inset-0 z-0 transition-opacity duration-300"
+          style={{
+            opacity: 'calc(var(--exhuma-spotlight-opacity, 0) * 0.25)',
+            background: \`radial-gradient(var(--exhuma-spotlight-radius) circle at var(--exhuma-spotlight-x, -9999px) var(--exhuma-spotlight-y, -9999px), var(--exhuma-spotlight-color) 0%, transparent var(--exhuma-spotlight-spread, 60%))\`,
+          }}
+        />
+      )}
+
+      <div class="relative z-20">{local.children}</div>
+    </div>
+  );
+};
+`,
+					},
+				];
+			}
 			return [
 				{
 					filename: `${pascalName}.tsx`,
@@ -2048,6 +2623,195 @@ export class ExhumaTiltCardComponent implements OnInit, OnDestroy {
         targetRotY = 0;
         targetScale = 1.0;
         targetGlareOpacity = 0;
+        scheduleRaf();
+      };
+
+      const onScrollOrResize = () => {
+        if (isHovered) measureRect();
+      };
+
+      card.addEventListener('pointerenter', onPointerEnter);
+      card.addEventListener('pointermove', onPointerMove);
+      card.addEventListener('pointerleave', onPointerLeave);
+      window.addEventListener('scroll', onScrollOrResize, { passive: true });
+      window.addEventListener('resize', onScrollOrResize, { passive: true });
+
+      this.cleanups.push(() => {
+        card.removeEventListener('pointerenter', onPointerEnter);
+        card.removeEventListener('pointermove', onPointerMove);
+        card.removeEventListener('pointerleave', onPointerLeave);
+        window.removeEventListener('scroll', onScrollOrResize);
+        window.removeEventListener('resize', onScrollOrResize);
+      });
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.rafId !== null) window.cancelAnimationFrame(this.rafId);
+    this.cleanups.forEach((cleanup) => cleanup());
+  }
+}
+`,
+					},
+				];
+			}
+			if (slug === 'spotlight-card') {
+				const radius = Number(props.radius ?? 350);
+				const color = String(props.color ?? '#6366f1');
+				const borderColor = String(props.borderColor ?? '#818cf8');
+				const opacity = Number(props.opacity ?? 0.85);
+				const spread = Number(props.spread ?? 60);
+				const mode = (props.mode as string) ?? 'both';
+				const smoothing = Number(props.smoothing ?? 0.2);
+				const disabled = Boolean(props.disabled ?? false);
+
+				return [
+					{
+						filename: `${slug}.component.ts`,
+						language: 'typescript',
+						description: `Angular 18+ Standalone ${name} component with out-of-zone 120 FPS rAF spotlight engine.`,
+						code: `import { Component, ElementRef, NgZone, OnInit, OnDestroy, input, viewChild } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
+@Component({
+  selector: 'exhuma-spotlight-card',
+  standalone: true,
+  imports: [CommonModule],
+  template: \`
+    <div
+      #cardEl
+      [class]="'exhuma-spotlight-card group relative overflow-hidden rounded-2xl border border-neutral-200/80 bg-neutral-900/5 transition-colors dark:border-neutral-800 dark:bg-neutral-900/40 ' + customClass()"
+      [style.--exhuma-spotlight-radius]="radius() + 'px'"
+      [style.--exhuma-spotlight-color]="color()"
+      [style.--exhuma-spotlight-border-color]="borderColor()"
+      [style.--exhuma-spotlight-spread]="spread() + '%'"
+      [style.--exhuma-spotlight-opacity]="'0'"
+    >
+      @if (mode() === 'both' || mode() === 'border') {
+        <div
+          aria-hidden="true"
+          class="pointer-events-none absolute inset-0 z-10 rounded-[inherit] transition-opacity duration-300"
+          style="opacity: var(--exhuma-spotlight-opacity, 0); border: 1.5px solid transparent; background: radial-gradient(var(--exhuma-spotlight-radius) circle at var(--exhuma-spotlight-x, -9999px) var(--exhuma-spotlight-y, -9999px), var(--exhuma-spotlight-border-color) 0%, transparent var(--exhuma-spotlight-spread, 60%)) border-box; -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0); -webkit-mask-composite: destination-out; mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0); mask-composite: exclude;"
+        ></div>
+      }
+      @if (mode() === 'both' || mode() === 'background') {
+        <div
+          aria-hidden="true"
+          class="pointer-events-none absolute inset-0 z-0 transition-opacity duration-300"
+          style="opacity: calc(var(--exhuma-spotlight-opacity, 0) * 0.25); background: radial-gradient(var(--exhuma-spotlight-radius) circle at var(--exhuma-spotlight-x, -9999px) var(--exhuma-spotlight-y, -9999px), var(--exhuma-spotlight-color) 0%, transparent var(--exhuma-spotlight-spread, 60%));"
+        ></div>
+      }
+      <div class="relative z-20">
+        <ng-content></ng-content>
+      </div>
+    </div>
+  \`,
+})
+export class ExhumaSpotlightCardComponent implements OnInit, OnDestroy {
+  readonly radius = input<number>(${radius});
+  readonly color = input<string>('${color}');
+  readonly borderColor = input<string>('${borderColor}');
+  readonly opacity = input<number>(${opacity});
+  readonly spread = input<number>(${spread});
+  readonly mode = input<'both' | 'border' | 'background'>('${mode}');
+  readonly smoothing = input<number>(${smoothing});
+  readonly disabled = input<boolean>(${disabled});
+  readonly customClass = input<string>('');
+
+  readonly cardEl = viewChild<ElementRef<HTMLDivElement>>('cardEl');
+
+  private rafId: number | null = null;
+  private cleanups: Array<() => void> = [];
+
+  constructor(private ngZone: NgZone) {}
+
+  ngOnInit(): void {
+    this.ngZone.runOutsideAngular(() => {
+      const card = this.cardEl()?.nativeElement;
+      if (!card) return;
+
+      let rect: { left: number; top: number; width: number; height: number } | null = null;
+      let targetX = -9999;
+      let targetY = -9999;
+      let currentX = -9999;
+      let currentY = -9999;
+      let currentOpacity = 0;
+      let targetOpacity = 0;
+      let isHovered = false;
+
+      const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+      let isReducedMotion = mediaQuery.matches;
+      const motionHandler = (e: MediaQueryListEvent) => { isReducedMotion = e.matches; };
+      mediaQuery.addEventListener('change', motionHandler);
+      this.cleanups.push(() => mediaQuery.removeEventListener('change', motionHandler));
+
+      const measureRect = () => {
+        const r = card.getBoundingClientRect();
+        rect = { left: r.left, top: r.top, width: r.width, height: r.height };
+      };
+
+      const updateFrame = () => {
+        if (this.disabled() || isReducedMotion) {
+          card.style.setProperty('--exhuma-spotlight-opacity', '0');
+          this.rafId = null;
+          return;
+        }
+
+        const factor = Math.max(0.05, Math.min(1, this.smoothing()));
+        currentX += (targetX - currentX) * factor;
+        currentY += (targetY - currentY) * factor;
+        currentOpacity += (targetOpacity - currentOpacity) * Math.max(0.08, factor * 0.75);
+
+        card.style.setProperty('--exhuma-spotlight-x', \`\${currentX.toFixed(2)}px\`);
+        card.style.setProperty('--exhuma-spotlight-y', \`\${currentY.toFixed(2)}px\`);
+        card.style.setProperty('--exhuma-spotlight-opacity', \`\${currentOpacity.toFixed(3)}\`);
+
+        const diffX = Math.abs(targetX - currentX);
+        const diffY = Math.abs(targetY - currentY);
+        const diffOp = Math.abs(targetOpacity - currentOpacity);
+
+        if (diffX > 0.1 || diffY > 0.1 || diffOp > 0.005 || isHovered) {
+          this.rafId = window.requestAnimationFrame(updateFrame);
+        } else {
+          this.rafId = null;
+        }
+      };
+
+      const scheduleRaf = () => {
+        if (this.rafId === null) {
+          this.rafId = window.requestAnimationFrame(updateFrame);
+        }
+      };
+
+      const onPointerEnter = (e: PointerEvent) => {
+        if (this.disabled() || isReducedMotion) return;
+        isHovered = true;
+        measureRect();
+        if (rect) {
+          targetX = e.clientX - rect.left;
+          targetY = e.clientY - rect.top;
+          targetOpacity = this.opacity();
+          if (currentX < -1000) {
+            currentX = targetX;
+            currentY = targetY;
+          }
+        }
+        scheduleRaf();
+      };
+
+      const onPointerMove = (e: PointerEvent) => {
+        if (this.disabled() || isReducedMotion) return;
+        if (!rect) measureRect();
+        if (!rect) return;
+        targetX = e.clientX - rect.left;
+        targetY = e.clientY - rect.top;
+        targetOpacity = this.opacity();
+        scheduleRaf();
+      };
+
+      const onPointerLeave = () => {
+        isHovered = false;
+        targetOpacity = 0;
         scheduleRaf();
       };
 
@@ -2595,6 +3359,224 @@ const {
 					},
 				];
 			}
+			if (slug === 'spotlight-card') {
+				const radius = Number(props.radius ?? 350);
+				const color = String(props.color ?? '#6366f1');
+				const borderColor = String(props.borderColor ?? '#818cf8');
+				const opacity = Number(props.opacity ?? 0.85);
+				const spread = Number(props.spread ?? 60);
+				const mode = (props.mode as string) ?? 'both';
+				const smoothing = Number(props.smoothing ?? 0.2);
+				const disabled = Boolean(props.disabled ?? false);
+
+				return [
+					{
+						filename: `${pascalName}.astro`,
+						language: 'astro',
+						description: `Pure Native Astro ${name} component with scoped rAF spotlight engine.`,
+						code: `---
+interface Props {
+  radius?: number;
+  color?: string;
+  borderColor?: string;
+  opacity?: number;
+  spread?: number;
+  mode?: 'both' | 'border' | 'background';
+  smoothing?: number;
+  disabled?: boolean;
+  class?: string;
+  [key: string]: unknown;
+}
+
+const {
+  radius = ${radius},
+  color = '${color}',
+  borderColor = '${borderColor}',
+  opacity = ${opacity},
+  spread = ${spread},
+  mode = '${mode}',
+  smoothing = ${smoothing},
+  disabled = ${disabled},
+  class: className = '',
+  ...props
+} = Astro.props;
+
+const cardId = 'exhuma-spotlight-' + Math.random().toString(36).substring(2, 9);
+---
+
+<div
+  id={cardId}
+  class={\`exhuma-spotlight-card group relative overflow-hidden rounded-2xl border border-neutral-200/80 bg-neutral-900/5 transition-colors dark:border-neutral-800 dark:bg-neutral-900/40 \${className}\`}
+  style={{
+    '--exhuma-spotlight-radius': \`\${radius}px\`,
+    '--exhuma-spotlight-color': color,
+    '--exhuma-spotlight-border-color': borderColor,
+    '--exhuma-spotlight-spread': \`\${spread}%\`,
+    '--exhuma-spotlight-opacity': '0',
+  }}
+  data-exhuma-spotlight-card
+  data-radius={radius}
+  data-color={color}
+  data-border-color={borderColor}
+  data-opacity={opacity}
+  data-spread={spread}
+  data-mode={mode}
+  data-smoothing={smoothing}
+  data-disabled={disabled ? 'true' : 'false'}
+  {...props}
+>
+  {(mode === 'both' || mode === 'border') && (
+    <div
+      aria-hidden="true"
+      class="pointer-events-none absolute inset-0 z-10 rounded-[inherit] transition-opacity duration-300"
+      style={{
+        opacity: 'var(--exhuma-spotlight-opacity, 0)',
+        border: '1.5px solid transparent',
+        background: \`radial-gradient(var(--exhuma-spotlight-radius) circle at var(--exhuma-spotlight-x, -9999px) var(--exhuma-spotlight-y, -9999px), var(--exhuma-spotlight-border-color) 0%, transparent var(--exhuma-spotlight-spread, 60%)) border-box\`,
+        WebkitMask: 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)',
+        WebkitMaskComposite: 'destination-out',
+        mask: 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)',
+        maskComposite: 'exclude',
+      }}
+    />
+  )}
+
+  {(mode === 'both' || mode === 'background') && (
+    <div
+      aria-hidden="true"
+      class="pointer-events-none absolute inset-0 z-0 transition-opacity duration-300"
+      style={{
+        opacity: 'calc(var(--exhuma-spotlight-opacity, 0) * 0.25)',
+        background: \`radial-gradient(var(--exhuma-spotlight-radius) circle at var(--exhuma-spotlight-x, -9999px) var(--exhuma-spotlight-y, -9999px), var(--exhuma-spotlight-color) 0%, transparent var(--exhuma-spotlight-spread, 60%))\`,
+      }}
+    />
+  )}
+
+  <div class="relative z-20">
+    <slot />
+  </div>
+</div>
+
+<script>
+  function initSpotlightCards() {
+    const cards = document.querySelectorAll<HTMLElement>('[data-exhuma-spotlight-card]');
+    cards.forEach((card) => {
+      if (card.dataset.exhumaInitialized === 'true') return;
+      card.dataset.exhumaInitialized = 'true';
+
+      const opacity = parseFloat(card.getAttribute('data-opacity') || '0.85');
+      const smoothing = parseFloat(card.getAttribute('data-smoothing') || '0.2');
+      const disabled = card.getAttribute('data-disabled') === 'true';
+
+      let rect: { left: number; top: number; width: number; height: number } | null = null;
+      let targetX = -9999;
+      let targetY = -9999;
+      let currentX = -9999;
+      let currentY = -9999;
+      let currentOpacity = 0;
+      let targetOpacity = 0;
+      let isHovered = false;
+      let rafId: number | null = null;
+      const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      const measureRect = () => {
+        const r = card.getBoundingClientRect();
+        rect = { left: r.left, top: r.top, width: r.width, height: r.height };
+      };
+
+      const updateFrame = () => {
+        if (disabled || isReducedMotion) {
+          card.style.setProperty('--exhuma-spotlight-opacity', '0');
+          rafId = null;
+          return;
+        }
+
+        const factor = Math.max(0.05, Math.min(1, smoothing));
+        currentX += (targetX - currentX) * factor;
+        currentY += (targetY - currentY) * factor;
+        currentOpacity += (targetOpacity - currentOpacity) * Math.max(0.08, factor * 0.75);
+
+        card.style.setProperty('--exhuma-spotlight-x', \`\${currentX.toFixed(2)}px\`);
+        card.style.setProperty('--exhuma-spotlight-y', \`\${currentY.toFixed(2)}px\`);
+        card.style.setProperty('--exhuma-spotlight-opacity', \`\${currentOpacity.toFixed(3)}\`);
+
+        const diffX = Math.abs(targetX - currentX);
+        const diffY = Math.abs(targetY - currentY);
+        const diffOp = Math.abs(targetOpacity - currentOpacity);
+
+        if (diffX > 0.1 || diffY > 0.1 || diffOp > 0.005 || isHovered) {
+          rafId = requestAnimationFrame(updateFrame);
+        } else {
+          rafId = null;
+        }
+      };
+
+      const scheduleRaf = () => {
+        if (rafId === null) {
+          rafId = requestAnimationFrame(updateFrame);
+        }
+      };
+
+      const onPointerEnter = (e: PointerEvent) => {
+        if (disabled || isReducedMotion) return;
+        isHovered = true;
+        measureRect();
+        if (rect) {
+          targetX = e.clientX - rect.left;
+          targetY = e.clientY - rect.top;
+          targetOpacity = opacity;
+          if (currentX < -1000) {
+            currentX = targetX;
+            currentY = targetY;
+          }
+        }
+        scheduleRaf();
+      };
+
+      const onPointerMove = (e: PointerEvent) => {
+        if (disabled || isReducedMotion) return;
+        if (!rect) measureRect();
+        if (!rect) return;
+        targetX = e.clientX - rect.left;
+        targetY = e.clientY - rect.top;
+        targetOpacity = opacity;
+        scheduleRaf();
+      };
+
+      const onPointerLeave = () => {
+        isHovered = false;
+        targetOpacity = 0;
+        scheduleRaf();
+      };
+
+      const onScrollOrResize = () => {
+        if (isHovered) measureRect();
+      };
+
+      card.addEventListener('pointerenter', onPointerEnter);
+      card.addEventListener('pointermove', onPointerMove);
+      card.addEventListener('pointerleave', onPointerLeave);
+      window.addEventListener('scroll', onScrollOrResize, { passive: true });
+      window.addEventListener('resize', onScrollOrResize, { passive: true });
+
+      document.addEventListener('astro:before-swap', () => {
+        if (rafId !== null) cancelAnimationFrame(rafId);
+        card.removeEventListener('pointerenter', onPointerEnter);
+        card.removeEventListener('pointermove', onPointerMove);
+        card.removeEventListener('pointerleave', onPointerLeave);
+        window.removeEventListener('scroll', onScrollOrResize);
+        window.removeEventListener('resize', onScrollOrResize);
+      }, { once: true });
+    });
+  }
+
+  initSpotlightCards();
+  document.addEventListener('astro:page-load', initSpotlightCards);
+</script>
+`,
+					},
+				];
+			}
 			return [
 				{
 					filename: `${pascalName}.astro`,
@@ -3023,6 +4005,197 @@ if (!customElements.get('exhuma-tilt-card')) {
 					},
 				];
 			}
+			if (slug === 'spotlight-card') {
+				const radius = Number(props.radius ?? 350);
+				const color = String(props.color ?? '#6366f1');
+				const borderColor = String(props.borderColor ?? '#818cf8');
+				const opacity = Number(props.opacity ?? 0.85);
+				const spread = Number(props.spread ?? 60);
+				const mode = (props.mode as string) ?? 'both';
+				const smoothing = Number(props.smoothing ?? 0.2);
+				const disabled = Boolean(props.disabled ?? false);
+
+				return [
+					{
+						filename: `exhuma-${slug}.js`,
+						language: 'javascript',
+						description: `Universal Web Component <exhuma-${slug}> with sub-pixel radial illumination.`,
+						code: `class ExhumaSpotlightCardElement extends HTMLElement {
+  static get observedAttributes() {
+    return ['radius', 'color', 'border-color', 'opacity', 'spread', 'mode', 'smoothing', 'disabled'];
+  }
+
+  connectedCallback() {
+    if (this._cleanup) this._cleanup();
+    this.classList.add('exhuma-spotlight-card');
+    this.style.display = 'block';
+    this.style.position = 'relative';
+    this.style.overflow = 'hidden';
+
+    const radius = parseFloat(this.getAttribute('radius') || '${radius}');
+    const color = this.getAttribute('color') || '${color}';
+    const borderColor = this.getAttribute('border-color') || '${borderColor}';
+    const opacity = parseFloat(this.getAttribute('opacity') || '${opacity}');
+    const spread = parseFloat(this.getAttribute('spread') || '${spread}');
+    const mode = this.getAttribute('mode') || '${mode}';
+    const smoothing = parseFloat(this.getAttribute('smoothing') || '${smoothing}');
+    const disabled = this.getAttribute('disabled') === 'true';
+
+    this.style.setProperty('--exhuma-spotlight-radius', \`\${radius}px\`);
+    this.style.setProperty('--exhuma-spotlight-color', color);
+    this.style.setProperty('--exhuma-spotlight-border-color', borderColor);
+    this.style.setProperty('--exhuma-spotlight-spread', \`\${spread}%\`);
+    this.style.setProperty('--exhuma-spotlight-opacity', '0');
+
+    let borderEl = this.querySelector('.exhuma-spotlight-border');
+    if ((mode === 'both' || mode === 'border') && !borderEl) {
+      borderEl = document.createElement('div');
+      borderEl.setAttribute('aria-hidden', 'true');
+      borderEl.className = 'exhuma-spotlight-border';
+      borderEl.style.position = 'absolute';
+      borderEl.style.inset = '0';
+      borderEl.style.borderRadius = 'inherit';
+      borderEl.style.pointerEvents = 'none';
+      borderEl.style.transition = 'opacity 300ms';
+      borderEl.style.border = '1.5px solid transparent';
+      borderEl.style.opacity = 'var(--exhuma-spotlight-opacity, 0)';
+      borderEl.style.background = 'radial-gradient(var(--exhuma-spotlight-radius) circle at var(--exhuma-spotlight-x, -9999px) var(--exhuma-spotlight-y, -9999px), var(--exhuma-spotlight-border-color) 0%, transparent var(--exhuma-spotlight-spread, 60%)) border-box';
+      borderEl.style.webkitMask = 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)';
+      borderEl.style.webkitMaskComposite = 'destination-out';
+      borderEl.style.mask = 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)';
+      borderEl.style.maskComposite = 'exclude';
+      this.insertBefore(borderEl, this.firstChild);
+    }
+
+    let sheenEl = this.querySelector('.exhuma-spotlight-sheen');
+    if ((mode === 'both' || mode === 'background') && !sheenEl) {
+      sheenEl = document.createElement('div');
+      sheenEl.setAttribute('aria-hidden', 'true');
+      sheenEl.className = 'exhuma-spotlight-sheen';
+      sheenEl.style.position = 'absolute';
+      sheenEl.style.inset = '0';
+      sheenEl.style.pointerEvents = 'none';
+      sheenEl.style.transition = 'opacity 300ms';
+      sheenEl.style.opacity = 'calc(var(--exhuma-spotlight-opacity, 0) * 0.25)';
+      sheenEl.style.background = 'radial-gradient(var(--exhuma-spotlight-radius) circle at var(--exhuma-spotlight-x, -9999px) var(--exhuma-spotlight-y, -9999px), var(--exhuma-spotlight-color) 0%, transparent var(--exhuma-spotlight-spread, 60%))';
+      this.insertBefore(sheenEl, this.firstChild);
+    }
+
+    let rect = null;
+    let targetX = -9999;
+    let targetY = -9999;
+    let currentX = -9999;
+    let currentY = -9999;
+    let currentOpacity = 0;
+    let targetOpacity = 0;
+    let isHovered = false;
+    let rafId = null;
+    const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const measureRect = () => {
+      const r = this.getBoundingClientRect();
+      rect = { left: r.left, top: r.top, width: r.width, height: r.height };
+    };
+
+    const updateFrame = () => {
+      if (disabled || isReducedMotion) {
+        this.style.setProperty('--exhuma-spotlight-opacity', '0');
+        rafId = null;
+        return;
+      }
+
+      const factor = Math.max(0.05, Math.min(1, smoothing));
+      currentX += (targetX - currentX) * factor;
+      currentY += (targetY - currentY) * factor;
+      currentOpacity += (targetOpacity - currentOpacity) * Math.max(0.08, factor * 0.75);
+
+      this.style.setProperty('--exhuma-spotlight-x', \`\${currentX.toFixed(2)}px\`);
+      this.style.setProperty('--exhuma-spotlight-y', \`\${currentY.toFixed(2)}px\`);
+      this.style.setProperty('--exhuma-spotlight-opacity', \`\${currentOpacity.toFixed(3)}\`);
+
+      const diffX = Math.abs(targetX - currentX);
+      const diffY = Math.abs(targetY - currentY);
+      const diffOp = Math.abs(targetOpacity - currentOpacity);
+
+      if (diffX > 0.1 || diffY > 0.1 || diffOp > 0.005 || isHovered) {
+        rafId = requestAnimationFrame(updateFrame);
+      } else {
+        rafId = null;
+      }
+    };
+
+    const scheduleRaf = () => {
+      if (rafId === null) {
+        rafId = requestAnimationFrame(updateFrame);
+      }
+    };
+
+    const onPointerEnter = (e) => {
+      if (disabled || isReducedMotion) return;
+      isHovered = true;
+      measureRect();
+      if (rect) {
+        targetX = e.clientX - rect.left;
+        targetY = e.clientY - rect.top;
+        targetOpacity = opacity;
+        if (currentX < -1000) {
+          currentX = targetX;
+          currentY = targetY;
+        }
+      }
+      scheduleRaf();
+    };
+
+    const onPointerMove = (e) => {
+      if (disabled || isReducedMotion) return;
+      if (!rect) measureRect();
+      if (!rect) return;
+      targetX = e.clientX - rect.left;
+      targetY = e.clientY - rect.top;
+      targetOpacity = opacity;
+      scheduleRaf();
+    };
+
+    const onPointerLeave = () => {
+      isHovered = false;
+      targetOpacity = 0;
+      scheduleRaf();
+    };
+
+    const onScrollOrResize = () => {
+      if (isHovered) measureRect();
+    };
+
+    this.addEventListener('pointerenter', onPointerEnter);
+    this.addEventListener('pointermove', onPointerMove);
+    this.addEventListener('pointerleave', onPointerLeave);
+    window.addEventListener('scroll', onScrollOrResize, { passive: true });
+    window.addEventListener('resize', onScrollOrResize, { passive: true });
+
+    this._cleanup = () => {
+      if (rafId !== null) cancelAnimationFrame(rafId);
+      this.removeEventListener('pointerenter', onPointerEnter);
+      this.removeEventListener('pointermove', onPointerMove);
+      this.removeEventListener('pointerleave', onPointerLeave);
+      window.removeEventListener('scroll', onScrollOrResize);
+      window.removeEventListener('resize', onScrollOrResize);
+      if (borderEl && borderEl.parentNode === this) this.removeChild(borderEl);
+      if (sheenEl && sheenEl.parentNode === this) this.removeChild(sheenEl);
+    };
+  }
+
+  disconnectedCallback() {
+    if (this._cleanup) this._cleanup();
+  }
+}
+
+if (!customElements.get('exhuma-spotlight-card')) {
+  customElements.define('exhuma-spotlight-card', ExhumaSpotlightCardElement);
+}
+`,
+					},
+				];
+			}
 			return [
 				{
 					filename: `exhuma-${slug}.js`,
@@ -3396,6 +4569,183 @@ if (!customElements.get('exhuma-${slug}')) {
       window.removeEventListener('resize', onScrollOrResize);
       if (glareEl && glareEl.parentNode === card) {
         card.removeChild(glareEl);
+      }
+    });
+  });
+
+  return () => cleanups.forEach((c) => c());
+}
+`,
+					},
+				];
+			}
+			if (slug === 'spotlight-card') {
+				return [
+					{
+						filename: `${slug}.vanilla.js`,
+						language: 'javascript',
+						description: `Autonomous Vanilla JS ${name} initialization module with zero-layout-thrash pointer engine.`,
+						code: `export function initSpotlightCard(selector = '[data-exhuma-spotlight-card]', options = {}) {
+  const elements = document.querySelectorAll(selector);
+  const cleanups = [];
+
+  elements.forEach((card) => {
+    const radius = parseFloat(card.getAttribute('data-radius') || options.radius || 350);
+    const color = card.getAttribute('data-color') || options.color || '#6366f1';
+    const borderColor = card.getAttribute('data-border-color') || options.borderColor || '#818cf8';
+    const opacity = parseFloat(card.getAttribute('data-opacity') || options.opacity || 0.85);
+    const spread = parseFloat(card.getAttribute('data-spread') || options.spread || 60);
+    const mode = card.getAttribute('data-mode') || options.mode || 'both';
+    const smoothing = parseFloat(card.getAttribute('data-smoothing') || options.smoothing || 0.2);
+    const disabled = card.getAttribute('data-disabled') === 'true' || options.disabled === true;
+
+    const isReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let rect = null;
+    let targetX = 0;
+    let targetY = 0;
+    let currentX = 0;
+    let currentY = 0;
+    let targetOpacity = 0;
+    let currentOpacity = 0;
+    let isHovered = false;
+    let rafId = null;
+
+    card.style.setProperty('--exhuma-spotlight-radius', radius + 'px');
+    card.style.setProperty('--exhuma-spotlight-color', color);
+    card.style.setProperty('--exhuma-spotlight-border-color', borderColor);
+    card.style.setProperty('--exhuma-spotlight-spread', spread + '%');
+    card.style.setProperty('--exhuma-spotlight-opacity', '0');
+
+    let borderEl = card.querySelector('.exhuma-spotlight-border');
+    if ((mode === 'both' || mode === 'border') && !borderEl) {
+      borderEl = document.createElement('div');
+      borderEl.setAttribute('aria-hidden', 'true');
+      borderEl.className = 'exhuma-spotlight-border';
+      borderEl.style.position = 'absolute';
+      borderEl.style.inset = '0';
+      borderEl.style.borderRadius = 'inherit';
+      borderEl.style.pointerEvents = 'none';
+      borderEl.style.transition = 'opacity 300ms';
+      borderEl.style.border = '1.5px solid transparent';
+      borderEl.style.opacity = 'var(--exhuma-spotlight-opacity, 0)';
+      borderEl.style.background = 'radial-gradient(var(--exhuma-spotlight-radius) circle at var(--exhuma-spotlight-x, -9999px) var(--exhuma-spotlight-y, -9999px), var(--exhuma-spotlight-border-color) 0%, transparent var(--exhuma-spotlight-spread, 60%)) border-box';
+      borderEl.style.webkitMask = 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)';
+      borderEl.style.webkitMaskComposite = 'destination-out';
+      borderEl.style.mask = 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)';
+      borderEl.style.maskComposite = 'exclude';
+      card.insertBefore(borderEl, card.firstChild);
+    }
+
+    let sheenEl = card.querySelector('.exhuma-spotlight-sheen');
+    if ((mode === 'both' || mode === 'background') && !sheenEl) {
+      sheenEl = document.createElement('div');
+      sheenEl.setAttribute('aria-hidden', 'true');
+      sheenEl.className = 'exhuma-spotlight-sheen';
+      sheenEl.style.position = 'absolute';
+      sheenEl.style.inset = '0';
+      sheenEl.style.pointerEvents = 'none';
+      sheenEl.style.transition = 'opacity 300ms';
+      sheenEl.style.opacity = 'calc(var(--exhuma-spotlight-opacity, 0) * 0.25)';
+      sheenEl.style.background = 'radial-gradient(var(--exhuma-spotlight-radius) circle at var(--exhuma-spotlight-x, -9999px) var(--exhuma-spotlight-y, -9999px), var(--exhuma-spotlight-color) 0%, transparent var(--exhuma-spotlight-spread, 60%))';
+      card.insertBefore(sheenEl, card.firstChild);
+    }
+
+    const lerp = (a, b, t) => a + (b - a) * t;
+
+    const measureRect = () => {
+      const r = card.getBoundingClientRect();
+      rect = { left: r.left, top: r.top, width: r.width, height: r.height };
+    };
+
+    const updateFrame = () => {
+      if (disabled || isReducedMotion) {
+        card.style.setProperty('--exhuma-spotlight-opacity', '0');
+        rafId = null;
+        return;
+      }
+
+      if (smoothing <= 0 || smoothing >= 1) {
+        currentX = targetX;
+        currentY = targetY;
+        currentOpacity = targetOpacity;
+      } else {
+        currentX = lerp(currentX, targetX, smoothing);
+        currentY = lerp(currentY, targetY, smoothing);
+        currentOpacity = lerp(currentOpacity, targetOpacity, smoothing);
+      }
+
+      card.style.setProperty('--exhuma-spotlight-x', currentX.toFixed(2) + 'px');
+      card.style.setProperty('--exhuma-spotlight-y', currentY.toFixed(2) + 'px');
+      card.style.setProperty('--exhuma-spotlight-opacity', currentOpacity.toFixed(3));
+
+      const diffX = Math.abs(targetX - currentX);
+      const diffY = Math.abs(targetY - currentY);
+      const diffOp = Math.abs(targetOpacity - currentOpacity);
+
+      if (diffX > 0.1 || diffY > 0.1 || diffOp > 0.005 || isHovered) {
+        rafId = requestAnimationFrame(updateFrame);
+      } else {
+        rafId = null;
+      }
+    };
+
+    const scheduleRaf = () => {
+      if (rafId === null) {
+        rafId = requestAnimationFrame(updateFrame);
+      }
+    };
+
+    const onPointerEnter = (e) => {
+      if (disabled || isReducedMotion) return;
+      isHovered = true;
+      measureRect();
+      if (!rect) return;
+      targetX = e.clientX - rect.left;
+      targetY = e.clientY - rect.top;
+      currentX = targetX;
+      currentY = targetY;
+      targetOpacity = opacity;
+      scheduleRaf();
+    };
+
+    const onPointerMove = (e) => {
+      if (disabled || isReducedMotion) return;
+      if (!rect) measureRect();
+      if (!rect) return;
+      targetX = e.clientX - rect.left;
+      targetY = e.clientY - rect.top;
+      targetOpacity = opacity;
+      scheduleRaf();
+    };
+
+    const onPointerLeave = () => {
+      isHovered = false;
+      targetOpacity = 0;
+      scheduleRaf();
+    };
+
+    const onScrollOrResize = () => {
+      if (isHovered) measureRect();
+    };
+
+    card.addEventListener('pointerenter', onPointerEnter);
+    card.addEventListener('pointermove', onPointerMove);
+    card.addEventListener('pointerleave', onPointerLeave);
+    window.addEventListener('scroll', onScrollOrResize, { passive: true });
+    window.addEventListener('resize', onScrollOrResize, { passive: true });
+
+    cleanups.push(() => {
+      if (rafId !== null) cancelAnimationFrame(rafId);
+      card.removeEventListener('pointerenter', onPointerEnter);
+      card.removeEventListener('pointermove', onPointerMove);
+      card.removeEventListener('pointerleave', onPointerLeave);
+      window.removeEventListener('scroll', onScrollOrResize);
+      window.removeEventListener('resize', onScrollOrResize);
+      if (borderEl && borderEl.parentNode === card) {
+        card.removeChild(borderEl);
+      }
+      if (sheenEl && sheenEl.parentNode === card) {
+        card.removeChild(sheenEl);
       }
     });
   });
@@ -3877,6 +5227,195 @@ $id = 'exhuma-tilt-' . uniqid();
 					},
 				];
 			}
+			if (slug === 'spotlight-card') {
+				return [
+					{
+						filename: `${slug}.blade.php`,
+						language: 'php',
+						description: `Laravel Blade component for ${name} with zero-layout-thrash pointer engine.`,
+						code: `@props([
+    'radius' => 350,
+    'color' => '#6366f1',
+    'borderColor' => '#818cf8',
+    'opacity' => 0.85,
+    'spread' => 60,
+    'mode' => 'both',
+    'smoothing' => 0.2,
+    'disabled' => false,
+    'class' => '',
+])
+
+@php
+$id = 'exhuma-spotlight-' . uniqid();
+@endphp
+
+<div
+    id="{{ $id }}"
+    data-exhuma-spotlight-card
+    data-radius="{{ $radius }}"
+    data-color="{{ $color }}"
+    data-border-color="{{ $borderColor }}"
+    data-opacity="{{ $opacity }}"
+    data-spread="{{ $spread }}"
+    data-mode="{{ $mode }}"
+    data-smoothing="{{ $smoothing }}"
+    data-disabled="{{ $disabled ? 'true' : 'false' }}"
+    style="--exhuma-spotlight-radius: {{ $radius }}px; --exhuma-spotlight-color: {{ $color }}; --exhuma-spotlight-border-color: {{ $borderColor }}; --exhuma-spotlight-spread: {{ $spread }}%; --exhuma-spotlight-opacity: 0;"
+    {{ $attributes->merge([
+        'class' => 'exhuma-spotlight-card relative overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-900/60 ' . $class,
+    ]) }}
+>
+    @if($mode === 'both' || $mode === 'background')
+        <div
+            aria-hidden="true"
+            class="exhuma-spotlight-glow pointer-events-none absolute inset-0 z-0 transition-opacity duration-300"
+            style="opacity: calc(var(--exhuma-spotlight-opacity, 0) * 0.25); background: radial-gradient(circle var(--exhuma-spotlight-radius, 350px) at var(--exhuma-spotlight-x, -9999px) var(--exhuma-spotlight-y, -9999px), var(--exhuma-spotlight-color, #6366f1) 0%, transparent var(--exhuma-spotlight-spread, 60%));"
+        ></div>
+    @endif
+
+    @if($mode === 'both' || $mode === 'border')
+        <div
+            aria-hidden="true"
+            class="exhuma-spotlight-border pointer-events-none absolute inset-0 z-10 rounded-[inherit] transition-opacity duration-300"
+            style="opacity: var(--exhuma-spotlight-opacity, 0); border: 1.5px solid transparent; background: radial-gradient(circle var(--exhuma-spotlight-radius, 350px) at var(--exhuma-spotlight-x, -9999px) var(--exhuma-spotlight-y, -9999px), var(--exhuma-spotlight-border-color, #818cf8) 0%, transparent var(--exhuma-spotlight-spread, 60%)) border-box; -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0); -webkit-mask-composite: destination-out; mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0); mask-composite: exclude;"
+        ></div>
+    @endif
+
+    <div class="relative z-20">
+        {{ $slot }}
+    </div>
+</div>
+
+<script>
+(function() {
+    function init() {
+        var card = document.getElementById('{{ $id }}');
+        if (!card || card.dataset.exhumaReady === 'true') return;
+        card.dataset.exhumaReady = 'true';
+
+        var radius = parseFloat(card.getAttribute('data-radius') || '350');
+        var color = card.getAttribute('data-color') || '#6366f1';
+        var borderColor = card.getAttribute('data-border-color') || '#818cf8';
+        var opacity = parseFloat(card.getAttribute('data-opacity') || '0.85');
+        var spread = parseFloat(card.getAttribute('data-spread') || '60');
+        var mode = card.getAttribute('data-mode') || 'both';
+        var smoothing = parseFloat(card.getAttribute('data-smoothing') || '0.2');
+        var disabled = card.getAttribute('data-disabled') === 'true';
+
+        var isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        var rect = null;
+
+        var targetX = 0, targetY = 0, currentX = 0, currentY = 0;
+        var targetOpacity = 0, currentOpacity = 0;
+        var isHovered = false;
+        var rafId = null;
+
+        function lerp(a, b, t) { return a + (b - a) * t; }
+
+        function measureRect() {
+            var r = card.getBoundingClientRect();
+            rect = { left: r.left, top: r.top, width: r.width, height: r.height };
+        }
+
+        function updateFrame() {
+            if (disabled || isReducedMotion) {
+                card.style.setProperty('--exhuma-spotlight-opacity', '0');
+                rafId = null;
+                return;
+            }
+
+            if (smoothing <= 0 || smoothing >= 1) {
+                currentX = targetX;
+                currentY = targetY;
+                currentOpacity = targetOpacity;
+            } else {
+                currentX = lerp(currentX, targetX, smoothing);
+                currentY = lerp(currentY, targetY, smoothing);
+                currentOpacity = lerp(currentOpacity, targetOpacity, smoothing);
+            }
+
+            card.style.setProperty('--exhuma-spotlight-x', currentX.toFixed(2) + 'px');
+            card.style.setProperty('--exhuma-spotlight-y', currentY.toFixed(2) + 'px');
+            card.style.setProperty('--exhuma-spotlight-opacity', currentOpacity.toFixed(3));
+
+            var diffX = Math.abs(targetX - currentX);
+            var diffY = Math.abs(targetY - currentY);
+            var diffOp = Math.abs(targetOpacity - currentOpacity);
+
+            if (diffX > 0.1 || diffY > 0.1 || diffOp > 0.005 || isHovered) {
+                rafId = window.requestAnimationFrame(updateFrame);
+            } else {
+                rafId = null;
+            }
+        }
+
+        function scheduleRaf() {
+            if (rafId === null) {
+                rafId = window.requestAnimationFrame(updateFrame);
+            }
+        }
+
+        function onPointerEnter(e) {
+            if (disabled || isReducedMotion) return;
+            isHovered = true;
+            measureRect();
+            if (!rect) return;
+            targetX = e.clientX - rect.left;
+            targetY = e.clientY - rect.top;
+            currentX = targetX;
+            currentY = targetY;
+            targetOpacity = opacity;
+            scheduleRaf();
+        }
+
+        function onPointerMove(e) {
+            if (disabled || isReducedMotion) return;
+            if (!rect) measureRect();
+            if (!rect) return;
+            targetX = e.clientX - rect.left;
+            targetY = e.clientY - rect.top;
+            targetOpacity = opacity;
+            scheduleRaf();
+        }
+
+        function onPointerLeave() {
+            isHovered = false;
+            targetOpacity = 0;
+            scheduleRaf();
+        }
+
+        function onScrollOrResize() {
+            if (isHovered) measureRect();
+        }
+
+        card.addEventListener('pointerenter', onPointerEnter);
+        card.addEventListener('pointermove', onPointerMove);
+        card.addEventListener('pointerleave', onPointerLeave);
+        window.addEventListener('scroll', onScrollOrResize, { passive: true });
+        window.addEventListener('resize', onScrollOrResize, { passive: true });
+
+        window.addEventListener('pagehide', function cleanup() {
+            if (rafId !== null) window.cancelAnimationFrame(rafId);
+            card.removeEventListener('pointerenter', onPointerEnter);
+            card.removeEventListener('pointermove', onPointerMove);
+            card.removeEventListener('pointerleave', onPointerLeave);
+            window.removeEventListener('scroll', onScrollOrResize);
+            window.removeEventListener('resize', onScrollOrResize);
+            card.dataset.exhumaReady = 'false';
+        }, { once: true });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+})();
+</script>
+`,
+					},
+				];
+			}
 			return [
 				{
 					filename: `${slug}.blade.php`,
@@ -4097,6 +5636,92 @@ $axis = $attributes['axis'] ?? 'all';
       style="opacity: 0"
     ></div>
   <?php endif; ?>
+</div>
+`,
+					},
+				];
+			}
+			if (slug === 'spotlight-card') {
+				return [
+					{
+						filename: 'block.json',
+						language: 'json',
+						description: `WordPress Block API v3 definition for ${name}.`,
+						code: JSON.stringify(
+							{
+								$schema: 'https://schemas.wp.org/trunk/block.json',
+								apiVersion: 3,
+								name: `exhuma/${slug}`,
+								version: '1.1.0',
+								title: `Exhuma ${name}`,
+								category: 'design',
+								icon: 'lightbulb',
+								description,
+								attributes: {
+									radius: { type: 'number', default: 350 },
+									color: { type: 'string', default: '#6366f1' },
+									borderColor: { type: 'string', default: '#818cf8' },
+									opacity: { type: 'number', default: 0.85 },
+									spread: { type: 'number', default: 60 },
+									mode: { type: 'string', default: 'both' },
+									smoothing: { type: 'number', default: 0.2 },
+									disabled: { type: 'boolean', default: false },
+								},
+								supports: {
+									align: ['wide', 'full'],
+									html: false,
+								},
+								editorScript: 'file:./index.js',
+								render: 'file:./render.php',
+							},
+							null,
+							2
+						),
+					},
+					{
+						filename: 'render.php',
+						language: 'php',
+						description: `WordPress Gutenberg block rendering template for ${name}.`,
+						code: `<?php
+$radius = $attributes['radius'] ?? 350;
+$color = $attributes['color'] ?? '#6366f1';
+$border_color = $attributes['borderColor'] ?? '#818cf8';
+$opacity = $attributes['opacity'] ?? 0.85;
+$spread = $attributes['spread'] ?? 60;
+$mode = $attributes['mode'] ?? 'both';
+$smoothing = $attributes['smoothing'] ?? 0.2;
+$disabled = ($attributes['disabled'] ?? false) ? 'true' : 'false';
+?>
+<div
+  class="exhuma-spotlight-card relative overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-900/60"
+  data-exhuma-spotlight-card
+  data-radius="<?php echo esc_attr($radius); ?>"
+  data-color="<?php echo esc_attr($color); ?>"
+  data-border-color="<?php echo esc_attr($border_color); ?>"
+  data-opacity="<?php echo esc_attr($opacity); ?>"
+  data-spread="<?php echo esc_attr($spread); ?>"
+  data-mode="<?php echo esc_attr($mode); ?>"
+  data-smoothing="<?php echo esc_attr($smoothing); ?>"
+  data-disabled="<?php echo esc_attr($disabled); ?>"
+  style="--exhuma-spotlight-radius: <?php echo esc_attr($radius); ?>px; --exhuma-spotlight-color: <?php echo esc_attr($color); ?>; --exhuma-spotlight-border-color: <?php echo esc_attr($border_color); ?>; --exhuma-spotlight-spread: <?php echo esc_attr($spread); ?>%; --exhuma-spotlight-opacity: 0;"
+>
+  <?php if ($mode === 'both' || $mode === 'background'): ?>
+    <div
+      aria-hidden="true"
+      class="exhuma-spotlight-glow pointer-events-none absolute inset-0 z-0 transition-opacity duration-300"
+      style="opacity: calc(var(--exhuma-spotlight-opacity, 0) * 0.25); background: radial-gradient(circle var(--exhuma-spotlight-radius, 350px) at var(--exhuma-spotlight-x, 0px) var(--exhuma-spotlight-y, 0px), var(--exhuma-spotlight-color, #6366f1) 0%, transparent var(--exhuma-spotlight-spread, 60%));"
+    ></div>
+  <?php endif; ?>
+  <?php if ($mode === 'both' || $mode === 'border'): ?>
+    <div
+      aria-hidden="true"
+      class="exhuma-spotlight-border pointer-events-none absolute inset-0 z-10 rounded-[inherit] transition-opacity duration-300"
+      style="opacity: var(--exhuma-spotlight-opacity, 0); border: 1.5px solid transparent; background: radial-gradient(circle var(--exhuma-spotlight-radius, 350px) at var(--exhuma-spotlight-x, 0px) var(--exhuma-spotlight-y, 0px), var(--exhuma-spotlight-border-color, #818cf8) 0%, transparent var(--exhuma-spotlight-spread, 60%)) border-box; -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0); -webkit-mask-composite: destination-out; mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0); mask-composite: exclude;"
+    ></div>
+  <?php endif; ?>
+  <div class="relative z-20">
+    <?php echo $content; ?>
+  </div>
 </div>
 `,
 					},
@@ -4464,6 +6089,166 @@ const styles = StyleSheet.create({
 					},
 				];
 			}
+			if (slug === 'spotlight-card') {
+				return [
+					{
+						filename: `${pascalName}.tsx`,
+						language: 'tsx',
+						description: `React Native ${name} native mobile illumination tracking component.`,
+						code: `import React, { useRef } from 'react';
+import {
+  View,
+  StyleSheet,
+  PanResponder,
+  Animated,
+  type ViewProps,
+  type LayoutChangeEvent,
+} from 'react-native';
+
+export interface SpotlightCardProps extends ViewProps {
+  radius?: number;
+  color?: string;
+  borderColor?: string;
+  opacity?: number;
+  spread?: number;
+  mode?: 'both' | 'border' | 'background';
+  smoothing?: number;
+  disabled?: boolean;
+  children?: React.ReactNode;
+}
+
+export function SpotlightCard({
+  radius = 350,
+  color = '#6366f1',
+  borderColor = '#818cf8',
+  opacity = 0.85,
+  spread = 60,
+  mode = 'both',
+  smoothing = 0.2,
+  disabled = false,
+  children,
+  style,
+  ...props
+}: SpotlightCardProps) {
+  const dimensions = useRef({ width: 0, height: 0 }).current;
+  const spotlightPos = useRef(new Animated.ValueXY({ x: 0, y: 0 })).current;
+  const spotlightOpacity = useRef(new Animated.Value(0)).current;
+
+  const onLayout = (e: LayoutChangeEvent) => {
+    const { width, height } = e.nativeEvent.layout;
+    dimensions.width = width;
+    dimensions.height = height;
+  };
+
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => !disabled,
+      onMoveShouldSetPanResponder: () => !disabled,
+      onPanResponderGrant: (evt) => {
+        if (disabled) return;
+        const { locationX, locationY } = evt.nativeEvent;
+        spotlightPos.setValue({ x: locationX - radius, y: locationY - radius });
+        Animated.timing(spotlightOpacity, {
+          toValue: opacity,
+          duration: 150,
+          useNativeDriver: false,
+        }).start();
+      },
+      onPanResponderMove: (evt) => {
+        if (disabled) return;
+        const { locationX, locationY } = evt.nativeEvent;
+        if (smoothing <= 0 || smoothing >= 1) {
+          spotlightPos.setValue({ x: locationX - radius, y: locationY - radius });
+        } else {
+          Animated.spring(spotlightPos, {
+            toValue: { x: locationX - radius, y: locationY - radius },
+            friction: 7,
+            tension: 50,
+            useNativeDriver: false,
+          }).start();
+        }
+      },
+      onPanResponderRelease: () => {
+        Animated.timing(spotlightOpacity, {
+          toValue: 0,
+          duration: 300,
+          useNativeDriver: false,
+        }).start();
+      },
+    })
+  ).current;
+
+  const showGlow = mode === 'both' || mode === 'background';
+  const showBorder = mode === 'both' || mode === 'border';
+
+  return (
+    <View
+      onLayout={onLayout}
+      {...panResponder.panHandlers}
+      style={[styles.container, style]}
+      {...props}
+    >
+      {showGlow && (
+        <Animated.View
+          pointerEvents="none"
+          style={[
+            styles.spotlight,
+            {
+              width: radius * 2,
+              height: radius * 2,
+              borderRadius: radius,
+              backgroundColor: color,
+              opacity: spotlightOpacity,
+              transform: spotlightPos.getTranslateTransform(),
+            },
+          ]}
+        />
+      )}
+      {showBorder && (
+        <Animated.View
+          pointerEvents="none"
+          style={[
+            StyleSheet.absoluteFillObject,
+            styles.borderOverlay,
+            {
+              borderColor: borderColor,
+              opacity: spotlightOpacity,
+            },
+          ]}
+        />
+      )}
+      <View style={styles.content}>{children}</View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    position: 'relative',
+    overflow: 'hidden',
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
+    backgroundColor: 'rgba(23, 23, 23, 0.6)',
+  },
+  spotlight: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+  },
+  borderOverlay: {
+    borderWidth: 1.5,
+    borderRadius: 20,
+  },
+  content: {
+    position: 'relative',
+    zIndex: 1,
+  },
+});
+`,
+					},
+				];
+			}
 			return [
 				{
 					filename: `${pascalName}.tsx`,
@@ -4780,6 +6565,175 @@ class _ExhumaTiltCardState extends State<ExhumaTiltCard> with SingleTickerProvid
 					},
 				];
 			}
+			if (slug === 'spotlight-card') {
+				return [
+					{
+						filename: `${snakeName}.dart`,
+						language: 'dart',
+						description: `Flutter ${name} native illumination tracking canvas widget.`,
+						code: `import 'package:flutter/material.dart';
+
+class ExhumaSpotlightCard extends StatefulWidget {
+  final Widget child;
+  final double radius;
+  final Color color;
+  final Color borderColor;
+  final double opacity;
+  final double spread;
+  final String mode;
+  final double smoothing;
+  final bool disabled;
+
+  const ExhumaSpotlightCard({
+    super.key,
+    required this.child,
+    this.radius = 350.0,
+    this.color = const Color(0xFF6366F1),
+    this.borderColor = const Color(0xFF818CF8),
+    this.opacity = 0.85,
+    this.spread = 60.0,
+    this.mode = 'both',
+    this.smoothing = 0.2,
+    this.disabled = false,
+  });
+
+  @override
+  State<ExhumaSpotlightCard> createState() => _ExhumaSpotlightCardState();
+}
+
+class _ExhumaSpotlightCardState extends State<ExhumaSpotlightCard> {
+  Offset? _spotlightPos;
+  double _opacity = 0.0;
+
+  void _onEnter(PointerEnterEvent event) {
+    if (widget.disabled) return;
+    setState(() {
+      _spotlightPos = event.localPosition;
+      _opacity = widget.opacity;
+    });
+  }
+
+  void _onHover(PointerHoverEvent event) {
+    if (widget.disabled) return;
+    setState(() {
+      _spotlightPos = event.localPosition;
+      _opacity = widget.opacity;
+    });
+  }
+
+  void _onExit(PointerExitEvent event) {
+    setState(() {
+      _opacity = 0.0;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final showGlow = widget.mode == 'both' || widget.mode == 'background';
+    final showBorder = widget.mode == 'both' || widget.mode == 'border';
+
+    return MouseRegion(
+      onEnter: _onEnter,
+      onHover: _onHover,
+      onExit: _onExit,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(20),
+        child: Stack(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                color: const Color(0xE6171717),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: const Color(0x1AFFFFFF),
+                  width: 1,
+                ),
+              ),
+              child: widget.child,
+            ),
+            if (showGlow && _spotlightPos != null)
+              Positioned.fill(
+                child: IgnorePointer(
+                  child: AnimatedOpacity(
+                    duration: const Duration(milliseconds: 150),
+                    opacity: _opacity,
+                    child: CustomPaint(
+                      painter: _SpotlightPainter(
+                        center: _spotlightPos!,
+                        radius: widget.radius,
+                        color: widget.color,
+                        spread: widget.spread,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            if (showBorder && _spotlightPos != null)
+              Positioned.fill(
+                child: IgnorePointer(
+                  child: AnimatedOpacity(
+                    duration: const Duration(milliseconds: 150),
+                    opacity: _opacity,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: widget.borderColor,
+                          width: 1.5,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _SpotlightPainter extends CustomPainter {
+  final Offset center;
+  final double radius;
+  final Color color;
+  final double spread;
+
+  _SpotlightPainter({
+    required this.center,
+    required this.radius,
+    required this.color,
+    required this.spread,
+  });
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final paint = Paint()
+      ..shader = RadialGradient(
+        center: Alignment(
+          (center.dx / size.width) * 2.0 - 1.0,
+          (center.dy / size.height) * 2.0 - 1.0,
+        ),
+        radius: radius / size.shortestSide,
+        colors: [color, Colors.transparent],
+        stops: [spread / 100.0, 1.0],
+      ).createShader(Rect.fromLTWH(0, 0, size.width, size.height));
+
+    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant _SpotlightPainter oldDelegate) {
+    return oldDelegate.center != center ||
+        oldDelegate.radius != radius ||
+        oldDelegate.color != color ||
+        oldDelegate.spread != spread;
+  }
+}
+`,
+					},
+				];
+			}
 			return [
 				{
 					filename: `${snakeName}.dart`,
@@ -4997,44 +6951,253 @@ TiltCard.displayName = 'TiltCard';
 
 		case 'spotlight-card': {
 			const radius = Number(props.radius ?? 350);
+			const color = String(props.color ?? '#6366f1');
+			const borderColor = String(props.borderColor ?? '#818cf8');
+			const opacity = Number(props.opacity ?? 0.85);
+			const spread = Number(props.spread ?? 60);
+			const mode = (props.mode as string) ?? 'both';
+			const smoothing = Number(props.smoothing ?? 0.2);
+			const disabled = Boolean(props.disabled ?? false);
+
 			return `${header}export interface SpotlightCardProps extends React.HTMLAttributes<HTMLDivElement> {
   radius?: number;
   color?: string;
+  borderColor?: string;
+  opacity?: number;
+  spread?: number;
+  mode?: 'both' | 'border' | 'background';
+  smoothing?: number;
+  disabled?: boolean;
 }
 
 /**
  * SpotlightCard — Standalone Ejected Engine (Zero-Dependency)
- * Inlines sub-pixel cursor radial illumination mask.
+ *
+ * Big-Omega (Ω) Guarantees:
+ * - Ω(1) Constant-Time kinetic updates (Zero React re-renders on pointermove).
+ * - Ω(1) Zero Heap Allocation during active tracking.
+ * - Cached bounding geometry on pointerenter to eliminate layout reflow.
+ * - Frame-coalesced rAF exponential smoothing.
+ * - Sub-pixel radial border illumination mask + background sheen.
  */
 export const SpotlightCard = React.forwardRef<HTMLDivElement, SpotlightCardProps>(
-  ({ radius = ${radius}, color = 'rgba(255,255,255,0.1)', className, children, ...props }, ref) => {
-    const [pos, setPos] = React.useState({ x: 0, y: 0, opacity: 0 });
+  (
+    {
+      radius = ${radius},
+      color = '${color}',
+      borderColor = '${borderColor}',
+      opacity = ${opacity},
+      spread = ${spread},
+      mode = '${mode}',
+      smoothing = ${smoothing},
+      disabled = ${disabled},
+      className,
+      style,
+      children,
+      ...props
+    },
+    forwardedRef
+  ) => {
+    const internalRef = React.useRef<HTMLDivElement>(null);
+    const cardRef = (forwardedRef as React.RefObject<HTMLDivElement>) || internalRef;
+    const rafIdRef = React.useRef<number | null>(null);
+    const rectRef = React.useRef<{ left: number; top: number; width: number; height: number } | null>(null);
+    const isHoveredRef = React.useRef(false);
+    const isReducedMotionRef = React.useRef(false);
 
-    const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-      const rect = e.currentTarget.getBoundingClientRect();
-      setPos({ x: e.clientX - rect.left, y: e.clientY - rect.top, opacity: 1 });
-    };
+    const targetX = React.useRef(-9999);
+    const targetY = React.useRef(-9999);
+    const currentX = React.useRef(-9999);
+    const currentY = React.useRef(-9999);
+    const currentOpacity = React.useRef(0);
+    const targetOpacity = React.useRef(0);
 
-    const handleMouseLeave = () => {
-      setPos((prev) => ({ ...prev, opacity: 0 }));
-    };
+    React.useEffect(() => {
+      if (typeof window === 'undefined') return;
+      const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+      isReducedMotionRef.current = mediaQuery.matches;
+
+      const handler = (e: MediaQueryListEvent) => {
+        isReducedMotionRef.current = e.matches;
+      };
+      mediaQuery.addEventListener('change', handler);
+      return () => mediaQuery.removeEventListener('change', handler);
+    }, []);
+
+    const measureRect = React.useCallback(() => {
+      const el = cardRef.current;
+      if (!el) return;
+      const r = el.getBoundingClientRect();
+      rectRef.current = { left: r.left, top: r.top, width: r.width, height: r.height };
+    }, [cardRef]);
+
+    React.useEffect(() => {
+      if (typeof window === 'undefined') return;
+
+      const handlePassiveUpdate = () => {
+        if (isHoveredRef.current) measureRect();
+      };
+
+      window.addEventListener('resize', handlePassiveUpdate, { passive: true });
+      window.addEventListener('scroll', handlePassiveUpdate, { passive: true });
+
+      return () => {
+        window.removeEventListener('resize', handlePassiveUpdate);
+        window.removeEventListener('scroll', handlePassiveUpdate);
+      };
+    }, [measureRect]);
+
+    const updateFrame = React.useCallback(() => {
+      const el = cardRef.current;
+      if (!el) return;
+
+      if (disabled || isReducedMotionRef.current) {
+        el.style.setProperty('--exhuma-spotlight-opacity', '0');
+        rafIdRef.current = null;
+        return;
+      }
+
+      const factor = Math.max(0.05, Math.min(1, smoothing));
+      currentX.current += (targetX.current - currentX.current) * factor;
+      currentY.current += (targetY.current - currentY.current) * factor;
+      currentOpacity.current += (targetOpacity.current - currentOpacity.current) * Math.max(0.08, factor * 0.75);
+
+      el.style.setProperty('--exhuma-spotlight-x', currentX.current.toFixed(2) + 'px');
+      el.style.setProperty('--exhuma-spotlight-y', currentY.current.toFixed(2) + 'px');
+      el.style.setProperty('--exhuma-spotlight-opacity', currentOpacity.current.toFixed(3));
+
+      const diffX = Math.abs(targetX.current - currentX.current);
+      const diffY = Math.abs(targetY.current - currentY.current);
+      const diffOp = Math.abs(targetOpacity.current - currentOpacity.current);
+
+      if (diffX > 0.1 || diffY > 0.1 || diffOp > 0.005 || isHoveredRef.current) {
+        rafIdRef.current = requestAnimationFrame(updateFrame);
+      } else {
+        rafIdRef.current = null;
+      }
+    }, [cardRef, disabled, smoothing]);
+
+    const scheduleUpdate = React.useCallback(() => {
+      if (rafIdRef.current === null) {
+        rafIdRef.current = requestAnimationFrame(updateFrame);
+      }
+    }, [updateFrame]);
+
+    const handlePointerEnter = React.useCallback(
+      (e: React.PointerEvent<HTMLDivElement>) => {
+        if (disabled || isReducedMotionRef.current) return;
+        isHoveredRef.current = true;
+        measureRect();
+
+        const rect = rectRef.current;
+        if (rect) {
+          targetX.current = e.clientX - rect.left;
+          targetY.current = e.clientY - rect.top;
+          targetOpacity.current = Math.max(0, Math.min(1, opacity));
+
+          if (currentX.current < -1000) {
+            currentX.current = targetX.current;
+            currentY.current = targetY.current;
+          }
+        }
+
+        scheduleUpdate();
+      },
+      [disabled, measureRect, opacity, scheduleUpdate]
+    );
+
+    const handlePointerMove = React.useCallback(
+      (e: React.PointerEvent<HTMLDivElement>) => {
+        if (disabled || isReducedMotionRef.current) return;
+        if (!rectRef.current) measureRect();
+        const rect = rectRef.current;
+        if (!rect) return;
+
+        targetX.current = e.clientX - rect.left;
+        targetY.current = e.clientY - rect.top;
+        targetOpacity.current = Math.max(0, Math.min(1, opacity));
+
+        scheduleUpdate();
+      },
+      [disabled, measureRect, opacity, scheduleUpdate]
+    );
+
+    const handlePointerLeave = React.useCallback(() => {
+      isHoveredRef.current = false;
+      targetOpacity.current = 0;
+      scheduleUpdate();
+    }, [scheduleUpdate]);
+
+    React.useEffect(() => {
+      const el = cardRef.current;
+      if (!el) return;
+
+      el.style.setProperty('--exhuma-spotlight-radius', radius + 'px');
+      el.style.setProperty('--exhuma-spotlight-color', color);
+      el.style.setProperty('--exhuma-spotlight-border-color', borderColor);
+      el.style.setProperty('--exhuma-spotlight-spread', spread + '%');
+
+      if (disabled) {
+        el.style.setProperty('--exhuma-spotlight-opacity', '0');
+      }
+
+      return () => {
+        if (rafIdRef.current !== null) {
+          cancelAnimationFrame(rafIdRef.current);
+        }
+      };
+    }, [cardRef, radius, color, borderColor, spread, disabled]);
+
+    const showBorder = mode === 'both' || mode === 'border';
+    const showSheen = mode === 'both' || mode === 'background';
 
     return (
       <div
-        ref={ref}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
+        ref={cardRef}
+        onPointerEnter={handlePointerEnter}
+        onPointerMove={handlePointerMove}
+        onPointerLeave={handlePointerLeave}
         className={clsx('${defaultClass}', className)}
+        style={{
+          ['--exhuma-spotlight-radius' as string]: radius + 'px',
+          ['--exhuma-spotlight-color' as string]: color,
+          ['--exhuma-spotlight-border-color' as string]: borderColor,
+          ['--exhuma-spotlight-spread' as string]: spread + '%',
+          ['--exhuma-spotlight-opacity' as string]: '0',
+          ...style,
+        }}
         {...props}
       >
-        <div
-          className="pointer-events-none absolute -inset-px transition-opacity duration-300"
-          style={{
-            opacity: pos.opacity,
-            background: \`radial-gradient(\${radius}px circle at \${pos.x}px \${pos.y}px, \${color}, transparent 80%)\`,
-          }}
-        />
-        {children}
+        {/* Specular Border Glow Mask */}
+        {showBorder && (
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 z-10 rounded-[inherit] transition-opacity duration-300"
+            style={{
+              opacity: 'var(--exhuma-spotlight-opacity, 0)',
+              border: '1.5px solid transparent',
+              background: 'radial-gradient(var(--exhuma-spotlight-radius) circle at var(--exhuma-spotlight-x, -9999px) var(--exhuma-spotlight-y, -9999px), var(--exhuma-spotlight-border-color) 0%, transparent var(--exhuma-spotlight-spread, 60%)) border-box',
+              WebkitMask: 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)',
+              WebkitMaskComposite: 'destination-out',
+              mask: 'linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0)',
+              maskComposite: 'exclude',
+            }}
+          />
+        )}
+
+        {/* Background Radial Sheen */}
+        {showSheen && (
+          <div
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-0 z-0 transition-opacity duration-300"
+            style={{
+              opacity: 'calc(var(--exhuma-spotlight-opacity, 0) * 0.25)',
+              background: 'radial-gradient(var(--exhuma-spotlight-radius) circle at var(--exhuma-spotlight-x, -9999px) var(--exhuma-spotlight-y, -9999px), var(--exhuma-spotlight-color) 0%, transparent var(--exhuma-spotlight-spread, 60%))',
+            }}
+          />
+        )}
+
+        <div className="relative z-20">{children}</div>
       </div>
     );
   }

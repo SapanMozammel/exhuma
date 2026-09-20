@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { calculateSpotlightCoordinates, generateSpotlightStyle } from '../../packages/cards/src/SpotlightCard/spotlight-math';
+import { calculateSpotlightCoordinates, generateSpotlightStyle, validateSpotlightRadius, validateSpotlightOpacity, validateSpotlightSpread } from '../../packages/cards/src/SpotlightCard/spotlight-math';
 import { solveCriticallyDampedSpring } from '../../packages/core/src/physics/spring';
 import { exponentialSmoothing, normalizeCoordinate, clamp } from '../../packages/core/src/physics/lerp';
 
@@ -40,9 +40,29 @@ describe('Exhuma Kinetic Methodology — Spotlight Math & Physics', () => {
 		expect(Math.abs(val - target)).toBeLessThan(0.001);
 	});
 
-	it('generates valid radial gradient CSS strings', () => {
-		const style = generateSpotlightStyle(150, 200, 350, 'rgba(99, 102, 241, 0.25)', 0.8);
-		expect(style).toBe('radial-gradient(350px circle at 150px 200px, rgba(99, 102, 241, 0.25) 0%, transparent 100%)');
+	it('generates valid radial gradient CSS strings with spread percentage', () => {
+		const styleDefault = generateSpotlightStyle(150, 200, 350, 'rgba(99, 102, 241, 0.25)', 0.8);
+		expect(styleDefault).toBe('radial-gradient(350px circle at 150px 200px, rgba(99, 102, 241, 0.25) 0%, transparent 80%)');
+
+		const styleWithSpread = generateSpotlightStyle(150, 200, 350, 'rgba(99, 102, 241, 0.25)', 0.8, 25);
+		expect(styleWithSpread).toBe('radial-gradient(350px circle at 150px 200px, rgba(99, 102, 241, 0.25) 0%, transparent 25%)');
+	});
+
+	it('validates and clamps spotlight parameters', () => {
+		expect(validateSpotlightRadius(350)).toBe(350);
+		expect(validateSpotlightRadius(-10)).toBe(50);
+		expect(validateSpotlightRadius(5000)).toBe(2000);
+		expect(validateSpotlightRadius(NaN)).toBe(350);
+
+		expect(validateSpotlightOpacity(0.8)).toBe(0.8);
+		expect(validateSpotlightOpacity(-0.5)).toBe(0);
+		expect(validateSpotlightOpacity(1.5)).toBe(1);
+		expect(validateSpotlightOpacity(NaN)).toBe(0.8);
+
+		expect(validateSpotlightSpread(20)).toBe(20);
+		expect(validateSpotlightSpread(-5)).toBe(10);
+		expect(validateSpotlightSpread(150)).toBe(100);
+		expect(validateSpotlightSpread(NaN)).toBe(80);
 	});
 });
 

@@ -40,6 +40,34 @@ import { StackingCards, HorizontalScroller, TiltCard, SpotlightCard, BorderBeam,
 import { CssMasonry, AutoGrid, InfiniteMarquee, BentoGrid, BentoCard, BentoHeader, BentoContent, DiamondGrid, ScrollTimeline, StickyParallaxScroll, ParallaxLayer, InteractiveGridPattern } from '@exhuma/layouts';
 import { MorphingTabs, Accordion, AnimatedSphere, FloatingDock, NumberTicker, MagneticButton, CursorTooltip } from '@exhuma/core';
 
+const COLOR_PRESETS = [
+	{ label: 'Indigo', value: '#6366f1' },
+	{ label: 'Violet', value: '#8b5cf6' },
+	{ label: 'Cyan', value: '#06b6d4' },
+	{ label: 'Emerald', value: '#10b981' },
+	{ label: 'Rose', value: '#f43f5e' },
+	{ label: 'Amber', value: '#f59e0b' },
+	{ label: 'White', value: '#ffffff' },
+];
+
+function toHexColor(color: unknown, fallback = '#6366f1'): string {
+	if (typeof color !== 'string') return fallback;
+	const str = color.trim().toLowerCase();
+	if (/^#[0-9a-f]{6}$/.test(str)) return str;
+	if (/^#[0-9a-f]{8}$/.test(str)) return str.slice(0, 7);
+	if (/^#[0-9a-f]{3}$/.test(str)) {
+		return `#${str[1]}${str[1]}${str[2]}${str[2]}${str[3]}${str[3]}`;
+	}
+	const rgbMatch = str.match(/^rgba?\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/);
+	if (rgbMatch) {
+		const r = Math.min(255, parseInt(rgbMatch[1], 10)).toString(16).padStart(2, '0');
+		const g = Math.min(255, parseInt(rgbMatch[2], 10)).toString(16).padStart(2, '0');
+		const b = Math.min(255, parseInt(rgbMatch[3], 10)).toString(16).padStart(2, '0');
+		return `#${r}${g}${b}`;
+	}
+	return fallback;
+}
+
 // Architectural grayscale presets per component
 const COMPONENT_PRESETS: Record<string, Record<string, Record<string, unknown>>> = {
 	'stacking-cards': {
@@ -71,9 +99,10 @@ const COMPONENT_PRESETS: Record<string, Record<string, Record<string, unknown>>>
 		Cards: { minItemWidth: 280, gap: 24 },
 	},
 	'spotlight-card': {
-		Default: { radius: 350, opacity: 0.8, color: 'rgba(255, 255, 255, 0.15)', borderColor: 'rgba(255, 255, 255, 0.35)' },
-		Subtle: { radius: 250, opacity: 0.5, color: 'rgba(255, 255, 255, 0.08)', borderColor: 'rgba(255, 255, 255, 0.2)' },
-		Broad: { radius: 500, opacity: 0.95, color: 'rgba(255, 255, 255, 0.22)', borderColor: 'rgba(255, 255, 255, 0.5)' },
+		Default: { radius: 350, opacity: 0.8, color: '#6366f1', borderColor: '#818cf8', spread: 80, mode: 'both', smoothing: 0.2, disabled: false },
+		Subtle: { radius: 250, opacity: 0.4, color: '#94a3b8', borderColor: '#cbd5e1', spread: 70, mode: 'both', smoothing: 0.15, disabled: false },
+		Broad: { radius: 500, opacity: 0.95, color: '#10b981', borderColor: '#34d399', spread: 90, mode: 'both', smoothing: 0.25, disabled: false },
+		BorderOnly: { radius: 300, opacity: 0.85, color: '#6366f1', borderColor: '#a855f7', spread: 80, mode: 'border', smoothing: 0.2, disabled: false },
 	},
 	'morphing-tabs': {
 		Default: { springStiffness: 26 },
@@ -650,19 +679,48 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 		if (component.slug === 'spotlight-card') {
 			const radius = Number(propValues.radius ?? 350);
 			const opacity = Number(propValues.opacity ?? 0.8);
-			const color = String(propValues.color ?? 'rgba(255, 255, 255, 0.15)');
-			const borderColor = String(propValues.borderColor ?? 'rgba(255, 255, 255, 0.35)');
+			const color = String(propValues.color ?? '#6366f1');
+			const borderColor = String(propValues.borderColor ?? '#818cf8');
+			const spread = Number(propValues.spread ?? 80);
+			const mode = (propValues.mode as 'both' | 'border' | 'background') ?? 'both';
+			const smoothing = Number(propValues.smoothing ?? 0.2);
+			const disabled = Boolean(propValues.disabled ?? false);
 
 			return (
-				<div className='mx-auto w-full max-w-md p-2 sm:p-4'>
-					<SpotlightCard radius={radius} color={color} opacity={opacity} borderColor={borderColor} className='border-border/80 bg-card/90 p-5 shadow-2xl transition-colors sm:p-8'>
-						<div className='flex flex-col gap-3'>
-							<span className='kbd border-border bg-background/80 text-foreground text-3xs font-mono font-bold uppercase'>SPOTLIGHT PRIMITIVE</span>
-							<h4 className='text-foreground text-xl font-bold tracking-tight'>Hardware-Accelerated Glow</h4>
-							<p className='text-muted-foreground text-xs leading-relaxed'>Sub-pixel radial edge mask and background sheen driven at 120Hz with zero layout cost.</p>
-							<div className='border-border/50 text-muted-foreground mt-4 flex items-center justify-between border-t pt-3 font-mono text-xs'>
-								<span>Radius: {radius}px</span>
-								<span className='text-foreground/80 font-mono'>120Hz rAF</span>
+				<div className='flex items-center justify-center p-2 sm:p-6'>
+					<SpotlightCard
+						radius={radius}
+						color={color}
+						borderColor={borderColor}
+						opacity={opacity}
+						spread={spread}
+						mode={mode}
+						smoothing={smoothing}
+						disabled={disabled}
+						className='border-border/80 bg-card/95 w-full max-w-lg cursor-pointer p-6 shadow-2xl transition-colors sm:p-8'
+					>
+						<div className='flex flex-col gap-6'>
+							{/* Top Header */}
+							<div className='flex items-center justify-between'>
+								<div className='border-primary/20 bg-primary/10 text-primary flex size-10 items-center justify-center rounded-xl border shadow-xs'>
+									<Sparkles className='size-5' />
+								</div>
+								<span className='kbd border-border/80 bg-muted/40 text-muted-foreground text-3xs px-2.5 py-1 font-mono font-semibold tracking-wider uppercase'>Interactive Spotlight</span>
+							</div>
+
+							{/* Title & Description */}
+							<div className='space-y-2'>
+								<h4 className='text-foreground text-xl font-bold tracking-tight sm:text-2xl'>Radial Illumination</h4>
+								<p className='text-muted-foreground text-xs leading-relaxed sm:text-sm'>Dynamic 2D coordinate tracking with specular border illumination and fluid inertial falloff.</p>
+							</div>
+
+							{/* Clean Bottom Meta */}
+							<div className='border-border/60 text-muted-foreground mt-2 flex items-center justify-between border-t pt-4 font-mono text-xs'>
+								<div className='flex items-center gap-2'>
+									<span className='size-2 rounded-full bg-emerald-500' />
+									<span className='text-3xs tracking-wide uppercase'>120 FPS Coalesced</span>
+								</div>
+								<span className='text-3xs text-foreground/80 font-semibold tracking-wide uppercase'>Mode: {mode}</span>
 							</div>
 						</div>
 					</SpotlightCard>
@@ -1542,15 +1600,38 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 													);
 												})()
 											) : propDef.type === 'color' ? (
-												<div className='flex items-center gap-1.5 pt-0.5'>
-													<input
-														type='color'
-														id={`prop-${propDef.name}`}
-														value={String(val ?? '#ffffff')}
-														onChange={(e) => handlePropChange(propDef.name, e.target.value)}
-														className='border-border/80 h-6 w-8 cursor-pointer rounded-sm border bg-transparent p-0.5'
-													/>
-													<Input type='text' value={String(val ?? '')} onChange={(e) => handlePropChange(propDef.name, e.target.value)} className='text-3xs h-6 flex-1 font-mono' />
+												<div className='flex flex-col gap-1.5 pt-0.5'>
+													<div className='flex items-center gap-1.5'>
+														<input
+															type='color'
+															id={`prop-${propDef.name}`}
+															value={toHexColor(val)}
+															onChange={(e) => handlePropChange(propDef.name, e.target.value)}
+															className='border-border/80 h-7 w-9 cursor-pointer rounded-md border bg-transparent p-0.5'
+															title='Select color'
+														/>
+														<Input
+															type='text'
+															value={String(val ?? '')}
+															onChange={(e) => handlePropChange(propDef.name, e.target.value)}
+															className='text-3xs h-7 flex-1 font-mono'
+															placeholder='#6366f1'
+														/>
+													</div>
+													<div className='flex items-center gap-1 pt-0.5'>
+														{COLOR_PRESETS.map((preset) => (
+															<button
+																key={preset.value}
+																type='button'
+																title={`${preset.label} (${preset.value})`}
+																onClick={() => handlePropChange(propDef.name, preset.value)}
+																className={`h-3.5 w-3.5 cursor-pointer rounded-full border transition-transform hover:scale-125 ${
+																	toHexColor(val) === preset.value.toLowerCase() ? 'border-foreground ring-primary scale-110 ring-1' : 'border-border/80'
+																}`}
+																style={{ backgroundColor: preset.value }}
+															/>
+														))}
+													</div>
 												</div>
 											) : propDef.type !== 'boolean' ? (
 												<div className='pt-0.5'>

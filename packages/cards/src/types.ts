@@ -197,7 +197,7 @@ export interface SpotlightCardProps extends React.HTMLAttributes<HTMLDivElement>
 	 */
 	color?: string;
 	/**
-	 * Spotlight opacity when active.
+	 * Spotlight opacity when active (0.0 to 1.0).
 	 * Default: 0.8
 	 */
 	opacity?: number;
@@ -206,6 +206,26 @@ export interface SpotlightCardProps extends React.HTMLAttributes<HTMLDivElement>
 	 * Default: 'rgba(99, 102, 241, 0.5)'
 	 */
 	borderColor?: string;
+	/**
+	 * Radial gradient falloff softness / spread percentage (20 to 100).
+	 * Default: 80
+	 */
+	spread?: number;
+	/**
+	 * Spotlight rendering mode: 'both' | 'border' | 'background'.
+	 * Default: 'both'
+	 */
+	mode?: 'both' | 'border' | 'background';
+	/**
+	 * Kinetic exponential smoothing factor (0.05 to 1.0).
+	 * Default: 0.2
+	 */
+	smoothing?: number;
+	/**
+	 * Programmatically disable pointer tracking and spotlight illumination.
+	 * Default: false
+	 */
+	disabled?: boolean;
 	/**
 	 * Additional CSS class for card container
 	 */
