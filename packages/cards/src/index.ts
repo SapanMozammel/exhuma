@@ -1,6 +1,8 @@
 export { HorizontalScroller, calculateHorizontalDistance, calculateSectionHeight, calculateScrollProgress } from './HorizontalScroller/HorizontalScroller';
 export { StackingCards, calculateScaleValue, generateDefaultScaleValues, getReverseScale, smoothstep } from './StackingCards/StackingCards';
 export { TiltCard } from './TiltCard/TiltCard';
+export { calculateTilt, calculateGlare, generateTiltTransform, generateGlareStyle } from './TiltCard/tilt-math';
+export type { TiltAxis, TiltRotation, GlareCoordinates } from './TiltCard/tilt-math';
 export { SpotlightCard } from './SpotlightCard/SpotlightCard';
 export { calculateSpotlightCoordinates, generateSpotlightStyle } from './SpotlightCard/spotlight-math';
 export type { SpotlightCoordinates } from './SpotlightCard/spotlight-math';

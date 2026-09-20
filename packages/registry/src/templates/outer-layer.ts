@@ -380,6 +380,201 @@ onUnmounted(() => {
 					},
 				];
 			}
+			if (slug === 'tilt-card') {
+				return [
+					{
+						filename: `${pascalName}.vue`,
+						language: 'vue',
+						description: `Vue 3 Native ${name} component with interactive 3D perspective Euler matrix and dynamic specular glare.`,
+						code: `<script setup lang="ts">
+import { ref, onMounted, onUnmounted } from 'vue';
+
+interface Props {
+  maxTilt?: number;
+  perspective?: number;
+  scale?: number;
+  speed?: number;
+  glare?: boolean;
+  maxGlareOpacity?: number;
+  reverse?: boolean;
+  disabled?: boolean;
+  axis?: 'all' | 'x' | 'y';
+  class?: string;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  maxTilt: 15,
+  perspective: 1000,
+  scale: 1.02,
+  speed: 0.12,
+  glare: true,
+  maxGlareOpacity: 0.3,
+  reverse: false,
+  disabled: false,
+  axis: 'all',
+  class: '',
+});
+
+const cardRef = ref<HTMLDivElement | null>(null);
+const glareRef = ref<HTMLDivElement | null>(null);
+
+let rect: { left: number; top: number; width: number; height: number } | null = null;
+let targetRotX = 0;
+let targetRotY = 0;
+let targetScale = 1.0;
+let targetGlareX = 50;
+let targetGlareY = 50;
+let targetGlareOpacity = 0;
+
+let currentRotX = 0;
+let currentRotY = 0;
+let currentScale = 1.0;
+let currentGlareX = 50;
+let currentGlareY = 50;
+let currentGlareOpacity = 0;
+
+let isHovered = false;
+let rafId: number | null = null;
+let isReducedMotion = false;
+
+const lerp = (a: number, b: number, t: number): number => a + (b - a) * t;
+
+const measureRect = () => {
+  if (!cardRef.value) return;
+  const r = cardRef.value.getBoundingClientRect();
+  rect = { left: r.left, top: r.top, width: r.width, height: r.height };
+};
+
+const updateFrame = () => {
+  const card = cardRef.value;
+  if (!card) return;
+
+  if (props.disabled || isReducedMotion) {
+    card.style.transform = '';
+    if (glareRef.value) glareRef.value.style.opacity = '0';
+    rafId = null;
+    return;
+  }
+
+  const factor = Math.max(0.01, Math.min(1, props.speed));
+  currentRotX = lerp(currentRotX, targetRotX, factor);
+  currentRotY = lerp(currentRotY, targetRotY, factor);
+  currentScale = lerp(currentScale, targetScale, factor);
+  currentGlareX = lerp(currentGlareX, targetGlareX, factor);
+  currentGlareY = lerp(currentGlareY, targetGlareY, factor);
+  currentGlareOpacity = lerp(currentGlareOpacity, targetGlareOpacity, factor);
+
+  card.style.transform = \`perspective(\${props.perspective}px) rotateX(\${currentRotX.toFixed(2)}deg) rotateY(\${currentRotY.toFixed(2)}deg) scale3d(\${currentScale.toFixed(3)}, \${currentScale.toFixed(3)}, \${currentScale.toFixed(3)})\`;
+
+  if (props.glare && glareRef.value) {
+    glareRef.value.style.opacity = currentGlareOpacity.toFixed(3);
+    glareRef.value.style.background = \`radial-gradient(circle at \${currentGlareX.toFixed(1)}% \${currentGlareY.toFixed(1)}%, rgba(255,255,255,0.8), transparent 60%)\`;
+  }
+
+  const diffX = Math.abs(targetRotX - currentRotX);
+  const diffY = Math.abs(targetRotY - currentRotY);
+  const diffScale = Math.abs(targetScale - currentScale);
+  const diffOp = Math.abs(targetGlareOpacity - currentGlareOpacity);
+
+  if (diffX > 0.01 || diffY > 0.01 || diffScale > 0.001 || diffOp > 0.002 || isHovered) {
+    rafId = requestAnimationFrame(updateFrame);
+  } else {
+    rafId = null;
+  }
+};
+
+const scheduleRaf = () => {
+  if (rafId === null) {
+    rafId = requestAnimationFrame(updateFrame);
+  }
+};
+
+const onPointerEnter = () => {
+  if (props.disabled || isReducedMotion) return;
+  isHovered = true;
+  targetScale = props.scale;
+  measureRect();
+  scheduleRaf();
+};
+
+const onPointerMove = (e: PointerEvent) => {
+  if (props.disabled || isReducedMotion) return;
+  if (!rect) measureRect();
+  if (!rect || rect.width <= 0 || rect.height <= 0) return;
+
+  const x = e.clientX - rect.left;
+  const y = e.clientY - rect.top;
+
+  const normX = Math.max(-0.5, Math.min(0.5, x / rect.width - 0.5));
+  const normY = Math.max(-0.5, Math.min(0.5, y / rect.height - 0.5));
+  const sign = props.reverse ? -1 : 1;
+
+  const rawRotX = normY * -props.maxTilt * sign;
+  const rawRotY = normX * props.maxTilt * sign;
+
+  targetRotX = props.axis === 'y' ? 0 : rawRotX;
+  targetRotY = props.axis === 'x' ? 0 : rawRotY;
+
+  if (props.glare) {
+    const clampedX = Math.max(0, Math.min(rect.width, x));
+    const clampedY = Math.max(0, Math.min(rect.height, y));
+    targetGlareX = (clampedX / rect.width) * 100;
+    targetGlareY = (clampedY / rect.height) * 100;
+    targetGlareOpacity = Math.max(0, Math.min(1, props.maxGlareOpacity));
+  }
+
+  scheduleRaf();
+};
+
+const onPointerLeave = () => {
+  isHovered = false;
+  rect = null;
+  targetRotX = 0;
+  targetRotY = 0;
+  targetScale = 1.0;
+  targetGlareOpacity = 0;
+  scheduleRaf();
+};
+
+const onScrollOrResize = () => {
+  if (isHovered) measureRect();
+};
+
+onMounted(() => {
+  isReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  window.addEventListener('scroll', onScrollOrResize, { passive: true });
+  window.addEventListener('resize', onScrollOrResize, { passive: true });
+});
+
+onUnmounted(() => {
+  window.removeEventListener('scroll', onScrollOrResize);
+  window.removeEventListener('resize', onScrollOrResize);
+  if (rafId !== null) cancelAnimationFrame(rafId);
+});
+</script>
+
+<template>
+  <div
+    ref="cardRef"
+    @pointerenter="onPointerEnter"
+    @pointermove="onPointerMove"
+    @pointerleave="onPointerLeave"
+    :class="['exhuma-tilt-card relative overflow-hidden rounded-2xl will-change-transform', props.class]"
+  >
+    <slot />
+    <div
+      v-if="props.glare"
+      ref="glareRef"
+      aria-hidden="true"
+      class="pointer-events-none absolute inset-0 transition-opacity"
+      style="opacity: 0"
+    />
+  </div>
+</template>
+`,
+					},
+				];
+			}
 			return [
 				{
 					filename: `${pascalName}.vue`,
@@ -677,6 +872,203 @@ const props = withDefaults(defineProps<Props>(), {
   {...restProps}
 >
   {@render children?.()}
+</div>
+`,
+					},
+				];
+			}
+			if (slug === 'tilt-card') {
+				return [
+					{
+						filename: `${pascalName}.svelte`,
+						language: 'svelte',
+						description: `Svelte 5 Native ${name} component with interactive 3D perspective Euler matrix and dynamic specular glare.`,
+						code: `<script lang="ts">
+  import { onMount } from 'svelte';
+  import { clsx } from 'clsx';
+
+  interface Props {
+    maxTilt?: number;
+    perspective?: number;
+    scale?: number;
+    speed?: number;
+    glare?: boolean;
+    maxGlareOpacity?: number;
+    reverse?: boolean;
+    disabled?: boolean;
+    axis?: 'all' | 'x' | 'y';
+    class?: string;
+    children?: import('svelte').Snippet;
+    [key: string]: unknown;
+  }
+
+  let {
+    maxTilt = 15,
+    perspective = 1000,
+    scale = 1.02,
+    speed = 0.12,
+    glare = true,
+    maxGlareOpacity = 0.3,
+    reverse = false,
+    disabled = false,
+    axis = 'all',
+    class: className = '',
+    children,
+    ...restProps
+  }: Props = $props();
+
+  let cardEl = $state<HTMLDivElement | null>(null);
+  let glareEl = $state<HTMLDivElement | null>(null);
+
+  let rect: { left: number; top: number; width: number; height: number } | null = null;
+  let targetRotX = 0;
+  let targetRotY = 0;
+  let targetScale = 1.0;
+  let targetGlareX = 50;
+  let targetGlareY = 50;
+  let targetGlareOpacity = 0;
+
+  let currentRotX = 0;
+  let currentRotY = 0;
+  let currentScale = 1.0;
+  let currentGlareX = 50;
+  let currentGlareY = 50;
+  let currentGlareOpacity = 0;
+
+  let isHovered = false;
+  let rafId: number | null = null;
+  let isReducedMotion = false;
+
+  const lerp = (a: number, b: number, t: number): number => a + (b - a) * t;
+
+  const measureRect = () => {
+    if (!cardEl) return;
+    const r = cardEl.getBoundingClientRect();
+    rect = { left: r.left, top: r.top, width: r.width, height: r.height };
+  };
+
+  const updateFrame = () => {
+    if (!cardEl) return;
+
+    if (disabled || isReducedMotion) {
+      cardEl.style.transform = '';
+      if (glareEl) glareEl.style.opacity = '0';
+      rafId = null;
+      return;
+    }
+
+    const factor = Math.max(0.01, Math.min(1, speed));
+    currentRotX = lerp(currentRotX, targetRotX, factor);
+    currentRotY = lerp(currentRotY, targetRotY, factor);
+    currentScale = lerp(currentScale, targetScale, factor);
+    currentGlareX = lerp(currentGlareX, targetGlareX, factor);
+    currentGlareY = lerp(currentGlareY, targetGlareY, factor);
+    currentGlareOpacity = lerp(currentGlareOpacity, targetGlareOpacity, factor);
+
+    cardEl.style.transform = \`perspective(\${perspective}px) rotateX(\${currentRotX.toFixed(2)}deg) rotateY(\${currentRotY.toFixed(2)}deg) scale3d(\${currentScale.toFixed(3)}, \${currentScale.toFixed(3)}, \${currentScale.toFixed(3)})\`;
+
+    if (glare && glareEl) {
+      glareEl.style.opacity = currentGlareOpacity.toFixed(3);
+      glareEl.style.background = \`radial-gradient(circle at \${currentGlareX.toFixed(1)}% \${currentGlareY.toFixed(1)}%, rgba(255,255,255,0.8), transparent 60%)\`;
+    }
+
+    const diffX = Math.abs(targetRotX - currentRotX);
+    const diffY = Math.abs(targetRotY - currentRotY);
+    const diffScale = Math.abs(targetScale - currentScale);
+    const diffOp = Math.abs(targetGlareOpacity - currentGlareOpacity);
+
+    if (diffX > 0.01 || diffY > 0.01 || diffScale > 0.001 || diffOp > 0.002 || isHovered) {
+      rafId = requestAnimationFrame(updateFrame);
+    } else {
+      rafId = null;
+    }
+  };
+
+  const scheduleRaf = () => {
+    if (rafId === null) {
+      rafId = requestAnimationFrame(updateFrame);
+    }
+  };
+
+  const onPointerEnter = () => {
+    if (disabled || isReducedMotion) return;
+    isHovered = true;
+    targetScale = scale;
+    measureRect();
+    scheduleRaf();
+  };
+
+  const onPointerMove = (e: PointerEvent) => {
+    if (disabled || isReducedMotion) return;
+    if (!rect) measureRect();
+    if (!rect || rect.width <= 0 || rect.height <= 0) return;
+
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    const normX = Math.max(-0.5, Math.min(0.5, x / rect.width - 0.5));
+    const normY = Math.max(-0.5, Math.min(0.5, y / rect.height - 0.5));
+    const sign = reverse ? -1 : 1;
+
+    const rawRotX = normY * -maxTilt * sign;
+    const rawRotY = normX * maxTilt * sign;
+
+    targetRotX = axis === 'y' ? 0 : rawRotX;
+    targetRotY = axis === 'x' ? 0 : rawRotY;
+
+    if (glare) {
+      const clampedX = Math.max(0, Math.min(rect.width, x));
+      const clampedY = Math.max(0, Math.min(rect.height, y));
+      targetGlareX = (clampedX / rect.width) * 100;
+      targetGlareY = (clampedY / rect.height) * 100;
+      targetGlareOpacity = Math.max(0, Math.min(1, maxGlareOpacity));
+    }
+
+    scheduleRaf();
+  };
+
+  const onPointerLeave = () => {
+    isHovered = false;
+    rect = null;
+    targetRotX = 0;
+    targetRotY = 0;
+    targetScale = 1.0;
+    targetGlareOpacity = 0;
+    scheduleRaf();
+  };
+
+  onMount(() => {
+    isReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const onScrollOrResize = () => {
+      if (isHovered) measureRect();
+    };
+    window.addEventListener('scroll', onScrollOrResize, { passive: true });
+    window.addEventListener('resize', onScrollOrResize, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', onScrollOrResize);
+      window.removeEventListener('resize', onScrollOrResize);
+      if (rafId !== null) cancelAnimationFrame(rafId);
+    };
+  });
+</script>
+
+<div
+  bind:this={cardEl}
+  onpointerenter={onPointerEnter}
+  onpointermove={onPointerMove}
+  onpointerleave={onPointerLeave}
+  class={clsx('exhuma-tilt-card relative overflow-hidden rounded-2xl will-change-transform', className)}
+  {...restProps}
+>
+  {@render children?.()}
+  {#if glare}
+    <div
+      bind:this={glareEl}
+      aria-hidden="true"
+      class="pointer-events-none absolute inset-0 transition-opacity"
+      style="opacity: 0"
+    ></div>
+  {/if}
 </div>
 `,
 					},
@@ -1000,6 +1392,213 @@ export const ${pascalName}: Component<${pascalName}Props> = (props) => {
 					},
 				];
 			}
+			if (slug === 'tilt-card') {
+				return [
+					{
+						filename: `${pascalName}.tsx`,
+						language: 'tsx',
+						description: `SolidJS Native ${name} component with interactive 3D perspective Euler matrix and dynamic specular glare.`,
+						code: `import { Component, JSX, onMount, onCleanup, splitProps } from 'solid-js';
+
+export interface TiltCardProps extends JSX.HTMLAttributes<HTMLDivElement> {
+  maxTilt?: number;
+  perspective?: number;
+  scale?: number;
+  speed?: number;
+  glare?: boolean;
+  maxGlareOpacity?: number;
+  reverse?: boolean;
+  disabled?: boolean;
+  axis?: 'all' | 'x' | 'y';
+  class?: string;
+  children?: JSX.Element;
+}
+
+export const TiltCard: Component<TiltCardProps> = (props) => {
+  const [local, others] = splitProps(props, [
+    'maxTilt',
+    'perspective',
+    'scale',
+    'speed',
+    'glare',
+    'maxGlareOpacity',
+    'reverse',
+    'disabled',
+    'axis',
+    'class',
+    'children',
+  ]);
+
+  const maxTilt = () => local.maxTilt ?? 15;
+  const perspective = () => local.perspective ?? 1000;
+  const scale = () => local.scale ?? 1.02;
+  const speed = () => local.speed ?? 0.12;
+  const glare = () => local.glare !== false;
+  const maxGlareOpacity = () => local.maxGlareOpacity ?? 0.3;
+  const reverse = () => local.reverse ?? false;
+  const disabled = () => local.disabled ?? false;
+  const axis = () => local.axis ?? 'all';
+
+  let cardRef: HTMLDivElement | undefined;
+  let glareRef: HTMLDivElement | undefined;
+
+  let rect: { left: number; top: number; width: number; height: number } | null = null;
+  let targetRotX = 0;
+  let targetRotY = 0;
+  let targetScale = 1.0;
+  let targetGlareX = 50;
+  let targetGlareY = 50;
+  let targetGlareOpacity = 0;
+
+  let currentRotX = 0;
+  let currentRotY = 0;
+  let currentScale = 1.0;
+  let currentGlareX = 50;
+  let currentGlareY = 50;
+  let currentGlareOpacity = 0;
+
+  let isHovered = false;
+  let rafId: number | null = null;
+  let isReducedMotion = false;
+
+  const lerp = (a: number, b: number, t: number): number => a + (b - a) * t;
+
+  const measureRect = () => {
+    if (!cardRef) return;
+    const r = cardRef.getBoundingClientRect();
+    rect = { left: r.left, top: r.top, width: r.width, height: r.height };
+  };
+
+  const updateFrame = () => {
+    if (!cardRef) return;
+
+    if (disabled() || isReducedMotion) {
+      cardRef.style.transform = '';
+      if (glareRef) glareRef.style.opacity = '0';
+      rafId = null;
+      return;
+    }
+
+    const factor = Math.max(0.01, Math.min(1, speed()));
+    currentRotX = lerp(currentRotX, targetRotX, factor);
+    currentRotY = lerp(currentRotY, targetRotY, factor);
+    currentScale = lerp(currentScale, targetScale, factor);
+    currentGlareX = lerp(currentGlareX, targetGlareX, factor);
+    currentGlareY = lerp(currentGlareY, targetGlareY, factor);
+    currentGlareOpacity = lerp(currentGlareOpacity, targetGlareOpacity, factor);
+
+    cardRef.style.transform = \`perspective(\${perspective()}px) rotateX(\${currentRotX.toFixed(2)}deg) rotateY(\${currentRotY.toFixed(2)}deg) scale3d(\${currentScale.toFixed(3)}, \${currentScale.toFixed(3)}, \${currentScale.toFixed(3)})\`;
+
+    if (glare() && glareRef) {
+      glareRef.style.opacity = currentGlareOpacity.toFixed(3);
+      glareRef.style.background = \`radial-gradient(circle at \${currentGlareX.toFixed(1)}% \${currentGlareY.toFixed(1)}%, rgba(255,255,255,0.8), transparent 60%)\`;
+    }
+
+    const diffX = Math.abs(targetRotX - currentRotX);
+    const diffY = Math.abs(targetRotY - currentRotY);
+    const diffScale = Math.abs(targetScale - currentScale);
+    const diffOp = Math.abs(targetGlareOpacity - currentGlareOpacity);
+
+    if (diffX > 0.01 || diffY > 0.01 || diffScale > 0.001 || diffOp > 0.002 || isHovered) {
+      rafId = requestAnimationFrame(updateFrame);
+    } else {
+      rafId = null;
+    }
+  };
+
+  const scheduleRaf = () => {
+    if (rafId === null) {
+      rafId = requestAnimationFrame(updateFrame);
+    }
+  };
+
+  const onPointerEnter = () => {
+    if (disabled() || isReducedMotion) return;
+    isHovered = true;
+    targetScale = scale();
+    measureRect();
+    scheduleRaf();
+  };
+
+  const onPointerMove = (e: PointerEvent) => {
+    if (disabled() || isReducedMotion) return;
+    if (!rect) measureRect();
+    if (!rect || rect.width <= 0 || rect.height <= 0) return;
+
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+
+    const normX = Math.max(-0.5, Math.min(0.5, x / rect.width - 0.5));
+    const normY = Math.max(-0.5, Math.min(0.5, y / rect.height - 0.5));
+    const sign = reverse() ? -1 : 1;
+
+    const rawRotX = normY * -maxTilt() * sign;
+    const rawRotY = normX * maxTilt() * sign;
+
+    targetRotX = axis() === 'y' ? 0 : rawRotX;
+    targetRotY = axis() === 'x' ? 0 : rawRotY;
+
+    if (glare()) {
+      const clampedX = Math.max(0, Math.min(rect.width, x));
+      const clampedY = Math.max(0, Math.min(rect.height, y));
+      targetGlareX = (clampedX / rect.width) * 100;
+      targetGlareY = (clampedY / rect.height) * 100;
+      targetGlareOpacity = Math.max(0, Math.min(1, maxGlareOpacity()));
+    }
+
+    scheduleRaf();
+  };
+
+  const onPointerLeave = () => {
+    isHovered = false;
+    rect = null;
+    targetRotX = 0;
+    targetRotY = 0;
+    targetScale = 1.0;
+    targetGlareOpacity = 0;
+    scheduleRaf();
+  };
+
+  onMount(() => {
+    isReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const onScrollOrResize = () => {
+      if (isHovered) measureRect();
+    };
+    window.addEventListener('scroll', onScrollOrResize, { passive: true });
+    window.addEventListener('resize', onScrollOrResize, { passive: true });
+
+    onCleanup(() => {
+      window.removeEventListener('scroll', onScrollOrResize);
+      window.removeEventListener('resize', onScrollOrResize);
+      if (rafId !== null) cancelAnimationFrame(rafId);
+    });
+  });
+
+  return (
+    <div
+      ref={cardRef}
+      onPointerEnter={onPointerEnter}
+      onPointerMove={onPointerMove}
+      onPointerLeave={onPointerLeave}
+      class={\`exhuma-tilt-card relative overflow-hidden rounded-2xl will-change-transform \${local.class ?? ''}\`}
+      {...others}
+    >
+      {local.children}
+      {glare() && (
+        <div
+          ref={glareRef}
+          aria-hidden="true"
+          class="pointer-events-none absolute inset-0 transition-opacity"
+          style={{ opacity: '0' }}
+        />
+      )}
+    </div>
+  );
+};
+`,
+					},
+				];
+			}
 			return [
 				{
 					filename: `${pascalName}.tsx`,
@@ -1275,6 +1874,206 @@ export class Exhuma${pascalName}Component {
         window.removeEventListener('resize', onScroll);
       });
     });
+  }
+}
+`,
+					},
+				];
+			}
+			if (slug === 'tilt-card') {
+				return [
+					{
+						filename: `${slug}.component.ts`,
+						language: 'typescript',
+						description: `Angular 18+ Standalone ${name} component with out-of-zone 120 FPS rAF tilt physics.`,
+						code: `import { Component, ElementRef, NgZone, OnInit, OnDestroy, input, viewChild } from '@angular/core';
+import { CommonModule } from '@angular/common';
+
+@Component({
+  selector: 'exhuma-tilt-card',
+  standalone: true,
+  imports: [CommonModule],
+  template: \`
+    <div
+      #cardEl
+      [class]="'exhuma-tilt-card relative overflow-hidden rounded-2xl will-change-transform ' + customClass()"
+    >
+      <ng-content></ng-content>
+      @if (glare()) {
+        <div
+          #glareEl
+          aria-hidden="true"
+          class="pointer-events-none absolute inset-0 transition-opacity"
+          style="opacity: 0"
+        ></div>
+      }
+    </div>
+  \`,
+})
+export class ExhumaTiltCardComponent implements OnInit, OnDestroy {
+  readonly maxTilt = input<number>(15);
+  readonly perspective = input<number>(1000);
+  readonly scale = input<number>(1.02);
+  readonly speed = input<number>(0.12);
+  readonly glare = input<boolean>(true);
+  readonly maxGlareOpacity = input<number>(0.3);
+  readonly reverse = input<boolean>(false);
+  readonly disabled = input<boolean>(false);
+  readonly axis = input<'all' | 'x' | 'y'>('all');
+  readonly customClass = input<string>('');
+
+  readonly cardEl = viewChild<ElementRef<HTMLDivElement>>('cardEl');
+  readonly glareEl = viewChild<ElementRef<HTMLDivElement>>('glareEl');
+
+  private rafId: number | null = null;
+  private cleanups: Array<() => void> = [];
+
+  constructor(private ngZone: NgZone) {}
+
+  ngOnInit(): void {
+    this.ngZone.runOutsideAngular(() => {
+      const card = this.cardEl()?.nativeElement;
+      if (!card) return;
+
+      const isReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      let rect: { left: number; top: number; width: number; height: number } | null = null;
+
+      let targetRotX = 0;
+      let targetRotY = 0;
+      let targetScale = 1.0;
+      let targetGlareX = 50;
+      let targetGlareY = 50;
+      let targetGlareOpacity = 0;
+
+      let currentRotX = 0;
+      let currentRotY = 0;
+      let currentScale = 1.0;
+      let currentGlareX = 50;
+      let currentGlareY = 50;
+      let currentGlareOpacity = 0;
+
+      let isHovered = false;
+
+      const lerp = (a: number, b: number, t: number): number => a + (b - a) * t;
+
+      const measureRect = () => {
+        const r = card.getBoundingClientRect();
+        rect = { left: r.left, top: r.top, width: r.width, height: r.height };
+      };
+
+      const updateFrame = () => {
+        if (this.disabled() || isReducedMotion) {
+          card.style.transform = '';
+          const glareDom = this.glareEl()?.nativeElement;
+          if (glareDom) glareDom.style.opacity = '0';
+          this.rafId = null;
+          return;
+        }
+
+        const factor = Math.max(0.01, Math.min(1, this.speed()));
+        currentRotX = lerp(currentRotX, targetRotX, factor);
+        currentRotY = lerp(currentRotY, targetRotY, factor);
+        currentScale = lerp(currentScale, targetScale, factor);
+        currentGlareX = lerp(currentGlareX, targetGlareX, factor);
+        currentGlareY = lerp(currentGlareY, targetGlareY, factor);
+        currentGlareOpacity = lerp(currentGlareOpacity, targetGlareOpacity, factor);
+
+        card.style.transform = 'perspective(' + this.perspective() + 'px) rotateX(' + currentRotX.toFixed(2) + 'deg) rotateY(' + currentRotY.toFixed(2) + 'deg) scale3d(' + currentScale.toFixed(3) + ', ' + currentScale.toFixed(3) + ', ' + currentScale.toFixed(3) + ')';
+
+        const glareDom = this.glareEl()?.nativeElement;
+        if (this.glare() && glareDom) {
+          glareDom.style.opacity = currentGlareOpacity.toFixed(3);
+          glareDom.style.background = 'radial-gradient(circle at ' + currentGlareX.toFixed(1) + '% ' + currentGlareY.toFixed(1) + '%, rgba(255,255,255,0.8), transparent 60%)';
+        }
+
+        const diffX = Math.abs(targetRotX - currentRotX);
+        const diffY = Math.abs(targetRotY - currentRotY);
+        const diffScale = Math.abs(targetScale - currentScale);
+        const diffOp = Math.abs(targetGlareOpacity - currentGlareOpacity);
+
+        if (diffX > 0.01 || diffY > 0.01 || diffScale > 0.001 || diffOp > 0.002 || isHovered) {
+          this.rafId = window.requestAnimationFrame(updateFrame);
+        } else {
+          this.rafId = null;
+        }
+      };
+
+      const scheduleRaf = () => {
+        if (this.rafId === null) {
+          this.rafId = window.requestAnimationFrame(updateFrame);
+        }
+      };
+
+      const onPointerEnter = () => {
+        if (this.disabled() || isReducedMotion) return;
+        isHovered = true;
+        targetScale = this.scale();
+        measureRect();
+        scheduleRaf();
+      };
+
+      const onPointerMove = (e: PointerEvent) => {
+        if (this.disabled() || isReducedMotion) return;
+        if (!rect) measureRect();
+        if (!rect || rect.width <= 0 || rect.height <= 0) return;
+
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        const normX = Math.max(-0.5, Math.min(0.5, x / rect.width - 0.5));
+        const normY = Math.max(-0.5, Math.min(0.5, y / rect.height - 0.5));
+        const sign = this.reverse() ? -1 : 1;
+
+        const rawRotX = normY * -this.maxTilt() * sign;
+        const rawRotY = normX * this.maxTilt() * sign;
+
+        targetRotX = this.axis() === 'y' ? 0 : rawRotX;
+        targetRotY = this.axis() === 'x' ? 0 : rawRotY;
+
+        if (this.glare()) {
+          const clampedX = Math.max(0, Math.min(rect.width, x));
+          const clampedY = Math.max(0, Math.min(rect.height, y));
+          targetGlareX = (clampedX / rect.width) * 100;
+          targetGlareY = (clampedY / rect.height) * 100;
+          targetGlareOpacity = Math.max(0, Math.min(1, this.maxGlareOpacity()));
+        }
+
+        scheduleRaf();
+      };
+
+      const onPointerLeave = () => {
+        isHovered = false;
+        rect = null;
+        targetRotX = 0;
+        targetRotY = 0;
+        targetScale = 1.0;
+        targetGlareOpacity = 0;
+        scheduleRaf();
+      };
+
+      const onScrollOrResize = () => {
+        if (isHovered) measureRect();
+      };
+
+      card.addEventListener('pointerenter', onPointerEnter);
+      card.addEventListener('pointermove', onPointerMove);
+      card.addEventListener('pointerleave', onPointerLeave);
+      window.addEventListener('scroll', onScrollOrResize, { passive: true });
+      window.addEventListener('resize', onScrollOrResize, { passive: true });
+
+      this.cleanups.push(() => {
+        card.removeEventListener('pointerenter', onPointerEnter);
+        card.removeEventListener('pointermove', onPointerMove);
+        card.removeEventListener('pointerleave', onPointerLeave);
+        window.removeEventListener('scroll', onScrollOrResize);
+        window.removeEventListener('resize', onScrollOrResize);
+      });
+    });
+  }
+
+  ngOnDestroy(): void {
+    if (this.rafId !== null) window.cancelAnimationFrame(this.rafId);
+    this.cleanups.forEach((cleanup) => cleanup());
   }
 }
 `,
@@ -1577,6 +2376,225 @@ const {
 					},
 				];
 			}
+			if (slug === 'tilt-card') {
+				return [
+					{
+						filename: `${pascalName}.astro`,
+						language: 'astro',
+						description: `Pure Native Astro ${name} component with interactive 3D Euler matrix and specular glare.`,
+						code: `---
+interface Props {
+  maxTilt?: number;
+  perspective?: number;
+  scale?: number;
+  speed?: number;
+  glare?: boolean;
+  maxGlareOpacity?: number;
+  reverse?: boolean;
+  disabled?: boolean;
+  axis?: 'all' | 'x' | 'y';
+  class?: string;
+  [key: string]: unknown;
+}
+
+const {
+  maxTilt = 15,
+  perspective = 1000,
+  scale = 1.02,
+  speed = 0.12,
+  glare = true,
+  maxGlareOpacity = 0.3,
+  reverse = false,
+  disabled = false,
+  axis = 'all',
+  class: className = '',
+  ...props
+} = Astro.props;
+---
+
+<div
+  class={\`exhuma-tilt-card relative overflow-hidden rounded-2xl will-change-transform \${className}\`}
+  data-exhuma-tilt-card
+  data-max-tilt={maxTilt}
+  data-perspective={perspective}
+  data-scale={scale}
+  data-speed={speed}
+  data-glare={glare}
+  data-max-glare-opacity={maxGlareOpacity}
+  data-reverse={reverse}
+  data-disabled={disabled}
+  data-axis={axis}
+  {...props}
+>
+  <slot />
+  {glare && (
+    <div
+      aria-hidden="true"
+      class="exhuma-tilt-glare pointer-events-none absolute inset-0 transition-opacity"
+      style="opacity: 0"
+    />
+  )}
+</div>
+
+<script>
+  function initTiltCards() {
+    const cards = document.querySelectorAll<HTMLElement>('[data-exhuma-tilt-card]');
+
+    cards.forEach((card) => {
+      const glareEl = card.querySelector<HTMLElement>('.exhuma-tilt-glare');
+      const maxTilt = parseFloat(card.getAttribute('data-max-tilt') || '15');
+      const perspective = parseFloat(card.getAttribute('data-perspective') || '1000');
+      const scale = parseFloat(card.getAttribute('data-scale') || '1.02');
+      const speed = parseFloat(card.getAttribute('data-speed') || '0.12');
+      const glare = card.getAttribute('data-glare') !== 'false';
+      const maxGlareOpacity = parseFloat(card.getAttribute('data-max-glare-opacity') || '0.3');
+      const reverse = card.getAttribute('data-reverse') === 'true';
+      const disabled = card.getAttribute('data-disabled') === 'true';
+      const axis = card.getAttribute('data-axis') || 'all';
+
+      const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      let rect: { left: number; top: number; width: number; height: number } | null = null;
+
+      let targetRotX = 0;
+      let targetRotY = 0;
+      let targetScale = 1.0;
+      let targetGlareX = 50;
+      let targetGlareY = 50;
+      let targetGlareOpacity = 0;
+
+      let currentRotX = 0;
+      let currentRotY = 0;
+      let currentScale = 1.0;
+      let currentGlareX = 50;
+      let currentGlareY = 50;
+      let currentGlareOpacity = 0;
+
+      let isHovered = false;
+      let rafId: number | null = null;
+
+      const lerp = (a: number, b: number, t: number): number => a + (b - a) * t;
+
+      const measureRect = () => {
+        const r = card.getBoundingClientRect();
+        rect = { left: r.left, top: r.top, width: r.width, height: r.height };
+      };
+
+      const updateFrame = () => {
+        if (disabled || isReducedMotion) {
+          card.style.transform = '';
+          if (glareEl) glareEl.style.opacity = '0';
+          rafId = null;
+          return;
+        }
+
+        const factor = Math.max(0.01, Math.min(1, speed));
+        currentRotX = lerp(currentRotX, targetRotX, factor);
+        currentRotY = lerp(currentRotY, targetRotY, factor);
+        currentScale = lerp(currentScale, targetScale, factor);
+        currentGlareX = lerp(currentGlareX, targetGlareX, factor);
+        currentGlareY = lerp(currentGlareY, targetGlareY, factor);
+        currentGlareOpacity = lerp(currentGlareOpacity, targetGlareOpacity, factor);
+
+        card.style.transform = \`perspective(\${perspective}px) rotateX(\${currentRotX.toFixed(2)}deg) rotateY(\${currentRotY.toFixed(2)}deg) scale3d(\${currentScale.toFixed(3)}, \${currentScale.toFixed(3)}, \${currentScale.toFixed(3)})\`;
+
+        if (glare && glareEl) {
+          glareEl.style.opacity = currentGlareOpacity.toFixed(3);
+          glareEl.style.background = \`radial-gradient(circle at \${currentGlareX.toFixed(1)}% \${currentGlareY.toFixed(1)}%, rgba(255,255,255,0.8), transparent 60%)\`;
+        }
+
+        const diffX = Math.abs(targetRotX - currentRotX);
+        const diffY = Math.abs(targetRotY - currentRotY);
+        const diffScale = Math.abs(targetScale - currentScale);
+        const diffOp = Math.abs(targetGlareOpacity - currentGlareOpacity);
+
+        if (diffX > 0.01 || diffY > 0.01 || diffScale > 0.001 || diffOp > 0.002 || isHovered) {
+          rafId = requestAnimationFrame(updateFrame);
+        } else {
+          rafId = null;
+        }
+      };
+
+      const scheduleRaf = () => {
+        if (rafId === null) {
+          rafId = requestAnimationFrame(updateFrame);
+        }
+      };
+
+      const onPointerEnter = () => {
+        if (disabled || isReducedMotion) return;
+        isHovered = true;
+        targetScale = scale;
+        measureRect();
+        scheduleRaf();
+      };
+
+      const onPointerMove = (e: PointerEvent) => {
+        if (disabled || isReducedMotion) return;
+        if (!rect) measureRect();
+        if (!rect || rect.width <= 0 || rect.height <= 0) return;
+
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        const normX = Math.max(-0.5, Math.min(0.5, x / rect.width - 0.5));
+        const normY = Math.max(-0.5, Math.min(0.5, y / rect.height - 0.5));
+        const sign = reverse ? -1 : 1;
+
+        const rawRotX = normY * -maxTilt * sign;
+        const rawRotY = normX * maxTilt * sign;
+
+        targetRotX = axis === 'y' ? 0 : rawRotX;
+        targetRotY = axis === 'x' ? 0 : rawRotY;
+
+        if (glare) {
+          const clampedX = Math.max(0, Math.min(rect.width, x));
+          const clampedY = Math.max(0, Math.min(rect.height, y));
+          targetGlareX = (clampedX / rect.width) * 100;
+          targetGlareY = (clampedY / rect.height) * 100;
+          targetGlareOpacity = Math.max(0, Math.min(1, maxGlareOpacity));
+        }
+
+        scheduleRaf();
+      };
+
+      const onPointerLeave = () => {
+        isHovered = false;
+        rect = null;
+        targetRotX = 0;
+        targetRotY = 0;
+        targetScale = 1.0;
+        targetGlareOpacity = 0;
+        scheduleRaf();
+      };
+
+      const onScrollOrResize = () => {
+        if (isHovered) measureRect();
+      };
+
+      card.addEventListener('pointerenter', onPointerEnter);
+      card.addEventListener('pointermove', onPointerMove);
+      card.addEventListener('pointerleave', onPointerLeave);
+      window.addEventListener('scroll', onScrollOrResize, { passive: true });
+      window.addEventListener('resize', onScrollOrResize, { passive: true });
+
+      document.addEventListener('astro:before-swap', () => {
+        if (rafId !== null) cancelAnimationFrame(rafId);
+        card.removeEventListener('pointerenter', onPointerEnter);
+        card.removeEventListener('pointermove', onPointerMove);
+        card.removeEventListener('pointerleave', onPointerLeave);
+        window.removeEventListener('scroll', onScrollOrResize);
+        window.removeEventListener('resize', onScrollOrResize);
+      }, { once: true });
+    });
+  }
+
+  initTiltCards();
+  document.addEventListener('astro:page-load', initTiltCards);
+</script>
+`,
+					},
+				];
+			}
 			return [
 				{
 					filename: `${pascalName}.astro`,
@@ -1817,6 +2835,194 @@ if (!customElements.get('exhuma-${slug}')) {
 					},
 				];
 			}
+			if (slug === 'tilt-card') {
+				return [
+					{
+						filename: `exhuma-${slug}.js`,
+						language: 'javascript',
+						description: `Universal Web Component <exhuma-${slug}> with interactive 3D perspective Euler matrix.`,
+						code: `class ExhumaTiltCardElement extends HTMLElement {
+  connectedCallback() {
+    if (this._cleanup) this._cleanup();
+    this.classList.add('exhuma-tilt-card');
+    this.style.display = 'block';
+    this.style.position = 'relative';
+    this.style.overflow = 'hidden';
+    this.style.willChange = 'transform';
+
+    const maxTilt = parseFloat(this.getAttribute('max-tilt') || '15');
+    const perspective = parseFloat(this.getAttribute('perspective') || '1000');
+    const scale = parseFloat(this.getAttribute('scale') || '1.02');
+    const speed = parseFloat(this.getAttribute('speed') || '0.12');
+    const glare = this.getAttribute('glare') !== 'false';
+    const maxGlareOpacity = parseFloat(this.getAttribute('max-glare-opacity') || '0.3');
+    const reverse = this.getAttribute('reverse') === 'true';
+    const disabled = this.getAttribute('disabled') === 'true';
+    const axis = this.getAttribute('axis') || 'all';
+
+    let glareEl = null;
+    if (glare) {
+      glareEl = document.createElement('div');
+      glareEl.setAttribute('aria-hidden', 'true');
+      glareEl.className = 'exhuma-tilt-glare';
+      glareEl.style.position = 'absolute';
+      glareEl.style.inset = '0';
+      glareEl.style.pointerEvents = 'none';
+      glareEl.style.opacity = '0';
+      glareEl.style.transition = 'opacity 150ms ease-out';
+      this.appendChild(glareEl);
+    }
+
+    const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let rect = null;
+
+    let targetRotX = 0;
+    let targetRotY = 0;
+    let targetScale = 1.0;
+    let targetGlareX = 50;
+    let targetGlareY = 50;
+    let targetGlareOpacity = 0;
+
+    let currentRotX = 0;
+    let currentRotY = 0;
+    let currentScale = 1.0;
+    let currentGlareX = 50;
+    let currentGlareY = 50;
+    let currentGlareOpacity = 0;
+
+    let isHovered = false;
+    let rafId = null;
+
+    const lerp = (a, b, t) => a + (b - a) * t;
+
+    const measureRect = () => {
+      const r = this.getBoundingClientRect();
+      rect = { left: r.left, top: r.top, width: r.width, height: r.height };
+    };
+
+    const updateFrame = () => {
+      if (disabled || isReducedMotion) {
+        this.style.transform = '';
+        if (glareEl) glareEl.style.opacity = '0';
+        rafId = null;
+        return;
+      }
+
+      const factor = Math.max(0.01, Math.min(1, speed));
+      currentRotX = lerp(currentRotX, targetRotX, factor);
+      currentRotY = lerp(currentRotY, targetRotY, factor);
+      currentScale = lerp(currentScale, targetScale, factor);
+      currentGlareX = lerp(currentGlareX, targetGlareX, factor);
+      currentGlareY = lerp(currentGlareY, targetGlareY, factor);
+      currentGlareOpacity = lerp(currentGlareOpacity, targetGlareOpacity, factor);
+
+      this.style.transform = 'perspective(' + perspective + 'px) rotateX(' + currentRotX.toFixed(2) + 'deg) rotateY(' + currentRotY.toFixed(2) + 'deg) scale3d(' + currentScale.toFixed(3) + ', ' + currentScale.toFixed(3) + ', ' + currentScale.toFixed(3) + ')';
+
+      if (glare && glareEl) {
+        glareEl.style.opacity = currentGlareOpacity.toFixed(3);
+        glareEl.style.background = 'radial-gradient(circle at ' + currentGlareX.toFixed(1) + '% ' + currentGlareY.toFixed(1) + '%, rgba(255,255,255,0.8), transparent 60%)';
+      }
+
+      const diffX = Math.abs(targetRotX - currentRotX);
+      const diffY = Math.abs(targetRotY - currentRotY);
+      const diffScale = Math.abs(targetScale - currentScale);
+      const diffOp = Math.abs(targetGlareOpacity - currentGlareOpacity);
+
+      if (diffX > 0.01 || diffY > 0.01 || diffScale > 0.001 || diffOp > 0.002 || isHovered) {
+        rafId = requestAnimationFrame(updateFrame);
+      } else {
+        rafId = null;
+      }
+    };
+
+    const scheduleRaf = () => {
+      if (rafId === null) {
+        rafId = requestAnimationFrame(updateFrame);
+      }
+    };
+
+    const onPointerEnter = () => {
+      if (disabled || isReducedMotion) return;
+      isHovered = true;
+      targetScale = scale;
+      measureRect();
+      scheduleRaf();
+    };
+
+    const onPointerMove = (e) => {
+      if (disabled || isReducedMotion) return;
+      if (!rect) measureRect();
+      if (!rect || rect.width <= 0 || rect.height <= 0) return;
+
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      const normX = Math.max(-0.5, Math.min(0.5, x / rect.width - 0.5));
+      const normY = Math.max(-0.5, Math.min(0.5, y / rect.height - 0.5));
+      const sign = reverse ? -1 : 1;
+
+      const rawRotX = normY * -maxTilt * sign;
+      const rawRotY = normX * maxTilt * sign;
+
+      targetRotX = axis === 'y' ? 0 : rawRotX;
+      targetRotY = axis === 'x' ? 0 : rawRotY;
+
+      if (glare) {
+        const clampedX = Math.max(0, Math.min(rect.width, x));
+        const clampedY = Math.max(0, Math.min(rect.height, y));
+        targetGlareX = (clampedX / rect.width) * 100;
+        targetGlareY = (clampedY / rect.height) * 100;
+        targetGlareOpacity = Math.max(0, Math.min(1, maxGlareOpacity));
+      }
+
+      scheduleRaf();
+    };
+
+    const onPointerLeave = () => {
+      isHovered = false;
+      rect = null;
+      targetRotX = 0;
+      targetRotY = 0;
+      targetScale = 1.0;
+      targetGlareOpacity = 0;
+      scheduleRaf();
+    };
+
+    const onScrollOrResize = () => {
+      if (isHovered) measureRect();
+    };
+
+    this.addEventListener('pointerenter', onPointerEnter);
+    this.addEventListener('pointermove', onPointerMove);
+    this.addEventListener('pointerleave', onPointerLeave);
+    window.addEventListener('scroll', onScrollOrResize, { passive: true });
+    window.addEventListener('resize', onScrollOrResize, { passive: true });
+
+    this._cleanup = () => {
+      if (rafId !== null) cancelAnimationFrame(rafId);
+      this.removeEventListener('pointerenter', onPointerEnter);
+      this.removeEventListener('pointermove', onPointerMove);
+      this.removeEventListener('pointerleave', onPointerLeave);
+      window.removeEventListener('scroll', onScrollOrResize);
+      window.removeEventListener('resize', onScrollOrResize);
+      if (glareEl && glareEl.parentNode === this) {
+        this.removeChild(glareEl);
+      }
+    };
+  }
+
+  disconnectedCallback() {
+    if (this._cleanup) this._cleanup();
+  }
+}
+
+if (!customElements.get('exhuma-tilt-card')) {
+  customElements.define('exhuma-tilt-card', ExhumaTiltCardElement);
+}
+`,
+					},
+				];
+			}
 			return [
 				{
 					filename: `exhuma-${slug}.js`,
@@ -2013,6 +3219,184 @@ if (!customElements.get('exhuma-${slug}')) {
       observer.disconnect();
       window.removeEventListener('scroll', onScroll);
       window.removeEventListener('resize', onScroll);
+    });
+  });
+
+  return () => cleanups.forEach((c) => c());
+}
+`,
+					},
+				];
+			}
+			if (slug === 'tilt-card') {
+				return [
+					{
+						filename: `${slug}.vanilla.js`,
+						language: 'javascript',
+						description: `Autonomous Vanilla JS ${name} initialization module with 120 FPS rAF tilt engine.`,
+						code: `export function initTiltCard(selector = '[data-exhuma-tilt-card]', options = {}) {
+  const elements = document.querySelectorAll(selector);
+  const cleanups = [];
+
+  elements.forEach((card) => {
+    const maxTilt = parseFloat(card.getAttribute('data-max-tilt') || options.maxTilt || 15);
+    const perspective = parseFloat(card.getAttribute('data-perspective') || options.perspective || 1000);
+    const scale = parseFloat(card.getAttribute('data-scale') || options.scale || 1.02);
+    const speed = parseFloat(card.getAttribute('data-speed') || options.speed || 0.12);
+    const glare = card.getAttribute('data-glare') !== 'false' && options.glare !== false;
+    const maxGlareOpacity = parseFloat(card.getAttribute('data-max-glare-opacity') || options.maxGlareOpacity || 0.3);
+    const reverse = card.getAttribute('data-reverse') === 'true' || options.reverse === true;
+    const disabled = card.getAttribute('data-disabled') === 'true' || options.disabled === true;
+    const axis = card.getAttribute('data-axis') || options.axis || 'all';
+
+    let glareEl = card.querySelector('.exhuma-tilt-glare');
+    if (glare && !glareEl) {
+      glareEl = document.createElement('div');
+      glareEl.setAttribute('aria-hidden', 'true');
+      glareEl.className = 'exhuma-tilt-glare';
+      glareEl.style.position = 'absolute';
+      glareEl.style.inset = '0';
+      glareEl.style.pointerEvents = 'none';
+      glareEl.style.opacity = '0';
+      glareEl.style.transition = 'opacity 150ms ease-out';
+      card.appendChild(glareEl);
+    }
+
+    const isReducedMotion = typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let rect = null;
+
+    let targetRotX = 0;
+    let targetRotY = 0;
+    let targetScale = 1.0;
+    let targetGlareX = 50;
+    let targetGlareY = 50;
+    let targetGlareOpacity = 0;
+
+    let currentRotX = 0;
+    let currentRotY = 0;
+    let currentScale = 1.0;
+    let currentGlareX = 50;
+    let currentGlareY = 50;
+    let currentGlareOpacity = 0;
+
+    let isHovered = false;
+    let rafId = null;
+
+    const lerp = (a, b, t) => a + (b - a) * t;
+
+    const measureRect = () => {
+      const r = card.getBoundingClientRect();
+      rect = { left: r.left, top: r.top, width: r.width, height: r.height };
+    };
+
+    const updateFrame = () => {
+      if (disabled || isReducedMotion) {
+        card.style.transform = '';
+        if (glareEl) glareEl.style.opacity = '0';
+        rafId = null;
+        return;
+      }
+
+      const factor = Math.max(0.01, Math.min(1, speed));
+      currentRotX = lerp(currentRotX, targetRotX, factor);
+      currentRotY = lerp(currentRotY, targetRotY, factor);
+      currentScale = lerp(currentScale, targetScale, factor);
+      currentGlareX = lerp(currentGlareX, targetGlareX, factor);
+      currentGlareY = lerp(currentGlareY, targetGlareY, factor);
+      currentGlareOpacity = lerp(currentGlareOpacity, targetGlareOpacity, factor);
+
+      card.style.transform = 'perspective(' + perspective + 'px) rotateX(' + currentRotX.toFixed(2) + 'deg) rotateY(' + currentRotY.toFixed(2) + 'deg) scale3d(' + currentScale.toFixed(3) + ', ' + currentScale.toFixed(3) + ', ' + currentScale.toFixed(3) + ')';
+
+      if (glare && glareEl) {
+        glareEl.style.opacity = currentGlareOpacity.toFixed(3);
+        glareEl.style.background = 'radial-gradient(circle at ' + currentGlareX.toFixed(1) + '% ' + currentGlareY.toFixed(1) + '%, rgba(255,255,255,0.8), transparent 60%)';
+      }
+
+      const diffX = Math.abs(targetRotX - currentRotX);
+      const diffY = Math.abs(targetRotY - currentRotY);
+      const diffScale = Math.abs(targetScale - currentScale);
+      const diffOp = Math.abs(targetGlareOpacity - currentGlareOpacity);
+
+      if (diffX > 0.01 || diffY > 0.01 || diffScale > 0.001 || diffOp > 0.002 || isHovered) {
+        rafId = requestAnimationFrame(updateFrame);
+      } else {
+        rafId = null;
+      }
+    };
+
+    const scheduleRaf = () => {
+      if (rafId === null) {
+        rafId = requestAnimationFrame(updateFrame);
+      }
+    };
+
+    const onPointerEnter = () => {
+      if (disabled || isReducedMotion) return;
+      isHovered = true;
+      targetScale = scale;
+      measureRect();
+      scheduleRaf();
+    };
+
+    const onPointerMove = (e) => {
+      if (disabled || isReducedMotion) return;
+      if (!rect) measureRect();
+      if (!rect || rect.width <= 0 || rect.height <= 0) return;
+
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      const normX = Math.max(-0.5, Math.min(0.5, x / rect.width - 0.5));
+      const normY = Math.max(-0.5, Math.min(0.5, y / rect.height - 0.5));
+      const sign = reverse ? -1 : 1;
+
+      const rawRotX = normY * -maxTilt * sign;
+      const rawRotY = normX * maxTilt * sign;
+
+      targetRotX = axis === 'y' ? 0 : rawRotX;
+      targetRotY = axis === 'x' ? 0 : rawRotY;
+
+      if (glare) {
+        const clampedX = Math.max(0, Math.min(rect.width, x));
+        const clampedY = Math.max(0, Math.min(rect.height, y));
+        targetGlareX = (clampedX / rect.width) * 100;
+        targetGlareY = (clampedY / rect.height) * 100;
+        targetGlareOpacity = Math.max(0, Math.min(1, maxGlareOpacity));
+      }
+
+      scheduleRaf();
+    };
+
+    const onPointerLeave = () => {
+      isHovered = false;
+      rect = null;
+      targetRotX = 0;
+      targetRotY = 0;
+      targetScale = 1.0;
+      targetGlareOpacity = 0;
+      scheduleRaf();
+    };
+
+    const onScrollOrResize = () => {
+      if (isHovered) measureRect();
+    };
+
+    card.addEventListener('pointerenter', onPointerEnter);
+    card.addEventListener('pointermove', onPointerMove);
+    card.addEventListener('pointerleave', onPointerLeave);
+    window.addEventListener('scroll', onScrollOrResize, { passive: true });
+    window.addEventListener('resize', onScrollOrResize, { passive: true });
+
+    cleanups.push(() => {
+      if (rafId !== null) cancelAnimationFrame(rafId);
+      card.removeEventListener('pointerenter', onPointerEnter);
+      card.removeEventListener('pointermove', onPointerMove);
+      card.removeEventListener('pointerleave', onPointerLeave);
+      window.removeEventListener('scroll', onScrollOrResize);
+      window.removeEventListener('resize', onScrollOrResize);
+      if (glareEl && glareEl.parentNode === card) {
+        card.removeChild(glareEl);
+      }
     });
   });
 
@@ -2288,6 +3672,211 @@ if (!customElements.get('exhuma-${slug}')) {
 					},
 				];
 			}
+			if (slug === 'tilt-card') {
+				return [
+					{
+						filename: `${slug}.blade.php`,
+						language: 'php',
+						description: `Laravel Blade component for ${name} with kinetic 120 FPS tilt engine.`,
+						code: `@props([
+    'maxTilt' => 15,
+    'perspective' => 1000,
+    'scale' => 1.02,
+    'speed' => 0.12,
+    'glare' => true,
+    'maxGlareOpacity' => 0.3,
+    'reverse' => false,
+    'disabled' => false,
+    'axis' => 'all',
+    'class' => '',
+])
+
+@php
+$id = 'exhuma-tilt-' . uniqid();
+@endphp
+
+<div
+    id="{{ $id }}"
+    data-exhuma-tilt-card
+    data-max-tilt="{{ $maxTilt }}"
+    data-perspective="{{ $perspective }}"
+    data-scale="{{ $scale }}"
+    data-speed="{{ $speed }}"
+    data-glare="{{ $glare ? 'true' : 'false' }}"
+    data-max-glare-opacity="{{ $maxGlareOpacity }}"
+    data-reverse="{{ $reverse ? 'true' : 'false' }}"
+    data-disabled="{{ $disabled ? 'true' : 'false' }}"
+    data-axis="{{ $axis }}"
+    {{ $attributes->merge([
+        'class' => 'exhuma-tilt-card relative overflow-hidden rounded-2xl will-change-transform ' . $class,
+    ]) }}
+>
+    {{ $slot }}
+    @if($glare)
+        <div
+            aria-hidden="true"
+            class="exhuma-tilt-glare pointer-events-none absolute inset-0 transition-opacity"
+            style="opacity: 0"
+        ></div>
+    @endif
+</div>
+
+<script>
+(function() {
+    function init() {
+        var card = document.getElementById('{{ $id }}');
+        if (!card || card.dataset.exhumaReady === 'true') return;
+        card.dataset.exhumaReady = 'true';
+
+        var maxTilt = parseFloat(card.getAttribute('data-max-tilt') || '15');
+        var perspective = parseFloat(card.getAttribute('data-perspective') || '1000');
+        var scale = parseFloat(card.getAttribute('data-scale') || '1.02');
+        var speed = parseFloat(card.getAttribute('data-speed') || '0.12');
+        var glare = card.getAttribute('data-glare') !== 'false';
+        var maxGlareOpacity = parseFloat(card.getAttribute('data-max-glare-opacity') || '0.3');
+        var reverse = card.getAttribute('data-reverse') === 'true';
+        var disabled = card.getAttribute('data-disabled') === 'true';
+        var axis = card.getAttribute('data-axis') || 'all';
+
+        var glareEl = card.querySelector('.exhuma-tilt-glare');
+        var isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        var rect = null;
+
+        var targetRotX = 0, targetRotY = 0, targetScale = 1.0;
+        var targetGlareX = 50, targetGlareY = 50, targetGlareOpacity = 0;
+        var currentRotX = 0, currentRotY = 0, currentScale = 1.0;
+        var currentGlareX = 50, currentGlareY = 50, currentGlareOpacity = 0;
+
+        var isHovered = false;
+        var rafId = null;
+
+        function lerp(a, b, t) { return a + (b - a) * t; }
+
+        function measureRect() {
+            var r = card.getBoundingClientRect();
+            rect = { left: r.left, top: r.top, width: r.width, height: r.height };
+        }
+
+        function updateFrame() {
+            if (disabled || isReducedMotion) {
+                card.style.transform = '';
+                if (glareEl) glareEl.style.opacity = '0';
+                rafId = null;
+                return;
+            }
+
+            var factor = Math.max(0.01, Math.min(1, speed));
+            currentRotX = lerp(currentRotX, targetRotX, factor);
+            currentRotY = lerp(currentRotY, targetRotY, factor);
+            currentScale = lerp(currentScale, targetScale, factor);
+            currentGlareX = lerp(currentGlareX, targetGlareX, factor);
+            currentGlareY = lerp(currentGlareY, targetGlareY, factor);
+            currentGlareOpacity = lerp(currentGlareOpacity, targetGlareOpacity, factor);
+
+            card.style.transform = 'perspective(' + perspective + 'px) rotateX(' + currentRotX.toFixed(2) + 'deg) rotateY(' + currentRotY.toFixed(2) + 'deg) scale3d(' + currentScale.toFixed(3) + ', ' + currentScale.toFixed(3) + ', ' + currentScale.toFixed(3) + ')';
+
+            if (glare && glareEl) {
+                glareEl.style.opacity = currentGlareOpacity.toFixed(3);
+                glareEl.style.background = 'radial-gradient(circle at ' + currentGlareX.toFixed(1) + '% ' + currentGlareY.toFixed(1) + '%, rgba(255,255,255,0.8), transparent 60%)';
+            }
+
+            var diffX = Math.abs(targetRotX - currentRotX);
+            var diffY = Math.abs(targetRotY - currentRotY);
+            var diffScale = Math.abs(targetScale - currentScale);
+            var diffOp = Math.abs(targetGlareOpacity - currentGlareOpacity);
+
+            if (diffX > 0.01 || diffY > 0.01 || diffScale > 0.001 || diffOp > 0.002 || isHovered) {
+                rafId = requestAnimationFrame(updateFrame);
+            } else {
+                rafId = null;
+            }
+        }
+
+        function scheduleRaf() {
+            if (rafId === null) {
+                rafId = requestAnimationFrame(updateFrame);
+            }
+        }
+
+        function onPointerEnter() {
+            if (disabled || isReducedMotion) return;
+            isHovered = true;
+            targetScale = scale;
+            measureRect();
+            scheduleRaf();
+        }
+
+        function onPointerMove(e) {
+            if (disabled || isReducedMotion) return;
+            if (!rect) measureRect();
+            if (!rect || rect.width <= 0 || rect.height <= 0) return;
+
+            var x = e.clientX - rect.left;
+            var y = e.clientY - rect.top;
+
+            var normX = Math.max(-0.5, Math.min(0.5, x / rect.width - 0.5));
+            var normY = Math.max(-0.5, Math.min(0.5, y / rect.height - 0.5));
+            var sign = reverse ? -1 : 1;
+
+            var rawRotX = normY * -maxTilt * sign;
+            var rawRotY = normX * maxTilt * sign;
+
+            targetRotX = axis === 'y' ? 0 : rawRotX;
+            targetRotY = axis === 'x' ? 0 : rawRotY;
+
+            if (glare) {
+                var clampedX = Math.max(0, Math.min(rect.width, x));
+                var clampedY = Math.max(0, Math.min(rect.height, y));
+                targetGlareX = (clampedX / rect.width) * 100;
+                targetGlareY = (clampedY / rect.height) * 100;
+                targetGlareOpacity = Math.max(0, Math.min(1, maxGlareOpacity));
+            }
+
+            scheduleRaf();
+        }
+
+        function onPointerLeave() {
+            isHovered = false;
+            rect = null;
+            targetRotX = 0;
+            targetRotY = 0;
+            targetScale = 1.0;
+            targetGlareOpacity = 0;
+            scheduleRaf();
+        }
+
+        function onScrollOrResize() {
+            if (isHovered) measureRect();
+        }
+
+        card.addEventListener('pointerenter', onPointerEnter);
+        card.addEventListener('pointermove', onPointerMove);
+        card.addEventListener('pointerleave', onPointerLeave);
+        window.addEventListener('scroll', onScrollOrResize, { passive: true });
+        window.addEventListener('resize', onScrollOrResize, { passive: true });
+
+        window.addEventListener('pagehide', function cleanup() {
+            if (rafId !== null) window.cancelAnimationFrame(rafId);
+            card.removeEventListener('pointerenter', onPointerEnter);
+            card.removeEventListener('pointermove', onPointerMove);
+            card.removeEventListener('pointerleave', onPointerLeave);
+            window.removeEventListener('scroll', onScrollOrResize);
+            window.removeEventListener('resize', onScrollOrResize);
+            card.dataset.exhumaReady = 'false';
+        }, { once: true });
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+})();
+</script>
+`,
+					},
+				];
+			}
 			return [
 				{
 					filename: `${slug}.blade.php`,
@@ -2373,41 +3962,42 @@ $camera_style = $show_fade_edges
 					},
 				];
 			}
-			return [
-				{
-					filename: 'block.json',
-					language: 'json',
-					description: `WordPress Block API v3 definition for ${name}.`,
-					code: JSON.stringify(
-						{
-							$schema: 'https://schemas.wp.org/trunk/block.json',
-							apiVersion: 3,
-							name: `exhuma/${slug}`,
-							version: '1.0.0',
-							title: `Exhuma ${name}`,
-							category: 'design',
-							icon: 'art',
-							description,
-							attributes: {
-								topStart: { type: 'number', default: 20 },
-								topIncrement: { type: 'number', default: 28 },
-								cardGap: { type: 'number', default: 20 },
-								scaleThreshold: { type: 'number', default: 150 },
-								minScale: { type: 'number', default: 0.9 },
-								reverseScale: { type: 'boolean', default: true },
+			if (slug === 'stacking-cards') {
+				return [
+					{
+						filename: 'block.json',
+						language: 'json',
+						description: `WordPress Block API v3 definition for ${name}.`,
+						code: JSON.stringify(
+							{
+								$schema: 'https://schemas.wp.org/trunk/block.json',
+								apiVersion: 3,
+								name: `exhuma/${slug}`,
+								version: '1.0.0',
+								title: `Exhuma ${name}`,
+								category: 'design',
+								icon: 'art',
+								description,
+								attributes: {
+									topStart: { type: 'number', default: 20 },
+									topIncrement: { type: 'number', default: 28 },
+									cardGap: { type: 'number', default: 20 },
+									scaleThreshold: { type: 'number', default: 150 },
+									minScale: { type: 'number', default: 0.9 },
+									reverseScale: { type: 'boolean', default: true },
+								},
+								editorScript: 'file:./index.js',
+								viewScript: 'exhuma-kinetic',
 							},
-							editorScript: 'file:./index.js',
-							viewScript: 'exhuma-kinetic',
-						},
-						null,
-						2
-					),
-				},
-				{
-					filename: 'render.php',
-					language: 'php',
-					description: `WordPress dynamic render template for ${name}.`,
-					code: `<?php
+							null,
+							2
+						),
+					},
+					{
+						filename: 'render.php',
+						language: 'php',
+						description: `WordPress dynamic render template for ${name}.`,
+						code: `<?php
 $top_start = $attributes['topStart'] ?? 20;
 $top_increment = $attributes['topIncrement'] ?? 28;
 $card_gap = $attributes['cardGap'] ?? 20;
@@ -2428,6 +4018,116 @@ $reverse_scale = ($attributes['reverseScale'] ?? true) ? 'true' : 'false';
   <?php echo $content; ?>
 </div>
 `,
+					},
+				];
+			}
+			if (slug === 'tilt-card') {
+				return [
+					{
+						filename: 'block.json',
+						language: 'json',
+						description: `WordPress Block API v3 definition for ${name}.`,
+						code: JSON.stringify(
+							{
+								$schema: 'https://schemas.wp.org/trunk/block.json',
+								apiVersion: 3,
+								name: `exhuma/${slug}`,
+								version: '1.1.0',
+								title: `Exhuma ${name}`,
+								category: 'design',
+								icon: 'shield',
+								description,
+								attributes: {
+									maxTilt: { type: 'number', default: 15 },
+									perspective: { type: 'number', default: 1000 },
+									scale: { type: 'number', default: 1.02 },
+									speed: { type: 'number', default: 0.12 },
+									glare: { type: 'boolean', default: true },
+									maxGlareOpacity: { type: 'number', default: 0.3 },
+									reverse: { type: 'boolean', default: false },
+									disabled: { type: 'boolean', default: false },
+									axis: { type: 'string', default: 'all' },
+								},
+								supports: {
+									align: ['wide', 'full'],
+									html: false,
+								},
+								editorScript: 'file:./index.js',
+								render: 'file:./render.php',
+							},
+							null,
+							2
+						),
+					},
+					{
+						filename: 'render.php',
+						language: 'php',
+						description: `WordPress Gutenberg block rendering template for ${name}.`,
+						code: `<?php
+$max_tilt = $attributes['maxTilt'] ?? 15;
+$perspective = $attributes['perspective'] ?? 1000;
+$scale = $attributes['scale'] ?? 1.02;
+$speed = $attributes['speed'] ?? 0.12;
+$glare = ($attributes['glare'] ?? true) ? 'true' : 'false';
+$max_glare_opacity = $attributes['maxGlareOpacity'] ?? 0.3;
+$reverse = ($attributes['reverse'] ?? false) ? 'true' : 'false';
+$disabled = ($attributes['disabled'] ?? false) ? 'true' : 'false';
+$axis = $attributes['axis'] ?? 'all';
+?>
+<div
+  class="exhuma-tilt-card relative overflow-hidden rounded-2xl will-change-transform"
+  data-exhuma-tilt-card
+  data-max-tilt="<?php echo esc_attr($max_tilt); ?>"
+  data-perspective="<?php echo esc_attr($perspective); ?>"
+  data-scale="<?php echo esc_attr($scale); ?>"
+  data-speed="<?php echo esc_attr($speed); ?>"
+  data-glare="<?php echo esc_attr($glare); ?>"
+  data-max-glare-opacity="<?php echo esc_attr($max_glare_opacity); ?>"
+  data-reverse="<?php echo esc_attr($reverse); ?>"
+  data-disabled="<?php echo esc_attr($disabled); ?>"
+  data-axis="<?php echo esc_attr($axis); ?>"
+>
+  <div class="exhuma-tilt-card-inner">
+    <?php echo $content; ?>
+  </div>
+  <?php if ($glare === 'true'): ?>
+    <div
+      aria-hidden="true"
+      class="exhuma-tilt-glare pointer-events-none absolute inset-0 transition-opacity"
+      style="opacity: 0"
+    ></div>
+  <?php endif; ?>
+</div>
+`,
+					},
+				];
+			}
+			return [
+				{
+					filename: 'block.json',
+					language: 'json',
+					description: `WordPress Block API v3 definition for ${name}.`,
+					code: JSON.stringify(
+						{
+							$schema: 'https://schemas.wp.org/trunk/block.json',
+							apiVersion: 3,
+							name: `exhuma/${slug}`,
+							version: '1.0.0',
+							title: `Exhuma ${name}`,
+							category: 'widgets',
+							description,
+							attributes: {},
+							render: 'file:./render.php',
+						},
+						null,
+						2
+					),
+				},
+				{
+					filename: 'render.php',
+					language: 'php',
+					description: `WordPress render template for ${name}.`,
+					code: `<?php\n/**\n * ${name} Block Render Template\n */\n$wrapper_attributes = get_block_wrapper_attributes(['class' => '${defaultTailwindClass}']);\n?>\n<div <?php echo $wrapper_attributes; ?>>\n  <?php echo $content; ?>\n</div>\n`,
 				},
 			];
 		}
@@ -2494,12 +4194,13 @@ const styles = StyleSheet.create({
 					},
 				];
 			}
-			return [
-				{
-					filename: `${pascalName}.tsx`,
-					language: 'tsx',
-					description: `React Native ${name} with scroll-driven Animated scale decay (Hermite smoothstep).`,
-					code: `import React, { useRef, useCallback } from 'react';
+			if (slug === 'stacking-cards') {
+				return [
+					{
+						filename: `${pascalName}.tsx`,
+						language: 'tsx',
+						description: `React Native ${name} with scroll-driven Animated scale decay (Hermite smoothstep).`,
+						code: `import React, { useRef, useCallback } from 'react';
 import {
   View,
   ScrollView,
@@ -2600,6 +4301,175 @@ const styles = StyleSheet.create({
   },
 });
 `,
+					},
+				];
+			}
+			if (slug === 'tilt-card') {
+				return [
+					{
+						filename: `${pascalName}.tsx`,
+						language: 'tsx',
+						description: `React Native ${name} native mobile 3D perspective tilt component.`,
+						code: `import React, { useRef } from 'react';
+import {
+  View,
+  StyleSheet,
+  PanResponder,
+  Animated,
+  type ViewProps,
+  type LayoutChangeEvent,
+} from 'react-native';
+
+export interface TiltCardProps extends ViewProps {
+  maxTilt?: number;
+  perspective?: number;
+  scale?: number;
+  speed?: number;
+  glare?: boolean;
+  maxGlareOpacity?: number;
+  reverse?: boolean;
+  disabled?: boolean;
+  axis?: 'all' | 'x' | 'y';
+  children?: React.ReactNode;
+}
+
+export function TiltCard({
+  maxTilt = 15,
+  perspective = 1000,
+  scale = 1.02,
+  speed = 0.12,
+  glare = true,
+  maxGlareOpacity = 0.3,
+  reverse = false,
+  disabled = false,
+  axis = 'all',
+  children,
+  style,
+  ...props
+}: TiltCardProps) {
+  const dimensions = useRef({ width: 0, height: 0 }).current;
+  const tiltX = useRef(new Animated.Value(0)).current;
+  const tiltY = useRef(new Animated.Value(0)).current;
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+
+  const onLayout = (e: LayoutChangeEvent) => {
+    const { width, height } = e.nativeEvent.layout;
+    dimensions.width = width;
+    dimensions.height = height;
+  };
+
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => !disabled,
+      onMoveShouldSetPanResponder: () => !disabled,
+      onPanResponderGrant: () => {
+        if (disabled) return;
+        Animated.spring(scaleAnim, {
+          toValue: scale,
+          useNativeDriver: true,
+          friction: 7,
+          tension: 40,
+        }).start();
+      },
+      onPanResponderMove: (evt) => {
+        if (disabled || dimensions.width === 0 || dimensions.height === 0) return;
+        const { locationX, locationY } = evt.nativeEvent;
+
+        const normX = Math.max(-0.5, Math.min(0.5, locationX / dimensions.width - 0.5));
+        const normY = Math.max(-0.5, Math.min(0.5, locationY / dimensions.height - 0.5));
+        const sign = reverse ? -1 : 1;
+
+        const targetRotX = normY * -maxTilt * sign;
+        const targetRotY = normX * maxTilt * sign;
+
+        Animated.spring(tiltX, {
+          toValue: axis === 'y' ? 0 : targetRotX,
+          useNativeDriver: true,
+          friction: 6,
+          tension: 50,
+        }).start();
+
+        Animated.spring(tiltY, {
+          toValue: axis === 'x' ? 0 : targetRotY,
+          useNativeDriver: true,
+          friction: 6,
+          tension: 50,
+        }).start();
+      },
+      onPanResponderRelease: () => {
+        Animated.parallel([
+          Animated.spring(tiltX, {
+            toValue: 0,
+            useNativeDriver: true,
+            friction: 7,
+            tension: 40,
+          }),
+          Animated.spring(tiltY, {
+            toValue: 0,
+            useNativeDriver: true,
+            friction: 7,
+            tension: 40,
+          }),
+          Animated.spring(scaleAnim, {
+            toValue: 1,
+            useNativeDriver: true,
+            friction: 7,
+            tension: 40,
+          }),
+        ]).start();
+      },
+    })
+  ).current;
+
+  const rotateX = tiltX.interpolate({
+    inputRange: [-maxTilt, maxTilt],
+    outputRange: [\`\${-maxTilt}deg\`, \`\${maxTilt}deg\`],
+  });
+
+  const rotateY = tiltY.interpolate({
+    inputRange: [-maxTilt, maxTilt],
+    outputRange: [\`\${-maxTilt}deg\`, \`\${maxTilt}deg\`],
+  });
+
+  return (
+    <Animated.View
+      onLayout={onLayout}
+      {...panResponder.panHandlers}
+      style={[
+        styles.container,
+        style,
+        {
+          transform: [
+            { perspective },
+            { rotateX },
+            { rotateY },
+            { scale: scaleAnim },
+          ],
+        },
+      ]}
+      {...props}
+    >
+      {children}
+    </Animated.View>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    overflow: 'hidden',
+    borderRadius: 20,
+  },
+});
+`,
+					},
+				];
+			}
+			return [
+				{
+					filename: `${pascalName}.tsx`,
+					language: 'tsx',
+					description: `React Native ${name} component.`,
+					code: `import React from 'react';\nimport { View, StyleSheet, type ViewProps } from 'react-native';\n\nexport const ${pascalName}: React.FC<ViewProps> = ({ style, children, ...props }) => (\n  <View style={[styles.container, style]} {...props}>\n    {children}\n  </View>\n);\n\nconst styles = StyleSheet.create({\n  container: {\n    overflow: 'hidden',\n    borderRadius: 16,\n  },\n});\n`,
 				},
 			];
 		}
@@ -2649,12 +4519,13 @@ class ExhumaHorizontalScroller extends StatelessWidget {
 					},
 				];
 			}
-			return [
-				{
-					filename: `${snakeName}.dart`,
-					language: 'dart',
-					description: `Flutter ${name} with kinetic scroll-driven scale decay (Hermite smoothstep).`,
-					code: `import 'package:flutter/material.dart';
+			if (slug === 'stacking-cards') {
+				return [
+					{
+						filename: `${snakeName}.dart`,
+						language: 'dart',
+						description: `Flutter ${name} with kinetic scroll-driven scale decay (Hermite smoothstep).`,
+						code: `import 'package:flutter/material.dart';
 
 double _smoothstep(double t) {
   final c = t.clamp(0.0, 1.0);
@@ -2741,6 +4612,180 @@ class _Exhuma${pascalName}State extends State<Exhuma${pascalName}> {
   }
 }
 `,
+					},
+				];
+			}
+			if (slug === 'tilt-card') {
+				return [
+					{
+						filename: `${snakeName}.dart`,
+						language: 'dart',
+						description: `Flutter ${name} native 3D perspective Euler matrix tilt widget.`,
+						code: `import 'dart:math' as math;
+import 'package:flutter/material.dart';
+
+class ExhumaTiltCard extends StatefulWidget {
+  final Widget child;
+  final double maxTilt;
+  final double perspective;
+  final double scale;
+  final double speed;
+  final bool glare;
+  final double maxGlareOpacity;
+  final bool reverse;
+  final bool disabled;
+  final String axis;
+
+  const ExhumaTiltCard({
+    super.key,
+    required this.child,
+    this.maxTilt = 15.0,
+    this.perspective = 1000.0,
+    this.scale = 1.02,
+    this.speed = 0.12,
+    this.glare = true,
+    this.maxGlareOpacity = 0.3,
+    this.reverse = false,
+    this.disabled = false,
+    this.axis = 'all',
+  });
+
+  @override
+  State<ExhumaTiltCard> createState() => _ExhumaTiltCardState();
+}
+
+class _ExhumaTiltCardState extends State<ExhumaTiltCard> with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  double _rotX = 0.0;
+  double _rotY = 0.0;
+  double _scale = 1.0;
+  double _glareX = 50.0;
+  double _glareY = 50.0;
+  double _glareOpacity = 0.0;
+  bool _isHovered = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _onEnter(PointerEnterEvent event) {
+    if (widget.disabled) return;
+    setState(() {
+      _isHovered = true;
+      _scale = widget.scale;
+    });
+  }
+
+  void _onHover(PointerHoverEvent event, BoxConstraints constraints) {
+    if (widget.disabled || constraints.maxWidth <= 0 || constraints.maxHeight <= 0) return;
+
+    final x = event.localPosition.dx;
+    final y = event.localPosition.dy;
+
+    final normX = (x / constraints.maxWidth - 0.5).clamp(-0.5, 0.5);
+    final normY = (y / constraints.maxHeight - 0.5).clamp(-0.5, 0.5);
+    final sign = widget.reverse ? -1.0 : 1.0;
+
+    final maxTiltRad = widget.maxTilt * (math.pi / 180.0);
+    final rawRotX = normY * -maxTiltRad * sign;
+    final rawRotY = normX * maxTiltRad * sign;
+
+    setState(() {
+      _rotX = widget.axis == 'y' ? 0.0 : rawRotX;
+      _rotY = widget.axis == 'x' ? 0.0 : rawRotY;
+
+      if (widget.glare) {
+        _glareX = (x / constraints.maxWidth * 100.0).clamp(0.0, 100.0);
+        _glareY = (y / constraints.maxHeight * 100.0).clamp(0.0, 100.0);
+        _glareOpacity = widget.maxGlareOpacity.clamp(0.0, 1.0);
+      }
+    });
+  }
+
+  void _onExit(PointerExitEvent event) {
+    setState(() {
+      _isHovered = false;
+      _rotX = 0.0;
+      _rotY = 0.0;
+      _scale = 1.0;
+      _glareOpacity = 0.0;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final transform = Matrix4.identity()
+          ..setEntry(3, 2, 1.0 / widget.perspective)
+          ..rotateX(_rotX)
+          ..rotateY(_rotY)
+          ..scale(_scale);
+
+        return MouseRegion(
+          onEnter: _onEnter,
+          onHover: (e) => _onHover(e, constraints),
+          onExit: _onExit,
+          child: Transform(
+            transform: transform,
+            alignment: FractionalOffset.center,
+            child: Stack(
+              children: [
+                widget.child,
+                if (widget.glare)
+                  Positioned.fill(
+                    child: IgnorePointer(
+                      child: AnimatedOpacity(
+                        duration: const Duration(milliseconds: 150),
+                        opacity: _glareOpacity,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            gradient: RadialGradient(
+                              center: Alignment(
+                                (_glareX / 50.0) - 1.0,
+                                (_glareY / 50.0) - 1.0,
+                              ),
+                              radius: 0.8,
+                              colors: const [
+                                Colors.white54,
+                                Colors.transparent,
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+`,
+					},
+				];
+			}
+			return [
+				{
+					filename: `${snakeName}.dart`,
+					language: 'dart',
+					description: `Flutter ${name} widget.`,
+					code: `import 'package:flutter/material.dart';\n\nclass Exhuma${pascalName} extends StatelessWidget {\n  final Widget child;\n  const Exhuma${pascalName}({super.key, required this.child});\n\n  @override\n  Widget build(BuildContext context) {\n    return Container(child: child);\n  }\n}\n`,
 				},
 			];
 		}
@@ -2754,22 +4799,43 @@ function getEjectedReactCode(slug: string, pascalName: string, defaultClass: str
 		case 'tilt-card': {
 			const maxTilt = Number(props.maxTilt ?? 15);
 			const perspective = Number(props.perspective ?? 1000);
+			const scale = Number(props.scale ?? 1.02);
+			const speed = Number(props.speed ?? 0.12);
+			const glare = Boolean(props.glare ?? true);
+			const maxGlareOpacity = Number(props.maxGlareOpacity ?? 0.3);
+			const reverse = Boolean(props.reverse ?? false);
+			const disabled = Boolean(props.disabled ?? false);
+			const axis = (props.axis as string) ?? 'all';
+
 			return `${header}export interface TiltCardProps extends React.HTMLAttributes<HTMLDivElement> {
   maxTilt?: number;
   perspective?: number;
+  scale?: number;
+  speed?: number;
   glare?: boolean;
+  maxGlareOpacity?: number;
+  reverse?: boolean;
+  disabled?: boolean;
+  axis?: 'all' | 'x' | 'y';
 }
 
 /**
  * TiltCard — Standalone Ejected Engine (Zero-Dependency)
- * Inlines 3D Euler matrix transformation and dynamic radial glare.
+ * Inlines 3D Euler matrix transformation and dynamic radial glare with Ω(1) cached bounds
+ * and frame-coalesced 120 FPS requestAnimationFrame physics loop.
  */
 export const TiltCard = React.forwardRef<HTMLDivElement, TiltCardProps>(
   (
     {
       maxTilt = ${maxTilt},
       perspective = ${perspective},
-      glare = true,
+      scale = ${scale},
+      speed = ${speed},
+      glare = ${glare},
+      maxGlareOpacity = ${maxGlareOpacity},
+      reverse = ${reverse},
+      disabled = ${disabled},
+      axis = '${axis}',
       className,
       children,
       style,
@@ -2779,58 +4845,146 @@ export const TiltCard = React.forwardRef<HTMLDivElement, TiltCardProps>(
   ) => {
     const internalRef = React.useRef<HTMLDivElement>(null);
     const cardRef = (forwardedRef as React.RefObject<HTMLDivElement>) || internalRef;
-    const [transform, setTransform] = React.useState('');
-    const [glarePos, setGlarePos] = React.useState({ x: 50, y: 50, opacity: 0 });
+    const glareRef = React.useRef<HTMLDivElement>(null);
+    const rectRef = React.useRef<{ left: number; top: number; width: number; height: number } | null>(null);
+    const rafIdRef = React.useRef<number | null>(null);
 
-    const handleMouseMove = React.useCallback(
-      (e: React.MouseEvent<HTMLDivElement>) => {
+    const currentRotX = React.useRef(0);
+    const currentRotY = React.useRef(0);
+    const currentScale = React.useRef(1);
+    const currentGlareOpacity = React.useRef(0);
+    const targetRotX = React.useRef(0);
+    const targetRotY = React.useRef(0);
+    const targetScale = React.useRef(1);
+    const targetGlareX = React.useRef(50);
+    const targetGlareY = React.useRef(50);
+    const targetGlareOpacity = React.useRef(0);
+    const isHovered = React.useRef(false);
+
+    const updatePhysics = React.useCallback(() => {
+      const el = cardRef.current;
+      if (!el) {
+        rafIdRef.current = null;
+        return;
+      }
+
+      currentRotX.current += (targetRotX.current - currentRotX.current) * speed;
+      currentRotY.current += (targetRotY.current - currentRotY.current) * speed;
+      currentScale.current += (targetScale.current - currentScale.current) * speed;
+      currentGlareOpacity.current += (targetGlareOpacity.current - currentGlareOpacity.current) * speed;
+
+      el.style.transform = \`perspective(\${perspective}px) rotateX(\${currentRotX.current.toFixed(2)}deg) rotateY(\${currentRotY.current.toFixed(2)}deg) scale3d(\${currentScale.current.toFixed(4)}, \${currentScale.current.toFixed(4)}, \${currentScale.current.toFixed(4)})\`;
+
+      if (glareRef.current) {
+        glareRef.current.style.opacity = String(currentGlareOpacity.current.toFixed(3));
+        glareRef.current.style.background = \`radial-gradient(circle at \${targetGlareX.current.toFixed(1)}% \${targetGlareY.current.toFixed(1)}%, rgba(255,255,255,0.8), transparent 60%)\`;
+      }
+
+      const diffRot = Math.abs(targetRotX.current - currentRotX.current) + Math.abs(targetRotY.current - currentRotY.current);
+      const diffScale = Math.abs(targetScale.current - currentScale.current);
+      const diffGlare = Math.abs(targetGlareOpacity.current - currentGlareOpacity.current);
+
+      if (isHovered.current || diffRot > 0.01 || diffScale > 0.001 || diffGlare > 0.01) {
+        rafIdRef.current = requestAnimationFrame(updatePhysics);
+      } else {
+        rafIdRef.current = null;
+      }
+    }, [perspective, speed, cardRef]);
+
+    const scheduleRaf = React.useCallback(() => {
+      if (rafIdRef.current === null) {
+        rafIdRef.current = requestAnimationFrame(updatePhysics);
+      }
+    }, [updatePhysics]);
+
+    const handlePointerEnter = React.useCallback(() => {
+      if (disabled) return;
+      isHovered.current = true;
+      targetScale.current = scale;
+      const el = cardRef.current;
+      if (el) {
+        const r = el.getBoundingClientRect();
+        rectRef.current = { left: r.left, top: r.top, width: r.width, height: r.height };
+      }
+      scheduleRaf();
+    }, [disabled, scale, cardRef, scheduleRaf]);
+
+    const handlePointerMove = React.useCallback(
+      (e: React.PointerEvent<HTMLDivElement>) => {
+        if (disabled) return;
         const el = cardRef.current;
         if (!el) return;
-        const rect = el.getBoundingClientRect();
+        if (!rectRef.current) {
+          const r = el.getBoundingClientRect();
+          rectRef.current = { left: r.left, top: r.top, width: r.width, height: r.height };
+        }
+        const rect = rectRef.current;
+        if (!rect || rect.width <= 0 || rect.height <= 0) return;
+
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
 
-        // Normalised Euler coordinates [-1, 1]
-        const rotX = ((y / rect.height) - 0.5) * -maxTilt;
-        const rotY = ((x / rect.width) - 0.5) * maxTilt;
+        const normX = Math.max(-0.5, Math.min(0.5, x / rect.width - 0.5));
+        const normY = Math.max(-0.5, Math.min(0.5, y / rect.height - 0.5));
+        const sign = reverse ? -1 : 1;
 
-        setTransform(
-          \`perspective(\${perspective}px) rotateX(\${rotX.toFixed(2)}deg) rotateY(\${rotY.toFixed(2)}deg) scale3d(1.02, 1.02, 1.02)\`
-        );
+        const rawRotX = normY * -maxTilt * sign;
+        const rawRotY = normX * maxTilt * sign;
+
+        targetRotX.current = axis === 'y' ? 0 : rawRotX;
+        targetRotY.current = axis === 'x' ? 0 : rawRotY;
 
         if (glare) {
-          setGlarePos({
-            x: (x / rect.width) * 100,
-            y: (y / rect.height) * 100,
-            opacity: 0.35,
-          });
+          const clampedX = Math.max(0, Math.min(rect.width, x));
+          const clampedY = Math.max(0, Math.min(rect.height, y));
+          targetGlareX.current = (clampedX / rect.width) * 100;
+          targetGlareY.current = (clampedY / rect.height) * 100;
+          targetGlareOpacity.current = Math.max(0, Math.min(1, maxGlareOpacity));
         }
+
+        scheduleRaf();
       },
-      [maxTilt, perspective, glare, cardRef]
+      [disabled, maxTilt, reverse, axis, glare, maxGlareOpacity, cardRef, scheduleRaf]
     );
 
-    const handleMouseLeave = React.useCallback(() => {
-      setTransform(\`perspective(\${perspective}px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)\`);
-      setGlarePos((prev) => ({ ...prev, opacity: 0 }));
-    }, [perspective]);
+    const handlePointerLeave = React.useCallback(() => {
+      isHovered.current = false;
+      rectRef.current = null;
+      targetRotX.current = 0;
+      targetRotY.current = 0;
+      targetScale.current = 1;
+      targetGlareOpacity.current = 0;
+      scheduleRaf();
+    }, [scheduleRaf]);
+
+    React.useEffect(() => {
+      return () => {
+        if (rafIdRef.current !== null) {
+          cancelAnimationFrame(rafIdRef.current);
+          rafIdRef.current = null;
+        }
+      };
+    }, []);
 
     return (
       <div
         ref={cardRef}
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
+        onPointerEnter={handlePointerEnter}
+        onPointerMove={handlePointerMove}
+        onPointerLeave={handlePointerLeave}
         className={clsx('${defaultClass}', className)}
-        style={{ transform, ...style }}
+        style={{
+          transform: \`perspective(\${perspective}px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)\`,
+          ...style,
+        }}
         {...props}
       >
         {children}
         {glare && (
           <div
-            className="pointer-events-none absolute inset-0 transition-opacity duration-300"
-            style={{
-              opacity: glarePos.opacity,
-              background: \`radial-gradient(circle at \${glarePos.x}% \${glarePos.y}%, rgba(255,255,255,0.25), transparent 60%)\`,
-            }}
+            ref={glareRef}
+            className="pointer-events-none absolute inset-0 transition-opacity duration-150"
+            style={{ opacity: 0 }}
           />
         )}
       </div>

@@ -140,10 +140,40 @@ export interface TiltCardProps extends React.HTMLAttributes<HTMLDivElement> {
 	 */
 	perspective?: number;
 	/**
+	 * Scale factor applied on card hover.
+	 * Default: 1.02
+	 */
+	scale?: number;
+	/**
+	 * Spring damping response rate (0.05 - 0.30).
+	 * Default: 0.12
+	 */
+	speed?: number;
+	/**
 	 * Enable dynamic specular glare reflection.
 	 * Default: true
 	 */
 	glare?: boolean;
+	/**
+	 * Peak opacity of the specular glare reflection (0.0 - 1.0).
+	 * Default: 0.3
+	 */
+	maxGlareOpacity?: number;
+	/**
+	 * Invert tilt direction (tilts towards cursor when true).
+	 * Default: false
+	 */
+	reverse?: boolean;
+	/**
+	 * Programmatically disable tilt animations and glare.
+	 * Default: false
+	 */
+	disabled?: boolean;
+	/**
+	 * Constrain tilt rotation axis ('all' = 3D, 'x' = pitch only, 'y' = yaw only).
+	 * Default: 'all'
+	 */
+	axis?: 'all' | 'x' | 'y';
 	/**
 	 * Additional CSS class for card container
 	 */

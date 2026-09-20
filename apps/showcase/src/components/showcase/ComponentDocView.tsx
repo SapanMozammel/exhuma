@@ -55,9 +55,10 @@ const COMPONENT_PRESETS: Record<string, Record<string, Record<string, unknown>>>
 		'High Velocity': { itemGap: 32, speed: 1.8, cardWidth: 320, showProgress: true, showFadeEdges: true, fadeWidth: 64, mobileMode: 'scroll' },
 	},
 	'tilt-card': {
-		Default: { maxTilt: 20, perspective: 1000, glare: true },
-		'Subtle Glare': { maxTilt: 10, perspective: 1200, glare: true },
-		'Aggressive 3D': { maxTilt: 35, perspective: 800, glare: true },
+		Default: { maxTilt: 15, perspective: 1000, scale: 1.02, speed: 0.12, glare: true, maxGlareOpacity: 0.3, reverse: false, disabled: false, axis: 'all' },
+		'Subtle Glare': { maxTilt: 10, perspective: 1200, scale: 1.01, speed: 0.08, glare: true, maxGlareOpacity: 0.15, reverse: false, disabled: false, axis: 'all' },
+		'Aggressive 3D': { maxTilt: 30, perspective: 800, scale: 1.06, speed: 0.18, glare: true, maxGlareOpacity: 0.5, reverse: false, disabled: false, axis: 'all' },
+		'Magnetic Lift (Reverse)': { maxTilt: 20, perspective: 900, scale: 1.04, speed: 0.15, glare: true, maxGlareOpacity: 0.4, reverse: true, disabled: false, axis: 'all' },
 	},
 	'css-masonry': {
 		Default: { columns: 3, gap: 16 },
@@ -567,16 +568,28 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 
 		// 3. Tilt Card
 		if (component.slug === 'tilt-card') {
-			const maxTilt = Number(propValues.maxTilt ?? 20);
+			const maxTilt = Number(propValues.maxTilt ?? 15);
 			const perspective = Number(propValues.perspective ?? 1000);
+			const scale = Number(propValues.scale ?? 1.02);
+			const speed = Number(propValues.speed ?? 0.12);
 			const glare = Boolean(propValues.glare ?? true);
+			const maxGlareOpacity = Number(propValues.maxGlareOpacity ?? 0.3);
+			const reverse = Boolean(propValues.reverse ?? false);
+			const disabled = Boolean(propValues.disabled ?? false);
+			const axis = (propValues.axis as 'all' | 'x' | 'y') ?? 'all';
 
 			return (
 				<div className='flex items-center justify-center p-2 sm:p-6'>
 					<TiltCard
 						maxTilt={maxTilt}
 						perspective={perspective}
+						scale={scale}
+						speed={speed}
 						glare={glare}
+						maxGlareOpacity={maxGlareOpacity}
+						reverse={reverse}
+						disabled={disabled}
+						axis={axis}
 						className='bg-card/95 border-border/80 hover:border-foreground/40 w-full max-w-md cursor-pointer border p-5 shadow-2xl transition-colors sm:p-8'
 					>
 						<div className='mb-4 flex items-center justify-between'>
@@ -584,10 +597,10 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 							<span className='text-muted-foreground font-mono text-xs'>Max: {maxTilt}°</span>
 						</div>
 						<h4 className='text-foreground text-xl font-black tracking-tight sm:text-2xl'>Tactile 3D Tilt Card</h4>
-						<p className='text-muted-foreground mt-2 text-xs leading-relaxed'>Move pointer across surface. Calculated with 60 FPS spring ODE and zero layout re-renders.</p>
+						<p className='text-muted-foreground mt-2 text-xs leading-relaxed'>Move pointer across surface. Calculated with 120 FPS spring lerp and zero layout thrashing.</p>
 						<div className='border-border/70 text-muted-foreground mt-6 flex items-center justify-between border-t pt-4 font-mono text-xs'>
 							<span>Perspective: {perspective}px</span>
-							<span className='text-foreground/80 font-mono'>Compositor Native</span>
+							<span className='text-foreground/80 font-mono'>Scale: {scale}x</span>
 						</div>
 					</TiltCard>
 				</div>

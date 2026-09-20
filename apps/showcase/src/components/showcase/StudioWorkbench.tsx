@@ -399,25 +399,41 @@ export function StudioWorkbench({ initialSlug = 'stacking-cards' }: { initialSlu
 		}
 
 		if (selectedSlug === 'tilt-card') {
+			const maxTilt = Number(propValues.maxTilt ?? 15);
+			const perspective = Number(propValues.perspective ?? 1000);
+			const scale = Number(propValues.scale ?? 1.02);
+			const speed = Number(propValues.speed ?? 0.12);
+			const glare = Boolean(propValues.glare ?? true);
+			const maxGlareOpacity = Number(propValues.maxGlareOpacity ?? 0.3);
+			const reverse = Boolean(propValues.reverse ?? false);
+			const disabled = Boolean(propValues.disabled ?? false);
+			const axis = (propValues.axis as 'all' | 'x' | 'y') ?? 'all';
+
 			return (
 				<div className='flex items-center justify-center p-8'>
 					<TiltCard
-						maxTilt={Number(propValues.maxTilt ?? 15)}
-						perspective={Number(propValues.perspective ?? 1000)}
-						glare={Boolean(propValues.glare ?? true)}
+						maxTilt={maxTilt}
+						perspective={perspective}
+						scale={scale}
+						speed={speed}
+						glare={glare}
+						maxGlareOpacity={maxGlareOpacity}
+						reverse={reverse}
+						disabled={disabled}
+						axis={axis}
 						className='bg-card border-border w-full max-w-md cursor-pointer border p-8 shadow-2xl'
 					>
 						<div className='mb-4 flex items-center justify-between'>
 							<span className='kbd text-primary text-3xs font-bold'>3D PERSPECTIVE</span>
-							<span className='text-muted-foreground font-mono text-xs'>Max Tilt: {Number(propValues.maxTilt ?? 15)}°</span>
+							<span className='text-muted-foreground font-mono text-xs'>Max Tilt: {maxTilt}°</span>
 						</div>
 						<h4 className='text-foreground text-2xl font-black tracking-tight'>Tactile 3D Tilt Card</h4>
 						<p className='text-muted-foreground mt-2 text-xs leading-relaxed'>
-							Perspective: {Number(propValues.perspective ?? 1000)}px | Glare: {Boolean(propValues.glare ?? true) ? 'Active' : 'Disabled'}
+							Perspective: {perspective}px | Glare: {glare ? 'Active' : 'Disabled'} | Axis: {axis}
 						</p>
 						<div className='border-border text-muted-foreground mt-6 flex items-center justify-between border-t pt-4 font-mono text-xs'>
-							<span>Physics: Spring Math</span>
-							<span className='font-semibold text-emerald-500'>60 FPS Native</span>
+							<span>Physics: Spring Math ({speed})</span>
+							<span className='font-semibold text-emerald-500'>120 FPS Native</span>
 						</div>
 					</TiltCard>
 				</div>

@@ -15,6 +15,10 @@ export function generateComponentUsage(component: UniversalComponent, flavor: Ec
 		return getHorizontalScrollerUsage(flavor, props);
 	}
 
+	if (slug === 'tilt-card') {
+		return getTiltCardUsage(flavor, props);
+	}
+
 	return getGenericComponentUsage(component, flavor, props);
 }
 
@@ -1505,6 +1509,596 @@ class HorizontalScrollerScreen extends StatelessWidget {
 				language: 'tsx',
 				description: 'Standard usage snippet.',
 				code: `import { HorizontalScroller } from '@/components/ui/HorizontalScroller';\n\nexport default function Example() {\n  return (\n    <HorizontalScroller speed={${speed}} itemGap={${itemGap}} cardWidth="${cardWidth}">\n      <div>Service 1</div>\n      <div>Service 2</div>\n    </HorizontalScroller>\n  );\n}`,
+			};
+		}
+	}
+}
+
+function getTiltCardUsage(flavor: EcosystemFlavor, props: Record<string, unknown>): ComponentFilePayload {
+	const maxTilt = Number(props.maxTilt ?? 15);
+	const perspective = Number(props.perspective ?? 1000);
+	const scale = Number(props.scale ?? 1.02);
+	const speed = Number(props.speed ?? 0.12);
+	const glare = props.glare !== false;
+	const maxGlareOpacity = Number(props.maxGlareOpacity ?? 0.3);
+	const reverse = Boolean(props.reverse ?? false);
+	const disabled = Boolean(props.disabled ?? false);
+	const axis = (props.axis as string) ?? 'all';
+
+	switch (flavor) {
+		case 'nextjs': {
+			return {
+				filename: 'page.tsx',
+				language: 'tsx',
+				description: 'Next.js 15 (App Router) features page with Tactile 3D TiltCard.',
+				code: `'use client';
+
+import React from 'react';
+import { TiltCard } from '@/components/ui/TiltCard';
+
+export default function FeaturesPage() {
+  return (
+    <main className="min-h-screen bg-background text-foreground flex items-center justify-center p-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl w-full">
+        <TiltCard
+          maxTilt={${maxTilt}}
+          perspective={${perspective}}
+          scale={${scale}}
+          speed={${speed}}
+          glare={${glare}}
+          maxGlareOpacity={${maxGlareOpacity}}
+          reverse={${reverse}}
+          disabled={${disabled}}
+          axis="${axis}"
+          className="border border-border bg-card p-8 rounded-2xl shadow-xl hover:shadow-2xl transition-shadow"
+        >
+          <div className="flex items-center justify-between mb-4">
+            <span className="font-mono text-xs font-bold text-emerald-500 uppercase tracking-wider">
+              3D PERSPECTIVE
+            </span>
+            <span className="text-xs text-muted-foreground font-mono">Max: ${maxTilt}°</span>
+          </div>
+          <h3 className="text-2xl font-black tracking-tight">Kinetic 3D Card</h3>
+          <p className="text-sm text-muted-foreground mt-3 leading-relaxed">
+            Move cursor over this surface to experience hardware-accelerated 120 FPS spring lerp tilt physics with dynamic glare.
+          </p>
+          <div className="mt-6 pt-4 border-t border-border flex items-center justify-between font-mono text-xs text-muted-foreground">
+            <span>Perspective: ${perspective}px</span>
+            <span className="text-emerald-500 font-semibold">Ω(1) Latency</span>
+          </div>
+        </TiltCard>
+      </div>
+    </main>
+  );
+}
+`,
+			};
+		}
+
+		case 'react': {
+			return {
+				filename: 'App.tsx',
+				language: 'tsx',
+				description: 'React interactive tactile cards showcase with TiltCard.',
+				code: `import React from 'react';
+import { TiltCard } from '@/components/ui/TiltCard';
+
+export default function App() {
+  return (
+    <div className="min-h-screen bg-background text-foreground flex items-center justify-center p-8">
+      <TiltCard
+        maxTilt={${maxTilt}}
+        perspective={${perspective}}
+        scale={${scale}}
+        speed={${speed}}
+        glare={${glare}}
+        maxGlareOpacity={${maxGlareOpacity}}
+        reverse={${reverse}}
+        disabled={${disabled}}
+        axis="${axis}"
+        className="max-w-md w-full border border-border bg-card p-8 rounded-2xl shadow-2xl"
+      >
+        <span className="font-mono text-xs font-bold text-emerald-500 uppercase">
+          TACTILE GYROSCOPE
+        </span>
+        <h3 className="text-2xl font-black tracking-tight mt-2">Tactile 3D Tilt Card</h3>
+        <p className="text-sm text-muted-foreground mt-3 leading-relaxed">
+          Zero layout thrashing with cached bounding geometry and direct rAF transform updates.
+        </p>
+      </TiltCard>
+    </div>
+  );
+}
+`,
+			};
+		}
+
+		case 'vue': {
+			return {
+				filename: 'TiltCardDemo.vue',
+				language: 'vue',
+				description: 'Vue 3 Single File Component featuring TiltCard with dynamic specular glare.',
+				code: `<script setup lang="ts">
+import TiltCard from '@/components/ui/TiltCard.vue';
+</script>
+
+<template>
+  <main class="min-h-screen bg-background text-foreground flex items-center justify-center p-8">
+    <TiltCard
+      :max-tilt="${maxTilt}"
+      :perspective="${perspective}"
+      :scale="${scale}"
+      :speed="${speed}"
+      :glare="${glare}"
+      :max-glare-opacity="${maxGlareOpacity}"
+      :reverse="${reverse}"
+      :disabled="${disabled}"
+      axis="${axis}"
+      class="max-w-md w-full border border-border bg-card p-8 rounded-2xl shadow-2xl"
+    >
+      <div class="flex items-center justify-between mb-4">
+        <span class="font-mono text-xs font-bold text-emerald-500 uppercase">VUE 3 NATIVE</span>
+        <span class="text-xs text-muted-foreground font-mono">120 FPS</span>
+      </div>
+      <h3 class="text-2xl font-black tracking-tight">Tactile 3D Card</h3>
+      <p class="text-sm text-muted-foreground mt-3 leading-relaxed">
+        Interactive 3D mouse tracking with specular radial glare and Hermite spring dampening.
+      </p>
+    </TiltCard>
+  </main>
+</template>
+`,
+			};
+		}
+
+		case 'svelte': {
+			return {
+				filename: '+page.svelte',
+				language: 'svelte',
+				description: 'Svelte 5 page implementing native TiltCard physics.',
+				code: `<script lang="ts">
+  import TiltCard from '$lib/components/TiltCard.svelte';
+</script>
+
+<main class="min-h-screen bg-background text-foreground flex items-center justify-center p-8">
+  <TiltCard
+    maxTilt={${maxTilt}}
+    perspective={${perspective}}
+    scale={${scale}}
+    speed={${speed}}
+    glare={${glare}}
+    maxGlareOpacity={${maxGlareOpacity}}
+    reverse={${reverse}}
+    disabled={${disabled}}
+    axis="${axis}"
+    class="max-w-md w-full border border-border bg-card p-8 rounded-2xl shadow-2xl"
+  >
+    <div class="flex items-center justify-between mb-4">
+      <span class="font-mono text-xs font-bold text-emerald-500 uppercase">SVELTE 5 RUNES</span>
+      <span class="text-xs text-muted-foreground font-mono">${maxTilt}° MAX</span>
+    </div>
+    <h3 class="text-2xl font-black tracking-tight">Tactile 3D Card</h3>
+    <p class="text-sm text-muted-foreground mt-3 leading-relaxed">
+      Svelte 5 native reactive tilt with zero layout thrashing and smooth rAF matrix interpolation.
+    </p>
+  </TiltCard>
+</main>
+`,
+			};
+		}
+
+		case 'solid': {
+			return {
+				filename: 'App.tsx',
+				language: 'tsx',
+				description: 'SolidJS high-performance fine-grained reactive TiltCard demo.',
+				code: `import { TiltCard } from './components/TiltCard';
+
+export default function App() {
+  return (
+    <div class="min-h-screen bg-background text-foreground flex items-center justify-center p-8">
+      <TiltCard
+        maxTilt={${maxTilt}}
+        perspective={${perspective}}
+        scale={${scale}}
+        speed={${speed}}
+        glare={${glare}}
+        maxGlareOpacity={${maxGlareOpacity}}
+        reverse={${reverse}}
+        disabled={${disabled}}
+        axis="${axis}"
+        class="max-w-md w-full border border-border bg-card p-8 rounded-2xl shadow-2xl"
+      >
+        <span class="font-mono text-xs font-bold text-emerald-500 uppercase">SOLID FINE-GRAINED</span>
+        <h3 class="text-2xl font-black tracking-tight mt-2">Tactile 3D Card</h3>
+        <p class="text-sm text-muted-foreground mt-3 leading-relaxed">
+          Zero VDOM overhead with fine-grained DOM tracking and 120 FPS spring transitions.
+        </p>
+      </TiltCard>
+    </div>
+  );
+}
+`,
+			};
+		}
+
+		case 'angular': {
+			return {
+				filename: 'tilt-card-demo.component.ts',
+				language: 'typescript',
+				description: 'Angular 18+ standalone component integrating ExhumaTiltCardComponent.',
+				code: `import { Component } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { ExhumaTiltCardComponent } from './components/tilt-card.component';
+
+@Component({
+  selector: 'app-tilt-card-demo',
+  standalone: true,
+  imports: [CommonModule, ExhumaTiltCardComponent],
+  template: \`
+    <main class="min-h-screen bg-background text-foreground flex items-center justify-center p-8">
+      <exhuma-tilt-card
+        [maxTilt]="${maxTilt}"
+        [perspective]="${perspective}"
+        [scale]="${scale}"
+        [speed]="${speed}"
+        [glare]="${glare}"
+        [maxGlareOpacity]="${maxGlareOpacity}"
+        [reverse]="${reverse}"
+        [disabled]="${disabled}"
+        axis="${axis}"
+        class="max-w-md w-full border border-border bg-card p-8 rounded-2xl shadow-2xl"
+      >
+        <div class="flex items-center justify-between mb-4">
+          <span class="font-mono text-xs font-bold text-emerald-500 uppercase">ANGULAR 18+</span>
+          <span class="text-xs text-muted-foreground font-mono">STANDALONE</span>
+        </div>
+        <h3 class="text-2xl font-black tracking-tight">Tactile 3D Card</h3>
+        <p class="text-sm text-muted-foreground mt-3 leading-relaxed">
+          Angular standalone component with out-of-zone rAF animation avoiding change detection ticks.
+        </p>
+      </exhuma-tilt-card>
+    </main>
+  \`
+})
+export class TiltCardDemoComponent {}
+`,
+			};
+		}
+
+		case 'astro': {
+			return {
+				filename: 'index.astro',
+				language: 'astro',
+				description: 'Astro page using zero-JS baseline TiltCard with client hydration.',
+				code: `---
+import TiltCard from '@/components/ui/TiltCard.astro';
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Astro 3D Tilt Card</title>
+  </head>
+  <body class="min-h-screen bg-background text-foreground flex items-center justify-center p-8">
+    <TiltCard
+      maxTilt={${maxTilt}}
+      perspective={${perspective}}
+      scale={${scale}}
+      speed={${speed}}
+      glare={${glare}}
+      maxGlareOpacity={${maxGlareOpacity}}
+      reverse={${reverse}}
+      disabled={${disabled}}
+      axis="${axis}"
+      class="max-w-md w-full border border-border bg-card p-8 rounded-2xl shadow-2xl"
+    >
+      <span class="font-mono text-xs font-bold text-emerald-500 uppercase">ASTRO ISLAND</span>
+      <h3 class="text-2xl font-black tracking-tight mt-2">Tactile 3D Card</h3>
+      <p class="text-sm text-muted-foreground mt-3 leading-relaxed">
+        Zero unnecessary framework runtime. Lightweight client-side script hydrates interactive tilt.
+      </p>
+    </TiltCard>
+  </body>
+</html>
+`,
+			};
+		}
+
+		case 'blade': {
+			return {
+				filename: 'tilt-card-demo.blade.php',
+				language: 'php',
+				description: 'Laravel Blade template with kinetic Tilt Card component.',
+				code: `<div class="min-h-screen bg-slate-950 text-slate-100 flex items-center justify-center p-8">
+  <x-tilt-card
+    :max-tilt="${maxTilt}"
+    :perspective="${perspective}"
+    :scale="${scale}"
+    :speed="${speed}"
+    :glare="${glare ? 'true' : 'false'}"
+    :max-glare-opacity="${maxGlareOpacity}"
+    :reverse="${reverse ? 'true' : 'false'}"
+    :disabled="${disabled ? 'true' : 'false'}"
+    axis="${axis}"
+    class="max-w-md w-full border border-slate-800 bg-slate-900 p-8 rounded-2xl shadow-2xl"
+  >
+    <div class="flex items-center justify-between mb-4">
+      <span class="font-mono text-xs font-bold text-emerald-400 uppercase">LARAVEL BLADE</span>
+      <span class="text-xs text-slate-400 font-mono">120 FPS</span>
+    </div>
+    <h3 class="text-2xl font-black tracking-tight">Tactile 3D Tilt Card</h3>
+    <p class="text-sm text-slate-400 mt-3 leading-relaxed">
+      Server-rendered Blade component with pure Vanilla JS requestAnimationFrame tilt engine.
+    </p>
+  </x-tilt-card>
+</div>
+`,
+			};
+		}
+
+		case 'vanilla': {
+			return {
+				filename: 'index.html',
+				language: 'html',
+				description: 'Vanilla JS & HTML5 tactile tilt card with zero runtime overhead.',
+				code: `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tactile Tilt Card</title>
+  <style>
+    body { margin: 0; background: #090d16; color: #fff; min-height: 100vh; display: flex; align-items: center; justify-content: center; font-family: sans-serif; }
+    .tilt-card { position: relative; width: 380px; padding: 32px; background: #131c2e; border: 1px solid #223252; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); overflow: hidden; cursor: pointer; will-change: transform; }
+    .tag { font-family: monospace; font-size: 11px; font-weight: bold; color: #10b981; text-transform: uppercase; }
+    h3 { margin: 12px 0 8px; font-size: 24px; font-weight: 900; }
+    p { margin: 0; font-size: 14px; color: #94a3b8; line-height: 1.6; }
+  </style>
+</head>
+<body>
+  <div
+    class="tilt-card"
+    data-exhuma-tilt-card
+    data-max-tilt="${maxTilt}"
+    data-perspective="${perspective}"
+    data-scale="${scale}"
+    data-speed="${speed}"
+    data-glare="${glare}"
+    data-max-glare-opacity="${maxGlareOpacity}"
+    data-reverse="${reverse}"
+    data-disabled="${disabled}"
+    data-axis="${axis}"
+  >
+    <div class="tag">VANILLA JS // 120 FPS</div>
+    <h3>Tactile 3D Tilt Card</h3>
+    <p>Zero dependencies, zero layout thrashing, and high-frequency spring lerp Euler rotations.</p>
+  </div>
+
+  <script type="module">
+    import { initTiltCard } from './tilt-card.vanilla.js';
+    initTiltCard('.tilt-card', {
+      maxTilt: ${maxTilt},
+      perspective: ${perspective},
+      scale: ${scale},
+      speed: ${speed},
+      glare: ${glare},
+      maxGlareOpacity: ${maxGlareOpacity},
+      reverse: ${reverse},
+      disabled: ${disabled},
+      axis: '${axis}',
+    });
+  </script>
+</body>
+</html>
+`,
+			};
+		}
+
+		case 'wordpress': {
+			return {
+				filename: 'render.php',
+				language: 'php',
+				description: 'WordPress Gutenberg block rendering dynamic 3D tilt card.',
+				code: `<?php
+/**
+ * TiltCard Block Render Template
+ */
+$max_tilt = $attributes['maxTilt'] ?? ${maxTilt};
+$perspective = $attributes['perspective'] ?? ${perspective};
+$scale = $attributes['scale'] ?? ${scale};
+$speed = $attributes['speed'] ?? ${speed};
+$glare = ($attributes['glare'] ?? ${glare}) ? 'true' : 'false';
+$max_glare_opacity = $attributes['maxGlareOpacity'] ?? ${maxGlareOpacity};
+$reverse = ($attributes['reverse'] ?? ${reverse}) ? 'true' : 'false';
+$disabled = ($attributes['disabled'] ?? ${disabled}) ? 'true' : 'false';
+$axis = $attributes['axis'] ?? '${axis}';
+$wrapper_attributes = get_block_wrapper_attributes([
+    'class' => 'exhuma-tilt-card',
+    'data-exhuma-tilt-card' => '',
+    'data-max-tilt' => $max_tilt,
+    'data-perspective' => $perspective,
+    'data-scale' => $scale,
+    'data-speed' => $speed,
+    'data-glare' => $glare,
+    'data-max-glare-opacity' => $max_glare_opacity,
+    'data-reverse' => $reverse,
+    'data-disabled' => $disabled,
+    'data-axis' => $axis,
+]);
+?>
+<div <?php echo $wrapper_attributes; ?>>
+  <div class="exhuma-tilt-card-content">
+    <?php echo $content; ?>
+  </div>
+</div>
+`,
+			};
+		}
+
+		case 'webcomponent': {
+			return {
+				filename: 'index.html',
+				language: 'html',
+				description: 'Framework-agnostic HTML implementing <exhuma-tilt-card> custom element.',
+				code: `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Universal Web Component: TiltCard</title>
+  <script type="module" src="./exhuma-tilt-card.js"></script>
+  <style>
+    body { margin: 0; background: #090d16; color: #fff; min-height: 100vh; display: flex; align-items: center; justify-content: center; font-family: sans-serif; }
+    exhuma-tilt-card { display: block; width: 380px; padding: 32px; background: #131c2e; border: 1px solid #223252; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); cursor: pointer; }
+    .tag { font-family: monospace; font-size: 11px; font-weight: bold; color: #10b981; text-transform: uppercase; }
+    h3 { margin: 12px 0 8px; font-size: 24px; font-weight: 900; }
+    p { margin: 0; font-size: 14px; color: #94a3b8; line-height: 1.6; }
+  </style>
+</head>
+<body>
+  <exhuma-tilt-card
+    max-tilt="${maxTilt}"
+    perspective="${perspective}"
+    scale="${scale}"
+    speed="${speed}"
+    glare="${glare}"
+    max-glare-opacity="${maxGlareOpacity}"
+    reverse="${reverse}"
+    disabled="${disabled}"
+    axis="${axis}"
+  >
+    <div class="tag">WEB COMPONENT // STANDALONE</div>
+    <h3>Tactile 3D Tilt Card</h3>
+    <p>Works everywhere: React, Vue, Svelte, Angular, PHP, or plain static HTML pages.</p>
+  </exhuma-tilt-card>
+</body>
+</html>
+`,
+			};
+		}
+
+		case 'react-native': {
+			return {
+				filename: 'App.tsx',
+				language: 'tsx',
+				description: 'React Native / Expo screen with hardware-accelerated 3D tilt gesture physics.',
+				code: `import React from 'react';
+import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
+import { TiltCard } from './components/TiltCard';
+
+export default function App() {
+  return (
+    <SafeAreaView style={styles.container}>
+      <TiltCard
+        maxTilt={${maxTilt}}
+        perspective={${perspective}}
+        scale={${scale}}
+        speed={${speed}}
+        glare={${glare}}
+        maxGlareOpacity={${maxGlareOpacity}}
+        reverse={${reverse}}
+        disabled={${disabled}}
+        axis="${axis}"
+      >
+        <View style={styles.card}>
+          <Text style={styles.tag}>REACT NATIVE // EXPO</Text>
+          <Text style={styles.title}>Tactile 3D Tilt Card</Text>
+          <Text style={styles.desc}>
+            Smooth 3D Euler matrix rotation driven by Animated responder physics.
+          </Text>
+        </View>
+      </TiltCard>
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: '#090d16', alignItems: 'center', justifyContent: 'center', padding: 20 },
+  card: { padding: 28, borderRadius: 20, backgroundColor: '#131c2e', borderWidth: 1, borderColor: '#223252', width: 340 },
+  tag: { fontSize: 11, fontFamily: 'monospace', color: '#10b981', fontWeight: 'bold' },
+  title: { fontSize: 22, fontWeight: 'bold', color: '#fff', marginTop: 8 },
+  desc: { fontSize: 14, color: '#94a3b8', marginTop: 8, lineHeight: 20 },
+});
+`,
+			};
+		}
+
+		case 'flutter': {
+			return {
+				filename: 'tilt_card_screen.dart',
+				language: 'dart',
+				description: 'Flutter screen utilizing ExhumaTiltCard 3D perspective widget.',
+				code: `import 'package:flutter/material.dart';
+import 'tilt_card.dart';
+
+class TiltCardScreen extends StatelessWidget {
+  const TiltCardScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: const Color(0xFF090D16),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: ExhumaTiltCard(
+            maxTilt: ${maxTilt}.0,
+            perspective: ${perspective}.0,
+            scale: ${scale},
+            speed: ${speed},
+            glare: ${glare},
+            maxGlareOpacity: ${maxGlareOpacity},
+            reverse: ${reverse},
+            disabled: ${disabled},
+            axis: '${axis}',
+            child: Container(
+              width: 360,
+              padding: const EdgeInsets.all(32.0),
+              decoration: BoxDecoration(
+                color: const Color(0xFF131C2E),
+                borderRadius: BorderRadius.circular(20.0),
+                border: Border.all(color: const Color(0xFF223252)),
+                boxShadow: const [
+                  BoxShadow(blurRadius: 24, color: Colors.black54, offset: Offset(0, 12))
+                ],
+              ),
+              child: const Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'FLUTTER // 120 FPS',
+                    style: TextStyle(fontSize: 11, color: Color(0xFF10B981), fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(height: 8),
+                  Text(
+                    'Tactile 3D Tilt Card',
+                    style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.white),
+                  ),
+                  SizedBox(height: 12),
+                  Text(
+                    'Interactive Matrix4 3D perspective transform with smooth spring damping.',
+                    style: TextStyle(fontSize: 14, color: Color(0xFF94A3B8), height: 1.5),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+`,
+			};
+		}
+
+		default: {
+			return {
+				filename: 'usage.tsx',
+				language: 'tsx',
+				description: 'Standard usage snippet.',
+				code: `import { TiltCard } from '@/components/ui/TiltCard';\n\nexport default function Example() {\n  return (\n    <TiltCard maxTilt={${maxTilt}} perspective={${perspective}}>\n      <div>Tilt Card Content</div>\n    </TiltCard>\n  );\n}`,
 			};
 		}
 	}
