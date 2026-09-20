@@ -1,7 +1,12 @@
 # Universal Component Platform & Registry
 
-Task schema: 1 Status: in_progress Owner: Sapan Mozammel Risk: medium Workflow: .ai/core/workflows/implementation.md Dependencies: none Owned files: apps/, packages/, docs/, tooling/, tests/, .ai/, .agents/, .cursor/,
-.github/, .husky/, package.json, tsconfig.json
+Task schema: 1
+Status: in_progress
+Owner: Sapan Mozammel
+Risk: medium
+Workflow: .ai/core/workflows/implementation.md
+Dependencies: none
+Owned files: apps/, packages/, docs/, tooling/, tests/, .ai/, .agents/, .cursor/, .github/, .husky/, package.json, tsconfig.json
 
 ## Objective
 

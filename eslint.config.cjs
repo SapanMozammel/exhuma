@@ -143,6 +143,18 @@ module.exports = (async () => {
 			},
 		},
 
+		// CLI binaries and build tooling — console output is required for terminal user interfaces
+		{
+			files: [
+				'packages/cli/**/*.ts',
+				'packages/create-exhuma/**/*.ts',
+				'tooling/**/*.ts',
+			],
+			rules: {
+				'no-console': 'off',
+			},
+		},
+
 		// JS files — no typed linting
 		{
 			files: ['**/*.js', '**/*.mjs', '**/*.cjs'],
@@ -180,7 +192,19 @@ module.exports = (async () => {
 
 		// Ignores
 		{
-			ignores: ['node_modules/**', '.next/**', 'out/**', 'build/**', 'dist/**', '**/*.min.js', '**/*.min.css', 'coverage/**', '.cache/**', 'public/**', 'src/types/graphql/**'],
+			ignores: [
+				'node_modules/**',
+				'.next/**',
+				'out/**',
+				'build/**',
+				'dist/**',
+				'**/*.min.js',
+				'**/*.min.css',
+				'coverage/**',
+				'.cache/**',
+				'public/**',
+				'src/types/graphql/**',
+			],
 		},
 	];
 })();
