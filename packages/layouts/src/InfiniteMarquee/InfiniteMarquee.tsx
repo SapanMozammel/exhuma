@@ -101,9 +101,7 @@ export const InfiniteMarquee: React.FC<InfiniteMarqueeProps> & {
 		if (typeof document !== 'undefined') {
 			return (
 				document.documentElement.classList.contains('dark') ||
-				(!document.documentElement.classList.contains('light') &&
-					typeof window !== 'undefined' &&
-					window.matchMedia?.('(prefers-color-scheme: dark)').matches)
+				(!document.documentElement.classList.contains('light') && typeof window !== 'undefined' && window.matchMedia?.('(prefers-color-scheme: dark)').matches)
 			);
 		}
 		return false;
@@ -140,12 +138,13 @@ export const InfiniteMarquee: React.FC<InfiniteMarqueeProps> & {
 
 	const useColorOverlay = Boolean(showFadeEdges && resolvedFadeColor && resolvedFadeColor.trim() !== '');
 
-	const maskStyle: React.CSSProperties = showFadeEdges && !useColorOverlay
-		? {
-				maskImage: `linear-gradient(to right, transparent, black ${fadeWidth}px, black calc(100% - ${fadeWidth}px), transparent)`,
-				WebkitMaskImage: `linear-gradient(to right, transparent, black ${fadeWidth}px, black calc(100% - ${fadeWidth}px), transparent)`,
-		  }
-		: {};
+	const maskStyle: React.CSSProperties =
+		showFadeEdges && !useColorOverlay
+			? {
+					maskImage: `linear-gradient(to right, transparent, black ${fadeWidth}px, black calc(100% - ${fadeWidth}px), transparent)`,
+					WebkitMaskImage: `linear-gradient(to right, transparent, black ${fadeWidth}px, black calc(100% - ${fadeWidth}px), transparent)`,
+				}
+			: {};
 
 	return (
 		<div

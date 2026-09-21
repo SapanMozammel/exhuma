@@ -89,9 +89,7 @@ export const HorizontalScroller: React.FC<HorizontalScrollerProps> = ({
 		if (typeof document !== 'undefined') {
 			return (
 				document.documentElement.classList.contains('dark') ||
-				(!document.documentElement.classList.contains('light') &&
-					typeof window !== 'undefined' &&
-					window.matchMedia?.('(prefers-color-scheme: dark)').matches)
+				(!document.documentElement.classList.contains('light') && typeof window !== 'undefined' && window.matchMedia?.('(prefers-color-scheme: dark)').matches)
 			);
 		}
 		return false;

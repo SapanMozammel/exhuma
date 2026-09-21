@@ -1,10 +1,6 @@
 import { ComponentFilePayload, EcosystemFlavor } from '../../schema';
 
-export function getHorizontalScrollerOuterFiles(
-	flavor: EcosystemFlavor,
-	props: Record<string, unknown>,
-	isEjected: boolean
-): ComponentFilePayload[] | null {
+export function getHorizontalScrollerOuterFiles(flavor: EcosystemFlavor, props: Record<string, unknown>, isEjected: boolean): ComponentFilePayload[] | null {
 	const speed = Number(props.speed ?? 1.0);
 	const itemGap = Number(props.itemGap ?? 28);
 	const cardWidth = typeof props.cardWidth === 'number' ? props.cardWidth : Number(props.cardWidth ?? 320);
@@ -24,8 +20,7 @@ export function getHorizontalScrollerOuterFiles(
 				{
 					filename: 'HorizontalScroller.tsx',
 					language: 'tsx',
-					description:
-						'HorizontalScroller — Standalone Ejected Engine (Zero Dependencies). Pinned kinetic camera with 1:1 vertical-to-horizontal mapping (Brix Agency architecture).',
+					description: 'HorizontalScroller — Standalone Ejected Engine (Zero Dependencies). Pinned kinetic camera with 1:1 vertical-to-horizontal mapping (Brix Agency architecture).',
 					code: `${isNext ? "'use client';\n\n" : ''}import * as React from 'react';
 import { clsx } from 'clsx';
 
