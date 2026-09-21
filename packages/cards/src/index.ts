@@ -10,7 +10,7 @@ export { BorderBeam } from './BorderBeam/BorderBeam';
 export { CardSwipeStack } from './CardSwipeStack/CardSwipeStack';
 export { calculateCardRotation, evaluateSwipeDecision, calculateStackedCardTransform, calculateFlingDuration, calculateElasticDamping, SwipeVelocityRingBuffer } from './CardSwipeStack/swipe-math';
 export { ComparisonSlider } from './ComparisonSlider/ComparisonSlider';
-export { calculateSplitPosition, generateClipPath, stepSliderPosition } from './ComparisonSlider/slider-math';
+export { calculateSplitPosition, calculateVerticalSplitPosition, generateClipPath, generateVerticalClipPath, stepSliderPosition } from './ComparisonSlider/slider-math';
 export { ExpandableCard, ExpandableRoot, ExpandableTrigger, ExpandableContent, ExpandableClose } from './ExpandableCard/ExpandableCard';
 export { calculateFLIPDelta, generateInvertTransform } from './ExpandableCard/flip-math';
 export type { HorizontalScrollerProps, StackingCardItemProps, StackingCardsProps, TiltCardProps, SpotlightCardProps, BorderBeamProps, CardSwipeStackProps, ComparisonSliderProps, ExpandableCardProps } from './types';

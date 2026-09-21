@@ -174,14 +174,18 @@ const COMPONENT_PRESETS: Record<string, Record<string, Record<string, unknown>>>
 		'Free Swipe': { thresholdDistance: 120, maxRotation: 20, scaleStep: 0.05, offsetStep: 14, preventLastCardDismiss: false },
 	},
 	'comparison-slider': {
-		Default: { defaultPosition: 0.5, step: 0.05 },
-		SplitQuarter: { defaultPosition: 0.25, step: 0.05 },
-		SplitThreeQuarters: { defaultPosition: 0.75, step: 0.05 },
+		Default: { defaultPosition: 0.5, step: 0.05, orientation: 'horizontal' },
+		'Split 25/75': { defaultPosition: 0.25, step: 0.05, orientation: 'horizontal' },
+		'Split 75/25': { defaultPosition: 0.75, step: 0.05, orientation: 'horizontal' },
+		'Micro Precision': { defaultPosition: 0.5, step: 0.01, orientation: 'horizontal' },
+		'Rapid Step': { defaultPosition: 0.5, step: 0.1, orientation: 'horizontal' },
+		'Vertical Split': { defaultPosition: 0.5, step: 0.05, orientation: 'vertical' },
 	},
 	'expandable-card': {
 		Default: { duration: 360 },
-		Fast: { duration: 240 },
+		Snappy: { duration: 220 },
 		Cinematic: { duration: 480 },
+		'Ultra Fast': { duration: 160 },
 	},
 	'cursor-tooltip': {
 		Default: { springDamping: 22 },
@@ -970,11 +974,15 @@ export function StudioWorkbench({ initialSlug = 'stacking-cards' }: { initialSlu
 
 		if (selectedSlug === 'comparison-slider') {
 			const defaultPosition = Number(propValues.defaultPosition ?? 0.5);
+			const step = Number(propValues.step ?? 0.05);
+			const orientation = (propValues.orientation as 'horizontal' | 'vertical') ?? 'horizontal';
 			return (
 				<div className='mx-auto w-full max-w-md py-4'>
 					<ComparisonSlider
 						aspectRatio='16/10'
 						defaultPosition={defaultPosition}
+						step={step}
+						orientation={orientation}
 						before={
 							<div className='flex size-full flex-col justify-between bg-linear-to-br from-indigo-950 via-purple-950 to-slate-900 p-6 text-white'>
 								<span className='kbd text-3xs self-start bg-white/20 text-white'>ORIGINAL MOCKUP</span>
@@ -999,9 +1007,11 @@ export function StudioWorkbench({ initialSlug = 'stacking-cards' }: { initialSlu
 		}
 
 		if (selectedSlug === 'expandable-card') {
+			const duration = Number(propValues.duration ?? 360);
 			return (
 				<div className='mx-auto w-full max-w-sm py-4'>
 					<ExpandableCard
+						duration={duration}
 						cardContent={
 							<div className='border-border bg-card hover:border-primary/50 rounded-2xl border p-6 shadow-lg transition-all'>
 								<span className='kbd text-primary text-3xs'>CLICK TO EXPAND</span>

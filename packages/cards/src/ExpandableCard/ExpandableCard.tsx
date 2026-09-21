@@ -6,6 +6,8 @@ import { calculateFLIPDelta, generateInvertTransform, type DOMRectSnapshot } fro
 
 interface ExpandableContextValue {
 	isExpanded: boolean;
+	isClosing: boolean;
+	duration: number;
 	open: () => void;
 	close: () => void;
 	triggerRef: React.RefObject<HTMLDivElement | null>;
@@ -18,6 +20,7 @@ export interface ExpandableCardProps {
 	children?: ReactNode;
 	cardContent?: ReactNode;
 	expandedContent?: ReactNode;
+	duration?: number;
 	className?: string;
 	expandedClassName?: string;
 	onOpenChange?: (open: boolean) => void;
@@ -27,22 +30,28 @@ export interface ExpandableCardProps {
  * ExpandableCard — Exhuma Kinetic Methodology (EKM)
  *
  * Big-Omega (Ω) Guarantees:
- * - Mathematical FLIP morphing algorithm (ZERO Framer Motion).
+ * - Mathematical bidirectional FLIP morphing algorithm (ZERO Framer Motion).
  * - Single layout snapshot: zero layout thrashing during transition.
- * - Hardware-accelerated GPU translate3d and scale morphing.
- * - Accessible modal dialog with Escape dismissal and aria attributes.
+ * - Hardware-accelerated GPU translate3d and scale morphing with reverse collapse.
+ * - Accessible modal dialog with Escape dismissal, focus management, and WAI-ARIA semantics.
  */
 export const ExpandableCard: React.FC<ExpandableCardProps> & {
 	Root: typeof ExpandableRoot;
 	Trigger: typeof ExpandableTrigger;
 	Content: typeof ExpandableContent;
 	Close: typeof ExpandableClose;
-} = ({ children, cardContent, expandedContent, className = '', expandedClassName = '', onOpenChange }) => {
+} = ({ children, cardContent, expandedContent, duration = 360, className = '', expandedClassName = '', onOpenChange }) => {
 	const [isExpanded, setIsExpanded] = useState(false);
+	const [isClosing, setIsClosing] = useState(false);
 	const triggerRef = useRef<HTMLDivElement | null>(null);
 	const firstRectRef = useRef<DOMRectSnapshot | null>(null);
+	const closeTimerRef = useRef<NodeJS.Timeout | null>(null);
 
 	const open = useCallback(() => {
+		if (closeTimerRef.current) {
+			clearTimeout(closeTimerRef.current);
+			closeTimerRef.current = null;
+		}
 		if (triggerRef.current) {
 			const rect = triggerRef.current.getBoundingClientRect();
 			firstRectRef.current = {
@@ -52,19 +61,37 @@ export const ExpandableCard: React.FC<ExpandableCardProps> & {
 				height: rect.height,
 			};
 		}
+		setIsClosing(false);
 		setIsExpanded(true);
 		onOpenChange?.(true);
 	}, [onOpenChange]);
 
 	const close = useCallback(() => {
-		setIsExpanded(false);
-		onOpenChange?.(false);
-	}, [onOpenChange]);
+		if (isClosing) return;
+		setIsClosing(true);
+		// Allow exit animation to run for `duration` ms before unmounting
+		closeTimerRef.current = setTimeout(() => {
+			setIsExpanded(false);
+			setIsClosing(false);
+			onOpenChange?.(false);
+			closeTimerRef.current = null;
+			// Return focus to trigger element for accessibility
+			triggerRef.current?.focus();
+		}, duration);
+	}, [duration, isClosing, onOpenChange]);
+
+	useEffect(() => {
+		return () => {
+			if (closeTimerRef.current) {
+				clearTimeout(closeTimerRef.current);
+			}
+		};
+	}, []);
 
 	// If using shorthand props
 	if (cardContent && expandedContent) {
 		return (
-			<ExpandableRoot isExpanded={isExpanded} open={open} close={close} triggerRef={triggerRef} firstRectRef={firstRectRef}>
+			<ExpandableRoot isExpanded={isExpanded} isClosing={isClosing} duration={duration} open={open} close={close} triggerRef={triggerRef} firstRectRef={firstRectRef}>
 				<ExpandableTrigger className={className}>{cardContent}</ExpandableTrigger>
 				<ExpandableContent className={expandedClassName}>
 					<div className='relative'>
@@ -77,7 +104,7 @@ export const ExpandableCard: React.FC<ExpandableCardProps> & {
 	}
 
 	return (
-		<ExpandableRoot isExpanded={isExpanded} open={open} close={close} triggerRef={triggerRef} firstRectRef={firstRectRef}>
+		<ExpandableRoot isExpanded={isExpanded} isClosing={isClosing} duration={duration} open={open} close={close} triggerRef={triggerRef} firstRectRef={firstRectRef}>
 			{children}
 		</ExpandableRoot>
 	);
@@ -86,6 +113,8 @@ export const ExpandableCard: React.FC<ExpandableCardProps> & {
 export function ExpandableRoot({
 	children,
 	isExpanded,
+	isClosing,
+	duration,
 	open,
 	close,
 	triggerRef,
@@ -93,12 +122,14 @@ export function ExpandableRoot({
 }: {
 	children: ReactNode;
 	isExpanded: boolean;
+	isClosing: boolean;
+	duration: number;
 	open: () => void;
 	close: () => void;
 	triggerRef: React.RefObject<HTMLDivElement | null>;
 	firstRectRef: React.MutableRefObject<DOMRectSnapshot | null>;
 }) {
-	return <ExpandableContext.Provider value={{ isExpanded, open, close, triggerRef, firstRectRef }}>{children}</ExpandableContext.Provider>;
+	return <ExpandableContext.Provider value={{ isExpanded, isClosing, duration, open, close, triggerRef, firstRectRef }}>{children}</ExpandableContext.Provider>;
 }
 
 export const ExpandableTrigger = memo<React.HTMLAttributes<HTMLDivElement>>(({ children, className = '', onClick, ...props }) => {
@@ -136,14 +167,16 @@ export const ExpandableContent = memo<React.HTMLAttributes<HTMLDivElement>>(({ c
 	if (!ctx) throw new Error('ExpandableContent must be used within ExpandableCard');
 
 	const modalRef = useRef<HTMLDivElement>(null);
+	const backdropRef = useRef<HTMLDivElement>(null);
 	const [mounted, setMounted] = useState(false);
+	const invertTransformRef = useRef<string>('translate3d(0, 0, 0) scale(1, 1)');
 
 	useEffect(() => {
 		setMounted(true);
 	}, []);
 
 	// Keyboard Escape handler
-	const { isExpanded, close } = ctx;
+	const { isExpanded, isClosing, duration, close } = ctx;
 	useEffect(() => {
 		if (!isExpanded) return;
 		const onKeyDown = (e: KeyboardEvent) => {
@@ -153,38 +186,79 @@ export const ExpandableContent = memo<React.HTMLAttributes<HTMLDivElement>>(({ c
 		return () => window.removeEventListener('keydown', onKeyDown);
 	}, [isExpanded, close]);
 
-	// FLIP animation execution
+	// FLIP animation execution on open
 	useLayoutEffect(() => {
-		if (!ctx.isExpanded || !modalRef.current || !ctx.firstRectRef.current) return;
+		if (!ctx.isExpanded || isClosing || !modalRef.current || !ctx.firstRectRef.current) return;
 
 		const modal = modalRef.current;
+		const backdrop = backdropRef.current;
 		const lastRect = modal.getBoundingClientRect();
 		const firstRect = ctx.firstRectRef.current;
 
 		const delta = calculateFLIPDelta(firstRect, lastRect);
 		const invertTransform = generateInvertTransform(delta);
+		invertTransformRef.current = invertTransform;
 
 		// INVERT: apply instantaneous transform before paint
 		modal.style.transformOrigin = 'top left';
 		modal.style.transform = invertTransform;
+		modal.style.opacity = '0.7';
 		modal.style.transition = 'none';
 
-		// PLAY: force reflow then animate to target
+		if (backdrop) {
+			backdrop.style.opacity = '0';
+			backdrop.style.transition = 'none';
+		}
+
+		// PLAY: animate to final centered state
 		requestAnimationFrame(() => {
-			modal.style.transition = 'transform 360ms cubic-bezier(0.16, 1, 0.3, 1), opacity 280ms ease';
-			modal.style.transform = 'translate3d(0, 0, 0) scale(1, 1)';
+			requestAnimationFrame(() => {
+				modal.style.transition = `transform ${duration}ms cubic-bezier(0.16, 1, 0.3, 1), opacity ${Math.round(duration * 0.8)}ms ease`;
+				modal.style.transform = 'translate3d(0, 0, 0) scale(1, 1)';
+				modal.style.opacity = '1';
+
+				if (backdrop) {
+					backdrop.style.transition = `opacity ${duration}ms ease`;
+					backdrop.style.opacity = '1';
+				}
+			});
 		});
-	}, [ctx.isExpanded, ctx.firstRectRef]);
+	}, [ctx.isExpanded, isClosing, duration, ctx.firstRectRef]);
+
+	// Reverse FLIP animation on close
+	useEffect(() => {
+		if (!isClosing || !modalRef.current) return;
+
+		const modal = modalRef.current;
+		const backdrop = backdropRef.current;
+
+		modal.style.transition = `transform ${duration}ms cubic-bezier(0.16, 1, 0.3, 1), opacity ${Math.round(duration * 0.7)}ms ease`;
+		modal.style.transform = invertTransformRef.current;
+		modal.style.opacity = '0';
+
+		if (backdrop) {
+			backdrop.style.transition = `opacity ${duration}ms ease`;
+			backdrop.style.opacity = '0';
+		}
+	}, [isClosing, duration]);
 
 	if (!mounted || !ctx.isExpanded) return null;
 
 	return createPortal(
 		<div className='fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6' role='dialog' aria-modal='true'>
 			{/* Backdrop */}
-			<div className='animate-in fade-in fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300' onClick={ctx.close} />
+			<div
+				ref={backdropRef}
+				className='fixed inset-0 bg-black/60 backdrop-blur-sm'
+				onClick={ctx.close}
+			/>
 
 			{/* Modal Container */}
-			<div ref={modalRef} className={`border-border bg-card relative z-10 w-full max-w-xl overflow-hidden rounded-2xl border p-6 shadow-2xl ${className}`} {...props}>
+			<div
+				ref={modalRef}
+				className={`border-border bg-card relative z-10 w-full max-w-xl overflow-hidden rounded-2xl border p-6 shadow-2xl will-change-transform ${className}`}
+				{...props}
+			>
 				{children}
 			</div>
 		</div>,
@@ -205,7 +279,7 @@ export const ExpandableClose = memo<React.ButtonHTMLAttributes<HTMLButtonElement
 				ctx.close();
 				onClick?.(e);
 			}}
-			className={`border-border bg-card/80 text-muted-foreground hover:text-foreground flex h-8 w-8 items-center justify-center rounded-full border transition-colors ${className}`}
+			className={`border-border bg-card/80 text-muted-foreground hover:text-foreground flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border transition-colors ${className}`}
 			{...props}
 		>
 			{children || (

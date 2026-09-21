@@ -39,6 +39,8 @@ describe('Exhuma CLI Suite — Automated End-to-End Test Gate', () => {
     expect(stdout).toContain('auto-grid');
     expect(stdout).toContain('tilt-card');
     expect(stdout).toContain('spotlight-card');
+    expect(stdout).toContain('comparison-slider');
+    expect(stdout).toContain('expandable-card');
     expect(stdout).toContain('react • nextjs • vue • svelte • angular • solid • astro • blade • vanilla • wordpress • webcomponent • react-native • flutter');
   });
 
@@ -103,6 +105,25 @@ describe('Exhuma CLI Suite — Automated End-to-End Test Gate', () => {
     const code = readFileSync(componentPath, 'utf8');
     expect(code).toContain('CardSwipeStack');
     expect(code).toContain('min-h-[14.5rem]');
+  });
+
+  it('installs real Comparison Slider component via exhuma add', () => {
+    execSync(`node "${CLI_BIN}" add comparison-slider --flavor=react --yes`, { cwd: TEST_DIR });
+    const componentPath = resolve(TEST_DIR, 'src/lib/components/ComparisonSlider.tsx');
+    expect(existsSync(componentPath)).toBe(true);
+
+    const code = readFileSync(componentPath, 'utf8');
+    expect(code).toContain('ComparisonSlider');
+    expect(code).toContain('ComparisonSliderPrimitive');
+  });
+
+  it('installs real Expandable Card component via exhuma add', () => {
+    execSync(`node "${CLI_BIN}" add expandable-card --flavor=react --yes`, { cwd: TEST_DIR });
+    const componentPath = resolve(TEST_DIR, 'src/lib/components/ExpandableCard.tsx');
+    expect(existsSync(componentPath)).toBe(true);
+
+    const code = readFileSync(componentPath, 'utf8');
+    expect(code).toContain('ExpandableCard');
   });
 
   it('executes exhuma build to generate static registry JSON', () => {
