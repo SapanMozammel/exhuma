@@ -1,4 +1,7 @@
 import { ComponentFilePayload, EcosystemFlavor } from '../schema';
+import { getComparisonSliderOuterFiles } from './generators/comparison-slider-generator';
+import { getExpandableCardOuterFiles } from './generators/expandable-card-generator';
+import { getCardSwipeStackOuterFiles } from './generators/card-swipe-stack-generator';
 
 export interface CompoundPart {
 	name: string;
@@ -31,6 +34,21 @@ export function generateOuterLayerFiles(spec: ComponentOuterSpec, flavor: Ecosys
 	} = spec;
 
 	const isEjected = options?.eject === true;
+
+	if (slug === 'comparison-slider') {
+		const files = getComparisonSliderOuterFiles(flavor, props, isEjected);
+		if (files) return files;
+	}
+
+	if (slug === 'expandable-card') {
+		const files = getExpandableCardOuterFiles(flavor, props, isEjected);
+		if (files) return files;
+	}
+
+	if (slug === 'card-swipe-stack') {
+		const files = getCardSwipeStackOuterFiles(flavor, props, isEjected);
+		if (files) return files;
+	}
 
 	switch (flavor) {
 		case 'react':
