@@ -58,7 +58,7 @@ const COLOR_PRESETS = [
 	{ label: 'White', value: '#ffffff' },
 ];
 
-function toHexColor(color: unknown, fallback = '#6366f1'): string {
+function toHexColor(color: unknown, fallback = '#ffffff'): string {
 	if (typeof color !== 'string') return fallback;
 	const str = color.trim().toLowerCase();
 	if (/^#[0-9a-f]{6}$/.test(str)) return str;
@@ -85,10 +85,10 @@ const COMPONENT_PRESETS: Record<string, Record<string, Record<string, unknown>>>
 		'Compact Deck': { topStart: 16, topIncrement: 14, cardGap: 12, scaleThreshold: 100, minScale: 0.92, reverseScale: false },
 	},
 	'horizontal-scroller': {
-		Default: { itemGap: 28, speed: 1.0, cardWidth: 320, showProgress: true, showFadeEdges: true, fadeWidth: 48, mobileMode: 'scroll' },
-		'Compact Gap': { itemGap: 16, speed: 1.0, cardWidth: 320, showProgress: true, showFadeEdges: true, fadeWidth: 48, mobileMode: 'scroll' },
-		'Spacious Gap': { itemGap: 44, speed: 1.0, cardWidth: 340, showProgress: true, showFadeEdges: true, fadeWidth: 64, mobileMode: 'scroll' },
-		'High Velocity': { itemGap: 32, speed: 1.8, cardWidth: 320, showProgress: true, showFadeEdges: true, fadeWidth: 64, mobileMode: 'scroll' },
+		Default: { itemGap: 28, speed: 1.0, cardWidth: 320, showProgress: true, showFadeEdges: true, fadeWidth: 48, fadeEdgeColor: '#ffffff', fadeEdgeColorDark: '#09090b', mobileMode: 'scroll' },
+		'Compact Gap': { itemGap: 16, speed: 1.0, cardWidth: 320, showProgress: true, showFadeEdges: true, fadeWidth: 48, fadeEdgeColor: '#ffffff', fadeEdgeColorDark: '#09090b', mobileMode: 'scroll' },
+		'Spacious Gap': { itemGap: 44, speed: 1.0, cardWidth: 340, showProgress: true, showFadeEdges: true, fadeWidth: 64, fadeEdgeColor: '#ffffff', fadeEdgeColorDark: '#09090b', mobileMode: 'scroll' },
+		'High Velocity': { itemGap: 32, speed: 1.8, cardWidth: 320, showProgress: true, showFadeEdges: true, fadeWidth: 64, fadeEdgeColor: '#ffffff', fadeEdgeColorDark: '#09090b', mobileMode: 'scroll' },
 	},
 	'tilt-card': {
 		Default: { maxTilt: 15, perspective: 1000, scale: 1.02, speed: 0.12, reverse: false, disabled: false, axis: 'all' },
@@ -125,9 +125,9 @@ const COMPONENT_PRESETS: Record<string, Record<string, Record<string, unknown>>>
 		Fast: { mode: 'single', duration: 200 },
 	},
 	'infinite-marquee': {
-		Default: { speed: 40, pauseOnHover: true },
-		Fast: { speed: 80, pauseOnHover: true },
-		Gentle: { speed: 20, pauseOnHover: false },
+		Default: { speed: 40, direction: 'left', pauseOnHover: true, gap: 24, showFadeEdges: true, fadeWidth: 48, fadeEdgeColor: '#ffffff', fadeEdgeColorDark: '#09090b' },
+		'High Velocity (Reverse)': { speed: 80, direction: 'right', pauseOnHover: true, gap: 16, showFadeEdges: true, fadeWidth: 64, fadeEdgeColor: '#ffffff', fadeEdgeColorDark: '#09090b' },
+		'Gentle Float': { speed: 20, direction: 'left', pauseOnHover: false, gap: 32, showFadeEdges: false, fadeWidth: 48, fadeEdgeColor: '#ffffff', fadeEdgeColorDark: '#09090b' },
 	},
 	'bento-grid': {
 		Default: { cols: 3, gap: '1.5rem' },
@@ -358,6 +358,8 @@ export function StudioWorkbench({ initialSlug = 'stacking-cards' }: { initialSlu
 			const showProgress = propValues.showProgress !== false;
 			const showFadeEdges = propValues.showFadeEdges !== false;
 			const fadeWidth = Number(propValues.fadeWidth ?? 48);
+			const fadeEdgeColor = String(propValues.fadeEdgeColor || '#ffffff');
+			const fadeEdgeColorDark = String(propValues.fadeEdgeColorDark || '#09090b');
 			const mobileMode = (propValues.mobileMode as 'scroll' | 'stack' | 'pinned') ?? 'scroll';
 
 			const SERVICES = [
@@ -381,6 +383,8 @@ export function StudioWorkbench({ initialSlug = 'stacking-cards' }: { initialSlu
 						showProgress={showProgress}
 						showFadeEdges={showFadeEdges}
 						fadeWidth={fadeWidth}
+						fadeEdgeColor={fadeEdgeColor}
+						fadeEdgeColorDark={fadeEdgeColorDark}
 						mobileMode={mobileMode}
 						scrollContainerRef={studioHorizontalRef}
 						header={
@@ -972,15 +976,41 @@ export function StudioWorkbench({ initialSlug = 'stacking-cards' }: { initialSlu
 
 		if (selectedSlug === 'infinite-marquee') {
 			const speed = Number(propValues.speed ?? 40);
+			const direction = (propValues.direction as 'left' | 'right') ?? 'left';
 			const pauseOnHover = Boolean(propValues.pauseOnHover ?? true);
+			const gap = Number(propValues.gap ?? 24);
+			const showFadeEdges = Boolean(propValues.showFadeEdges ?? true);
+			const fadeWidth = Number(propValues.fadeWidth ?? 48);
+			const fadeEdgeColor = String(propValues.fadeEdgeColor || '#ffffff');
+			const fadeEdgeColorDark = String(propValues.fadeEdgeColorDark || '#09090b');
 
 			return (
-				<div className='mx-auto w-full max-w-2xl py-8'>
-					<InfiniteMarquee speed={speed} pauseOnHover={pauseOnHover} gap='1.5rem'>
-						{['120Hz ProMotion', 'Zero External Animation Deps', 'Pure rAF Translation', 'Modulo Wrapping', '13 Ecosystems'].map((item, idx) => (
-							<div key={idx} className='border-border bg-card/80 flex items-center gap-2 rounded-2xl border px-6 py-4 text-xs font-semibold shadow-xs backdrop-blur-md'>
-								<span className='bg-primary h-2 w-2 rounded-full' />
-								<span className='text-foreground'>{item}</span>
+				<div className='w-full overflow-hidden py-8'>
+					<InfiniteMarquee
+						speed={speed}
+						direction={direction}
+						pauseOnHover={pauseOnHover}
+						gap={gap}
+						showFadeEdges={showFadeEdges}
+						fadeWidth={fadeWidth}
+						fadeEdgeColor={fadeEdgeColor}
+						fadeEdgeColorDark={fadeEdgeColorDark}
+					>
+						{[
+							{ label: '120Hz ProMotion', tag: 'Kinetic', status: 'Active' },
+							{ label: 'Zero External Animation Deps', tag: 'Pure', status: 'Locked' },
+							{ label: 'Pure rAF Translation', tag: 'Engine', status: 'Ω(1)' },
+							{ label: 'Modulo Wrapping Seam', tag: 'Math', status: 'C0/C1' },
+							{ label: '13 Ecosystems Native', tag: 'Universal', status: '13/13' },
+						].map((item, idx) => (
+							<div
+								key={idx}
+								className='border-border/80 bg-card/90 hover:border-foreground/40 flex items-center gap-3 rounded-2xl border px-5 py-3 text-xs font-semibold shadow-xs backdrop-blur-md transition-all hover:scale-[1.02]'
+							>
+								<span className='bg-primary/80 ring-primary/20 h-2 w-2 rounded-full ring-2' />
+								<span className='text-foreground font-mono font-medium'>{item.label}</span>
+								<span className='bg-secondary text-muted-foreground rounded-md px-1.5 py-0.5 font-mono text-[10px]'>{item.tag}</span>
+								<span className='text-primary/80 font-mono text-[10px] font-bold'>{item.status}</span>
 							</div>
 						))}
 					</InfiniteMarquee>
@@ -1632,7 +1662,8 @@ export function StudioWorkbench({ initialSlug = 'stacking-cards' }: { initialSlu
 					{/* Prop Controls List */}
 					<div className='max-h-[32.5rem] space-y-1.5 overflow-y-auto pr-1'>
 						{component.props.map((propDef) => {
-							const val = propValues[propDef.name] ?? propDef.defaultValue;
+							const rawVal = propValues[propDef.name];
+							const val = rawVal !== undefined && rawVal !== null && rawVal !== '' ? rawVal : propDef.defaultValue;
 
 							return (
 								<div key={propDef.name} className='border-border/60 bg-muted/20 rounded-lg border px-2.5 py-1.5'>
@@ -1701,39 +1732,44 @@ export function StudioWorkbench({ initialSlug = 'stacking-cards' }: { initialSlu
 											);
 										})()
 									) : propDef.type === 'color' ? (
-										<div className='flex flex-col gap-1 pt-1'>
-											<div className='flex items-center gap-1.5'>
-												<input
-													type='color'
-													id={`prop-${propDef.name}`}
-													value={toHexColor(val)}
-													onChange={(e) => handlePropChange(propDef.name, e.target.value)}
-													className='border-border/80 h-6 w-8 cursor-pointer rounded-sm border bg-transparent p-0.5'
-													title='Choose color'
-												/>
-												<input
-													type='text'
-													value={String(val ?? '')}
-													onChange={(e) => handlePropChange(propDef.name, e.target.value)}
-													className='border-input bg-background text-foreground text-3xs h-6 flex-1 rounded-sm border px-1.5 font-mono'
-													placeholder='#6366f1'
-												/>
-											</div>
-											<div className='flex items-center gap-1 pt-0.5'>
-												{COLOR_PRESETS.map((preset) => (
-													<button
-														key={preset.value}
-														type='button'
-														title={`${preset.label} (${preset.value})`}
-														onClick={() => handlePropChange(propDef.name, preset.value)}
-														className={`h-3 w-3 cursor-pointer rounded-full border transition-transform hover:scale-125 ${
-															toHexColor(val) === preset.value.toLowerCase() ? 'border-foreground ring-primary scale-110 ring-1' : 'border-border/80'
-														}`}
-														style={{ backgroundColor: preset.value }}
-													/>
-												))}
-											</div>
-										</div>
+										(() => {
+											const colorFallback = String(propDef.defaultValue || (propDef.name.toLowerCase().includes('dark') ? '#09090b' : '#ffffff'));
+											return (
+												<div className='flex flex-col gap-1 pt-1'>
+													<div className='flex items-center gap-1.5'>
+														<input
+															type='color'
+															id={`prop-${propDef.name}`}
+															value={toHexColor(val, colorFallback)}
+															onChange={(e) => handlePropChange(propDef.name, e.target.value)}
+															className='border-border/80 h-6 w-8 cursor-pointer rounded-sm border bg-transparent p-0.5'
+															title='Choose color'
+														/>
+														<input
+															type='text'
+															value={String(val ?? colorFallback)}
+															onChange={(e) => handlePropChange(propDef.name, e.target.value)}
+															className='border-input bg-background text-foreground text-3xs h-6 flex-1 rounded-sm border px-1.5 font-mono'
+															placeholder={colorFallback}
+														/>
+													</div>
+													<div className='flex items-center gap-1 pt-0.5'>
+														{COLOR_PRESETS.map((preset) => (
+															<button
+																key={preset.value}
+																type='button'
+																title={`${preset.label} (${preset.value})`}
+																onClick={() => handlePropChange(propDef.name, preset.value)}
+																className={`h-3 w-3 cursor-pointer rounded-full border transition-transform hover:scale-125 ${
+																	toHexColor(val, colorFallback) === preset.value.toLowerCase() ? 'border-foreground ring-primary scale-110 ring-1' : 'border-border/80'
+																}`}
+																style={{ backgroundColor: preset.value }}
+															/>
+														))}
+													</div>
+												</div>
+											);
+										})()
 									) : propDef.type === 'string' ? (
 										<div className='pt-1'>
 											<input

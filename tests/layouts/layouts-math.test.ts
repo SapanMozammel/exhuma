@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import {
 	calculateMarqueeOffset,
 	dampFactor,
+	parseGapToPx,
 } from '../../packages/layouts/src/InfiniteMarquee/marquee-math';
 import {
 	getDiamondLayoutConfig,
@@ -64,6 +65,29 @@ describe('Exhuma Kinetic Methodology — Marquee Mathematical Kernel', () => {
 			factor = dampFactor(factor, 1.0, lambda, dt);
 		}
 		expect(factor).toBeGreaterThan(0.99);
+	});
+
+	it('parses diverse CSS gap units (px, rem, em, numbers) with fallbacks', () => {
+		expect(parseGapToPx(24)).toBe(24);
+		expect(parseGapToPx('24px')).toBe(24);
+		expect(parseGapToPx('1.5rem')).toBe(24);
+		expect(parseGapToPx('1rem')).toBe(16);
+		expect(parseGapToPx('2em')).toBe(32);
+		expect(parseGapToPx(undefined)).toBe(24);
+		expect(parseGapToPx('invalid')).toBe(24);
+	});
+
+	it('wraps seamlessly at repeat wavelength (contentWidth + gap)', () => {
+		const contentWidth = 1000;
+		const gap = parseGapToPx('1.5rem'); // 24px
+		const repeatWavelength = contentWidth + gap; // 1024px
+		const speed = 100;
+		const dt = 0.5; // moves 50px
+
+		// Moving left: when reaching exactly -repeatWavelength (-1024), wraps to 0
+		const offsetAtBoundary = calculateMarqueeOffset(-990, dt, speed, 'left', repeatWavelength);
+		// -990 - 50 = -1040 <= -1024 -> -1040 % 1024 = -16
+		expect(offsetAtBoundary).toBe(-16);
 	});
 });
 

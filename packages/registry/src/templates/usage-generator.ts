@@ -1,6 +1,7 @@
 import { ComponentFilePayload, EcosystemFlavor, UniversalComponent } from '../schema';
 import { getAutoGridUsage } from './generators/auto-grid-generator';
 import { getCssMasonryUsage } from './generators/css-masonry-generator';
+import { getInfiniteMarqueeUsage } from './generators/infinite-marquee-generator';
 
 /**
  * Generates a complete, production-ready usage example for a component across all 13 supported ecosystems.
@@ -15,6 +16,10 @@ export function generateComponentUsage(component: UniversalComponent, flavor: Ec
 
 	if (slug === 'horizontal-scroller') {
 		return getHorizontalScrollerUsage(flavor, props);
+	}
+
+	if (slug === 'infinite-marquee') {
+		return getInfiniteMarqueeUsage(flavor, props);
 	}
 
 	if (slug === 'tilt-card') {
@@ -876,6 +881,8 @@ function getHorizontalScrollerUsage(flavor: EcosystemFlavor, props: Record<strin
 	const showProgress = props.showProgress !== false;
 	const showFadeEdges = props.showFadeEdges !== false;
 	const fadeWidth = Number(props.fadeWidth ?? 48);
+	const fadeEdgeColor = String(props.fadeEdgeColor || '#ffffff');
+	const fadeEdgeColorDark = String(props.fadeEdgeColorDark || '#09090b');
 	const mobileMode = String(props.mobileMode ?? 'scroll');
 
 	switch (flavor) {
@@ -919,6 +926,8 @@ export default function ServicesPage() {
         showProgress={${showProgress}}
         showFadeEdges={${showFadeEdges}}
         fadeWidth={${fadeWidth}}
+        fadeEdgeColor="${fadeEdgeColor}"
+        fadeEdgeColorDark="${fadeEdgeColorDark}"
         mobileMode="${mobileMode}"
         className="w-full"
       >
@@ -1001,6 +1010,8 @@ export default function App() {
         showProgress={${showProgress}}
         showFadeEdges={${showFadeEdges}}
         fadeWidth={${fadeWidth}}
+        fadeEdgeColor="${fadeEdgeColor}"
+        fadeEdgeColorDark="${fadeEdgeColorDark}"
         mobileMode="${mobileMode}"
       >
         {SERVICES.map((s, idx) => (
@@ -1055,6 +1066,8 @@ const services = [
       :show-progress="${showProgress}"
       :show-fade-edges="${showFadeEdges}"
       :fade-width="${fadeWidth}"
+      fade-edge-color="${fadeEdgeColor}"
+      fade-edge-color-dark="${fadeEdgeColorDark}"
       mobile-mode="${mobileMode}"
     >
       <div
@@ -1105,6 +1118,8 @@ const services = [
     showProgress={${showProgress}}
     showFadeEdges={${showFadeEdges}}
     fadeWidth={${fadeWidth}}
+    fadeEdgeColor="${fadeEdgeColor}"
+    fadeEdgeColorDark="${fadeEdgeColorDark}"
     mobileMode="${mobileMode}"
   >
     {#each services as service, idx}
@@ -1149,6 +1164,8 @@ import { ExhumaHorizontalScrollerComponent } from './horizontal-scroller.compone
         [showProgress]="${showProgress}"
         [showFadeEdges]="${showFadeEdges}"
         [fadeWidth]="${fadeWidth}"
+        fadeEdgeColor="${fadeEdgeColor}"
+        fadeEdgeColorDark="${fadeEdgeColorDark}"
         mobileMode="${mobileMode}"
       >
         <div *ngFor="let s of services; let idx = index" class="service-card">
@@ -1207,6 +1224,8 @@ export default function App() {
         showProgress={${showProgress}}
         showFadeEdges={${showFadeEdges}}
         fadeWidth={${fadeWidth}}
+        fadeEdgeColor="${fadeEdgeColor}"
+        fadeEdgeColorDark="${fadeEdgeColorDark}"
         mobileMode="${mobileMode}"
       >
         <For each={SERVICES}>
@@ -1258,6 +1277,8 @@ const services = [
       showProgress={${showProgress}}
       showFadeEdges={${showFadeEdges}}
       fadeWidth={${fadeWidth}}
+      fadeEdgeColor="${fadeEdgeColor}"
+      fadeEdgeColorDark="${fadeEdgeColorDark}"
       mobileMode="${mobileMode}"
     >
       {services.map((s, idx) => (
@@ -1298,6 +1319,8 @@ const services = [
     :show-progress="${showProgress ? 'true' : 'false'}"
     :show-fade-edges="${showFadeEdges ? 'true' : 'false'}"
     :fade-width="${fadeWidth}"
+    fade-edge-color="${fadeEdgeColor}"
+    fade-edge-color-dark="${fadeEdgeColorDark}"
     mobile-mode="${mobileMode}"
   >
     @foreach($services as $service)
@@ -1399,6 +1422,8 @@ $card_width = ${cardWidth};
   show-progress="${showProgress}"
   show-fade-edges="${showFadeEdges}"
   fade-width="${fadeWidth}"
+  fade-edge-color="${fadeEdgeColor}"
+  fade-edge-color-dark="${fadeEdgeColorDark}"
   mobile-mode="${mobileMode}"
 >
   <div class="card"><h3>01 / Web Design</h3><p>Intuitive digital experiences.</p></div>

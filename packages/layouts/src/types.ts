@@ -144,6 +144,26 @@ export interface InfiniteMarqueeProps {
 	 * Default: '1.5rem'
 	 */
 	gap?: string | number;
+	/**
+	 * Show subtle gradient mask at boundaries for graceful entry and exit.
+	 * Default: true
+	 */
+	showFadeEdges?: boolean;
+	/**
+	 * Width of the edge gradient fade in pixels.
+	 * Default: 48
+	 */
+	fadeWidth?: number;
+	/**
+	 * Custom edge gradient color for light mode (e.g. #ffffff). When empty, an alpha mask is used.
+	 * Default: '#ffffff'
+	 */
+	fadeEdgeColor?: string;
+	/**
+	 * Edge gradient color when dark mode is active (e.g. #09090b). Falls back to fadeEdgeColor if not set.
+	 * Default: '#09090b'
+	 */
+	fadeEdgeColorDark?: string;
 	className?: string;
 	style?: CSSProperties;
 }

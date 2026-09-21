@@ -4,6 +4,8 @@ import { getExpandableCardOuterFiles } from './generators/expandable-card-genera
 import { getCardSwipeStackOuterFiles } from './generators/card-swipe-stack-generator';
 import { getAutoGridOuterFiles } from './generators/auto-grid-generator';
 import { getCssMasonryOuterFiles } from './generators/css-masonry-generator';
+import { getInfiniteMarqueeOuterFiles } from './generators/infinite-marquee-generator';
+import { getHorizontalScrollerOuterFiles } from './generators/horizontal-scroller-generator';
 
 export interface CompoundPart {
 	name: string;
@@ -59,6 +61,16 @@ export function generateOuterLayerFiles(spec: ComponentOuterSpec, flavor: Ecosys
 
 	if (slug === 'css-masonry') {
 		const files = getCssMasonryOuterFiles(flavor, props, isEjected);
+		if (files) return files;
+	}
+
+	if (slug === 'infinite-marquee') {
+		const files = getInfiniteMarqueeOuterFiles(flavor, props, isEjected);
+		if (files) return files;
+	}
+
+	if (slug === 'horizontal-scroller') {
+		const files = getHorizontalScrollerOuterFiles(flavor, props, isEjected);
 		if (files) return files;
 	}
 
@@ -8455,6 +8467,8 @@ export const StackingCards = React.memo(
 			const showProgress = props.showProgress !== false;
 			const showFadeEdges = props.showFadeEdges !== false;
 			const fadeWidth = Number(props.fadeWidth ?? 48);
+			const fadeEdgeColor = String(props.fadeEdgeColor || '#ffffff');
+			const fadeEdgeColorDark = String(props.fadeEdgeColorDark || '#09090b');
 
 			return `${header}export interface HorizontalScrollerProps extends React.HTMLAttributes<HTMLDivElement> {
   speed?: number;
@@ -8463,6 +8477,8 @@ export const StackingCards = React.memo(
   showProgress?: boolean;
   showFadeEdges?: boolean;
   fadeWidth?: number;
+  fadeEdgeColor?: string;
+  fadeEdgeColorDark?: string;
   mobileMode?: 'scroll' | 'stack' | 'pinned';
   header?: React.ReactNode;
   scrollContainerRef?: React.RefObject<HTMLElement | null>;
@@ -8502,6 +8518,8 @@ export const HorizontalScroller = React.memo(
       showProgress = ${showProgress},
       showFadeEdges = ${showFadeEdges},
       fadeWidth = ${fadeWidth},
+      fadeEdgeColor = '${fadeEdgeColor}',
+      fadeEdgeColorDark = '${fadeEdgeColorDark}',
       mobileMode = 'scroll',
       header,
       scrollContainerRef,
@@ -8534,14 +8552,56 @@ export const HorizontalScroller = React.memo(
       return '320px';
     }, [cardWidth]);
 
+    const [isDark, setIsDark] = React.useState(() => {
+      if (typeof document !== 'undefined') {
+        return (
+          document.documentElement.classList.contains('dark') ||
+          (!document.documentElement.classList.contains('light') &&
+            typeof window !== 'undefined' &&
+            window.matchMedia?.('(prefers-color-scheme: dark)').matches)
+        );
+      }
+      return false;
+    });
+
+    React.useEffect(() => {
+      if (typeof window === 'undefined') return;
+
+      const checkDark = () => {
+        const isDarkClass = document.documentElement.classList.contains('dark');
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const isExplicitLight = document.documentElement.classList.contains('light');
+        setIsDark(isDarkClass || (!isExplicitLight && prefersDark));
+      };
+
+      checkDark();
+
+      const observer = new MutationObserver(checkDark);
+      observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['class', 'data-theme'],
+      });
+
+      const mq = window.matchMedia('(prefers-color-scheme: dark)');
+      mq.addEventListener('change', checkDark);
+
+      return () => {
+        observer.disconnect();
+        mq.removeEventListener('change', checkDark);
+      };
+    }, []);
+
+    const resolvedFadeColor = isDark && fadeEdgeColorDark ? fadeEdgeColorDark : fadeEdgeColor;
+    const useColorOverlay = Boolean(showFadeEdges && resolvedFadeColor && resolvedFadeColor.trim() !== '');
+
     const maskStyle = React.useMemo<React.CSSProperties>(() => {
-      if (!showFadeEdges) return {};
+      if (!showFadeEdges || useColorOverlay) return {};
       const maskGradient = \`linear-gradient(to right, transparent, black \${fadeWidth}px, black calc(100% - \${fadeWidth}px), transparent)\`;
       return {
         WebkitMaskImage: maskGradient,
         maskImage: maskGradient,
       };
-    }, [showFadeEdges, fadeWidth]);
+    }, [showFadeEdges, fadeWidth, useColorOverlay]);
 
     React.useEffect(() => {
       const section = sectionRef.current;
@@ -8734,6 +8794,26 @@ export const HorizontalScroller = React.memo(
           )}
 
           <div className="exhuma-horizontal-track-wrapper relative w-full overflow-hidden" style={maskStyle}>
+            {useColorOverlay && (
+              <>
+                <div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-y-0 left-0 z-10"
+                  style={{
+                    width: \`\${fadeWidth}px\`,
+                    background: \`linear-gradient(to right, \${resolvedFadeColor}, transparent)\`,
+                  }}
+                />
+                <div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-y-0 right-0 z-10"
+                  style={{
+                    width: \`\${fadeWidth}px\`,
+                    background: \`linear-gradient(to left, \${resolvedFadeColor}, transparent)\`,
+                  }}
+                />
+              </>
+            )}
             <div
               ref={trackRef}
               className={clsx('flex items-stretch will-change-transform select-none px-6 sm:px-10', trackClassName)}

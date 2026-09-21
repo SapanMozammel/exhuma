@@ -13,7 +13,7 @@ export { StickyParallaxScroll, ParallaxRoot, ParallaxSticky, ParallaxLayer, Para
 export { InteractiveGridPattern } from './InteractiveGrid/InteractiveGridPattern';
 
 // Mathematical Kernels
-export { calculateMarqueeOffset, dampFactor } from './InfiniteMarquee/marquee-math';
+export { calculateMarqueeOffset, dampFactor, parseGapToPx } from './InfiniteMarquee/marquee-math';
 export { getDiamondLayoutConfig, partitionDiamondItems } from './DiamondGrid/diamond-layout';
 export { generateTimelinePath, checkTimelineDirection } from './ScrollTimeline/timeline-path';
 

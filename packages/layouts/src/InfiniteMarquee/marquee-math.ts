@@ -49,3 +49,23 @@ export function calculateMarqueeOffset(currentOffset: number, deltaSeconds: numb
 export function dampFactor(current: number, target: number, lambda: number, dt: number): number {
 	return target + (current - target) * Math.exp(-lambda * dt);
 }
+
+/**
+ * Normalizes CSS gap string or numeric value to pixel number.
+ * Defaults to 24px if invalid or not resolvable.
+ */
+export function parseGapToPx(gap: string | number | undefined): number {
+	if (typeof gap === 'number') return Number.isFinite(gap) ? gap : 24;
+	if (typeof gap !== 'string') return 24;
+	const str = gap.trim();
+	if (str.endsWith('rem')) {
+		const rem = parseFloat(str);
+		return Number.isFinite(rem) ? rem * 16 : 24;
+	}
+	if (str.endsWith('em')) {
+		const em = parseFloat(str);
+		return Number.isFinite(em) ? em * 16 : 24;
+	}
+	const px = parseFloat(str);
+	return Number.isFinite(px) ? px : 24;
+}

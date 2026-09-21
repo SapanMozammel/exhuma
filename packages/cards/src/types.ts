@@ -33,6 +33,16 @@ export interface HorizontalScrollerProps {
 	 */
 	fadeWidth?: number;
 	/**
+	 * Custom edge gradient color for light mode (e.g. #ffffff). When empty, an alpha mask is used.
+	 * Default: '#ffffff'
+	 */
+	fadeEdgeColor?: string;
+	/**
+	 * Edge gradient color when dark mode is active (e.g. #09090b). Falls back to fadeEdgeColor if not set.
+	 * Default: '#09090b'
+	 */
+	fadeEdgeColorDark?: string;
+	/**
 	 * Mobile fallback behavior below 768px ('scroll' = native horizontal swipe with snap, 'stack' = vertical list, 'pinned' = keep pin).
 	 * Default: 'scroll'
 	 */

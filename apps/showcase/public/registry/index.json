@@ -1,7 +1,7 @@
 {
 	"$schema": "https://exhuma.dev/schema/registry-index.json",
 	"version": "1.0.0",
-	"generatedAt": "2026-09-21T04:44:22.154Z",
+	"generatedAt": "2026-09-21T07:54:34.402Z",
 	"components": [
 		{
 			"name": "Stacking Cards",
@@ -83,6 +83,14 @@
 				{ "name": "showProgress", "label": "Progress Indicator", "type": "boolean", "defaultValue": true, "description": "Display a kinetic telemetry progress bar indicating track traversal percentage." },
 				{ "name": "showFadeEdges", "label": "Fade Edges", "type": "boolean", "defaultValue": true, "description": "Show subtle gradient mask at horizontal boundaries for graceful card entry and exit." },
 				{ "name": "fadeWidth", "label": "Fade Width (px)", "type": "number", "defaultValue": 48, "min": 16, "max": 96, "step": 8, "description": "Width in pixels of the left and right gradient fade masks." },
+				{ "name": "fadeEdgeColor", "label": "Fade Edge Color", "type": "color", "defaultValue": "#ffffff", "description": "Custom edge gradient color. When empty, an alpha mask is used." },
+				{
+					"name": "fadeEdgeColorDark",
+					"label": "Fade Edge Color (Dark Mode)",
+					"type": "color",
+					"defaultValue": "#09090b",
+					"description": "Edge gradient color when dark mode is active. Falls back to fadeEdgeColor."
+				},
 				{
 					"name": "mobileMode",
 					"label": "Mobile Mode",
@@ -423,7 +431,17 @@
 					"description": "Direction of marquee translation."
 				},
 				{ "name": "pauseOnHover", "label": "Pause On Hover", "type": "boolean", "defaultValue": true, "description": "Smoothly decelerate to zero when hovered." },
-				{ "name": "gap", "label": "Item Gap", "type": "string", "defaultValue": "1.5rem", "description": "Spacing between items and repeated tracks." }
+				{ "name": "gap", "label": "Item Gap (px)", "type": "number", "defaultValue": 24, "min": 8, "max": 64, "step": 4, "description": "Spacing between items and repeated tracks in pixels." },
+				{ "name": "showFadeEdges", "label": "Fade Edges", "type": "boolean", "defaultValue": true, "description": "Show subtle gradient mask at boundaries for graceful entry and exit." },
+				{ "name": "fadeWidth", "label": "Fade Width (px)", "type": "number", "defaultValue": 48, "min": 16, "max": 128, "step": 8, "description": "Width of the edge gradient fade in pixels." },
+				{ "name": "fadeEdgeColor", "label": "Fade Edge Color", "type": "color", "defaultValue": "#ffffff", "description": "Custom edge gradient color. When empty, an alpha mask is used." },
+				{
+					"name": "fadeEdgeColorDark",
+					"label": "Fade Edge Color (Dark Mode)",
+					"type": "color",
+					"defaultValue": "#09090b",
+					"description": "Edge gradient color when dark mode is active. Falls back to fadeEdgeColor."
+				}
 			],
 			"dependencies": {
 				"react": ["@exhuma/core"],

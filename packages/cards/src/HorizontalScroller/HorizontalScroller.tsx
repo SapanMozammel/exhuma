@@ -49,6 +49,8 @@ export const HorizontalScroller: React.FC<HorizontalScrollerProps> = ({
 	showProgress = true,
 	showFadeEdges = true,
 	fadeWidth = 48,
+	fadeEdgeColor = '#ffffff',
+	fadeEdgeColorDark = '#09090b',
 	mobileMode = 'scroll',
 	header,
 	scrollContainerRef,
@@ -83,14 +85,57 @@ export const HorizontalScroller: React.FC<HorizontalScrollerProps> = ({
 		return '320px';
 	}, [cardWidth]);
 
+	const [isDark, setIsDark] = useState(() => {
+		if (typeof document !== 'undefined') {
+			return (
+				document.documentElement.classList.contains('dark') ||
+				(!document.documentElement.classList.contains('light') &&
+					typeof window !== 'undefined' &&
+					window.matchMedia?.('(prefers-color-scheme: dark)').matches)
+			);
+		}
+		return false;
+	});
+
+	useEffect(() => {
+		if (typeof window === 'undefined') return;
+
+		const checkDark = () => {
+			const isDarkClass = document.documentElement.classList.contains('dark');
+			const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+			const isExplicitLight = document.documentElement.classList.contains('light');
+			setIsDark(isDarkClass || (!isExplicitLight && prefersDark));
+		};
+
+		checkDark();
+
+		const observer = new MutationObserver(checkDark);
+		observer.observe(document.documentElement, {
+			attributes: true,
+			attributeFilter: ['class', 'data-theme'],
+		});
+
+		const mq = window.matchMedia('(prefers-color-scheme: dark)');
+		mq.addEventListener('change', checkDark);
+
+		return () => {
+			observer.disconnect();
+			mq.removeEventListener('change', checkDark);
+		};
+	}, []);
+
+	const resolvedFadeColor = isDark && fadeEdgeColorDark ? fadeEdgeColorDark : fadeEdgeColor;
+
+	const useColorOverlay = Boolean(showFadeEdges && resolvedFadeColor && resolvedFadeColor.trim() !== '');
+
 	const maskStyle = useMemo<React.CSSProperties>(() => {
-		if (!showFadeEdges) return {};
+		if (!showFadeEdges || useColorOverlay) return {};
 		const maskGradient = `linear-gradient(to right, transparent, black ${fadeWidth}px, black calc(100% - ${fadeWidth}px), transparent)`;
 		return {
 			WebkitMaskImage: maskGradient,
 			maskImage: maskGradient,
 		};
-	}, [showFadeEdges, fadeWidth]);
+	}, [showFadeEdges, fadeWidth, useColorOverlay]);
 
 	useEffect(() => {
 		const section = sectionRef.current;
@@ -294,6 +339,26 @@ export const HorizontalScroller: React.FC<HorizontalScrollerProps> = ({
 
 				{/* Horizontal Rail Mask Wrapper */}
 				<div className='exhuma-horizontal-track-wrapper relative w-full overflow-hidden' style={maskStyle}>
+					{useColorOverlay && (
+						<>
+							<div
+								aria-hidden='true'
+								className='pointer-events-none absolute inset-y-0 left-0 z-10'
+								style={{
+									width: `${fadeWidth}px`,
+									background: `linear-gradient(to right, ${resolvedFadeColor}, transparent)`,
+								}}
+							/>
+							<div
+								aria-hidden='true'
+								className='pointer-events-none absolute inset-y-0 right-0 z-10'
+								style={{
+									width: `${fadeWidth}px`,
+									background: `linear-gradient(to left, ${resolvedFadeColor}, transparent)`,
+								}}
+							/>
+						</>
+					)}
 					<div
 						ref={trackRef}
 						className={`flex items-stretch px-6 will-change-transform select-none sm:px-10 ${trackClassName}`}
