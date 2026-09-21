@@ -1846,8 +1846,10 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 							<span className='font-bold text-zinc-100'>exhuma</span>
 							<span className='text-zinc-400'>add</span>
 							<span className='font-bold text-amber-400'>{component.slug}</span>
-							<span className='text-zinc-500'>--flavor=</span>
-							<span className='font-bold text-emerald-400 underline decoration-emerald-500/40 decoration-dotted'>{selectedFlavor}</span>
+							<span className='inline-flex items-center'>
+								<span className='text-zinc-500'>--flavor=</span>
+								<span className='font-bold text-emerald-400 underline decoration-emerald-500/40 decoration-dotted'>{selectedFlavor}</span>
+							</span>
 						</div>
 					</div>
 
