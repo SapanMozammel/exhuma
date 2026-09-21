@@ -1,10 +1,6 @@
 import { ComponentFilePayload, EcosystemFlavor } from '../../schema';
 
-export function getComparisonSliderOuterFiles(
-	flavor: EcosystemFlavor,
-	props: Record<string, unknown>,
-	isEjected: boolean
-): ComponentFilePayload[] | null {
+export function getComparisonSliderOuterFiles(flavor: EcosystemFlavor, props: Record<string, unknown>, isEjected: boolean): ComponentFilePayload[] | null {
 	const defaultPosition = Number(props.defaultPosition ?? 0.5);
 	const step = Number(props.step ?? 0.05);
 	const orientation = (props.orientation as string) ?? 'horizontal';

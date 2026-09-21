@@ -77,13 +77,7 @@ export function evaluateSwipeDecision(dx: number, velocity: number, thresholdDis
  * Calculates scale and translation for background cards in stack during drag progress.
  * Uses Hermite cubic smoothstep (3t^2 - 2t^3) for zero-discontinuity layer elevation.
  */
-export function calculateStackedCardTransform(
-	index: number,
-	progress: number,
-	scaleStep: number = 0.05,
-	offsetStep: number = 14,
-	baseOpacityStep: number = 0.15
-): { scale: number; translateY: number; opacity: number } {
+export function calculateStackedCardTransform(index: number, progress: number, scaleStep: number = 0.05, offsetStep: number = 14, baseOpacityStep: number = 0.15): { scale: number; translateY: number; opacity: number } {
 	// Base values at rest
 	const baseScale = Math.max(0.6, 1 - index * scaleStep);
 	const baseOffset = index * offsetStep;
@@ -108,12 +102,7 @@ export function calculateStackedCardTransform(
 /**
  * Calculates dynamic fling animation duration based on release velocity and remaining travel distance.
  */
-export function calculateFlingDuration(
-	distanceRemaining: number,
-	velocityX: number,
-	minDuration: number = 160,
-	maxDuration: number = 300
-): number {
+export function calculateFlingDuration(distanceRemaining: number, velocityX: number, minDuration: number = 160, maxDuration: number = 300): number {
 	const absVel = Math.abs(velocityX);
 	if (absVel <= 150) return maxDuration;
 	const natural = (distanceRemaining / absVel) * 1000;

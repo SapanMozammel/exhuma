@@ -1,7 +1,7 @@
 {
 	"$schema": "https://exhuma.dev/schema/registry-index.json",
 	"version": "1.0.0",
-	"generatedAt": "2026-09-21T02:18:20.656Z",
+	"generatedAt": "2026-09-21T04:42:22.682Z",
 	"components": [
 		{
 			"name": "Stacking Cards",
@@ -120,8 +120,33 @@
 			"description": "Pure CSS multi-column responsive masonry layout with zero external JavaScript runtime overhead.",
 			"version": "1.0.0",
 			"props": [
-				{ "name": "columns", "label": "Desktop Columns", "type": "number", "defaultValue": 3, "min": 1, "max": 6, "step": 1, "description": "Number of columns on desktop viewports." },
-				{ "name": "gap", "label": "Column Gap (px)", "type": "number", "defaultValue": 16, "min": 8, "max": 48, "step": 4, "description": "Gap between masonry columns and items." }
+				{ "name": "columns", "label": "Mobile Columns (<640px)", "type": "number", "defaultValue": 1, "min": 1, "max": 8, "step": 1, "description": "Base column count on mobile viewports (<640px)." },
+				{ "name": "columnsSm", "label": "Tablet Columns (640-1024px)", "type": "number", "defaultValue": 2, "min": 1, "max": 4, "step": 1, "description": "Number of columns on tablet viewports (≥640px)." },
+				{ "name": "columnsMd", "label": "Medium Tablet Columns", "type": "number", "defaultValue": 2, "min": 1, "max": 6, "step": 1, "description": "Number of columns on medium tablet viewports." },
+				{ "name": "columnsLg", "label": "Desktop Columns (1024-1280px)", "type": "number", "defaultValue": 3, "min": 1, "max": 8, "step": 1, "description": "Number of columns on desktop viewports." },
+				{ "name": "columnsXl", "label": "Ultra-wide Columns (≥1280px)", "type": "number", "defaultValue": 4, "min": 1, "max": 10, "step": 1, "description": "Number of columns on large screens (≥1280px)." },
+				{ "name": "gap", "label": "Gap (px)", "type": "number", "defaultValue": 16, "min": 4, "max": 64, "step": 4, "description": "Spacing between masonry columns and item margins." },
+				{
+					"name": "columnFill",
+					"label": "Column Fill",
+					"type": "select",
+					"defaultValue": "balance",
+					"options": [
+						{ "label": "Balance (Balanced Heights)", "value": "balance" },
+						{ "label": "Auto (Sequential Waterfall)", "value": "auto" }
+					],
+					"description": "Controls whether column heights are balanced or filled sequentially."
+				},
+				{
+					"name": "height",
+					"label": "Container Height (px)",
+					"type": "number",
+					"defaultValue": 0,
+					"min": 0,
+					"max": 1200,
+					"step": 20,
+					"description": "Explicit container height for sequential waterfall (0 for auto balance)."
+				}
 			],
 			"dependencies": {
 				"react": ["@exhuma/core"],
@@ -152,12 +177,37 @@
 					"label": "Min Width (px)",
 					"type": "number",
 					"defaultValue": 280,
-					"min": 150,
-					"max": 450,
+					"min": 120,
+					"max": 480,
 					"step": 10,
 					"description": "Minimum width of each grid column before wrapping to the next line."
 				},
-				{ "name": "gap", "label": "Grid Gap (px)", "type": "number", "defaultValue": 24, "min": 8, "max": 48, "step": 4, "description": "Gap between grid items." }
+				{ "name": "gap", "label": "Grid Gap (px)", "type": "number", "defaultValue": 24, "min": 4, "max": 64, "step": 4, "description": "Gap between grid items." },
+				{
+					"name": "mode",
+					"label": "Track Mode",
+					"type": "select",
+					"defaultValue": "auto-fit",
+					"options": [
+						{ "label": "Auto-Fit (Expand to Fill Row)", "value": "auto-fit" },
+						{ "label": "Auto-Fill (Preserve Track Widths)", "value": "auto-fill" }
+					],
+					"description": "Determines whether tracks collapse to stretch items or stay fixed."
+				},
+				{ "name": "maxColumns", "label": "Max Columns", "type": "number", "defaultValue": 4, "min": 1, "max": 12, "step": 1, "description": "Upper constraint on maximum columns allowed." },
+				{
+					"name": "alignItems",
+					"label": "Item Alignment",
+					"type": "select",
+					"defaultValue": "stretch",
+					"options": [
+						{ "label": "Stretch (Equal Height)", "value": "stretch" },
+						{ "label": "Start (Top)", "value": "start" },
+						{ "label": "Center (Middle)", "value": "center" },
+						{ "label": "End (Bottom)", "value": "end" }
+					],
+					"description": "Cross-axis vertical alignment for items within grid rows."
+				}
 			],
 			"dependencies": {
 				"react": ["@exhuma/core"],

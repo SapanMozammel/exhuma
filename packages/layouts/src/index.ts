@@ -1,7 +1,7 @@
-export { AutoGrid } from './AutoGrid/AutoGrid';
+export { AutoGrid, AutoGridItem } from './AutoGrid/AutoGrid';
 export { useMacy } from './hooks/useMacy';
 export type { UseMacyOptions } from './hooks/useMacy';
-export { CssMasonry } from './Masonry/CssMasonry';
+export { CssMasonry, CssMasonryItem } from './Masonry/CssMasonry';
 export { MacyMasonry } from './Masonry/MacyMasonry';
 
 // Wave 2: Responsive Layout Engines & Momentum
@@ -19,7 +19,9 @@ export { generateTimelinePath, checkTimelineDirection } from './ScrollTimeline/t
 
 export type {
 	AutoGridProps,
+	AutoGridItemProps,
 	CssMasonryProps,
+	CssMasonryItemProps,
 	MacyMasonryProps,
 	InfiniteMarqueeProps,
 	BentoGridProps,

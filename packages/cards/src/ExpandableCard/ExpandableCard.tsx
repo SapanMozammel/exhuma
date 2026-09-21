@@ -247,18 +247,10 @@ export const ExpandableContent = memo<React.HTMLAttributes<HTMLDivElement>>(({ c
 	return createPortal(
 		<div className='fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6' role='dialog' aria-modal='true'>
 			{/* Backdrop */}
-			<div
-				ref={backdropRef}
-				className='fixed inset-0 bg-black/60 backdrop-blur-sm'
-				onClick={ctx.close}
-			/>
+			<div ref={backdropRef} className='fixed inset-0 bg-black/60 backdrop-blur-sm' onClick={ctx.close} />
 
 			{/* Modal Container */}
-			<div
-				ref={modalRef}
-				className={`border-border bg-card relative z-10 w-full max-w-xl overflow-hidden rounded-2xl border p-6 shadow-2xl will-change-transform ${className}`}
-				{...props}
-			>
+			<div ref={modalRef} className={`border-border bg-card relative z-10 w-full max-w-xl overflow-hidden rounded-2xl border p-6 shadow-2xl will-change-transform ${className}`} {...props}>
 				{children}
 			</div>
 		</div>,

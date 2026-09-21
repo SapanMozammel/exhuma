@@ -1,4 +1,6 @@
 import { ComponentFilePayload, EcosystemFlavor, UniversalComponent } from '../schema';
+import { getAutoGridUsage } from './generators/auto-grid-generator';
+import { getCssMasonryUsage } from './generators/css-masonry-generator';
 
 /**
  * Generates a complete, production-ready usage example for a component across all 13 supported ecosystems.
@@ -37,6 +39,14 @@ export function generateComponentUsage(component: UniversalComponent, flavor: Ec
 
 	if (slug === 'expandable-card') {
 		return getExpandableCardUsage(flavor, props);
+	}
+
+	if (slug === 'auto-grid') {
+		return getAutoGridUsage(flavor, props);
+	}
+
+	if (slug === 'css-masonry') {
+		return getCssMasonryUsage(flavor, props);
 	}
 
 	return getGenericComponentUsage(component, flavor, props);

@@ -8,10 +8,51 @@ export interface CssMasonryProps {
 	 */
 	columns?: number | { sm?: number; md?: number; lg?: number; xl?: number };
 	/**
+	 * Column count override on mobile viewports (<640px).
+	 * Default: 1
+	 */
+	columnsSm?: number;
+	/**
+	 * Column count override on tablet viewports (640px-1024px).
+	 * Default: 2
+	 */
+	columnsMd?: number;
+	/**
+	 * Column count override on desktop viewports (1024px-1280px).
+	 * Default: 3
+	 */
+	columnsLg?: number;
+	/**
+	 * Column count override on ultra-wide viewports (>=1280px).
+	 * Default: 4
+	 */
+	columnsXl?: number;
+	/**
 	 * Spacing between columns and items in px or rem.
 	 * Default: '1.5rem'
 	 */
 	gap?: string | number;
+	/**
+	 * Multi-column fill mode ('balance' or 'auto').
+	 * Default: 'balance'
+	 */
+	columnFill?: 'balance' | 'auto';
+	/**
+	 * Fixed or maximum container height.
+	 * Required by WebKit/Blink for column-fill: auto (sequential waterfall) to trigger.
+	 */
+	height?: string | number;
+	className?: string;
+	style?: CSSProperties;
+}
+
+export interface CssMasonryItemProps {
+	children: ReactNode;
+	/**
+	 * CSS break-inside control to prevent item splitting across columns.
+	 * Default: 'avoid'
+	 */
+	breakInside?: 'avoid' | 'auto';
 	className?: string;
 	style?: CSSProperties;
 }
@@ -28,6 +69,34 @@ export interface AutoGridProps {
 	 * Default: '1.5rem'
 	 */
 	gap?: string | number;
+	/**
+	 * CSS Grid repeat track mode ('auto-fit' or 'auto-fill').
+	 * Default: 'auto-fit'
+	 */
+	mode?: 'auto-fit' | 'auto-fill';
+	/**
+	 * Maximum column count ceiling (e.g. 4 for max 4 columns).
+	 */
+	maxColumns?: number;
+	/**
+	 * Cross-axis alignment of grid items.
+	 * Default: 'stretch'
+	 */
+	alignItems?: 'start' | 'center' | 'end' | 'stretch';
+	className?: string;
+	style?: CSSProperties;
+}
+
+export interface AutoGridItemProps {
+	children: ReactNode;
+	/**
+	 * Column span across grid tracks.
+	 */
+	colSpan?: number | 'full';
+	/**
+	 * Row span across grid tracks.
+	 */
+	rowSpan?: number;
 	className?: string;
 	style?: CSSProperties;
 }

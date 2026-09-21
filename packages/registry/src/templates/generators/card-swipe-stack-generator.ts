@@ -1,10 +1,6 @@
 import { ComponentFilePayload, EcosystemFlavor } from '../../schema';
 
-export function getCardSwipeStackOuterFiles(
-	flavor: EcosystemFlavor,
-	props: Record<string, unknown>,
-	isEjected: boolean
-): ComponentFilePayload[] | null {
+export function getCardSwipeStackOuterFiles(flavor: EcosystemFlavor, props: Record<string, unknown>, isEjected: boolean): ComponentFilePayload[] | null {
 	const thresholdDistance = Number(props.thresholdDistance ?? 120);
 	const maxRotation = Number(props.maxRotation ?? 20);
 	const scaleStep = Number(props.scaleStep ?? 0.05);

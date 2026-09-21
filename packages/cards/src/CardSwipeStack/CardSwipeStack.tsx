@@ -20,8 +20,8 @@ export interface CardSwipeStackProps<T> {
 
 function getItemKey<T>(item: T, fallbackIndex: number): string | number {
 	if (item && typeof item === 'object') {
-		if ('id' in item && item.id != null) return String(item.id);
-		if ('key' in item && (item as Record<string, unknown>).key != null) return String((item as Record<string, unknown>).key);
+		if ('id' in item && item.id !== null && item.id !== undefined) return String(item.id);
+		if ('key' in item && (item as Record<string, unknown>).key !== null && (item as Record<string, unknown>).key !== undefined) return String((item as Record<string, unknown>).key);
 	}
 	return `card-${fallbackIndex}`;
 }

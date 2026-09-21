@@ -2,6 +2,8 @@ import { ComponentFilePayload, EcosystemFlavor } from '../schema';
 import { getComparisonSliderOuterFiles } from './generators/comparison-slider-generator';
 import { getExpandableCardOuterFiles } from './generators/expandable-card-generator';
 import { getCardSwipeStackOuterFiles } from './generators/card-swipe-stack-generator';
+import { getAutoGridOuterFiles } from './generators/auto-grid-generator';
+import { getCssMasonryOuterFiles } from './generators/css-masonry-generator';
 
 export interface CompoundPart {
 	name: string;
@@ -47,6 +49,16 @@ export function generateOuterLayerFiles(spec: ComponentOuterSpec, flavor: Ecosys
 
 	if (slug === 'card-swipe-stack') {
 		const files = getCardSwipeStackOuterFiles(flavor, props, isEjected);
+		if (files) return files;
+	}
+
+	if (slug === 'auto-grid') {
+		const files = getAutoGridOuterFiles(flavor, props, isEjected);
+		if (files) return files;
+	}
+
+	if (slug === 'css-masonry') {
+		const files = getCssMasonryOuterFiles(flavor, props, isEjected);
 		if (files) return files;
 	}
 
@@ -8767,6 +8779,186 @@ export const HorizontalScroller = React.memo(
   })
 );
 HorizontalScroller.displayName = 'HorizontalScroller';
+`;
+		}
+
+		case 'auto-grid': {
+			const minItemWidth = Number(props.minItemWidth ?? 280);
+			const gap = Number(props.gap ?? 24);
+			const mode = (props.mode as string) ?? 'auto-fit';
+			const maxColumns = Number(props.maxColumns ?? 4);
+			const alignItems = (props.alignItems as string) ?? 'stretch';
+
+			return `${header}export interface AutoGridItemProps extends React.HTMLAttributes<HTMLDivElement> {
+  colSpan?: number | 'full';
+  rowSpan?: number;
+}
+
+/**
+ * AutoGridItem — Standalone compound item with dynamic span support.
+ */
+export const AutoGridItem = React.forwardRef<HTMLDivElement, AutoGridItemProps>(
+  ({ children, colSpan, rowSpan, className, style, ...props }, ref) => {
+    const itemStyle: React.CSSProperties = {
+      gridColumn: colSpan === 'full' ? '1 / -1' : typeof colSpan === 'number' ? \`span \${colSpan}\` : undefined,
+      gridRow: typeof rowSpan === 'number' ? \`span \${rowSpan}\` : undefined,
+      ...style,
+    };
+
+    return (
+      <div
+        ref={ref}
+        className={clsx('exhuma-auto-grid-item', className)}
+        style={itemStyle}
+        {...props}
+      >
+        {children}
+      </div>
+    );
+  }
+);
+AutoGridItem.displayName = 'AutoGridItem';
+
+export interface AutoGridProps extends React.HTMLAttributes<HTMLDivElement> {
+  minItemWidth?: number | string;
+  gap?: number | string;
+  mode?: 'auto-fit' | 'auto-fill';
+  maxColumns?: number;
+  alignItems?: 'stretch' | 'start' | 'center' | 'end';
+}
+
+/**
+ * AutoGrid — Standalone Ejected Engine (Zero-Dependency)
+ * Inlines dynamic minmax repeat track calculation with zero media queries.
+ * Evaluates maxColumns clamping with pure CSS fractional track distribution.
+ */
+export const AutoGrid = React.forwardRef<HTMLDivElement, AutoGridProps>(
+  (
+    {
+      children,
+      minItemWidth = ${minItemWidth},
+      gap = ${gap},
+      mode = '${mode}',
+      maxColumns = ${maxColumns},
+      alignItems = '${alignItems}',
+      className,
+      style,
+      ...props
+    },
+    ref
+  ) => {
+    const minWidthVal = typeof minItemWidth === 'number' ? \`\${minItemWidth}px\` : minItemWidth;
+    const gapVal = typeof gap === 'number' ? \`\${gap}px\` : gap;
+    const repeatTrack = mode === 'auto-fill' ? 'auto-fill' : 'auto-fit';
+    const minTrack = \`min(100%, \${minWidthVal})\`;
+
+    const gridStyle: React.CSSProperties = {
+      display: 'grid',
+      gridTemplateColumns:
+        maxColumns && maxColumns > 0
+          ? \`repeat(\${repeatTrack}, minmax(max(\${minTrack}, calc((100% - \${maxColumns - 1} * \${gapVal}) / \${maxColumns})), 1fr))\`
+          : \`repeat(\${repeatTrack}, minmax(\${minTrack}, 1fr))\`,
+      gap: gapVal,
+      alignItems,
+      ...style,
+    };
+
+    return (
+      <div
+        ref={ref}
+        className={clsx('exhuma-auto-grid w-full', className)}
+        style={gridStyle}
+        {...props}
+      >
+        {children}
+      </div>
+    );
+  }
+);
+AutoGrid.displayName = 'AutoGrid';
+`;
+		}
+
+		case 'css-masonry': {
+			const columns = Number(props.columns ?? 1);
+			const columnsSm = Number(props.columnsSm ?? 2);
+			const columnsMd = Number(props.columnsMd ?? 2);
+			const columnsLg = Number(props.columnsLg ?? 3);
+			const columnsXl = Number(props.columnsXl ?? 4);
+			const gap = Number(props.gap ?? 16);
+			const columnFill = (props.columnFill as string) ?? 'balance';
+			const height = Number(props.height ?? 0);
+
+			return `${header}export interface CssMasonryProps extends React.HTMLAttributes<HTMLDivElement> {
+  columns?: number;
+  columnsSm?: number;
+  columnsMd?: number;
+  columnsLg?: number;
+  columnsXl?: number;
+  gap?: number;
+  columnFill?: 'balance' | 'auto';
+  height?: number;
+}
+
+/**
+ * CssMasonry — Standalone Ejected Engine (Zero-Dependency)
+ * Pure CSS multi-column responsive layout with break-inside protection.
+ * Supports fluid balancing and sequential auto waterfall with zero JS layout overhead.
+ */
+export const CssMasonry = React.forwardRef<HTMLDivElement, CssMasonryProps>(
+  (
+    {
+      children,
+      columns = ${columns},
+      columnsSm = ${columnsSm},
+      columnsMd = ${columnsMd},
+      columnsLg = ${columnsLg},
+      columnsXl = ${columnsXl},
+      gap = ${gap},
+      columnFill = '${columnFill}',
+      height = ${height},
+      className,
+      style,
+      ...props
+    },
+    ref
+  ) => {
+    const containerStyle: React.CSSProperties = {
+      columnCount: columns,
+      columnGap: \`\${gap}px\`,
+      columnFill: columnFill === 'auto' ? 'auto' : 'balance',
+      height: columnFill === 'auto' && height && height > 0 ? \`\${height}px\` : undefined,
+      overflowY: columnFill === 'auto' && height && height > 0 ? 'auto' : undefined,
+      ...style,
+    };
+
+    return (
+      <div
+        ref={ref}
+        className={clsx(
+          'exhuma-css-masonry w-full',
+          columnsSm && \`sm:[column-count:\${columnsSm}]\`,
+          columnsMd && \`md:[column-count:\${columnsMd}]\`,
+          columnsLg && \`lg:[column-count:\${columnsLg}]\`,
+          columnsXl && \`xl:[column-count:\${columnsXl}]\`,
+          className
+        )}
+        style={containerStyle}
+        {...props}
+      >
+        {React.Children.map(children, (child) => (
+          <div
+            className="break-inside-avoid"
+            style={{ marginBottom: \`\${gap}px\` }}
+          >
+            {child}
+          </div>
+        ))}
+      </div>
+    );
+  }
+);
+CssMasonry.displayName = 'CssMasonry';
 `;
 		}
 
