@@ -114,6 +114,13 @@ export const cssMasonryComponent: UniversalComponent = {
 				snakeName: 'css_masonry',
 				description: 'Pure CSS multi-column responsive masonry layout.',
 				defaultTailwindClass: 'columns-1 sm:columns-2 md:columns-3 gap-4 [column-fill:_balance] w-full space-y-4',
+				compoundParts: [
+					{
+						name: 'CssMasonryItem',
+						primitiveExport: 'CssMasonryItem',
+						defaultClass: '',
+					},
+				],
 			},
 			flavor,
 			props,

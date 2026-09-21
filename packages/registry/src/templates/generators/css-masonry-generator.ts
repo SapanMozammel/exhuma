@@ -23,6 +23,35 @@ export function getCssMasonryOuterFiles(flavor: EcosystemFlavor, props: Record<s
 					code: `${isNext ? "'use client';\n\n" : ''}import * as React from 'react';
 import { clsx } from 'clsx';
 
+export interface CssMasonryItemProps extends React.HTMLAttributes<HTMLDivElement> {
+  breakInside?: 'avoid' | 'auto';
+}
+
+/**
+ * CssMasonryItem — Standalone compound item preventing fragmentation across columns.
+ */
+export const CssMasonryItem = React.forwardRef<HTMLDivElement, CssMasonryItemProps>(
+  ({ children, breakInside = 'avoid', className, style, ...props }, ref) => {
+    return (
+      <div
+        ref={ref}
+        className={clsx('exhuma-masonry-item inline-block w-full', className)}
+        style={{
+          breakInside: breakInside === 'avoid' ? 'avoid-column' : breakInside,
+          pageBreakInside: 'avoid',
+          display: 'inline-block',
+          width: '100%',
+          ...style,
+        }}
+        {...props}
+      >
+        {children}
+      </div>
+    );
+  }
+);
+CssMasonryItem.displayName = 'CssMasonryItem';
+
 export interface CssMasonryProps extends React.HTMLAttributes<HTMLDivElement> {
   columns?: number;
   columnsSm?: number;

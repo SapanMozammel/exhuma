@@ -117,3 +117,56 @@ describe('Exhuma Layouts — AutoGrid Architecture & Registry', () => {
 		expect(payload.length).toBeGreaterThan(0);
 	});
 });
+
+describe('Exhuma Layouts — Universal 13-Ecosystem Parity & Big-Ω Gates', () => {
+	const ECOSYSTEMS = [
+		'react',
+		'nextjs',
+		'vue',
+		'svelte',
+		'angular',
+		'solid',
+		'astro',
+		'blade',
+		'vanilla',
+		'wordpress',
+		'webcomponent',
+		'react-native',
+		'flutter',
+	] as const;
+
+	for (const ecosystem of ECOSYSTEMS) {
+		it(`generates non-empty component source for Auto Grid on ${ecosystem}`, () => {
+			const files = autoGridComponent.generateCode(ecosystem, autoGridComponent.defaultProps);
+			expect(files.length).toBeGreaterThan(0);
+			expect(files[0].code.length).toBeGreaterThan(50);
+		});
+
+		it(`generates non-empty component source for CSS Masonry on ${ecosystem}`, () => {
+			const files = cssMasonryComponent.generateCode(ecosystem, cssMasonryComponent.defaultProps);
+			expect(files.length).toBeGreaterThan(0);
+			expect(files[0].code.length).toBeGreaterThan(50);
+		});
+	}
+
+	it('generates zero-dependency standalone ejected engine for Auto Grid', () => {
+		const ejectedFiles = autoGridComponent.generateCode('react', autoGridComponent.defaultProps, { eject: true });
+		expect(ejectedFiles.length).toBeGreaterThan(0);
+		const code = ejectedFiles[0].code;
+		expect(code).not.toContain('@exhuma/core');
+		expect(code).toContain('AutoGrid');
+		expect(code).toContain('AutoGridItem');
+		expect(code).toContain('gridTemplateColumns');
+	});
+
+	it('generates zero-dependency standalone ejected engine for CSS Masonry', () => {
+		const ejectedFiles = cssMasonryComponent.generateCode('react', cssMasonryComponent.defaultProps, { eject: true });
+		expect(ejectedFiles.length).toBeGreaterThan(0);
+		const code = ejectedFiles[0].code;
+		expect(code).not.toContain('@exhuma/core');
+		expect(code).toContain('CssMasonry');
+		expect(code).toContain('CssMasonryItem');
+		expect(code).toContain('columnCount');
+	});
+});
+
