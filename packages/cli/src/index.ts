@@ -24,6 +24,8 @@ program
 	.option('-a, --all', 'Install all available components')
 	.option('-p, --path <path>', 'Custom directory to install component files')
 	.option('-y, --yes', 'Skip confirmation prompts')
+	.option('-e, --eject', 'Install standalone zero-dependency ejected engine with inlined math')
+	.option('-v, --vendor', 'Vendor all core kinetic math into local directory')
 	.action(addCommand);
 
 program.command('list').description('List all available components in the Exhuma registry').action(listCommand);

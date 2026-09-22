@@ -65,6 +65,20 @@ export const horizontalScrollerComponent: UniversalComponent = {
 			description: 'Width in pixels of the left and right gradient fade masks.',
 		},
 		{
+			name: 'fadeEdgeColor',
+			label: 'Fade Edge Color',
+			type: 'color',
+			defaultValue: '#ffffff',
+			description: 'Custom edge gradient color. When empty, an alpha mask is used.',
+		},
+		{
+			name: 'fadeEdgeColorDark',
+			label: 'Fade Edge Color (Dark Mode)',
+			type: 'color',
+			defaultValue: '#09090b',
+			description: 'Edge gradient color when dark mode is active. Falls back to fadeEdgeColor.',
+		},
+		{
 			name: 'mobileMode',
 			label: 'Mobile Mode',
 			type: 'select',
@@ -84,6 +98,8 @@ export const horizontalScrollerComponent: UniversalComponent = {
 		showProgress: true,
 		showFadeEdges: true,
 		fadeWidth: 48,
+		fadeEdgeColor: '#ffffff',
+		fadeEdgeColorDark: '#09090b',
 		mobileMode: 'scroll',
 	},
 	dependencies: {

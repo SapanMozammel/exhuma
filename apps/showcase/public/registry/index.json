@@ -1,7 +1,7 @@
 {
 	"$schema": "https://exhuma.dev/schema/registry-index.json",
 	"version": "1.0.0",
-	"generatedAt": "2026-09-20T05:51:28.974Z",
+	"generatedAt": "2026-09-22T09:17:40.428Z",
 	"components": [
 		{
 			"name": "Stacking Cards",
@@ -83,6 +83,14 @@
 				{ "name": "showProgress", "label": "Progress Indicator", "type": "boolean", "defaultValue": true, "description": "Display a kinetic telemetry progress bar indicating track traversal percentage." },
 				{ "name": "showFadeEdges", "label": "Fade Edges", "type": "boolean", "defaultValue": true, "description": "Show subtle gradient mask at horizontal boundaries for graceful card entry and exit." },
 				{ "name": "fadeWidth", "label": "Fade Width (px)", "type": "number", "defaultValue": 48, "min": 16, "max": 96, "step": 8, "description": "Width in pixels of the left and right gradient fade masks." },
+				{ "name": "fadeEdgeColor", "label": "Fade Edge Color", "type": "color", "defaultValue": "#ffffff", "description": "Custom edge gradient color. When empty, an alpha mask is used." },
+				{
+					"name": "fadeEdgeColorDark",
+					"label": "Fade Edge Color (Dark Mode)",
+					"type": "color",
+					"defaultValue": "#09090b",
+					"description": "Edge gradient color when dark mode is active. Falls back to fadeEdgeColor."
+				},
 				{
 					"name": "mobileMode",
 					"label": "Mobile Mode",
@@ -120,8 +128,33 @@
 			"description": "Pure CSS multi-column responsive masonry layout with zero external JavaScript runtime overhead.",
 			"version": "1.0.0",
 			"props": [
-				{ "name": "columns", "label": "Desktop Columns", "type": "number", "defaultValue": 3, "min": 1, "max": 6, "step": 1, "description": "Number of columns on desktop viewports." },
-				{ "name": "gap", "label": "Column Gap (px)", "type": "number", "defaultValue": 16, "min": 8, "max": 48, "step": 4, "description": "Gap between masonry columns and items." }
+				{ "name": "columns", "label": "Mobile Columns (<640px)", "type": "number", "defaultValue": 1, "min": 1, "max": 8, "step": 1, "description": "Base column count on mobile viewports (<640px)." },
+				{ "name": "columnsSm", "label": "Tablet Columns (640-1024px)", "type": "number", "defaultValue": 2, "min": 1, "max": 4, "step": 1, "description": "Number of columns on tablet viewports (≥640px)." },
+				{ "name": "columnsMd", "label": "Medium Tablet Columns", "type": "number", "defaultValue": 2, "min": 1, "max": 6, "step": 1, "description": "Number of columns on medium tablet viewports." },
+				{ "name": "columnsLg", "label": "Desktop Columns (1024-1280px)", "type": "number", "defaultValue": 3, "min": 1, "max": 8, "step": 1, "description": "Number of columns on desktop viewports." },
+				{ "name": "columnsXl", "label": "Ultra-wide Columns (≥1280px)", "type": "number", "defaultValue": 4, "min": 1, "max": 10, "step": 1, "description": "Number of columns on large screens (≥1280px)." },
+				{ "name": "gap", "label": "Gap (px)", "type": "number", "defaultValue": 16, "min": 4, "max": 64, "step": 4, "description": "Spacing between masonry columns and item margins." },
+				{
+					"name": "columnFill",
+					"label": "Column Fill",
+					"type": "select",
+					"defaultValue": "balance",
+					"options": [
+						{ "label": "Balance (Balanced Heights)", "value": "balance" },
+						{ "label": "Auto (Sequential Waterfall)", "value": "auto" }
+					],
+					"description": "Controls whether column heights are balanced or filled sequentially."
+				},
+				{
+					"name": "height",
+					"label": "Container Height (px)",
+					"type": "number",
+					"defaultValue": 0,
+					"min": 0,
+					"max": 1200,
+					"step": 20,
+					"description": "Explicit container height for sequential waterfall (0 for auto balance)."
+				}
 			],
 			"dependencies": {
 				"react": ["@exhuma/core"],
@@ -152,12 +185,37 @@
 					"label": "Min Width (px)",
 					"type": "number",
 					"defaultValue": 280,
-					"min": 150,
-					"max": 450,
+					"min": 120,
+					"max": 480,
 					"step": 10,
 					"description": "Minimum width of each grid column before wrapping to the next line."
 				},
-				{ "name": "gap", "label": "Grid Gap (px)", "type": "number", "defaultValue": 24, "min": 8, "max": 48, "step": 4, "description": "Gap between grid items." }
+				{ "name": "gap", "label": "Grid Gap (px)", "type": "number", "defaultValue": 24, "min": 4, "max": 64, "step": 4, "description": "Gap between grid items." },
+				{
+					"name": "mode",
+					"label": "Track Mode",
+					"type": "select",
+					"defaultValue": "auto-fit",
+					"options": [
+						{ "label": "Auto-Fit (Expand to Fill Row)", "value": "auto-fit" },
+						{ "label": "Auto-Fill (Preserve Track Widths)", "value": "auto-fill" }
+					],
+					"description": "Determines whether tracks collapse to stretch items or stay fixed."
+				},
+				{ "name": "maxColumns", "label": "Max Columns", "type": "number", "defaultValue": 4, "min": 1, "max": 12, "step": 1, "description": "Upper constraint on maximum columns allowed." },
+				{
+					"name": "alignItems",
+					"label": "Item Alignment",
+					"type": "select",
+					"defaultValue": "stretch",
+					"options": [
+						{ "label": "Stretch (Equal Height)", "value": "stretch" },
+						{ "label": "Start (Top)", "value": "start" },
+						{ "label": "Center (Middle)", "value": "center" },
+						{ "label": "End (Bottom)", "value": "end" }
+					],
+					"description": "Cross-axis vertical alignment for items within grid rows."
+				}
 			],
 			"dependencies": {
 				"react": ["@exhuma/core"],
@@ -180,12 +238,45 @@
 			"name": "Tilt Card",
 			"slug": "tilt-card",
 			"category": "cards",
-			"description": "Interactive 3D mouse-tracking card tilt with dynamic glare effect and smooth spring reset.",
+			"description": "Interactive 3D mouse-tracking card tilt with smooth gyroscopic physics, spring damping, and reverse mode.",
 			"version": "1.0.0",
 			"props": [
-				{ "name": "maxTilt", "label": "Max Tilt (deg)", "type": "number", "defaultValue": 15, "min": 5, "max": 35, "step": 1, "description": "Maximum tilt rotation in degrees." },
-				{ "name": "perspective", "label": "Perspective (px)", "type": "number", "defaultValue": 1000, "min": 500, "max": 2000, "step": 100, "description": "3D perspective depth in pixels." },
-				{ "name": "glare", "label": "Enable Glare", "type": "boolean", "defaultValue": true, "description": "Dynamic glare reflection tracking mouse position." }
+				{ "name": "maxTilt", "label": "Max Tilt (deg)", "type": "number", "defaultValue": 15, "min": 5, "max": 45, "step": 1, "description": "Maximum 3D tilt rotation in degrees at card boundary edges." },
+				{
+					"name": "perspective",
+					"label": "Perspective (px)",
+					"type": "number",
+					"defaultValue": 1000,
+					"min": 500,
+					"max": 2000,
+					"step": 100,
+					"description": "3D perspective projection depth in pixels (lower = stronger foreshortening)."
+				},
+				{ "name": "scale", "label": "Hover Scale", "type": "number", "defaultValue": 1.02, "min": 1, "max": 1.15, "step": 0.01, "description": "Card scale multiplier applied on pointer hover." },
+				{
+					"name": "speed",
+					"label": "Damping Speed",
+					"type": "number",
+					"defaultValue": 0.12,
+					"min": 0.05,
+					"max": 0.3,
+					"step": 0.01,
+					"description": "Kinetic spring lerp damping factor (higher = snappier, lower = smoother glide)."
+				},
+				{ "name": "reverse", "label": "Reverse Tilt", "type": "boolean", "defaultValue": false, "description": "Invert tilt direction (tilts towards cursor instead of sinking away)." },
+				{ "name": "disabled", "label": "Disabled", "type": "boolean", "defaultValue": false, "description": "Programmatically disable 3D tilt tracking." },
+				{
+					"name": "axis",
+					"label": "Tilt Axis",
+					"type": "select",
+					"defaultValue": "all",
+					"options": [
+						{ "label": "Full 3D Tilt (all)", "value": "all" },
+						{ "label": "Pitch Only / X-Axis (x)", "value": "x" },
+						{ "label": "Yaw Only / Y-Axis (y)", "value": "y" }
+					],
+					"description": "Constrain tilt rotation axis (all = 3D pitch+yaw, x = pitch only, y = yaw only)."
+				}
 			],
 			"dependencies": {
 				"react": ["@exhuma/core"],
@@ -211,10 +302,34 @@
 			"description": "Dynamic 2D spatial coordinate tracking with sub-pixel radial border illumination mask and smooth exponential smoothing.",
 			"version": "1.0.0",
 			"props": [
-				{ "name": "radius", "label": "Spotlight Radius (px)", "type": "number", "defaultValue": 350, "min": 150, "max": 600, "step": 25, "description": "Radius of the radial spotlight illumination in pixels." },
-				{ "name": "color", "label": "Spotlight Color", "type": "string", "defaultValue": "rgba(99, 102, 241, 0.25)", "description": "Background radial sheen color (CSS color string)." },
-				{ "name": "opacity", "label": "Glow Opacity", "type": "number", "defaultValue": 0.8, "min": 0.1, "max": 1, "step": 0.05, "description": "Opacity of the spotlight when active." },
-				{ "name": "borderColor", "label": "Border Glow Color", "type": "string", "defaultValue": "rgba(99, 102, 241, 0.5)", "description": "Color of the illuminated border edge." }
+				{ "name": "radius", "label": "Spotlight Radius (px)", "type": "number", "defaultValue": 350, "min": 150, "max": 800, "step": 25, "description": "Radius of the radial spotlight illumination in pixels." },
+				{ "name": "color", "label": "Spotlight Color", "type": "color", "defaultValue": "#6366f1", "description": "Background radial sheen color (CSS color string or hex)." },
+				{ "name": "borderColor", "label": "Border Glow Color", "type": "color", "defaultValue": "#818cf8", "description": "Color of the illuminated border edge specular mask." },
+				{ "name": "opacity", "label": "Glow Opacity", "type": "number", "defaultValue": 0.85, "min": 0, "max": 1, "step": 0.05, "description": "Opacity of the spotlight when cursor is active over the card." },
+				{ "name": "spread", "label": "Falloff Spread (%)", "type": "number", "defaultValue": 60, "min": 20, "max": 100, "step": 5, "description": "Radial gradient falloff softness percentage." },
+				{
+					"name": "mode",
+					"label": "Spotlight Mode",
+					"type": "select",
+					"defaultValue": "both",
+					"options": [
+						{ "label": "Both (Border & Sheen)", "value": "both" },
+						{ "label": "Border Only", "value": "border" },
+						{ "label": "Background Sheen Only", "value": "background" }
+					],
+					"description": "Select whether to illuminate the border mask, background sheen, or both."
+				},
+				{
+					"name": "smoothing",
+					"label": "Inertial Smoothing",
+					"type": "number",
+					"defaultValue": 0.2,
+					"min": 0.05,
+					"max": 1,
+					"step": 0.05,
+					"description": "Kinetic exponential smoothing response rate (1.0 = instant, 0.1 = silky inertia)."
+				},
+				{ "name": "disabled", "label": "Disable Tracking", "type": "boolean", "defaultValue": false, "description": "Programmatically disable pointer tracking and spotlight illumination." }
 			],
 			"dependencies": {
 				"react": ["@exhuma/core"],
@@ -240,7 +355,40 @@
 			"description": "Dynamic active rect geometry tracking with a floating spring indicator and roving focus keyboard navigation.",
 			"version": "1.0.0",
 			"props": [
-				{ "name": "springStiffness", "label": "Spring Stiffness (omega)", "type": "number", "defaultValue": 26, "min": 10, "max": 50, "step": 2, "description": "Stiffness of the critically damped spring pill." }
+				{
+					"name": "springStiffness",
+					"label": "Spring Stiffness (omega)",
+					"type": "number",
+					"defaultValue": 26,
+					"min": 10,
+					"max": 50,
+					"step": 2,
+					"description": "Natural angular frequency (omega) of the critically damped spring ODE."
+				},
+				{
+					"name": "variant",
+					"label": "Indicator Variant",
+					"type": "select",
+					"options": [
+						{ "label": "Pill (Default)", "value": "pill" },
+						{ "label": "Minimal Underline", "value": "underline" },
+						{ "label": "Neon Glow", "value": "glow" }
+					],
+					"defaultValue": "pill",
+					"description": "Visual style and geometry of the kinetic morphing indicator."
+				},
+				{
+					"name": "size",
+					"label": "Tab Size",
+					"type": "select",
+					"options": [
+						{ "label": "Small (sm)", "value": "sm" },
+						{ "label": "Medium (md)", "value": "md" },
+						{ "label": "Large (lg)", "value": "lg" }
+					],
+					"defaultValue": "md",
+					"description": "Padding and typographic scale of tab trigger buttons."
+				}
 			],
 			"dependencies": {
 				"react": ["@exhuma/core"],
@@ -316,7 +464,17 @@
 					"description": "Direction of marquee translation."
 				},
 				{ "name": "pauseOnHover", "label": "Pause On Hover", "type": "boolean", "defaultValue": true, "description": "Smoothly decelerate to zero when hovered." },
-				{ "name": "gap", "label": "Item Gap", "type": "string", "defaultValue": "1.5rem", "description": "Spacing between items and repeated tracks." }
+				{ "name": "gap", "label": "Item Gap (px)", "type": "number", "defaultValue": 24, "min": 8, "max": 64, "step": 4, "description": "Spacing between items and repeated tracks in pixels." },
+				{ "name": "showFadeEdges", "label": "Fade Edges", "type": "boolean", "defaultValue": true, "description": "Show subtle gradient mask at boundaries for graceful entry and exit." },
+				{ "name": "fadeWidth", "label": "Fade Width (px)", "type": "number", "defaultValue": 48, "min": 16, "max": 128, "step": 8, "description": "Width of the edge gradient fade in pixels." },
+				{ "name": "fadeEdgeColor", "label": "Fade Edge Color", "type": "color", "defaultValue": "#ffffff", "description": "Custom edge gradient color. When empty, an alpha mask is used." },
+				{
+					"name": "fadeEdgeColorDark",
+					"label": "Fade Edge Color (Dark Mode)",
+					"type": "color",
+					"defaultValue": "#09090b",
+					"description": "Edge gradient color when dark mode is active. Falls back to fadeEdgeColor."
+				}
 			],
 			"dependencies": {
 				"react": ["@exhuma/core"],
@@ -343,7 +501,8 @@
 			"version": "1.0.0",
 			"props": [
 				{ "name": "cols", "label": "Columns", "type": "number", "defaultValue": 3, "min": 1, "max": 6, "step": 1, "description": "Maximum column count for desktop screens." },
-				{ "name": "gap", "label": "Grid Gap", "type": "string", "defaultValue": "1.5rem", "description": "Spacing between bento tiles." }
+				{ "name": "gap", "label": "Grid Gap (px)", "type": "number", "defaultValue": 20, "min": 8, "max": 64, "step": 4, "description": "Spacing between bento tiles." },
+				{ "name": "rowHeight", "label": "Row Height (px)", "type": "number", "defaultValue": 180, "min": 100, "max": 320, "step": 10, "description": "Base auto-rows track height for vertical spans." }
 			],
 			"dependencies": {
 				"react": ["@exhuma/core"],
@@ -366,9 +525,42 @@
 			"name": "Diamond Grid",
 			"slug": "diamond-grid",
 			"category": "layouts",
-			"description": "Rhombic symmetrical diamond column distribution [1, 2, 3, 4, 3, 2, 1] with responsive mobile collapse.",
+			"description": "Rhombic symmetrical diamond column distribution [1, 2, 3, 4, 3, 2, 1] with container-query responsive collapse.",
 			"version": "1.0.0",
-			"props": [{ "name": "gap", "label": "Column Gap", "type": "string", "defaultValue": "0.75vw", "description": "Spacing between diamond columns and elements." }],
+			"props": [
+				{
+					"name": "mode",
+					"label": "Grid Mode",
+					"type": "select",
+					"options": [
+						{ "label": "Rhombic (Classic Default)", "value": "rhombic" },
+						{ "label": "Isometric (45° Diamond)", "value": "isometric" }
+					],
+					"defaultValue": "rhombic",
+					"description": "Visual rendering mode (classic upright cards in rhombic columns vs 45° tilted diamond cards)."
+				},
+				{ "name": "gap", "label": "Column Gap", "type": "number", "defaultValue": 16, "min": 4, "max": 48, "step": 2, "description": "Spacing between diamond columns and elements in pixels." },
+				{
+					"name": "layout",
+					"label": "Layout Topology",
+					"type": "select",
+					"options": [
+						{ "label": "Auto (Dynamic)", "value": "auto" },
+						{ "label": "Large (7 Columns)", "value": "large" },
+						{ "label": "Medium (5 Columns)", "value": "medium" },
+						{ "label": "Small (3 Columns)", "value": "small" }
+					],
+					"defaultValue": "auto",
+					"description": "Rhombic column layout topology (large: 7-col [1,2,3,4,3,2,1], medium: 5-col, small: 3-col)."
+				},
+				{
+					"name": "responsive",
+					"label": "Responsive Mobile Collapse",
+					"type": "boolean",
+					"defaultValue": false,
+					"description": "Enable collapse to compact grid on narrow mobile screens (< 420px). When disabled (default), preserves authentic rhombic diamond structure across all devices."
+				}
+			],
 			"dependencies": {
 				"react": ["@exhuma/core"],
 				"nextjs": ["@exhuma/core"],
@@ -442,14 +634,34 @@
 			"name": "Border Beam",
 			"slug": "border-beam",
 			"category": "cards",
-			"description": "Zero-runtime CSS conic perimeter laser trace with hardware mask clipping and sub-pixel compositing.",
+			"description": "Zero-runtime CSS perimeter laser trace with hardware mask clipping and sub-pixel compositing.",
 			"version": "1.0.0",
 			"props": [
-				{ "name": "size", "label": "Beam Length (px)", "type": "number", "defaultValue": 250, "min": 100, "max": 600, "step": 25, "description": "Length/size of the perimeter laser trace." },
-				{ "name": "duration", "label": "Duration (s)", "type": "number", "defaultValue": 12, "min": 2, "max": 30, "step": 1, "description": "Loop duration for one full border sweep." },
-				{ "name": "borderWidth", "label": "Border Width (px)", "type": "number", "defaultValue": 1.5, "min": 1, "max": 4, "step": 0.5, "description": "Perimeter border stroke width." },
-				{ "name": "colorFrom", "label": "Color From", "type": "string", "defaultValue": "#ffaa40", "description": "Starting gradient color." },
-				{ "name": "colorTo", "label": "Color To", "type": "string", "defaultValue": "#9c40ff", "description": "Ending gradient color." }
+				{ "name": "size", "label": "Beam Length (px)", "type": "number", "defaultValue": 200, "min": 50, "max": 200, "step": 10, "description": "Length/size of the perimeter laser trace." },
+				{ "name": "duration", "label": "Duration (s)", "type": "number", "defaultValue": 8, "min": 2, "max": 30, "step": 1, "description": "Loop duration for one full border sweep." },
+				{ "name": "borderWidth", "label": "Border Width (px)", "type": "number", "defaultValue": 2, "min": 1, "max": 8, "step": 0.5, "description": "Perimeter border stroke width." },
+				{ "name": "colorFrom", "label": "Color From", "type": "color", "defaultValue": "#ffaa40", "description": "Starting gradient color." },
+				{ "name": "colorTo", "label": "Color To", "type": "color", "defaultValue": "#9c40ff", "description": "Ending gradient color." },
+				{
+					"name": "doubleBeam",
+					"label": "Double Beam",
+					"type": "boolean",
+					"defaultValue": false,
+					"description": "Render a secondary beam located on the opposite side of the perimeter, orbiting in the same direction (180° phase offset)."
+				},
+				{
+					"name": "endOpacity",
+					"label": "End Opacity",
+					"type": "number",
+					"defaultValue": 0,
+					"min": 0,
+					"max": 1,
+					"step": 0.05,
+					"description": "Opacity of the beam tail at its trailing edge (0 for pure transparent)."
+				},
+				{ "name": "opacity", "label": "Opacity", "type": "number", "defaultValue": 1, "min": 0, "max": 1, "step": 0.05, "description": "Overall opacity of the border beam trace." },
+				{ "name": "blur", "label": "Glow Blur (px)", "type": "number", "defaultValue": 0, "min": 0, "max": 12, "step": 1, "description": "Specular diffuse blur applied to the perimeter laser trace." },
+				{ "name": "borderRadius", "label": "Corner Radius (px)", "type": "number", "defaultValue": 16, "min": 0, "max": 48, "step": 2, "description": "Corner radius of the perimeter path matching card borders." }
 			],
 			"dependencies": {
 				"react": ["@exhuma/core"],
@@ -621,7 +833,7 @@
 			"name": "Card Swipe Stack",
 			"slug": "card-swipe-stack",
 			"category": "cards",
-			"description": "Velocity-sensitive multi-card swipe stack with Euler angular rotation, circular velocity ring buffer, and zero external animation libraries.",
+			"description": "Velocity-sensitive multi-card swipe stack with Euler angular rotation, circular velocity ring buffer, elastic last-card resistance, and zero external animation libraries.",
 			"version": "1.0.0",
 			"props": [
 				{
@@ -644,7 +856,33 @@
 					"step": 1,
 					"description": "Maximum angular rotation coupled to horizontal translation."
 				},
-				{ "name": "scaleStep", "label": "Scale Step", "type": "number", "defaultValue": 0.05, "min": 0.02, "max": 0.1, "step": 0.01, "description": "Scale reduction step between consecutive cards in the stack." }
+				{
+					"name": "scaleStep",
+					"label": "Scale Step",
+					"type": "number",
+					"defaultValue": 0.05,
+					"min": 0.02,
+					"max": 0.1,
+					"step": 0.01,
+					"description": "Scale reduction step between consecutive cards in the stack."
+				},
+				{
+					"name": "offsetStep",
+					"label": "Offset Step (px)",
+					"type": "number",
+					"defaultValue": 14,
+					"min": 4,
+					"max": 32,
+					"step": 2,
+					"description": "Vertical offset in pixels between consecutive cards in the stack."
+				},
+				{
+					"name": "preventLastCardDismiss",
+					"label": "Anchor Last Card",
+					"type": "boolean",
+					"defaultValue": true,
+					"description": "When enabled, the final card cannot be dismissed. Dragging it applies elastic rubber-band resistance and it snaps back to center on release."
+				}
 			],
 			"dependencies": {
 				"react": ["@exhuma/core"],
@@ -671,7 +909,18 @@
 			"version": "1.0.0",
 			"props": [
 				{ "name": "defaultPosition", "label": "Default Position", "type": "number", "defaultValue": 0.5, "min": 0.1, "max": 0.9, "step": 0.05, "description": "Initial divider split ratio between 0 and 1." },
-				{ "name": "step", "label": "Keyboard Step", "type": "number", "defaultValue": 0.05, "min": 0.01, "max": 0.2, "step": 0.01, "description": "Position delta when stepping with arrow keys." }
+				{ "name": "step", "label": "Keyboard Step", "type": "number", "defaultValue": 0.05, "min": 0.01, "max": 0.2, "step": 0.01, "description": "Position delta when stepping with arrow keys." },
+				{
+					"name": "orientation",
+					"label": "Orientation",
+					"type": "select",
+					"defaultValue": "horizontal",
+					"options": [
+						{ "label": "Horizontal", "value": "horizontal" },
+						{ "label": "Vertical", "value": "vertical" }
+					],
+					"description": "Slider split direction (horizontal or vertical)."
+				}
 			],
 			"dependencies": {
 				"react": ["@exhuma/core"],

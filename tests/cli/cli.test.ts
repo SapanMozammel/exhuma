@@ -38,6 +38,9 @@ describe('Exhuma CLI Suite — Automated End-to-End Test Gate', () => {
     expect(stdout).toContain('css-masonry');
     expect(stdout).toContain('auto-grid');
     expect(stdout).toContain('tilt-card');
+    expect(stdout).toContain('spotlight-card');
+    expect(stdout).toContain('comparison-slider');
+    expect(stdout).toContain('expandable-card');
     expect(stdout).toContain('react • nextjs • vue • svelte • angular • solid • astro • blade • vanilla • wordpress • webcomponent • react-native • flutter');
   });
 
@@ -73,6 +76,96 @@ describe('Exhuma CLI Suite — Automated End-to-End Test Gate', () => {
     expect(code).toContain('AutoGridPrimitive');
   });
 
+  it('installs real Spotlight Card component via exhuma add', () => {
+    execSync(`node "${CLI_BIN}" add spotlight-card --flavor=svelte --yes`, { cwd: TEST_DIR });
+    const componentPath = resolve(TEST_DIR, 'src/lib/components/SpotlightCard.svelte');
+    expect(existsSync(componentPath)).toBe(true);
+
+    const code = readFileSync(componentPath, 'utf8');
+    expect(code).toContain('exhuma-spotlight-card');
+    expect(code).toContain('updateFrame');
+  });
+
+  it('installs real Border Beam component via exhuma add', () => {
+    execSync(`node "${CLI_BIN}" add border-beam --flavor=svelte --yes`, { cwd: TEST_DIR });
+    const componentPath = resolve(TEST_DIR, 'src/lib/components/BorderBeam.svelte');
+    expect(existsSync(componentPath)).toBe(true);
+
+    const code = readFileSync(componentPath, 'utf8');
+    expect(code).toContain('exhuma-border-beam');
+    expect(code).toContain('doubleBeam');
+    expect(code).toContain('endOpacity');
+  });
+
+  it('installs real Card Swipe Stack component via exhuma add', () => {
+    execSync(`node "${CLI_BIN}" add card-swipe-stack --flavor=react --yes`, { cwd: TEST_DIR });
+    const componentPath = resolve(TEST_DIR, 'src/lib/components/CardSwipeStack.tsx');
+    expect(existsSync(componentPath)).toBe(true);
+
+    const code = readFileSync(componentPath, 'utf8');
+    expect(code).toContain('CardSwipeStack');
+    expect(code).toContain('min-h-[14.5rem]');
+  });
+
+  it('installs real Comparison Slider component via exhuma add', () => {
+    execSync(`node "${CLI_BIN}" add comparison-slider --flavor=react --yes`, { cwd: TEST_DIR });
+    const componentPath = resolve(TEST_DIR, 'src/lib/components/ComparisonSlider.tsx');
+    expect(existsSync(componentPath)).toBe(true);
+
+    const code = readFileSync(componentPath, 'utf8');
+    expect(code).toContain('ComparisonSlider');
+    expect(code).toContain('ComparisonSliderPrimitive');
+  });
+
+  it('installs real Expandable Card component via exhuma add', () => {
+    execSync(`node "${CLI_BIN}" add expandable-card --flavor=react --yes`, { cwd: TEST_DIR });
+    const componentPath = resolve(TEST_DIR, 'src/lib/components/ExpandableCard.tsx');
+    expect(existsSync(componentPath)).toBe(true);
+
+    const code = readFileSync(componentPath, 'utf8');
+    expect(code).toContain('ExpandableCard');
+  });
+
+  it('installs real Diamond Grid component via exhuma add with ejected mode', () => {
+    execSync(`node "${CLI_BIN}" add diamond-grid --flavor=react --eject --yes`, { cwd: TEST_DIR });
+    const componentPath = resolve(TEST_DIR, 'src/lib/components/DiamondGrid.tsx');
+    expect(existsSync(componentPath)).toBe(true);
+
+    const code = readFileSync(componentPath, 'utf8');
+    expect(code).toContain('DiamondGrid');
+    expect(code).toContain('DiamondColumn');
+    expect(code).toContain('DiamondItem');
+    expect(code).toContain('getDiamondLayoutConfig');
+    expect(code).toContain('partitionDiamondItems');
+  });
+
+  it('installs real Morphing Tabs component via exhuma add (clean mode)', () => {
+    execSync(`node "${CLI_BIN}" add morphing-tabs --flavor=react --yes`, { cwd: TEST_DIR });
+    const componentPath = resolve(TEST_DIR, 'src/lib/components/MorphingTabs.tsx');
+    expect(existsSync(componentPath)).toBe(true);
+
+    const code = readFileSync(componentPath, 'utf8');
+    expect(code).toContain('MorphingTabs');
+    expect(code).toContain('TabsRoot');
+    expect(code).toContain('TabsList');
+    expect(code).toContain('TabsIndicator');
+    expect(code).toContain('TabsTrigger');
+    expect(code).toContain('TabsContent');
+    expect(code).toContain('@exhuma/core');
+  });
+
+  it('installs real Morphing Tabs component via exhuma add with ejected mode', () => {
+    execSync(`node "${CLI_BIN}" add morphing-tabs --flavor=react --eject --yes --overwrite`, { cwd: TEST_DIR });
+    const componentPath = resolve(TEST_DIR, 'src/lib/components/MorphingTabs.tsx');
+    expect(existsSync(componentPath)).toBe(true);
+
+    const code = readFileSync(componentPath, 'utf8');
+    expect(code).toContain('MorphingTabs');
+    expect(code).toContain('solveCriticallyDampedSpring');
+    expect(code).toContain('translate3d');
+    expect(code).toContain('TabsRoot');
+  });
+
   it('executes exhuma build to generate static registry JSON', () => {
     const buildOut = resolve(TEST_DIR, 'dist-registry');
     execSync(`node "${CLI_BIN}" build --output="${buildOut}"`, { cwd: TEST_DIR });
@@ -80,6 +173,7 @@ describe('Exhuma CLI Suite — Automated End-to-End Test Gate', () => {
     expect(existsSync(resolve(buildOut, 'index.json'))).toBe(true);
     expect(existsSync(resolve(buildOut, 'stacking-cards.json'))).toBe(true);
     expect(existsSync(resolve(buildOut, 'tilt-card.json'))).toBe(true);
+    expect(existsSync(resolve(buildOut, 'spotlight-card.json'))).toBe(true);
 
     const indexJson = JSON.parse(readFileSync(resolve(buildOut, 'index.json'), 'utf8'));
     expect(indexJson.components.length).toBeGreaterThanOrEqual(5);

@@ -98,13 +98,13 @@
 				"filename": "block.json",
 				"language": "json",
 				"description": "WordPress Block API v3 definition for Sticky Parallax Scroll.",
-				"code": "{\n  \"$schema\": \"https://schemas.wp.org/trunk/block.json\",\n  \"apiVersion\": 3,\n  \"name\": \"exhuma/sticky-parallax\",\n  \"version\": \"1.0.0\",\n  \"title\": \"Exhuma Sticky Parallax Scroll\",\n  \"category\": \"design\",\n  \"icon\": \"art\",\n  \"description\": \"Sticky viewport rail with multi-speed differential layer transformations.\",\n  \"attributes\": {\n    \"topStart\": {\n      \"type\": \"number\",\n      \"default\": 20\n    },\n    \"topIncrement\": {\n      \"type\": \"number\",\n      \"default\": 28\n    },\n    \"cardGap\": {\n      \"type\": \"number\",\n      \"default\": 20\n    },\n    \"scaleThreshold\": {\n      \"type\": \"number\",\n      \"default\": 150\n    },\n    \"minScale\": {\n      \"type\": \"number\",\n      \"default\": 0.9\n    },\n    \"reverseScale\": {\n      \"type\": \"boolean\",\n      \"default\": true\n    }\n  },\n  \"editorScript\": \"file:./index.js\",\n  \"viewScript\": \"exhuma-kinetic\"\n}"
+				"code": "{\n  \"$schema\": \"https://schemas.wp.org/trunk/block.json\",\n  \"apiVersion\": 3,\n  \"name\": \"exhuma/sticky-parallax\",\n  \"version\": \"1.0.0\",\n  \"title\": \"Exhuma Sticky Parallax Scroll\",\n  \"category\": \"widgets\",\n  \"description\": \"Sticky viewport rail with multi-speed differential layer transformations.\",\n  \"attributes\": {},\n  \"render\": \"file:./render.php\"\n}"
 			},
 			{
 				"filename": "render.php",
 				"language": "php",
-				"description": "WordPress dynamic render template for Sticky Parallax Scroll.",
-				"code": "<?php\n$top_start = $attributes['topStart'] ?? 20;\n$top_increment = $attributes['topIncrement'] ?? 28;\n$card_gap = $attributes['cardGap'] ?? 20;\n$scale_threshold = $attributes['scaleThreshold'] ?? 150;\n$min_scale = $attributes['minScale'] ?? 0.9;\n$reverse_scale = ($attributes['reverseScale'] ?? true) ? 'true' : 'false';\n?>\n<div\n  class=\"exhuma-stacking-cards\"\n  data-exhuma-stacking-cards\n  data-top-start=\"<?php echo esc_attr($top_start); ?>\"\n  data-top-increment=\"<?php echo esc_attr($top_increment); ?>\"\n  data-card-gap=\"<?php echo esc_attr($card_gap); ?>\"\n  data-scale-threshold=\"<?php echo esc_attr($scale_threshold); ?>\"\n  data-min-scale=\"<?php echo esc_attr($min_scale); ?>\"\n  data-reverse-scale=\"<?php echo esc_attr($reverse_scale); ?>\"\n>\n  <?php echo $content; ?>\n</div>\n"
+				"description": "WordPress render template for Sticky Parallax Scroll.",
+				"code": "<?php\n/**\n * Sticky Parallax Scroll Block Render Template\n */\n$wrapper_attributes = get_block_wrapper_attributes(['class' => 'relative w-full overflow-hidden']);\n?>\n<div <?php echo $wrapper_attributes; ?>>\n  <?php echo $content; ?>\n</div>\n"
 			}
 		],
 		"webcomponent": [
@@ -119,16 +119,128 @@
 			{
 				"filename": "StickyParallaxScroll.tsx",
 				"language": "tsx",
-				"description": "React Native Sticky Parallax Scroll with scroll-driven Animated scale decay (Hermite smoothstep).",
-				"code": "import React, { useRef, useCallback } from 'react';\nimport {\n  View,\n  ScrollView,\n  Animated,\n  StyleSheet,\n  Dimensions,\n  type ViewProps,\n  type NativeScrollEvent,\n  type NativeSyntheticEvent,\n} from 'react-native';\n\nconst { height: SCREEN_HEIGHT } = Dimensions.get('window');\n\n/** Hermite cubic smoothstep — identical to web Big-Omega kernel */\nfunction smoothstep(t: number): number {\n  const c = Math.max(0, Math.min(1, t));\n  return c * c * (3 - 2 * c);\n}\n\nexport interface StickyParallaxScrollProps extends ViewProps {\n  topStart?: number;\n  topIncrement?: number;\n  cardGap?: number;\n  scaleThreshold?: number;\n  minScale?: number;\n  reverseScale?: boolean;\n  children?: React.ReactNode;\n}\n\nexport function StickyParallaxScroll({\n  topStart = 20,\n  topIncrement = 28,\n  cardGap = 20,\n  scaleThreshold = 150,\n  minScale = 0.9,\n  reverseScale = true,\n  style,\n  children,\n  ...props\n}: StickyParallaxScrollProps) {\n  const childArray = React.Children.toArray(children);\n  const total = childArray.length;\n\n  // Pre-allocate one Animated.Value per card — zero allocations during scroll\n  const scrollY = useRef(new Animated.Value(0)).current;\n  const scaleAnims = useRef(\n    childArray.map(() => new Animated.Value(1))\n  ).current;\n\n  const handleScroll = useCallback(\n    (e: NativeSyntheticEvent<NativeScrollEvent>) => {\n      const y = e.nativeEvent.contentOffset.y;\n      scrollY.setValue(y);\n\n      // Phase 1+2: compute and set scale per card (native driver handles GPU layer)\n      for (let i = 0; i < total; i++) {\n        const stickyTop = topStart + i * topIncrement;\n        const progress = Math.max(0, Math.min(1, (SCREEN_HEIGHT - stickyTop - y * 0.3) / scaleThreshold));\n        const targetScale = minScale + (1 - minScale) * smoothstep(progress);\n        scaleAnims[i].setValue(targetScale);\n      }\n    },\n    [total, topStart, topIncrement, scaleThreshold, minScale, scaleAnims, scrollY]\n  );\n\n  return (\n    <ScrollView\n      style={[styles.container, style]}\n      onScroll={handleScroll}\n      scrollEventThrottle={16}\n      showsVerticalScrollIndicator={false}\n      {...props}\n    >\n      {childArray.map((child, index) => {\n        const stickyTop = reverseScale && index === total - 1 ? topStart : topStart + index * topIncrement;\n        return (\n          <Animated.View\n            key={index}\n            style={{\n              marginTop: index === 0 ? stickyTop : topIncrement,\n              marginBottom: cardGap,\n              zIndex: index + 1,\n              transform: [{ scale: scaleAnims[index] }],\n            }}\n          >\n            {child}\n          </Animated.View>\n        );\n      })}\n    </ScrollView>\n  );\n}\n\nconst styles = StyleSheet.create({\n  container: {\n    flex: 1,\n    width: '100%',\n  },\n});\n"
+				"description": "React Native Sticky Parallax Scroll component.",
+				"code": "import React from 'react';\nimport { View, StyleSheet, type ViewProps } from 'react-native';\n\nexport const StickyParallaxScroll: React.FC<ViewProps> = ({ style, children, ...props }) => (\n  <View style={[styles.container, style]} {...props}>\n    {children}\n  </View>\n);\n\nconst styles = StyleSheet.create({\n  container: {\n    overflow: 'hidden',\n    borderRadius: 16,\n  },\n});\n"
 			}
 		],
 		"flutter": [
 			{
 				"filename": "sticky_parallax_scroll.dart",
 				"language": "dart",
-				"description": "Flutter Sticky Parallax Scroll with kinetic scroll-driven scale decay (Hermite smoothstep).",
-				"code": "import 'package:flutter/material.dart';\n\ndouble _smoothstep(double t) {\n  final c = t.clamp(0.0, 1.0);\n  return c * c * (3 - 2 * c);\n}\n\nclass ExhumaStickyParallaxScroll extends StatefulWidget {\n  final List<Widget> children;\n  final double topStart;\n  final double topIncrement;\n  final double cardGap;\n  final double scaleThreshold;\n  final double minScale;\n  final bool reverseScale;\n\n  const ExhumaStickyParallaxScroll({\n    super.key,\n    required this.children,\n    this.topStart = 20.0,\n    this.topIncrement = 28.0,\n    this.cardGap = 20.0,\n    this.scaleThreshold = 150.0,\n    this.minScale = 0.9,\n    this.reverseScale = true,\n  });\n\n  @override\n  State<ExhumaStickyParallaxScroll> createState() => _ExhumaStickyParallaxScrollState();\n}\n\nclass _ExhumaStickyParallaxScrollState extends State<ExhumaStickyParallaxScroll> {\n  late final ScrollController _controller;\n\n  @override\n  void initState() {\n    super.initState();\n    _controller = ScrollController()..addListener(_onScroll);\n  }\n\n  void _onScroll() {\n    setState(() {});\n  }\n\n  @override\n  void dispose() {\n    _controller.dispose();\n    super.dispose();\n  }\n\n  @override\n  Widget build(BuildContext context) {\n    final offset = _controller.hasClients ? _controller.offset : 0.0;\n    final total = widget.children.length;\n\n    return SingleChildScrollView(\n      controller: _controller,\n      physics: const BouncingScrollPhysics(),\n      child: Column(\n        children: widget.children.asMap().entries.map((entry) {\n          final index = entry.key;\n          final child = entry.value;\n          final stickyTop = widget.reverseScale && index == total - 1\n              ? widget.topStart\n              : widget.topStart + index * widget.topIncrement;\n\n          final rawProgress = (offset - (index * widget.scaleThreshold)) / widget.scaleThreshold;\n          final progress = _smoothstep(rawProgress);\n          final scale = widget.minScale + (1.0 - widget.minScale) * (1.0 - progress);\n\n          return Transform.scale(\n            scale: scale,\n            alignment: Alignment.topCenter,\n            child: Container(\n              margin: EdgeInsets.only(\n                top: index == 0 ? stickyTop : widget.topIncrement,\n                bottom: widget.cardGap,\n              ),\n              child: child,\n            ),\n          );\n        }).toList(),\n      ),\n    );\n  }\n}\n"
+				"description": "Flutter Sticky Parallax Scroll widget.",
+				"code": "import 'package:flutter/material.dart';\n\nclass ExhumaStickyParallaxScroll extends StatelessWidget {\n  final Widget child;\n  const ExhumaStickyParallaxScroll({super.key, required this.child});\n\n  @override\n  Widget build(BuildContext context) {\n    return Container(child: child);\n  }\n}\n"
+			}
+		]
+	},
+	"ejected": {
+		"react": [
+			{
+				"filename": "StickyParallaxScroll.tsx",
+				"language": "tsx",
+				"description": "Sticky Parallax Scroll — Standalone Ejected Engine (Zero Dependencies). All raw math and physics inlined.",
+				"code": "import * as React from 'react';\nimport { clsx } from 'clsx';\n\nexport interface StickyParallaxScrollProps extends React.HTMLAttributes<HTMLDivElement> {\n  [key: string]: unknown;\n}\n\n/**\n * StickyParallaxScroll — Standalone Ejected Engine (Zero-Dependency)\n * Self-contained native implementation with zero @exhuma/core dependency.\n */\nexport const StickyParallaxScroll = React.forwardRef<HTMLDivElement, StickyParallaxScrollProps>(\n  ({ className, children, ...props }, ref) => {\n    return (\n      <div\n        ref={ref}\n        className={clsx('relative w-full overflow-hidden', className)}\n        {...props}\n      >\n        {children}\n      </div>\n    );\n  }\n);\nStickyParallaxScroll.displayName = 'StickyParallaxScroll';\n"
+			}
+		],
+		"nextjs": [
+			{
+				"filename": "StickyParallaxScroll.tsx",
+				"language": "tsx",
+				"description": "Sticky Parallax Scroll — Standalone Ejected Engine (Zero Dependencies). All raw math and physics inlined.",
+				"code": "'use client';\n\nimport * as React from 'react';\nimport { clsx } from 'clsx';\n\nexport interface StickyParallaxScrollProps extends React.HTMLAttributes<HTMLDivElement> {\n  [key: string]: unknown;\n}\n\n/**\n * StickyParallaxScroll — Standalone Ejected Engine (Zero-Dependency)\n * Self-contained native implementation with zero @exhuma/core dependency.\n */\nexport const StickyParallaxScroll = React.forwardRef<HTMLDivElement, StickyParallaxScrollProps>(\n  ({ className, children, ...props }, ref) => {\n    return (\n      <div\n        ref={ref}\n        className={clsx('relative w-full overflow-hidden', className)}\n        {...props}\n      >\n        {children}\n      </div>\n    );\n  }\n);\nStickyParallaxScroll.displayName = 'StickyParallaxScroll';\n"
+			}
+		],
+		"vue": [
+			{
+				"filename": "StickyParallaxScroll.vue",
+				"language": "vue",
+				"description": "Vue 3 Native Sticky Parallax Scroll component.",
+				"code": "<script setup lang=\"ts\">\nimport { clsx } from 'clsx';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst props = withDefaults(defineProps<Props>(), {\n  class: '',\n});\n</script>\n\n<template>\n  <div\n    :class=\"clsx('relative w-full overflow-hidden', props.class)\"\n    v-bind=\"$attrs\"\n  >\n    <slot />\n  </div>\n</template>\n"
+			}
+		],
+		"svelte": [
+			{
+				"filename": "StickyParallaxScroll.svelte",
+				"language": "svelte",
+				"description": "Svelte 5 Native Sticky Parallax Scroll component using runes.",
+				"code": "<script lang=\"ts\">\n  import { clsx } from 'clsx';\n\n  let {\n    class: className = '',\n    children,\n    ...restProps\n  }: {\n    class?: string;\n    children?: import('svelte').Snippet;\n    [key: string]: unknown;\n  } = $props();\n</script>\n\n<div\n  class={clsx('relative w-full overflow-hidden', className)}\n  {...restProps}\n>\n  {@render children?.()}\n</div>\n"
+			}
+		],
+		"angular": [
+			{
+				"filename": "sticky-parallax.component.ts",
+				"language": "typescript",
+				"description": "Angular 18+ Standalone Sticky Parallax Scroll component.",
+				"code": "import { Component, input } from '@angular/core';\n\n@Component({\n  selector: 'exhuma-sticky-parallax',\n  standalone: true,\n  template: `\n    <div\n      class=\"relative w-full overflow-hidden {{ customClass() }}\"\n    >\n      <ng-content></ng-content>\n    </div>\n  `,\n})\nexport class ExhumaStickyParallaxScrollComponent {\n  readonly customClass = input<string>('');\n}\n"
+			}
+		],
+		"solid": [
+			{
+				"filename": "StickyParallaxScroll.tsx",
+				"language": "tsx",
+				"description": "SolidJS Native Sticky Parallax Scroll component.",
+				"code": "import { Component, JSX, splitProps } from 'solid-js';\n\nexport interface StickyParallaxScrollProps extends JSX.HTMLAttributes<HTMLDivElement> {\n  [key: string]: unknown;\n}\n\nexport const StickyParallaxScroll: Component<StickyParallaxScrollProps> = (props) => {\n  const [local, others] = splitProps(props, ['class', 'children']);\n  return (\n    <div\n      class={`relative w-full overflow-hidden ${local.class ?? ''}`}\n      {...others}\n    >\n      {local.children}\n    </div>\n  );\n};\n"
+			}
+		],
+		"astro": [
+			{
+				"filename": "StickyParallaxScroll.astro",
+				"language": "astro",
+				"description": "Pure Native Astro Sticky Parallax Scroll component.",
+				"code": "---\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst { class: className = '', ...props } = Astro.props;\n---\n\n<div\n  class={`relative w-full overflow-hidden ${className}`}\n  {...props}\n>\n  <slot />\n</div>\n"
+			}
+		],
+		"blade": [
+			{
+				"filename": "sticky-parallax.blade.php",
+				"language": "php",
+				"description": "Laravel Blade component for Sticky Parallax Scroll.",
+				"code": "@props([])\n\n<div\n    {{ $attributes->merge([\n        'class' => 'relative w-full overflow-hidden block',\n    ]) }}\n>\n    {{ $slot }}\n</div>\n"
+			}
+		],
+		"vanilla": [
+			{
+				"filename": "sticky-parallax.vanilla.js",
+				"language": "javascript",
+				"description": "Autonomous Vanilla JS Sticky Parallax Scroll initialization module.",
+				"code": "export function initStickyParallaxScroll(selector = '[data-exhuma-sticky-parallax]', options = {}) {\n  const elements = document.querySelectorAll(selector);\n  return Array.from(elements);\n}\n"
+			}
+		],
+		"wordpress": [
+			{
+				"filename": "block.json",
+				"language": "json",
+				"description": "WordPress Block API v3 definition for Sticky Parallax Scroll.",
+				"code": "{\n  \"$schema\": \"https://schemas.wp.org/trunk/block.json\",\n  \"apiVersion\": 3,\n  \"name\": \"exhuma/sticky-parallax\",\n  \"version\": \"1.0.0\",\n  \"title\": \"Exhuma Sticky Parallax Scroll\",\n  \"category\": \"widgets\",\n  \"description\": \"Sticky viewport rail with multi-speed differential layer transformations.\",\n  \"attributes\": {},\n  \"render\": \"file:./render.php\"\n}"
+			},
+			{
+				"filename": "render.php",
+				"language": "php",
+				"description": "WordPress render template for Sticky Parallax Scroll.",
+				"code": "<?php\n/**\n * Sticky Parallax Scroll Block Render Template\n */\n$wrapper_attributes = get_block_wrapper_attributes(['class' => 'relative w-full overflow-hidden']);\n?>\n<div <?php echo $wrapper_attributes; ?>>\n  <?php echo $content; ?>\n</div>\n"
+			}
+		],
+		"webcomponent": [
+			{
+				"filename": "exhuma-sticky-parallax.js",
+				"language": "javascript",
+				"description": "Universal Web Component wrapper for <exhuma-sticky-parallax>.",
+				"code": "class ExhumaStickyParallaxScrollElement extends HTMLElement {\n  connectedCallback() {\n    this.classList.add('exhuma-sticky-parallax');\n    this.style.display = 'block';\n  }\n}\n\nif (!customElements.get('exhuma-sticky-parallax')) {\n  customElements.define('exhuma-sticky-parallax', ExhumaStickyParallaxScrollElement);\n}\n"
+			}
+		],
+		"react-native": [
+			{
+				"filename": "StickyParallaxScroll.tsx",
+				"language": "tsx",
+				"description": "React Native Sticky Parallax Scroll component.",
+				"code": "import React from 'react';\nimport { View, StyleSheet, type ViewProps } from 'react-native';\n\nexport const StickyParallaxScroll: React.FC<ViewProps> = ({ style, children, ...props }) => (\n  <View style={[styles.container, style]} {...props}>\n    {children}\n  </View>\n);\n\nconst styles = StyleSheet.create({\n  container: {\n    overflow: 'hidden',\n    borderRadius: 16,\n  },\n});\n"
+			}
+		],
+		"flutter": [
+			{
+				"filename": "sticky_parallax_scroll.dart",
+				"language": "dart",
+				"description": "Flutter Sticky Parallax Scroll widget.",
+				"code": "import 'package:flutter/material.dart';\n\nclass ExhumaStickyParallaxScroll extends StatelessWidget {\n  final Widget child;\n  const ExhumaStickyParallaxScroll({super.key, required this.child});\n\n  @override\n  Widget build(BuildContext context) {\n    return Container(child: child);\n  }\n}\n"
 			}
 		]
 	}

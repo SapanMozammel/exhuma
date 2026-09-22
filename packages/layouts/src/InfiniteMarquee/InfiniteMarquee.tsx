@@ -2,7 +2,7 @@
 
 import React, { useRef, useEffect, useCallback, useState } from 'react';
 import type { InfiniteMarqueeProps } from '../types';
-import { calculateMarqueeOffset, dampFactor } from './marquee-math';
+import { calculateMarqueeOffset, dampFactor, parseGapToPx } from './marquee-math';
 
 /**
  * InfiniteMarquee — Exhuma Kinetic Methodology (EKM)
@@ -17,7 +17,7 @@ export const InfiniteMarquee: React.FC<InfiniteMarqueeProps> & {
 	Root: typeof MarqueeRoot;
 	Track: typeof MarqueeTrack;
 	Item: typeof MarqueeItem;
-} = ({ children, speed = 40, direction = 'left', pauseOnHover = true, gap = '1.5rem', className = '', style }) => {
+} = ({ children, speed = 40, direction = 'left', pauseOnHover = true, gap = '1.5rem', showFadeEdges = true, fadeWidth = 48, fadeEdgeColor = '#ffffff', fadeEdgeColorDark = '#09090b', className = '', style }) => {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const trackRef = useRef<HTMLDivElement>(null);
 	const contentRef = useRef<HTMLDivElement>(null);
@@ -28,6 +28,9 @@ export const InfiniteMarquee: React.FC<InfiniteMarqueeProps> & {
 	const lastTimeRef = useRef<number | null>(null);
 	const contentWidthRef = useRef<number>(0);
 	const rafIdRef = useRef<number | null>(null);
+
+	const gapVal = typeof gap === 'number' ? `${gap}px` : gap;
+	const gapNum = parseGapToPx(gap);
 
 	// Measure content width once with ResizeObserver (Zero layout thrashing)
 	useEffect(() => {
@@ -58,9 +61,10 @@ export const InfiniteMarquee: React.FC<InfiniteMarqueeProps> & {
 
 			const effectiveSpeed = speed * kineticFactorRef.current;
 			const width = contentWidthRef.current;
+			const repeatWavelength = width + gapNum;
 
 			if (width > 0 && effectiveSpeed > 0.01) {
-				offsetRef.current = calculateMarqueeOffset(offsetRef.current, dt, effectiveSpeed, direction, width);
+				offsetRef.current = calculateMarqueeOffset(offsetRef.current, dt, effectiveSpeed, direction, repeatWavelength);
 
 				if (trackRef.current) {
 					trackRef.current.style.transform = `translate3d(${offsetRef.current.toFixed(2)}px, 0, 0)`;
@@ -69,7 +73,7 @@ export const InfiniteMarquee: React.FC<InfiniteMarqueeProps> & {
 
 			rafIdRef.current = requestAnimationFrame(tick);
 		},
-		[speed, direction]
+		[speed, direction, gapNum]
 	);
 
 	useEffect(() => {
@@ -93,10 +97,83 @@ export const InfiniteMarquee: React.FC<InfiniteMarqueeProps> & {
 		}
 	}, [pauseOnHover]);
 
-	const gapVal = typeof gap === 'number' ? `${gap}px` : gap;
+	const [isDark, setIsDark] = useState(() => {
+		if (typeof document !== 'undefined') {
+			return (
+				document.documentElement.classList.contains('dark') ||
+				(!document.documentElement.classList.contains('light') && typeof window !== 'undefined' && window.matchMedia?.('(prefers-color-scheme: dark)').matches)
+			);
+		}
+		return false;
+	});
+
+	useEffect(() => {
+		if (typeof window === 'undefined') return;
+
+		const checkDark = () => {
+			const isDarkClass = document.documentElement.classList.contains('dark');
+			const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+			const isExplicitLight = document.documentElement.classList.contains('light');
+			setIsDark(isDarkClass || (!isExplicitLight && prefersDark));
+		};
+
+		checkDark();
+
+		const observer = new MutationObserver(checkDark);
+		observer.observe(document.documentElement, {
+			attributes: true,
+			attributeFilter: ['class', 'data-theme'],
+		});
+
+		const mq = window.matchMedia('(prefers-color-scheme: dark)');
+		mq.addEventListener('change', checkDark);
+
+		return () => {
+			observer.disconnect();
+			mq.removeEventListener('change', checkDark);
+		};
+	}, []);
+
+	const resolvedFadeColor = isDark && fadeEdgeColorDark ? fadeEdgeColorDark : fadeEdgeColor;
+
+	const useColorOverlay = Boolean(showFadeEdges && resolvedFadeColor && resolvedFadeColor.trim() !== '');
+
+	const maskStyle: React.CSSProperties =
+		showFadeEdges && !useColorOverlay
+			? {
+					maskImage: `linear-gradient(to right, transparent, black ${fadeWidth}px, black calc(100% - ${fadeWidth}px), transparent)`,
+					WebkitMaskImage: `linear-gradient(to right, transparent, black ${fadeWidth}px, black calc(100% - ${fadeWidth}px), transparent)`,
+				}
+			: {};
 
 	return (
-		<div ref={containerRef} className={`exhuma-marquee-root relative w-full overflow-hidden select-none ${className}`} style={style} onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave}>
+		<div
+			ref={containerRef}
+			className={`exhuma-marquee-root relative w-full overflow-hidden select-none ${className}`}
+			style={{ ...maskStyle, ...style }}
+			onMouseEnter={handleMouseEnter}
+			onMouseLeave={handleMouseLeave}
+		>
+			{useColorOverlay && (
+				<>
+					<div
+						aria-hidden='true'
+						className='pointer-events-none absolute inset-y-0 left-0 z-10'
+						style={{
+							width: `${fadeWidth}px`,
+							background: `linear-gradient(to right, ${resolvedFadeColor}, transparent)`,
+						}}
+					/>
+					<div
+						aria-hidden='true'
+						className='pointer-events-none absolute inset-y-0 right-0 z-10'
+						style={{
+							width: `${fadeWidth}px`,
+							background: `linear-gradient(to left, ${resolvedFadeColor}, transparent)`,
+						}}
+					/>
+				</>
+			)}
 			<div
 				ref={trackRef}
 				className='exhuma-marquee-track flex w-max will-change-transform'

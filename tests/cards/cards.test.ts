@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { TiltCard, HorizontalScroller, StackingCards } from '@exhuma/cards';
-import { AutoGrid, CssMasonry, MacyMasonry, useMacy } from '@exhuma/layouts';
+import { AutoGrid, AutoGridItem, CssMasonry, CssMasonryItem, MacyMasonry, useMacy } from '@exhuma/layouts';
 import { ProtectedRoute, AuthLayout, DashboardLayout, LandingLayout, Header, Footer } from '@exhuma/router';
 import * as core from '@exhuma/core';
 
@@ -13,7 +13,9 @@ describe('@exhuma Package Ecosystem — Complete Library Parity Gate', () => {
 
   it('exports all responsive layout engines from @exhuma/layouts', () => {
     expect(AutoGrid).toBeDefined();
+    expect(AutoGridItem).toBeDefined();
     expect(CssMasonry).toBeDefined();
+    expect(CssMasonryItem).toBeDefined();
     expect(MacyMasonry).toBeDefined();
     expect(useMacy).toBeDefined();
   });
@@ -32,7 +34,9 @@ describe('@exhuma Package Ecosystem — Complete Library Parity Gate', () => {
     expect(core.HorizontalScroller).toBeDefined();
     expect(core.StackingCards).toBeDefined();
     expect(core.AutoGrid).toBeDefined();
+    expect(core.AutoGridItem).toBeDefined();
     expect(core.CssMasonry).toBeDefined();
+    expect(core.CssMasonryItem).toBeDefined();
     expect(core.MacyMasonry).toBeDefined();
     expect(core.ProtectedRoute).toBeDefined();
     expect(core.AuthLayout).toBeDefined();

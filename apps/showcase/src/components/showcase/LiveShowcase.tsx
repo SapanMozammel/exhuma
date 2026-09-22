@@ -75,7 +75,6 @@ export function LiveShowcase() {
 					<Stage label='Tilt Card' hint='3D gyroscopic tracking · harmonic spring reset' badge='60-120 FPS' formula='F = -kx - cẋ'>
 						<TiltCard
 							maxTilt={18}
-							glare
 							perspective={1000}
 							className='bg-card/95 border-border/80 hover:border-foreground/40 w-full max-w-64 cursor-pointer rounded-2xl border p-6 shadow-xl backdrop-blur-md transition-all hover:shadow-2xl'
 						>

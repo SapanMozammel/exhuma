@@ -30,10 +30,22 @@ export const comparisonSliderComponent: UniversalComponent = {
 			step: 0.01,
 			description: 'Position delta when stepping with arrow keys.',
 		},
+		{
+			name: 'orientation',
+			label: 'Orientation',
+			type: 'select',
+			defaultValue: 'horizontal',
+			options: [
+				{ label: 'Horizontal', value: 'horizontal' },
+				{ label: 'Vertical', value: 'vertical' },
+			],
+			description: 'Slider split direction (horizontal or vertical).',
+		},
 	],
 	defaultProps: {
 		defaultPosition: 0.5,
 		step: 0.05,
+		orientation: 'horizontal',
 	},
 	dependencies: CORE_COMPONENT_DEPENDENCIES,
 	generateCode: (flavor: EcosystemFlavor, props: Record<string, unknown>, options?: { eject?: boolean }): ComponentFilePayload[] => {

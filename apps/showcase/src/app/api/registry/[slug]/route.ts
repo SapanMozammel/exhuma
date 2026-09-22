@@ -12,6 +12,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 	}
 
 	const requestedFlavor = request.nextUrl.searchParams.get('flavor') as EcosystemFlavor | null;
+	const isEjected = request.nextUrl.searchParams.get('eject') === 'true';
 
 	// Single-flavor query response for CLI: fetchComponentFromRegistry
 	if (requestedFlavor && ALL_FLAVORS.includes(requestedFlavor)) {
@@ -23,7 +24,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 				category: component.category,
 				description: component.description,
 				version: component.version,
-				files: component.generateCode(requestedFlavor, component.defaultProps),
+				files: component.generateCode(requestedFlavor, component.defaultProps, { eject: isEjected }),
 			},
 			{
 				headers: {

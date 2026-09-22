@@ -37,8 +37,52 @@ import { DocsTable, docsTableHeadClass } from '@/components/docs/DocsTable';
 import { ECOSYSTEM_COUNT } from '@/components/docs/docs-stats';
 import { cn } from '@/lib/utils';
 import { StackingCards, HorizontalScroller, TiltCard, SpotlightCard, BorderBeam, CardSwipeStack, ComparisonSlider, ExpandableCard } from '@exhuma/cards';
-import { CssMasonry, AutoGrid, InfiniteMarquee, BentoGrid, BentoCard, BentoHeader, BentoContent, DiamondGrid, ScrollTimeline, StickyParallaxScroll, ParallaxLayer, InteractiveGridPattern } from '@exhuma/layouts';
+import {
+	CssMasonry,
+	CssMasonryItem,
+	AutoGrid,
+	AutoGridItem,
+	InfiniteMarquee,
+	BentoGrid,
+	BentoCard,
+	BentoHeader,
+	BentoContent,
+	BentoVisual,
+	DiamondGrid,
+	ScrollTimeline,
+	StickyParallaxScroll,
+	ParallaxLayer,
+	InteractiveGridPattern,
+} from '@exhuma/layouts';
 import { MorphingTabs, Accordion, AnimatedSphere, FloatingDock, NumberTicker, MagneticButton, CursorTooltip } from '@exhuma/core';
+
+const COLOR_PRESETS = [
+	{ label: 'Indigo', value: '#6366f1' },
+	{ label: 'Violet', value: '#8b5cf6' },
+	{ label: 'Cyan', value: '#06b6d4' },
+	{ label: 'Emerald', value: '#10b981' },
+	{ label: 'Rose', value: '#f43f5e' },
+	{ label: 'Amber', value: '#f59e0b' },
+	{ label: 'White', value: '#ffffff' },
+];
+
+function toHexColor(color: unknown, fallback = '#ffffff'): string {
+	if (typeof color !== 'string') return fallback;
+	const str = color.trim().toLowerCase();
+	if (/^#[0-9a-f]{6}$/.test(str)) return str;
+	if (/^#[0-9a-f]{8}$/.test(str)) return str.slice(0, 7);
+	if (/^#[0-9a-f]{3}$/.test(str)) {
+		return `#${str[1]}${str[1]}${str[2]}${str[2]}${str[3]}${str[3]}`;
+	}
+	const rgbMatch = str.match(/^rgba?\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/);
+	if (rgbMatch) {
+		const r = Math.min(255, parseInt(rgbMatch[1], 10)).toString(16).padStart(2, '0');
+		const g = Math.min(255, parseInt(rgbMatch[2], 10)).toString(16).padStart(2, '0');
+		const b = Math.min(255, parseInt(rgbMatch[3], 10)).toString(16).padStart(2, '0');
+		return `#${r}${g}${b}`;
+	}
+	return fallback;
+}
 
 // Architectural grayscale presets per component
 const COMPONENT_PRESETS: Record<string, Record<string, Record<string, unknown>>> = {
@@ -49,69 +93,87 @@ const COMPONENT_PRESETS: Record<string, Record<string, Record<string, unknown>>>
 		'Compact Deck': { topStart: 16, topIncrement: 14, cardGap: 12, scaleThreshold: 100, minScale: 0.92, reverseScale: false },
 	},
 	'horizontal-scroller': {
-		Default: { itemGap: 28, speed: 1.0, cardWidth: 320, showProgress: true, showFadeEdges: true, fadeWidth: 48, mobileMode: 'scroll' },
-		'Compact Gap': { itemGap: 16, speed: 1.0, cardWidth: 320, showProgress: true, showFadeEdges: true, fadeWidth: 48, mobileMode: 'scroll' },
-		'Spacious Gap': { itemGap: 44, speed: 1.0, cardWidth: 340, showProgress: true, showFadeEdges: true, fadeWidth: 64, mobileMode: 'scroll' },
-		'High Velocity': { itemGap: 32, speed: 1.8, cardWidth: 320, showProgress: true, showFadeEdges: true, fadeWidth: 64, mobileMode: 'scroll' },
+		Default: { itemGap: 28, speed: 1.0, cardWidth: 320, showProgress: true, showFadeEdges: true, fadeWidth: 48, fadeEdgeColor: '#ffffff', fadeEdgeColorDark: '#09090b', mobileMode: 'scroll' },
+		'Compact Gap': { itemGap: 16, speed: 1.0, cardWidth: 320, showProgress: true, showFadeEdges: true, fadeWidth: 48, fadeEdgeColor: '#ffffff', fadeEdgeColorDark: '#09090b', mobileMode: 'scroll' },
+		'Spacious Gap': { itemGap: 44, speed: 1.0, cardWidth: 340, showProgress: true, showFadeEdges: true, fadeWidth: 64, fadeEdgeColor: '#ffffff', fadeEdgeColorDark: '#09090b', mobileMode: 'scroll' },
+		'High Velocity': { itemGap: 32, speed: 1.8, cardWidth: 320, showProgress: true, showFadeEdges: true, fadeWidth: 64, fadeEdgeColor: '#ffffff', fadeEdgeColorDark: '#09090b', mobileMode: 'scroll' },
 	},
 	'tilt-card': {
-		Default: { maxTilt: 20, perspective: 1000, glare: true },
-		'Subtle Glare': { maxTilt: 10, perspective: 1200, glare: true },
-		'Aggressive 3D': { maxTilt: 35, perspective: 800, glare: true },
+		Default: { maxTilt: 15, perspective: 1000, scale: 1.02, speed: 0.12, reverse: false, disabled: false, axis: 'all' },
+		'Subtle Float': { maxTilt: 8, perspective: 1200, scale: 1.01, speed: 0.08, reverse: false, disabled: false, axis: 'all' },
+		'Aggressive 3D': { maxTilt: 30, perspective: 800, scale: 1.06, speed: 0.18, reverse: false, disabled: false, axis: 'all' },
+		'Magnetic Lift (Reverse)': { maxTilt: 20, perspective: 900, scale: 1.04, speed: 0.15, reverse: true, disabled: false, axis: 'all' },
+		'Pitch Only (X-Axis)': { maxTilt: 20, perspective: 1000, scale: 1.02, speed: 0.12, reverse: false, disabled: false, axis: 'x' },
+		'Yaw Only (Y-Axis)': { maxTilt: 20, perspective: 1000, scale: 1.02, speed: 0.12, reverse: false, disabled: false, axis: 'y' },
 	},
 	'css-masonry': {
-		Default: { columns: 3, gap: 16 },
-		Dense: { columns: 4, gap: 12 },
-		Spacious: { columns: 2, gap: 24 },
+		Default: { columns: 1, columnsSm: 2, columnsMd: 2, columnsLg: 3, columnsXl: 4, gap: 16, columnFill: 'balance', height: 0 },
+		'Dense Gallery': { columns: 2, columnsSm: 3, columnsMd: 3, columnsLg: 4, columnsXl: 5, gap: 12, columnFill: 'balance', height: 0 },
+		'Spacious Editorial': { columns: 1, columnsSm: 2, columnsMd: 2, columnsLg: 2, columnsXl: 3, gap: 24, columnFill: 'balance', height: 0 },
 	},
 	'auto-grid': {
-		Default: { minItemWidth: 200, gap: 16 },
-		Compact: { minItemWidth: 160, gap: 12 },
-		Cards: { minItemWidth: 280, gap: 24 },
+		Default: { minItemWidth: 280, gap: 24, mode: 'auto-fit', maxColumns: 4, alignItems: 'stretch' },
+		'Compact Catalog': { minItemWidth: 180, gap: 16, mode: 'auto-fill', maxColumns: 6, alignItems: 'stretch' },
+		'Hero Showcase': { minItemWidth: 360, gap: 28, mode: 'auto-fit', maxColumns: 3, alignItems: 'stretch' },
 	},
 	'spotlight-card': {
-		Default: { radius: 350, opacity: 0.8, color: 'rgba(255, 255, 255, 0.15)', borderColor: 'rgba(255, 255, 255, 0.35)' },
-		Subtle: { radius: 250, opacity: 0.5, color: 'rgba(255, 255, 255, 0.08)', borderColor: 'rgba(255, 255, 255, 0.2)' },
-		Broad: { radius: 500, opacity: 0.95, color: 'rgba(255, 255, 255, 0.22)', borderColor: 'rgba(255, 255, 255, 0.5)' },
+		Default: { radius: 350, opacity: 0.8, color: '#6366f1', borderColor: '#818cf8', spread: 80, mode: 'both', smoothing: 0.2, disabled: false },
+		Subtle: { radius: 250, opacity: 0.4, color: '#94a3b8', borderColor: '#cbd5e1', spread: 70, mode: 'both', smoothing: 0.15, disabled: false },
+		Broad: { radius: 500, opacity: 0.95, color: '#10b981', borderColor: '#34d399', spread: 90, mode: 'both', smoothing: 0.25, disabled: false },
+		BorderOnly: { radius: 300, opacity: 0.85, color: '#6366f1', borderColor: '#a855f7', spread: 80, mode: 'border', smoothing: 0.2, disabled: false },
 	},
 	'morphing-tabs': {
-		Default: { springStiffness: 26 },
-		Snappy: { springStiffness: 40 },
-		Gentle: { springStiffness: 16 },
+		Default: { springStiffness: 26, variant: 'pill', size: 'md' },
+		'Snappy Kinetic': { springStiffness: 42, variant: 'pill', size: 'md' },
+		'Gentle Fluid': { springStiffness: 14, variant: 'pill', size: 'lg' },
+		'Minimal Underline': { springStiffness: 30, variant: 'underline', size: 'md' },
+		'Neon Glow': { springStiffness: 32, variant: 'glow', size: 'md' },
 	},
 	accordion: {
-		Default: { mode: 'single' },
-		Multiple: { mode: 'multiple' },
+		Default: { mode: 'single', duration: 300 },
+		Multiple: { mode: 'multiple', duration: 300 },
+		Fast: { mode: 'single', duration: 200 },
 	},
 	'infinite-marquee': {
-		Default: { speed: 40, pauseOnHover: true },
-		Fast: { speed: 80, pauseOnHover: true },
-		Gentle: { speed: 20, pauseOnHover: false },
+		Default: { speed: 40, direction: 'left', pauseOnHover: true, gap: 24, showFadeEdges: true, fadeWidth: 48, fadeEdgeColor: '#ffffff', fadeEdgeColorDark: '#09090b' },
+		'High Velocity (Reverse)': { speed: 80, direction: 'right', pauseOnHover: true, gap: 16, showFadeEdges: true, fadeWidth: 64, fadeEdgeColor: '#ffffff', fadeEdgeColorDark: '#09090b' },
+		'Gentle Float': { speed: 20, direction: 'left', pauseOnHover: false, gap: 32, showFadeEdges: false, fadeWidth: 48, fadeEdgeColor: '#ffffff', fadeEdgeColorDark: '#09090b' },
 	},
 	'bento-grid': {
-		Default: { cols: 3 },
-		Dense: { cols: 4 },
-		Spacious: { cols: 2 },
+		Default: { cols: 3, gap: 20, rowHeight: 180 },
+		Dense: { cols: 4, gap: 16, rowHeight: 160 },
+		Spacious: { cols: 2, gap: 24, rowHeight: 200 },
 	},
 	'diamond-grid': {
-		Default: { gap: '0.75vw' },
-		Tight: { gap: '0.5vw' },
-		Spacious: { gap: '1.2vw' },
+		'Classic Rhombic': { mode: 'rhombic', gap: 16, layout: 'auto', responsive: false },
+		'Isometric Crystalline': { mode: 'isometric', gap: 20, layout: 'large', responsive: false },
+		'Dense Symmetrical': { mode: 'rhombic', gap: 8, layout: 'large', responsive: false },
+		'Spacious Gallery': { mode: 'rhombic', gap: 24, layout: 'large', responsive: false },
+		'Compact Apex (5-Col)': { mode: 'rhombic', gap: 12, layout: 'medium', responsive: false },
+		'Isometric Mosaic': { mode: 'isometric', gap: 14, layout: 'medium', responsive: false },
+		'Mobile Responsive': { mode: 'rhombic', gap: 16, layout: 'auto', responsive: true },
 	},
 	'scroll-timeline': {
-		Default: {},
+		Default: { curveWidth: 24, curveHeight: 40, accentColor: '#6366f1' },
+		Wider: { curveWidth: 36, curveHeight: 50, accentColor: '#8b5cf6' },
+		Subtle: { curveWidth: 16, curveHeight: 30, accentColor: '#06b6d4' },
 	},
 	'sticky-parallax': {
-		Default: {},
+		Default: { trackHeight: '250vh' },
+		Short: { trackHeight: '180vh' },
+		Deep: { trackHeight: '350vh' },
 	},
 	'border-beam': {
-		Default: { size: 200, duration: 8, borderWidth: 2 },
-		Fast: { size: 200, duration: 4, borderWidth: 2 },
-		Subtle: { size: 300, duration: 12, borderWidth: 1.5 },
+		Default: { size: 200, duration: 8, borderWidth: 2, colorFrom: '#ffaa40', colorTo: '#9c40ff', doubleBeam: false, endOpacity: 0, opacity: 1, blur: 0, borderRadius: 16 },
+		'Dual Orbital': { size: 200, duration: 8, borderWidth: 2, colorFrom: '#06b6d4', colorTo: '#3b82f6', doubleBeam: true, endOpacity: 0, opacity: 1, blur: 0, borderRadius: 16 },
+		Hyperdrive: { size: 180, duration: 4, borderWidth: 2.5, colorFrom: '#ec4899', colorTo: '#8b5cf6', doubleBeam: true, endOpacity: 0.05, opacity: 1, blur: 1, borderRadius: 16 },
+		'Subtle Glow': { size: 180, duration: 12, borderWidth: 1.5, colorFrom: '#6366f1', colorTo: '#a855f7', doubleBeam: false, endOpacity: 0, opacity: 0.85, blur: 0, borderRadius: 16 },
+		'Neon Emerald': { size: 200, duration: 6, borderWidth: 2, colorFrom: '#10b981', colorTo: '#06b6d4', doubleBeam: false, endOpacity: 0, opacity: 1, blur: 0, borderRadius: 16 },
 	},
 	'animated-sphere': {
-		Default: { color: '#ffffff', speed: 1.0, radiusScale: 0.475 },
-		Rapid: { color: '#ffffff', speed: 2.0, radiusScale: 0.475 },
+		Default: { color: '#6366f1', speed: 1.0, radiusScale: 0.475 },
+		Rapid: { color: '#8b5cf6', speed: 2.0, radiusScale: 0.475 },
+		Subtle: { color: '#06b6d4', speed: 0.5, radiusScale: 0.4 },
 	},
 	'floating-dock': {
 		Default: { baseSize: 44, maxMagnification: 0.6, influenceRadius: 70 },
@@ -134,17 +196,25 @@ const COMPONENT_PRESETS: Record<string, Record<string, Record<string, unknown>>>
 		Subtle: { strength: 0.2, radius: 80, springDamping: 14 },
 	},
 	'card-swipe-stack': {
-		Default: { thresholdDistance: 120, maxRotation: 20 },
-		Snappy: { thresholdDistance: 90, maxRotation: 25 },
-		Stiff: { thresholdDistance: 160, maxRotation: 15 },
+		Default: { thresholdDistance: 120, maxRotation: 20, scaleStep: 0.05, offsetStep: 14, preventLastCardDismiss: true },
+		Snappy: { thresholdDistance: 80, maxRotation: 28, scaleStep: 0.06, offsetStep: 16, preventLastCardDismiss: true },
+		'Fluid Spring': { thresholdDistance: 150, maxRotation: 24, scaleStep: 0.04, offsetStep: 12, preventLastCardDismiss: true },
+		Minimalist: { thresholdDistance: 100, maxRotation: 12, scaleStep: 0.03, offsetStep: 8, preventLastCardDismiss: true },
+		'Free Swipe': { thresholdDistance: 120, maxRotation: 20, scaleStep: 0.05, offsetStep: 14, preventLastCardDismiss: false },
 	},
 	'comparison-slider': {
-		Default: { defaultPosition: 0.5 },
-		SplitQuarter: { defaultPosition: 0.25 },
-		SplitThreeQuarters: { defaultPosition: 0.75 },
+		Default: { defaultPosition: 0.5, step: 0.05, orientation: 'horizontal' },
+		'Split 25/75': { defaultPosition: 0.25, step: 0.05, orientation: 'horizontal' },
+		'Split 75/25': { defaultPosition: 0.75, step: 0.05, orientation: 'horizontal' },
+		'Micro Precision': { defaultPosition: 0.5, step: 0.01, orientation: 'horizontal' },
+		'Rapid Step': { defaultPosition: 0.5, step: 0.1, orientation: 'horizontal' },
+		'Vertical Split': { defaultPosition: 0.5, step: 0.05, orientation: 'vertical' },
 	},
 	'expandable-card': {
-		Default: {},
+		Default: { duration: 360 },
+		Snappy: { duration: 220 },
+		Cinematic: { duration: 480 },
+		'Ultra Fast': { duration: 160 },
 	},
 	'cursor-tooltip': {
 		Default: { springDamping: 22 },
@@ -234,6 +304,7 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 	const [viewportMode, setViewportMode] = React.useState<'fluid' | 'tablet' | 'mobile'>('fluid');
 	const [zoomScale, setZoomScale] = React.useState<number>(100);
 	const [isExpanded, setIsExpanded] = React.useState<boolean>(false);
+	const [cardSwipeResetKey, setCardSwipeResetKey] = React.useState<number>(0);
 
 	// Presets
 	const presets = COMPONENT_PRESETS[component.slug] || {};
@@ -250,7 +321,7 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 		setActivePreset('Default');
 	}, [component]);
 
-	// Sticky dock elevation observer with exact header clearance offset
+	// Sticky dock elevation observer with exact header clearance offset (Big-Ω rAF batching)
 	const stickyDockRef = React.useRef<HTMLDivElement>(null);
 	const [isDockSticky, setIsDockSticky] = React.useState(false);
 
@@ -258,21 +329,28 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 		const dock = stickyDockRef.current;
 		if (!dock) return;
 
-		// Calculate sticky position dynamically based on current header offset
-		const checkSticky = () => {
-			const dockTop = dock.getBoundingClientRect().top;
-			const root = document.documentElement;
-			const rootFontSize = parseFloat(getComputedStyle(root).fontSize) || 16;
-			const rawHeaderHeight = getComputedStyle(root).getPropertyValue('--header-height').trim();
-			const headerRem = parseFloat(rawHeaderHeight) || 5.4375;
-			const isMobile = window.innerWidth < 1024;
-			// Match CSS top offsets: top-header-mobile-gap (header + 3.75rem) vs lg:top-header-gap (header + 0.75rem)
-			const gapRem = isMobile ? 3.75 : 0.75;
-			const targetTopPx = (headerRem + gapRem) * rootFontSize;
+		let rafId: number | null = null;
 
-			// If dock has reached or stuck at its target top position (within 1.5px tolerance)
-			const isStuck = dockTop <= targetTopPx + 1.5;
-			setIsDockSticky(isStuck);
+		// Calculate sticky position dynamically based on current header offset with zero layout thrashing
+		const checkSticky = () => {
+			if (rafId !== null) return;
+			rafId = requestAnimationFrame(() => {
+				rafId = null;
+				if (!dock) return;
+				const dockTop = dock.getBoundingClientRect().top;
+				const root = document.documentElement;
+				const rootFontSize = parseFloat(getComputedStyle(root).fontSize) || 16;
+				const rawHeaderHeight = getComputedStyle(root).getPropertyValue('--header-height').trim();
+				const headerRem = parseFloat(rawHeaderHeight) || 5.4375;
+				const isMobile = window.innerWidth < 1024;
+				// Match CSS top offsets: top-header-mobile-gap (header + 3.75rem) vs lg:top-header-gap (header + 0.75rem)
+				const gapRem = isMobile ? 3.75 : 0.75;
+				const targetTopPx = (headerRem + gapRem) * rootFontSize;
+
+				// If dock has reached or stuck at its target top position (within 1.5px tolerance)
+				const isStuck = dockTop <= targetTopPx + 1.5;
+				setIsDockSticky((prev) => (prev !== isStuck ? isStuck : prev));
+			});
 		};
 
 		checkSticky();
@@ -280,6 +358,7 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 		window.addEventListener('resize', checkSticky, { passive: true });
 
 		return () => {
+			if (rafId !== null) cancelAnimationFrame(rafId);
 			window.removeEventListener('scroll', checkSticky);
 			window.removeEventListener('resize', checkSticky);
 		};
@@ -462,6 +541,8 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 			const showProgress = propValues.showProgress !== false;
 			const showFadeEdges = propValues.showFadeEdges !== false;
 			const fadeWidth = Number(propValues.fadeWidth ?? 48);
+			const fadeEdgeColor = String(propValues.fadeEdgeColor || '#ffffff');
+			const fadeEdgeColorDark = String(propValues.fadeEdgeColorDark || '#09090b');
 			const mobileMode = (propValues.mobileMode as 'scroll' | 'stack' | 'pinned') ?? 'scroll';
 
 			const SERVICES = [
@@ -491,6 +572,8 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 						showProgress={showProgress}
 						showFadeEdges={showFadeEdges}
 						fadeWidth={fadeWidth}
+						fadeEdgeColor={fadeEdgeColor}
+						fadeEdgeColorDark={fadeEdgeColorDark}
 						mobileMode={mobileMode}
 						scrollContainerRef={horizontalScrollRef}
 						header={
@@ -567,16 +650,24 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 
 		// 3. Tilt Card
 		if (component.slug === 'tilt-card') {
-			const maxTilt = Number(propValues.maxTilt ?? 20);
+			const maxTilt = Number(propValues.maxTilt ?? 15);
 			const perspective = Number(propValues.perspective ?? 1000);
-			const glare = Boolean(propValues.glare ?? true);
+			const scale = Number(propValues.scale ?? 1.02);
+			const speed = Number(propValues.speed ?? 0.12);
+			const reverse = Boolean(propValues.reverse ?? false);
+			const disabled = Boolean(propValues.disabled ?? false);
+			const axis = (propValues.axis as 'all' | 'x' | 'y') ?? 'all';
 
 			return (
 				<div className='flex items-center justify-center p-2 sm:p-6'>
 					<TiltCard
 						maxTilt={maxTilt}
 						perspective={perspective}
-						glare={glare}
+						scale={scale}
+						speed={speed}
+						reverse={reverse}
+						disabled={disabled}
+						axis={axis}
 						className='bg-card/95 border-border/80 hover:border-foreground/40 w-full max-w-md cursor-pointer border p-5 shadow-2xl transition-colors sm:p-8'
 					>
 						<div className='mb-4 flex items-center justify-between'>
@@ -584,10 +675,10 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 							<span className='text-muted-foreground font-mono text-xs'>Max: {maxTilt}°</span>
 						</div>
 						<h4 className='text-foreground text-xl font-black tracking-tight sm:text-2xl'>Tactile 3D Tilt Card</h4>
-						<p className='text-muted-foreground mt-2 text-xs leading-relaxed'>Move pointer across surface. Calculated with 60 FPS spring ODE and zero layout re-renders.</p>
+						<p className='text-muted-foreground mt-2 text-xs leading-relaxed'>Move pointer across surface. Calculated with 120 FPS spring lerp and zero layout thrashing.</p>
 						<div className='border-border/70 text-muted-foreground mt-6 flex items-center justify-between border-t pt-4 font-mono text-xs'>
 							<span>Perspective: {perspective}px</span>
-							<span className='text-foreground/80 font-mono'>Compositor Native</span>
+							<span className='text-foreground/80 font-mono'>Scale: {scale}x</span>
 						</div>
 					</TiltCard>
 				</div>
@@ -597,39 +688,369 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 		// 4. CSS Masonry
 		if (component.slug === 'css-masonry') {
 			const columns = Number(propValues.columns ?? 3);
+			const columnsSm = Number(propValues.columnsSm ?? 1);
+			const columnsMd = Number(propValues.columnsMd ?? 2);
+			const columnsLg = Number(propValues.columnsLg ?? 3);
+			const columnsXl = Number(propValues.columnsXl ?? 4);
 			const gap = Number(propValues.gap ?? 16);
+			const columnFill = (propValues.columnFill as 'balance' | 'auto') ?? 'balance';
+			const height = Number(propValues.height ?? 0);
+
+			// Studio canvas alternative view:
+			// mobile (375x667) -> 'columns' (default 1)
+			// tablet (640x800) -> 'columnsSm' (default 2)
+			// fluid            -> 'columnsLg' (default 3)
+			const studioColumns = viewportMode === 'mobile' ? Number(propValues.columns ?? 1) : viewportMode === 'tablet' ? Number(propValues.columnsSm ?? 2) : Number(propValues.columnsLg ?? 3);
+
+			const studioHeight = columnFill === 'auto' ? (viewportMode === 'mobile' ? undefined : height || 620) : undefined;
 
 			return (
-				<CssMasonry columns={columns} gap={gap} className='w-full p-4'>
-					{[130, 190, 150, 220, 170, 240].map((h, idx) => (
-						<div key={idx} className='border-border/80 bg-card hover:border-foreground/40 mb-4 break-inside-avoid rounded-2xl border p-5 shadow-sm transition-all' style={{ height: `${h}px` }}>
-							<div className='text-muted-foreground mb-1 flex items-center justify-between font-mono text-xs'>
-								<span className='kbd border-border bg-background/80 text-foreground text-3xs font-mono font-bold'>TILE // 0{idx + 1}</span>
-								<span className='font-mono'>{h}px</span>
+				<div key={`${viewportMode}-${studioColumns}`} className='w-full p-2 sm:p-6'>
+					<CssMasonry
+						columns={studioColumns}
+						columnsSm={studioColumns}
+						columnsMd={studioColumns}
+						columnsLg={studioColumns}
+						columnsXl={studioColumns}
+						gap={gap}
+						columnFill={columnFill}
+						height={studioHeight}
+						className='w-full'
+						style={{ columnCount: studioColumns }}
+					>
+						{/* 01. Micro Status Card (130px) - Emerald */}
+						<CssMasonryItem key='01' className='group'>
+							<div
+								className='border-border/80 bg-card/90 relative flex flex-col justify-between rounded-xl border p-4.5 shadow-2xs transition-all duration-300 hover:-translate-y-0.5 hover:border-emerald-500/40 hover:shadow-md'
+								style={{ minHeight: '130px' }}
+							>
+								<div className='pointer-events-none absolute inset-0 overflow-hidden rounded-xl'>
+									<div className='absolute inset-0 bg-linear-to-b from-emerald-500/10 via-transparent to-transparent opacity-40 transition-opacity group-hover:opacity-70' />
+								</div>
+								<div className='relative z-10 flex items-center justify-between'>
+									<span className='text-3xs inline-flex items-center gap-1.5 font-mono font-semibold text-emerald-400'>
+										<span className='relative flex size-2'>
+											<span className='absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-75' />
+											<span className='relative inline-flex size-2 rounded-full bg-emerald-500' />
+										</span>
+										120 FPS NATIVE
+									</span>
+									<span className='kbd border-border bg-background/80 text-muted-foreground text-3xs font-mono font-bold'>#01</span>
+								</div>
+								<div className='relative z-10 my-auto py-1.5'>
+									<h4 className='text-foreground text-xs font-bold tracking-tight'>Zero Layout Shift</h4>
+									<p className='text-muted-foreground text-3xs mt-0.5 font-mono'>Deterministic layout calculation</p>
+								</div>
+								<div className='border-border/60 text-muted-foreground text-3xs relative z-10 flex flex-wrap items-center justify-between gap-1 border-t pt-2 font-mono'>
+									<span>Compositor Thread</span>
+									<span className='font-semibold text-emerald-400'>0.02ms</span>
+								</div>
 							</div>
-							<div className='text-foreground mt-2 text-sm font-bold'>Dynamic Masonry</div>
-							<div className='text-muted-foreground mt-1 text-xs'>Zero Reflow Layout</div>
-						</div>
-					))}
-				</CssMasonry>
+						</CssMasonryItem>
+
+						{/* 02. Deep Kinetic Feature Tile (210px) - Blue */}
+						<CssMasonryItem key='02' className='group'>
+							<div
+								className='border-border/80 bg-card/90 relative flex flex-col justify-between rounded-xl border p-4.5 shadow-2xs transition-all duration-300 hover:-translate-y-0.5 hover:border-blue-500/40 hover:shadow-md'
+								style={{ minHeight: '210px' }}
+							>
+								<div className='pointer-events-none absolute inset-0 overflow-hidden rounded-xl'>
+									<div className='absolute inset-0 bg-linear-to-b from-blue-500/15 via-indigo-500/5 to-transparent opacity-40 transition-opacity group-hover:opacity-70' />
+								</div>
+								<div className='relative z-10'>
+									<div className='mb-2 flex items-center justify-between'>
+										<span className='text-3xs inline-flex items-center rounded-md border border-blue-500/20 bg-blue-500/10 px-2 py-0.5 font-mono font-semibold tracking-wider text-blue-400 uppercase'>
+											KINEMATICS
+										</span>
+										<span className='kbd border-border bg-background/80 text-muted-foreground text-3xs font-mono font-bold'>#02</span>
+									</div>
+									<h4 className='text-foreground group-hover:text-primary text-xs font-bold tracking-tight transition-colors'>Hermite Spline Acceleration</h4>
+									<p className='text-muted-foreground text-2xs mt-1.5 leading-relaxed'>Nonlinear velocity curves preserving fluid frame timing during continuous inertial scrolling.</p>
+								</div>
+								<div className='border-border/60 text-muted-foreground text-3xs relative z-10 mt-3 flex flex-wrap items-center justify-between gap-1 border-t pt-2 font-mono'>
+									<span>Hermite Cubic</span>
+									<span className='font-semibold text-blue-400'>3t² - 2t³</span>
+								</div>
+							</div>
+						</CssMasonryItem>
+
+						{/* 03. Elegant Pull Quote Tile (145px) - Purple */}
+						<CssMasonryItem key='03' className='group'>
+							<div
+								className='border-border/80 bg-card/90 relative flex flex-col justify-between rounded-xl border p-4.5 shadow-2xs transition-all duration-300 hover:-translate-y-0.5 hover:border-purple-500/40 hover:shadow-md'
+								style={{ minHeight: '145px' }}
+							>
+								<div className='pointer-events-none absolute inset-0 overflow-hidden rounded-xl'>
+									<div className='absolute inset-0 bg-linear-to-b from-purple-500/15 via-transparent to-transparent opacity-40 transition-opacity group-hover:opacity-70' />
+								</div>
+								<div className='relative z-10'>
+									<span className='font-serif text-xl leading-none text-purple-400/90'>“</span>
+									<p className='text-foreground/90 text-2xs mt-1 leading-relaxed italic'>CSS multi-column executes directly on the compositor thread with zero JavaScript runtime overhead.</p>
+								</div>
+								<div className='border-border/60 text-muted-foreground text-3xs relative z-10 mt-2 flex flex-wrap items-center justify-between gap-1 border-t pt-2 font-mono'>
+									<span className='font-semibold text-purple-400'>Architecture Core</span>
+									<span>#03</span>
+								</div>
+							</div>
+						</CssMasonryItem>
+
+						{/* 04. Telemetry Metric Block (255px) - Amber */}
+						<CssMasonryItem key='04' className='group'>
+							<div
+								className='border-border/80 bg-card/90 relative flex flex-col justify-between rounded-xl border p-4.5 shadow-2xs transition-all duration-300 hover:-translate-y-0.5 hover:border-amber-500/40 hover:shadow-md'
+								style={{ minHeight: '255px' }}
+							>
+								<div className='pointer-events-none absolute inset-0 overflow-hidden rounded-xl'>
+									<div className='absolute inset-0 bg-linear-to-b from-amber-500/15 via-orange-500/5 to-transparent opacity-40 transition-opacity group-hover:opacity-70' />
+								</div>
+								<div className='relative z-10'>
+									<div className='mb-2 flex items-center justify-between'>
+										<span className='text-3xs inline-flex items-center rounded-md border border-amber-500/20 bg-amber-500/10 px-2 py-0.5 font-mono font-semibold tracking-wider text-amber-400 uppercase'>
+											PHYSICS
+										</span>
+										<span className='kbd border-border bg-background/80 text-muted-foreground text-3xs font-mono font-bold'>#04</span>
+									</div>
+									<h4 className='text-foreground group-hover:text-primary text-xs font-bold tracking-tight transition-colors'>Runge-Kutta 4th Order</h4>
+									<p className='text-muted-foreground text-2xs mt-1.5 leading-relaxed'>Micro-interaction spring simulation with RK4 numerical integration.</p>
+									<div className='text-3xs mt-2.5 grid grid-cols-2 gap-2 font-mono'>
+										<div className='border-border/60 bg-background/60 rounded-md border p-2'>
+											<span className='text-muted-foreground text-3xs block'>Stiffness</span>
+											<span className='text-foreground font-semibold'>170 k</span>
+										</div>
+										<div className='border-border/60 bg-background/60 rounded-md border p-2'>
+											<span className='text-muted-foreground text-3xs block'>Damping</span>
+											<span className='text-foreground font-semibold'>26 c</span>
+										</div>
+									</div>
+								</div>
+								<div className='border-border/60 text-muted-foreground text-3xs relative z-10 mt-3 flex flex-wrap items-center justify-between gap-1 border-t pt-2 font-mono'>
+									<span>RK4 Solver</span>
+									<span className='font-semibold text-amber-400'>0.016ms Step</span>
+								</div>
+							</div>
+						</CssMasonryItem>
+
+						{/* 05. Framework Chips Tile (145px) - Pink */}
+						<CssMasonryItem key='05' className='group'>
+							<div
+								className='border-border/80 bg-card/90 relative flex flex-col justify-between rounded-xl border p-4.5 shadow-2xs transition-all duration-300 hover:-translate-y-0.5 hover:border-pink-500/40 hover:shadow-md'
+								style={{ minHeight: '145px' }}
+							>
+								<div className='pointer-events-none absolute inset-0 overflow-hidden rounded-xl'>
+									<div className='absolute inset-0 bg-linear-to-b from-pink-500/15 via-transparent to-transparent opacity-40 transition-opacity group-hover:opacity-70' />
+								</div>
+								<div className='relative z-10'>
+									<div className='mb-2 flex items-center justify-between'>
+										<span className='text-muted-foreground text-3xs font-mono font-bold uppercase'>Universal Native</span>
+										<span className='kbd border-border bg-background/80 text-muted-foreground text-3xs font-mono font-bold'>#05</span>
+									</div>
+									<div className='flex flex-wrap gap-1.5'>
+										{['React', 'Vue', 'Svelte', 'Astro', 'Solid'].map((fw) => (
+											<span key={fw} className='border-border/60 bg-background/80 text-foreground text-3xs rounded-md border px-2 py-0.5 font-mono font-medium'>
+												{fw}
+											</span>
+										))}
+									</div>
+								</div>
+								<div className='border-border/60 text-muted-foreground text-3xs relative z-10 mt-2.5 flex flex-wrap items-center justify-between gap-1 border-t pt-2 font-mono'>
+									<span className='font-semibold text-pink-400'>13 Ecosystems</span>
+									<span className='truncate'>Universal Native</span>
+								</div>
+							</div>
+						</CssMasonryItem>
+
+						{/* 06. Syntax Code Window (180px) - Cyan */}
+						<CssMasonryItem key='06' className='group'>
+							<div
+								className='border-border/80 bg-card/90 relative flex flex-col justify-between rounded-xl border p-4.5 shadow-2xs transition-all duration-300 hover:-translate-y-0.5 hover:border-cyan-500/40 hover:shadow-md'
+								style={{ minHeight: '180px' }}
+							>
+								<div className='pointer-events-none absolute inset-0 overflow-hidden rounded-xl'>
+									<div className='absolute inset-0 bg-linear-to-b from-cyan-500/15 via-transparent to-transparent opacity-40 transition-opacity group-hover:opacity-70' />
+								</div>
+								<div className='relative z-10'>
+									<div className='mb-2 flex items-center justify-between'>
+										<div className='flex items-center gap-1.5'>
+											<span className='size-2 rounded-full bg-red-500/80' />
+											<span className='size-2 rounded-full bg-yellow-500/80' />
+											<span className='size-2 rounded-full bg-green-500/80' />
+											<span className='text-muted-foreground text-3xs ml-1 font-mono'>masonry.css</span>
+										</div>
+										<span className='kbd border-border bg-background/80 text-muted-foreground text-3xs font-mono font-bold'>#06</span>
+									</div>
+									<pre className='border-border/50 bg-background/80 text-muted-foreground text-3xs no-scrollbar overflow-x-auto rounded-lg border p-2 font-mono leading-relaxed'>
+										<code>{`column-count: ${columns};\nbreak-inside: avoid;\ncolumn-fill: ${columnFill};`}</code>
+									</pre>
+								</div>
+								<div className='border-border/60 text-muted-foreground text-3xs relative z-10 mt-2.5 flex flex-wrap items-center justify-between gap-1 border-t pt-2 font-mono'>
+									<span>CSS Multi-Column</span>
+									<span className='font-semibold text-cyan-400'>Zero Script</span>
+								</div>
+							</div>
+						</CssMasonryItem>
+
+						{/* 07. Big Stat Metric Tile (130px) - Indigo */}
+						<CssMasonryItem key='07' className='group'>
+							<div
+								className='border-border/80 bg-card/90 relative flex flex-col justify-between rounded-xl border p-4.5 shadow-2xs transition-all duration-300 hover:-translate-y-0.5 hover:border-indigo-500/40 hover:shadow-md'
+								style={{ minHeight: '130px' }}
+							>
+								<div className='pointer-events-none absolute inset-0 overflow-hidden rounded-xl'>
+									<div className='absolute inset-0 bg-linear-to-b from-indigo-500/15 via-transparent to-transparent opacity-40 transition-opacity group-hover:opacity-70' />
+								</div>
+								<div className='relative z-10 flex items-center justify-between'>
+									<span className='text-muted-foreground text-3xs font-mono font-semibold uppercase'>Compositor Latency</span>
+									<span className='kbd border-border bg-background/80 text-muted-foreground text-3xs font-mono font-bold'>#07</span>
+								</div>
+								<div className='relative z-10 my-auto py-1'>
+									<span className='text-foreground font-mono text-2xl font-black tracking-tight'>&lt; 0.04ms</span>
+								</div>
+								<div className='border-border/60 text-muted-foreground text-3xs relative z-10 flex flex-wrap items-center justify-between gap-1 border-t pt-2 font-mono'>
+									<span>GPU Isolated</span>
+									<span className='font-semibold text-indigo-400'>Zero Jitter</span>
+								</div>
+							</div>
+						</CssMasonryItem>
+
+						{/* 08. Void Elimination Tile (220px) - Violet */}
+						<CssMasonryItem key='08' className='group'>
+							<div
+								className='border-border/80 bg-card/90 relative flex flex-col justify-between rounded-xl border p-4.5 shadow-2xs transition-all duration-300 hover:-translate-y-0.5 hover:border-violet-500/40 hover:shadow-md'
+								style={{ minHeight: '220px' }}
+							>
+								<div className='pointer-events-none absolute inset-0 overflow-hidden rounded-xl'>
+									<div className='absolute inset-0 bg-linear-to-b from-violet-500/15 via-purple-500/5 to-transparent opacity-40 transition-opacity group-hover:opacity-70' />
+								</div>
+								<div className='relative z-10'>
+									<div className='mb-2 flex items-center justify-between'>
+										<span className='text-3xs inline-flex items-center rounded-md border border-violet-500/20 bg-violet-500/10 px-2 py-0.5 font-mono font-semibold tracking-wider text-violet-400 uppercase'>
+											RENDER PASS
+										</span>
+										<span className='kbd border-border bg-background/80 text-muted-foreground text-3xs font-mono font-bold'>#08</span>
+									</div>
+									<h4 className='text-foreground group-hover:text-primary text-xs font-bold tracking-tight transition-colors'>Spatial Void Elimination</h4>
+									<p className='text-muted-foreground text-2xs mt-1.5 leading-relaxed'>Staggered elements interlock fluidly to eliminate vertical blank gaps across varying column heights.</p>
+								</div>
+								<div className='border-border/60 text-muted-foreground text-3xs relative z-10 mt-3 flex flex-wrap items-center justify-between gap-1 border-t pt-2 font-mono'>
+									<span>Sub-Pixel Grid</span>
+									<span className='font-semibold text-violet-400'>Auto Balanced</span>
+								</div>
+							</div>
+						</CssMasonryItem>
+
+						{/* 09. Micro WCAG A11y Ping (135px) - Emerald */}
+						<CssMasonryItem key='09' className='group'>
+							<div
+								className='border-border/80 bg-card/90 relative flex flex-col justify-between rounded-xl border p-4.5 shadow-2xs transition-all duration-300 hover:-translate-y-0.5 hover:border-emerald-500/40 hover:shadow-md'
+								style={{ minHeight: '135px' }}
+							>
+								<div className='pointer-events-none absolute inset-0 overflow-hidden rounded-xl'>
+									<div className='absolute inset-0 bg-linear-to-b from-emerald-500/10 via-transparent to-transparent opacity-40 transition-opacity group-hover:opacity-70' />
+								</div>
+								<div className='relative z-10 flex items-center justify-between'>
+									<span className='text-3xs font-mono font-bold text-emerald-400'>WCAG AAA COMPLIANT</span>
+									<span className='kbd border-border bg-background/80 text-muted-foreground text-3xs font-mono font-bold'>#09</span>
+								</div>
+								<div className='relative z-10 my-auto py-1.5'>
+									<h4 className='text-foreground text-xs font-bold tracking-tight'>DOM Order Flow Integrity</h4>
+									<p className='text-muted-foreground text-3xs mt-0.5 font-mono'>Keyboard tab sequence preserved</p>
+								</div>
+								<div className='border-border/60 text-muted-foreground text-3xs relative z-10 flex flex-wrap items-center justify-between gap-1 border-t pt-2 font-mono'>
+									<span>Screen Reader OK</span>
+									<span className='font-semibold text-emerald-400'>A11y Validated</span>
+								</div>
+							</div>
+						</CssMasonryItem>
+					</CssMasonry>
+				</div>
 			);
 		}
 
 		// 5. Auto Grid
 		if (component.slug === 'auto-grid') {
-			const minItemWidth = Number(propValues.minItemWidth ?? 200);
-			const gap = Number(propValues.gap ?? 16);
+			const minItemWidth = Number(propValues.minItemWidth ?? 280);
+			const gap = Number(propValues.gap ?? 24);
+			const mode = (propValues.mode as 'auto-fit' | 'auto-fill') ?? 'auto-fit';
+			const maxColumns = Number(propValues.maxColumns ?? 4);
+			const alignItems = (propValues.alignItems as 'stretch' | 'start' | 'center' | 'end') ?? 'stretch';
+
+			const gridItems = [
+				{
+					id: '01',
+					title: 'High-Throughput Kinetic Pipeline',
+					desc: 'Automated repeat tracks expanding fluidly to consume available viewport space with zero layout thrash.',
+					tag: 'PIPELINE',
+					metric: '0.14ms Frame',
+					colSpan: 1,
+				},
+				{
+					id: '02',
+					title: 'Dynamic MinMax Constraint Engine',
+					desc: `Evaluates minmax(min(100%, ${minItemWidth}px), 1fr) to guarantee zero mobile horizontal scroll overflow.`,
+					tag: 'COMPLIANCE',
+					metric: `${minItemWidth}px Floor`,
+					colSpan: 1,
+				},
+				{
+					id: '03',
+					title: 'Sub-Pixel Layout Stability',
+					desc: 'Fractional unit distribution across browser render passes preventing cumulative layout shift (CLS = 0.00).',
+					tag: 'VITALS',
+					metric: 'CLS: 0.00',
+					colSpan: 1,
+				},
+				{
+					id: '04',
+					title: 'Hermite Damped Track Transition',
+					desc: 'Column wrapping transitions with fluid visual hierarchy and balanced element distribution.',
+					tag: 'PHYSICS',
+					metric: 'Hermite Smooth',
+					colSpan: 1,
+				},
+				{
+					id: '05',
+					title: 'Cross-Ecosystem Universal Grid',
+					desc: 'Zero-runtime pure CSS grid templates compiled for Vue, Svelte, Angular, Solid, and modern web frameworks.',
+					tag: 'UNIVERSAL',
+					metric: '13 Flavors',
+					colSpan: 1,
+				},
+				{
+					id: '06',
+					title: 'Zero Memory Leak Architecture',
+					desc: 'Stateless declarative container avoiding persistent listener references or uncollected DOM observers.',
+					tag: 'AUDIT',
+					metric: '0 Heap Leaks',
+					colSpan: 1,
+				},
+			];
 
 			return (
-				<AutoGrid minItemWidth={minItemWidth} gap={gap} className='w-full p-4'>
-					{Array.from({ length: 6 }).map((_, idx) => (
-						<div key={idx} className='border-border/80 bg-card hover:border-foreground/40 rounded-2xl border p-5 shadow-sm transition-all'>
-							<span className='kbd border-border bg-background/80 text-foreground text-3xs font-mono font-bold'>GRID #{idx + 1}</span>
-							<div className='text-foreground mt-2 text-sm font-bold'>Auto-Fit Grid</div>
-							<div className='text-muted-foreground mt-1 font-mono text-xs'>Min: {minItemWidth}px</div>
-						</div>
-					))}
-				</AutoGrid>
+				<div className='w-full p-2 sm:p-6'>
+					<AutoGrid minItemWidth={minItemWidth} gap={gap} mode={mode} maxColumns={maxColumns} alignItems={alignItems} className='w-full'>
+						{gridItems.map((item) => (
+							<AutoGridItem key={item.id} colSpan={item.colSpan as any} className='group'>
+								<div className='border-border/80 bg-card/90 hover:border-primary/50 relative flex h-full flex-col justify-between overflow-hidden rounded-2xl border p-5 shadow-xs transition-all duration-300 hover:-translate-y-1 hover:shadow-lg'>
+									<div className='from-primary/10 pointer-events-none absolute inset-0 bg-linear-to-br via-transparent to-transparent opacity-30 transition-opacity group-hover:opacity-60' />
+									<div className='relative z-10'>
+										<div className='mb-3 flex items-center justify-between'>
+											<span className='border-primary/20 bg-primary/10 text-primary text-3xs inline-flex items-center rounded-md border px-2 py-0.5 font-mono font-semibold tracking-wider uppercase'>
+												{item.tag}
+											</span>
+											<span className='kbd border-border bg-background/80 text-muted-foreground text-3xs font-mono font-bold'>GRID #{item.id}</span>
+										</div>
+										<h4 className='text-foreground group-hover:text-primary text-sm font-bold tracking-tight transition-colors'>{item.title}</h4>
+										<p className='text-muted-foreground mt-2 text-xs leading-relaxed'>{item.desc}</p>
+									</div>
+									<div className='border-border/60 text-muted-foreground text-3xs relative z-10 mt-5 flex items-center justify-between border-t pt-3 font-mono'>
+										<span>Mode: {mode}</span>
+										<span className='font-semibold text-emerald-400'>{item.metric}</span>
+									</div>
+								</div>
+							</AutoGridItem>
+						))}
+					</AutoGrid>
+				</div>
 			);
 		}
 
@@ -637,19 +1058,48 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 		if (component.slug === 'spotlight-card') {
 			const radius = Number(propValues.radius ?? 350);
 			const opacity = Number(propValues.opacity ?? 0.8);
-			const color = String(propValues.color ?? 'rgba(255, 255, 255, 0.15)');
-			const borderColor = String(propValues.borderColor ?? 'rgba(255, 255, 255, 0.35)');
+			const color = String(propValues.color ?? '#6366f1');
+			const borderColor = String(propValues.borderColor ?? '#818cf8');
+			const spread = Number(propValues.spread ?? 80);
+			const mode = (propValues.mode as 'both' | 'border' | 'background') ?? 'both';
+			const smoothing = Number(propValues.smoothing ?? 0.2);
+			const disabled = Boolean(propValues.disabled ?? false);
 
 			return (
-				<div className='mx-auto w-full max-w-md p-2 sm:p-4'>
-					<SpotlightCard radius={radius} color={color} opacity={opacity} borderColor={borderColor} className='border-border/80 bg-card/90 p-5 shadow-2xl transition-colors sm:p-8'>
-						<div className='flex flex-col gap-3'>
-							<span className='kbd border-border bg-background/80 text-foreground text-3xs font-mono font-bold uppercase'>SPOTLIGHT PRIMITIVE</span>
-							<h4 className='text-foreground text-xl font-bold tracking-tight'>Hardware-Accelerated Glow</h4>
-							<p className='text-muted-foreground text-xs leading-relaxed'>Sub-pixel radial edge mask and background sheen driven at 120Hz with zero layout cost.</p>
-							<div className='border-border/50 text-muted-foreground mt-4 flex items-center justify-between border-t pt-3 font-mono text-xs'>
-								<span>Radius: {radius}px</span>
-								<span className='text-foreground/80 font-mono'>120Hz rAF</span>
+				<div className='flex items-center justify-center p-2 sm:p-6'>
+					<SpotlightCard
+						radius={radius}
+						color={color}
+						borderColor={borderColor}
+						opacity={opacity}
+						spread={spread}
+						mode={mode}
+						smoothing={smoothing}
+						disabled={disabled}
+						className='border-border/80 bg-card/95 w-full max-w-lg cursor-pointer p-6 shadow-2xl transition-colors sm:p-8'
+					>
+						<div className='flex flex-col gap-6'>
+							{/* Top Header */}
+							<div className='flex items-center justify-between'>
+								<div className='border-primary/20 bg-primary/10 text-primary flex size-10 items-center justify-center rounded-xl border shadow-xs'>
+									<Sparkles className='size-5' />
+								</div>
+								<span className='kbd border-border/80 bg-muted/40 text-muted-foreground text-3xs px-2.5 py-1 font-mono font-semibold tracking-wider uppercase'>Interactive Spotlight</span>
+							</div>
+
+							{/* Title & Description */}
+							<div className='space-y-2'>
+								<h4 className='text-foreground text-xl font-bold tracking-tight sm:text-2xl'>Radial Illumination</h4>
+								<p className='text-muted-foreground text-xs leading-relaxed sm:text-sm'>Dynamic 2D coordinate tracking with specular border illumination and fluid inertial falloff.</p>
+							</div>
+
+							{/* Clean Bottom Meta */}
+							<div className='border-border/60 text-muted-foreground mt-2 flex items-center justify-between border-t pt-4 font-mono text-xs'>
+								<div className='flex items-center gap-2'>
+									<span className='size-2 rounded-full bg-emerald-500' />
+									<span className='text-3xs tracking-wide uppercase'>120 FPS Coalesced</span>
+								</div>
+								<span className='text-3xs text-foreground/80 font-semibold tracking-wide uppercase'>Mode: {mode}</span>
 							</div>
 						</div>
 					</SpotlightCard>
@@ -659,18 +1109,22 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 
 		// 7. Morphing Tabs
 		if (component.slug === 'morphing-tabs') {
+			const springStiffness = typeof propValues.springStiffness === 'number' ? propValues.springStiffness : 26;
+			const variant = (propValues.variant as 'pill' | 'underline' | 'glow') || 'pill';
+			const size = (propValues.size as 'sm' | 'md' | 'lg') || 'md';
+
 			return (
-				<div className='mx-auto w-full max-w-md p-4'>
-					<MorphingTabs.Root defaultValue='dashboard'>
-						<MorphingTabs.List className='border-border/80 bg-muted/30 w-full justify-between rounded-xl border p-1'>
-							<MorphingTabs.Indicator className='bg-foreground text-background shadow-xs' />
-							<MorphingTabs.Trigger value='dashboard' className='flex-1 font-mono text-xs'>
+				<div className='mx-auto w-full max-w-lg p-4'>
+					<MorphingTabs.Root defaultValue='dashboard' springStiffness={springStiffness} variant={variant} size={size}>
+						<MorphingTabs.List className='w-full justify-between'>
+							<MorphingTabs.Indicator springStiffness={springStiffness} variant={variant} />
+							<MorphingTabs.Trigger value='dashboard' size={size} className='flex-1'>
 								Dashboard
 							</MorphingTabs.Trigger>
-							<MorphingTabs.Trigger value='analytics' className='flex-1 font-mono text-xs'>
+							<MorphingTabs.Trigger value='analytics' size={size} className='flex-1'>
 								Analytics
 							</MorphingTabs.Trigger>
-							<MorphingTabs.Trigger value='settings' className='flex-1 font-mono text-xs'>
+							<MorphingTabs.Trigger value='settings' size={size} className='flex-1'>
 								Settings
 							</MorphingTabs.Trigger>
 						</MorphingTabs.List>
@@ -729,18 +1183,41 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 		// 9. Infinite Marquee
 		if (component.slug === 'infinite-marquee') {
 			const speed = Number(propValues.speed ?? 40);
+			const direction = (propValues.direction as 'left' | 'right') ?? 'left';
 			const pauseOnHover = Boolean(propValues.pauseOnHover ?? true);
+			const gap = Number(propValues.gap ?? 24);
+			const showFadeEdges = Boolean(propValues.showFadeEdges ?? true);
+			const fadeWidth = Number(propValues.fadeWidth ?? 48);
+			const fadeEdgeColor = String(propValues.fadeEdgeColor || '#ffffff');
+			const fadeEdgeColorDark = String(propValues.fadeEdgeColorDark || '#09090b');
 
 			return (
-				<div className='mx-auto w-full max-w-2xl py-6'>
-					<InfiniteMarquee speed={speed} pauseOnHover={pauseOnHover} gap='1.5rem'>
-						{['120Hz ProMotion Ready', 'Zero Runtime Deps', 'Modulo Wrap Arithmetic', `${ECOSYSTEM_COUNT} Targets`, 'Exhuma Kinetic Engine'].map((item, idx) => (
+				<div className='w-full overflow-hidden py-6'>
+					<InfiniteMarquee
+						speed={speed}
+						direction={direction}
+						pauseOnHover={pauseOnHover}
+						gap={gap}
+						showFadeEdges={showFadeEdges}
+						fadeWidth={fadeWidth}
+						fadeEdgeColor={fadeEdgeColor}
+						fadeEdgeColorDark={fadeEdgeColorDark}
+					>
+						{[
+							{ label: '120Hz ProMotion', tag: 'Kinetic', status: 'Active' },
+							{ label: 'Zero Runtime Deps', tag: 'Pure', status: 'Locked' },
+							{ label: 'Modulo Wrap Seam', tag: 'Math', status: 'C0/C1' },
+							{ label: `${ECOSYSTEM_COUNT} Targets`, tag: 'Universal', status: '13/13' },
+							{ label: 'Sub-pixel Translation', tag: 'EKM', status: 'Hardware' },
+						].map((item, idx) => (
 							<div
 								key={idx}
-								className='border-border/80 bg-card/90 hover:border-foreground/40 flex items-center gap-2 rounded-2xl border px-5 py-3 text-xs font-semibold shadow-xs backdrop-blur-md transition-colors'
+								className='border-border/80 bg-card/90 hover:border-foreground/40 flex items-center gap-3 rounded-2xl border px-5 py-3 text-xs font-semibold shadow-xs backdrop-blur-md transition-all hover:scale-[1.02]'
 							>
-								<span className='bg-foreground/60 h-1.5 w-1.5 rounded-full' />
-								<span className='text-foreground font-mono'>{item}</span>
+								<span className='bg-primary/80 ring-primary/20 h-2 w-2 rounded-full ring-2' />
+								<span className='text-foreground font-mono font-medium'>{item.label}</span>
+								<span className='bg-secondary text-muted-foreground rounded-md px-1.5 py-0.5 font-mono text-[10px]'>{item.tag}</span>
+								<span className='text-primary/80 font-mono text-[10px] font-bold'>{item.status}</span>
 							</div>
 						))}
 					</InfiniteMarquee>
@@ -750,25 +1227,131 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 
 		// 10. Bento Grid
 		if (component.slug === 'bento-grid') {
-			const cols = Number(propValues.cols ?? 3);
+			const rawCols = Number(propValues.cols ?? 3);
+			const effectiveCols = viewportMode === 'mobile' ? 1 : viewportMode === 'tablet' ? Math.min(rawCols, 2) : rawCols;
+			const gap = propValues.gap !== undefined ? (typeof propValues.gap === 'number' ? propValues.gap : Number(String(propValues.gap).replace('px', '')) || 20) : 20;
+			const rowHeight = propValues.rowHeight !== undefined ? (typeof propValues.rowHeight === 'number' ? propValues.rowHeight : Number(String(propValues.rowHeight).replace('px', '')) || 180) : 180;
 
 			return (
-				<div className='mx-auto w-full max-w-2xl p-4'>
-					<BentoGrid cols={cols} gap='1rem'>
-						<BentoCard colSpan={2}>
+				<div className='mx-auto w-full max-w-5xl p-2 sm:p-4'>
+					<BentoGrid cols={effectiveCols} gap={gap} rowHeight={rowHeight}>
+						{/* 01. Hero Analytical Kinetics Card */}
+						<BentoCard colSpan={effectiveCols === 1 ? 1 : effectiveCols >= 3 ? 2 : 2} rowSpan={effectiveCols >= 3 ? 2 : 1}>
 							<BentoHeader>
-								<span className='kbd border-border bg-background/80 text-foreground text-3xs font-mono font-bold uppercase'>ANALYTICAL KINETICS</span>
-								<h4 className='text-foreground text-base font-bold'>Continuous Math Engine</h4>
+								<div className='flex items-center justify-between'>
+									<span className='kbd border-border bg-background/80 text-primary text-3xs font-mono font-bold uppercase'>ANALYTICAL KINETICS</span>
+									<span className='text-3xs text-muted-foreground font-mono'>#01</span>
+								</div>
+								<h4 className='text-foreground text-lg font-bold tracking-tight'>Continuous Math Engine</h4>
 							</BentoHeader>
-							<BentoContent>Hardware-accelerated CSS custom properties driven directly by rAF loops.</BentoContent>
+							<BentoVisual>
+								<div className='border-primary/20 bg-background/60 w-full rounded-xl border p-3 shadow-2xs backdrop-blur-xs'>
+									<div className='mb-2 flex items-center justify-between'>
+										<span className='text-3xs text-muted-foreground font-mono uppercase'>Live Compositor Telemetry</span>
+										<span className='size-2 animate-pulse rounded-full bg-emerald-500' />
+									</div>
+									<svg className='text-primary fill-primary/10 h-16 w-full stroke-current' viewBox='0 0 300 60'>
+										<path d='M0,45 Q50,10 100,35 T200,20 T300,30 L300,60 L0,60 Z' />
+										<path d='M0,45 Q50,10 100,35 T200,20 T300,30' fill='none' strokeWidth='2' />
+									</svg>
+								</div>
+							</BentoVisual>
+							<BentoContent>Hardware-accelerated CSS custom properties driven directly by zero-allocation requestAnimationFrame loops.</BentoContent>
 						</BentoCard>
-						<BentoCard colSpan={1}>
+
+						{/* 02. Big-Omega Lower Bound Metric */}
+						<BentoCard colSpan={1} rowSpan={1}>
 							<BentoHeader>
-								<span className='kbd border-border bg-background/80 text-foreground text-3xs font-mono font-bold uppercase'>BIG-OMEGA</span>
+								<div className='flex items-center justify-between'>
+									<span className='kbd border-border bg-background/80 text-3xs font-mono font-bold text-emerald-500 uppercase'>BIG-OMEGA</span>
+									<span className='text-3xs text-muted-foreground font-mono'>#02</span>
+								</div>
 								<h4 className='text-foreground text-base font-bold'>Ω(120Hz)</h4>
 							</BentoHeader>
-							<BentoContent>Guaranteed lower-bound execution.</BentoContent>
+							<BentoVisual>
+								<div className='flex items-baseline gap-1 font-mono text-2xl font-black text-emerald-500'>
+									120<span className='text-muted-foreground text-xs font-normal'>FPS</span>
+								</div>
+							</BentoVisual>
+							<BentoContent>Guaranteed lower-bound execution with zero layout thrashing via cached bounding geometry.</BentoContent>
 						</BentoCard>
+
+						{/* 03. GPU Isolated Latency */}
+						<BentoCard colSpan={1} rowSpan={1}>
+							<BentoHeader>
+								<div className='flex items-center justify-between'>
+									<span className='kbd border-border bg-background/80 text-3xs font-mono font-bold text-indigo-400 uppercase'>COMPOSITOR</span>
+									<span className='text-3xs text-muted-foreground font-mono'>#03</span>
+								</div>
+								<h4 className='text-foreground text-base font-bold'>&lt; 0.04ms</h4>
+							</BentoHeader>
+							<BentoVisual>
+								<div className='flex items-baseline gap-1 font-mono text-2xl font-black text-indigo-400'>
+									0.038<span className='text-muted-foreground text-xs font-normal'>ms</span>
+								</div>
+							</BentoVisual>
+							<BentoContent>Sub-pixel compositor translation without main-thread jank or garbage collector pauses.</BentoContent>
+						</BentoCard>
+
+						{/* 04. Dense Auto-Flow Feature */}
+						<BentoCard colSpan={effectiveCols === 1 ? 1 : effectiveCols >= 3 ? 2 : 1} rowSpan={1}>
+							<BentoHeader>
+								<div className='flex items-center justify-between'>
+									<span className='kbd border-border bg-background/80 text-3xs font-mono font-bold text-violet-400 uppercase'>AUTO-PACKING</span>
+									<span className='text-3xs text-muted-foreground font-mono'>#04</span>
+								</div>
+								<h4 className='text-foreground text-base font-bold'>Dense Flow Backfill</h4>
+							</BentoHeader>
+							<BentoVisual>
+								<div className='grid max-w-[180px] grid-cols-4 gap-1.5'>
+									{Array.from({ length: 8 }).map((_, i) => (
+										<div key={i} className={`h-4.5 rounded-sm ${i < 6 ? 'border border-violet-500/60 bg-violet-500/30' : 'border-border/60 bg-muted/40 border'}`} />
+									))}
+								</div>
+							</BentoVisual>
+							<BentoContent>CSS Grid automatically backfills empty track pockets, eliminating layout voids.</BentoContent>
+						</BentoCard>
+
+						{/* 05. Universal Ecosystems */}
+						<BentoCard colSpan={effectiveCols === 1 ? 1 : effectiveCols >= 4 ? 2 : effectiveCols === 3 ? 1 : 1} rowSpan={1}>
+							<BentoHeader>
+								<div className='flex items-center justify-between'>
+									<span className='kbd border-border bg-background/80 text-3xs font-mono font-bold text-amber-500 uppercase'>UNIVERSAL</span>
+									<span className='text-3xs text-muted-foreground font-mono'>#05</span>
+								</div>
+								<h4 className='text-foreground text-base font-bold'>13 Ecosystems</h4>
+							</BentoHeader>
+							<BentoVisual>
+								<div className='flex flex-wrap justify-center gap-1.5'>
+									{['React', 'Vue', 'Svelte', 'Solid', 'Flutter'].map((f) => (
+										<span key={f} className='border-border/60 bg-background/60 text-foreground text-4xs rounded-sm border px-1.5 py-0.5 font-mono font-semibold'>
+											{f}
+										</span>
+									))}
+								</div>
+							</BentoVisual>
+							<BentoContent>Native zero-dependency implementations compiled for all tier-1 web frameworks.</BentoContent>
+						</BentoCard>
+
+						{/* 06. Telemetry & Zero Leak Guarantee */}
+						{effectiveCols >= 4 && (
+							<BentoCard colSpan={2} rowSpan={1}>
+								<BentoHeader>
+									<div className='flex items-center justify-between'>
+										<span className='kbd border-border bg-background/80 text-3xs font-mono font-bold text-cyan-400 uppercase'>AUDITED</span>
+										<span className='text-3xs text-muted-foreground font-mono'>#06</span>
+									</div>
+									<h4 className='text-foreground text-base font-bold'>Zero Memory Leaks</h4>
+								</BentoHeader>
+								<BentoVisual>
+									<div className='flex items-center gap-2 font-mono text-xs text-emerald-400'>
+										<span className='size-2 rounded-full bg-emerald-500' />
+										<span>0 Persistent Event Retainers</span>
+									</div>
+								</BentoVisual>
+								<BentoContent>Verified through Chrome DevTools Heap Snapshots and Memlab heap retention audits.</BentoContent>
+							</BentoCard>
+						)}
 					</BentoGrid>
 				</div>
 			);
@@ -776,19 +1359,34 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 
 		// 11. Diamond Grid
 		if (component.slug === 'diamond-grid') {
-			const gap = String(propValues.gap ?? '0.75vw');
+			const gap = typeof propValues.gap === 'number' ? propValues.gap : Number(propValues.gap ?? 16);
+			const layout = (propValues.layout as any) || 'auto';
+			const mode = (propValues.mode as any) || 'rhombic';
+			const responsive = Boolean(propValues.responsive ?? false);
+			const isIsometric = mode === 'isometric';
 
 			return (
-				<div className='mx-auto w-full max-w-xl p-4'>
-					<DiamondGrid gap={gap}>
-						{Array.from({ length: 16 }).map((_, idx) => (
-							<div
-								key={idx}
-								className='border-border/80 bg-card/80 hover:border-foreground/50 flex aspect-square w-12 flex-col items-center justify-center rounded-2xl border p-2 text-center shadow-md backdrop-blur-md transition-all duration-300 hover:scale-105 sm:w-16'
-							>
-								<span className='text-foreground text-3xs font-mono font-bold'>#{idx + 1}</span>
-							</div>
-						))}
+				<div className='mx-auto flex w-full max-w-4xl items-center justify-center p-4 sm:p-8'>
+					<DiamondGrid gap={gap} layout={layout} mode={mode} responsive={responsive} className='w-full max-w-3xl'>
+						{Array.from({ length: 16 }).map((_, idx) =>
+							isIsometric ? (
+								<div
+									key={idx}
+									className='group border-border/80 bg-card/80 hover:border-primary hover:shadow-primary/20 relative flex aspect-square w-10 rotate-45 items-center justify-center rounded-xl border p-2 text-center shadow-md backdrop-blur-md transition-all duration-300 hover:scale-110 hover:shadow-lg sm:w-14'
+								>
+									<div className='flex -rotate-45 flex-col items-center justify-center'>
+										<span className='text-foreground text-3xs font-mono font-bold'>#{idx + 1}</span>
+									</div>
+								</div>
+							) : (
+								<div
+									key={idx}
+									className='border-border/80 bg-card/80 hover:border-foreground/50 flex aspect-square w-12 flex-col items-center justify-center rounded-2xl border p-2 text-center shadow-md backdrop-blur-md transition-all duration-300 hover:scale-105 sm:w-16'
+								>
+									<span className='text-foreground text-3xs font-mono font-bold'>#{idx + 1}</span>
+								</div>
+							)
+						)}
 					</DiamondGrid>
 				</div>
 			);
@@ -861,20 +1459,78 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 			const size = Number(propValues.size ?? 200);
 			const duration = Number(propValues.duration ?? 8);
 			const borderWidth = Number(propValues.borderWidth ?? 2);
+			const colorFrom = String(propValues.colorFrom ?? '#ffaa40');
+			const colorTo = String(propValues.colorTo ?? '#9c40ff');
+			const doubleBeam = Boolean(propValues.doubleBeam ?? false);
+			const endOpacity = Number(propValues.endOpacity ?? 0);
+			const opacity = Number(propValues.opacity ?? 1);
+			const blur = Number(propValues.blur ?? 0);
+			const borderRadius = Number(propValues.borderRadius ?? 16);
 
 			return (
-				<div className='border-border/80 bg-card relative mx-auto flex h-64 w-full max-w-sm flex-col items-center justify-center overflow-hidden rounded-2xl border p-6 shadow-xl'>
-					<span className='kbd border-border bg-background/80 text-foreground text-3xs font-mono font-bold uppercase'>PERIMETER TRACE</span>
-					<h4 className='text-foreground mt-2 text-xl font-bold'>Border Beam</h4>
-					<p className='text-muted-foreground mt-1 text-center text-xs'>Conic gradient perimeter trace with sub-pixel exclusion mask.</p>
-					<BorderBeam size={size} duration={duration} borderWidth={borderWidth} />
+				<div
+					className='border-border/80 bg-card/95 relative mx-auto flex min-h-[220px] w-full max-w-md flex-col justify-between overflow-hidden border p-5 shadow-2xl backdrop-blur-xl sm:min-h-[240px] sm:p-6'
+					style={{ borderRadius: `${borderRadius}px` }}
+				>
+					<div className='flex items-center justify-between gap-3'>
+						<div className='flex items-center gap-3'>
+							<div className='flex size-9 items-center justify-center rounded-xl border border-amber-500/20 bg-linear-to-br from-amber-500/10 via-purple-500/10 to-indigo-500/10 text-amber-500 shadow-sm'>
+								<Sparkles className='size-4' />
+							</div>
+							<div>
+								<h4 className='text-foreground text-sm font-semibold tracking-tight'>Quantum Laser Perimeter</h4>
+								<p className='text-muted-foreground text-xs'>Sub-pixel hardware composite</p>
+							</div>
+						</div>
+						<span className='border-border/80 bg-muted/40 text-muted-foreground text-3xs inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 font-mono font-medium'>
+							<span className='size-1.5 animate-pulse rounded-full bg-emerald-500' />
+							{doubleBeam ? 'DUAL BEAM // 120 FPS' : '120 FPS'}
+						</span>
+					</div>
+
+					<div className='my-auto py-3'>
+						<div className='text-muted-foreground text-3xs font-mono tracking-wider uppercase'>Kinetic Orbital Vector</div>
+						<div className='text-foreground mt-1 flex items-baseline gap-2 text-xl font-semibold tracking-tight sm:text-2xl'>
+							<span>
+								{duration > 0 ? (360 / duration).toFixed(0) : '0'} <span className='text-muted-foreground font-mono text-xs font-normal'>deg/s</span>
+							</span>
+							<span className='font-mono text-xs font-medium text-emerald-500'>• {doubleBeam ? 'Dual Phase (180°)' : 'Single Phase'}</span>
+						</div>
+					</div>
+
+					<div className='border-border/40 text-3xs text-muted-foreground flex items-center justify-between border-t pt-3 font-mono'>
+						<div className='flex items-center gap-2'>
+							<span>{borderWidth}px stroke</span>
+							<span>•</span>
+							<span>{duration}s cycle</span>
+							<span>•</span>
+							<span>{size}px arc</span>
+						</div>
+						<div className='flex items-center gap-1.5'>
+							<span className='border-border/60 size-2.5 rounded-full border' style={{ backgroundColor: colorFrom }} title={`From: ${colorFrom}`} />
+							<span className='border-border/60 size-2.5 rounded-full border' style={{ backgroundColor: colorTo }} title={`To: ${colorTo}`} />
+						</div>
+					</div>
+
+					<BorderBeam
+						size={size}
+						duration={duration}
+						borderWidth={borderWidth}
+						colorFrom={colorFrom}
+						colorTo={colorTo}
+						doubleBeam={doubleBeam}
+						endOpacity={endOpacity}
+						opacity={opacity}
+						blur={blur}
+						borderRadius={Number(propValues.borderRadius ?? 16)}
+					/>
 				</div>
 			);
 		}
 
 		// 15. Animated Sphere
 		if (component.slug === 'animated-sphere') {
-			const color = String(propValues.color ?? '#ffffff');
+			const color = String(propValues.color ?? '#6366f1');
 			const speed = Number(propValues.speed ?? 1.0);
 			const radiusScale = Number(propValues.radiusScale ?? 0.475);
 
@@ -971,30 +1627,95 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 		if (component.slug === 'card-swipe-stack') {
 			const thresholdDistance = Number(propValues.thresholdDistance ?? 120);
 			const maxRotation = Number(propValues.maxRotation ?? 20);
+			const scaleStep = Number(propValues.scaleStep ?? 0.05);
+			const offsetStep = Number(propValues.offsetStep ?? 14);
+			const preventLastCardDismiss = propValues.preventLastCardDismiss !== false;
 
 			return (
-				<div className='mx-auto flex w-full max-w-sm flex-col items-center py-8'>
-					<p className='text-muted-foreground mb-4 font-mono text-xs'>Drag card left or right to dismiss with momentum fling</p>
-					<CardSwipeStack
-						thresholdDistance={thresholdDistance}
-						maxRotation={maxRotation}
-						items={[
-							{ id: 1, title: 'Big-Omega Guarantees', tag: 'MATHEMATICS', desc: 'Guaranteed lower bound frame rate floor of 120Hz.' },
-							{ id: 2, title: 'Zero Framework Locks', tag: 'COMPILERS', desc: `Pure AST universal generation targeting ${ECOSYSTEM_COUNT} ecosystems.` },
-							{ id: 3, title: 'Direct GPU Pipeline', tag: 'KINETICS', desc: 'Direct translate3d writes bypassing virtual DOM reconciliation.' },
-						]}
-						renderCard={(item) => (
-							<div className='border-border/80 bg-card rounded-2xl border p-6 shadow-2xl backdrop-blur-md'>
-								<span className='kbd border-border bg-background/80 text-foreground text-3xs font-mono font-bold'>{item.tag}</span>
-								<h4 className='text-foreground mt-2 text-lg font-bold'>{item.title}</h4>
-								<p className='text-muted-foreground mt-1 text-xs'>{item.desc}</p>
-								<div className='border-border/60 text-muted-foreground text-3xs mt-4 flex items-center justify-between border-t pt-3 font-mono'>
-									<span>← SWIPE LEFT</span>
-									<span>SWIPE RIGHT →</span>
+				<div className='relative max-h-[480px] w-full overflow-x-hidden overflow-y-auto scroll-smooth px-4 py-2'>
+					{/* Stage 01: Card Swipe Stack Section */}
+					<div className='flex flex-col items-center justify-center py-2'>
+						<div className='mb-2 text-center'>
+							<span className='kbd text-primary text-3xs font-mono'>STAGE 01 // SWIPE STACK</span>
+							<h3 className='text-foreground mt-0.5 text-sm font-bold'>Kinetic Card Swipe Stack</h3>
+							<p className='text-muted-foreground mt-0.5 font-mono text-xs'>
+								{preventLastCardDismiss ? 'Drag to swipe cards → last card anchors with elastic resistance' : 'Drag to swipe all cards → scroll moves to Stage 02'}
+							</p>
+						</div>
+
+						<CardSwipeStack
+							key={cardSwipeResetKey}
+							thresholdDistance={thresholdDistance}
+							maxRotation={maxRotation}
+							scaleStep={scaleStep}
+							offsetStep={offsetStep}
+							preventLastCardDismiss={preventLastCardDismiss}
+							className='w-full max-w-sm'
+							items={[
+								{ id: 1, title: 'Big-Omega Guarantees', tag: 'MATHEMATICS', desc: 'Guaranteed lower bound frame rate floor of 120Hz.' },
+								{ id: 2, title: 'Zero Framework Locks', tag: 'COMPILERS', desc: `Pure AST universal generation targeting ${ECOSYSTEM_COUNT} ecosystems.` },
+								{ id: 3, title: 'Direct GPU Pipeline', tag: 'KINETICS', desc: 'Direct translate3d writes bypassing virtual DOM reconciliation.' },
+							]}
+							renderCard={(item) => (
+								<div className='border-border/80 bg-card w-full rounded-2xl border p-5 shadow-2xl backdrop-blur-md'>
+									<span className='kbd border-border bg-background/80 text-foreground text-3xs font-mono font-bold'>{item.tag}</span>
+									<h4 className='text-foreground mt-1 text-base font-bold'>{item.title}</h4>
+									<p className='text-muted-foreground mt-1 text-xs leading-relaxed'>{item.desc}</p>
+									<div className='border-border/60 text-muted-foreground text-3xs mt-3 flex items-center justify-between border-t pt-2.5 font-mono'>
+										<span>← SWIPE LEFT</span>
+										<span>SWIPE RIGHT →</span>
+									</div>
 								</div>
+							)}
+							emptyState={
+								<div className='border-border bg-card/80 flex flex-col items-center justify-center rounded-2xl border p-6 text-center shadow-xl backdrop-blur-md'>
+									<div className='bg-primary/10 text-primary mb-2 flex size-9 items-center justify-center rounded-full'>
+										<RefreshCw className='size-4' />
+									</div>
+									<h4 className='text-foreground text-sm font-semibold'>Stack Completed</h4>
+									<p className='text-muted-foreground mt-0.5 text-xs'>All cards have been swiped away.</p>
+									<button
+										type='button'
+										onClick={() => setCardSwipeResetKey((k) => k + 1)}
+										className='bg-primary text-primary-foreground hover:bg-primary/90 mt-3 inline-flex cursor-pointer items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors'
+									>
+										<RefreshCw className='size-3.5' /> Reset Stack
+									</button>
+								</div>
+							}
+						/>
+
+						<div className='text-muted-foreground/60 text-3xs mt-3 flex animate-bounce items-center gap-1.5 font-mono'>
+							<span>SCROLL FOR NEXT SECTION</span>
+							<span>↓</span>
+						</div>
+					</div>
+
+					{/* Stage 02: Next Section Below Stack */}
+					<div className='border-border/80 bg-card/70 mx-auto mt-4 max-w-md rounded-2xl border p-6 shadow-xl backdrop-blur-md'>
+						<div className='border-border/60 flex items-center justify-between border-b pb-3'>
+							<div>
+								<span className='kbd text-3xs font-mono text-emerald-400'>STAGE 02 // NEXT SECTION</span>
+								<h4 className='text-foreground mt-1 text-sm font-bold'>Hardware Telemetry & Runtime Invariants</h4>
 							</div>
-						)}
-					/>
+							<span className='kbd text-3xs border-emerald-500/30 bg-emerald-500/10 font-mono text-emerald-400'>PASS-THROUGH ACTIVE</span>
+						</div>
+						<p className='text-muted-foreground mt-3 text-xs leading-relaxed'>You have scrolled past the card stack. Drag cards to dismiss them — scroll always moves here naturally.</p>
+						<div className='mt-4 grid grid-cols-3 gap-2.5'>
+							<div className='border-border/60 bg-muted/20 rounded-xl border p-3'>
+								<span className='text-muted-foreground text-3xs font-mono'>FRAME FLOOR</span>
+								<p className='text-foreground mt-1 text-sm font-bold'>120 FPS</p>
+							</div>
+							<div className='border-border/60 bg-muted/20 rounded-xl border p-3'>
+								<span className='text-muted-foreground text-3xs font-mono'>GESTURE BUFFER</span>
+								<p className='text-foreground mt-1 text-sm font-bold'>Float64Array</p>
+							</div>
+							<div className='border-border/60 bg-muted/20 rounded-xl border p-3'>
+								<span className='text-muted-foreground text-3xs font-mono'>HEAP ALLOC</span>
+								<p className='text-foreground mt-1 text-sm font-bold'>Ω(1) ZERO</p>
+							</div>
+						</div>
+					</div>
 				</div>
 			);
 		}
@@ -1002,12 +1723,16 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 		// 21. Comparison Slider
 		if (component.slug === 'comparison-slider') {
 			const defaultPosition = Number(propValues.defaultPosition ?? 0.5);
+			const step = Number(propValues.step ?? 0.05);
+			const orientation = (propValues.orientation as 'horizontal' | 'vertical') ?? 'horizontal';
 
 			return (
 				<div className='mx-auto w-full max-w-md py-4'>
 					<ComparisonSlider
 						aspectRatio='16/10'
 						defaultPosition={defaultPosition}
+						step={step}
+						orientation={orientation}
 						before={
 							<div className='flex size-full flex-col justify-between bg-linear-to-br from-zinc-950 via-zinc-900 to-black p-6 text-white'>
 								<span className='kbd text-3xs self-start border-white/20 bg-white/10 font-mono text-white'>STATIC CANVAS</span>
@@ -1033,9 +1758,11 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 
 		// 22. Expandable Card
 		if (component.slug === 'expandable-card') {
+			const duration = Number(propValues.duration ?? 360);
 			return (
 				<div className='mx-auto w-full max-w-sm py-4'>
 					<ExpandableCard
+						duration={duration}
 						cardContent={
 							<div className='border-border/80 bg-card hover:border-foreground/40 rounded-2xl border p-6 shadow-lg transition-all'>
 								<span className='kbd border-border bg-background/80 text-foreground text-3xs font-mono font-bold uppercase'>CLICK TO EXPAND</span>
@@ -1103,7 +1830,8 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 					)}
 				>
 					{/* Active laser accent beam across top edge: only appears when sticky */}
-					{isDockSticky && <div className='via-primary absolute inset-x-0 top-0 h-0.75 bg-linear-to-r from-transparent to-transparent' />}
+					{isDockSticky && <div className='via-primary/50 absolute inset-x-0 top-0 h-0.5 bg-linear-to-r from-transparent to-transparent' />}
+					{isDockSticky && <div className='via-primary/50 absolute inset-x-0 bottom-0 h-0.5 bg-linear-to-r from-transparent to-transparent' />}
 
 					{/* Left: Icon & Label */}
 					<div className='flex min-w-0 items-center justify-between gap-2.5 sm:justify-start sm:gap-3'>
@@ -1250,8 +1978,10 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 							<span className='font-bold text-zinc-100'>exhuma</span>
 							<span className='text-zinc-400'>add</span>
 							<span className='font-bold text-amber-400'>{component.slug}</span>
-							<span className='text-zinc-500'>--flavor=</span>
-							<span className='font-bold text-emerald-400 underline decoration-emerald-500/40 decoration-dotted'>{selectedFlavor}</span>
+							<span className='inline-flex items-center'>
+								<span className='text-zinc-500'>--flavor=</span>
+								<span className='font-bold text-emerald-400 underline decoration-emerald-500/40 decoration-dotted'>{selectedFlavor}</span>
+							</span>
 						</div>
 					</div>
 
@@ -1476,7 +2206,8 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 							{/* Dynamic Prop Tweaks List */}
 							<div className='max-h-[31.25rem] space-y-1.5 overflow-y-auto pr-1'>
 								{component.props.map((propDef) => {
-									const val = propValues[propDef.name] ?? propDef.defaultValue;
+									const rawVal = propValues[propDef.name];
+									const val = rawVal !== undefined && rawVal !== null && rawVal !== '' ? rawVal : propDef.defaultValue;
 
 									return (
 										<div key={propDef.name} className='border-border/70 bg-background/50 hover:border-foreground/30 rounded-lg border px-2.5 py-2.5 shadow-2xs transition-colors'>
@@ -1529,16 +2260,44 @@ export function ComponentDocView({ slug }: ComponentDocViewProps) {
 													);
 												})()
 											) : propDef.type === 'color' ? (
-												<div className='flex items-center gap-1.5 pt-0.5'>
-													<input
-														type='color'
-														id={`prop-${propDef.name}`}
-														value={String(val ?? '#ffffff')}
-														onChange={(e) => handlePropChange(propDef.name, e.target.value)}
-														className='border-border/80 h-6 w-8 cursor-pointer rounded-sm border bg-transparent p-0.5'
-													/>
-													<Input type='text' value={String(val ?? '')} onChange={(e) => handlePropChange(propDef.name, e.target.value)} className='text-3xs h-6 flex-1 font-mono' />
-												</div>
+												(() => {
+													const colorFallback = String(propDef.defaultValue || (propDef.name.toLowerCase().includes('dark') ? '#09090b' : '#ffffff'));
+													return (
+														<div className='flex flex-col gap-1.5 pt-0.5'>
+															<div className='flex items-center gap-1.5'>
+																<input
+																	type='color'
+																	id={`prop-${propDef.name}`}
+																	value={toHexColor(val, colorFallback)}
+																	onChange={(e) => handlePropChange(propDef.name, e.target.value)}
+																	className='border-border/80 h-7 w-9 cursor-pointer rounded-md border bg-transparent p-0.5'
+																	title='Select color'
+																/>
+																<Input
+																	type='text'
+																	value={String(val ?? colorFallback)}
+																	onChange={(e) => handlePropChange(propDef.name, e.target.value)}
+																	className='text-3xs h-7 flex-1 font-mono'
+																	placeholder={colorFallback}
+																/>
+															</div>
+															<div className='flex items-center gap-1 pt-0.5'>
+																{COLOR_PRESETS.map((preset) => (
+																	<button
+																		key={preset.value}
+																		type='button'
+																		title={`${preset.label} (${preset.value})`}
+																		onClick={() => handlePropChange(propDef.name, preset.value)}
+																		className={`h-3.5 w-3.5 cursor-pointer rounded-full border transition-transform hover:scale-125 ${
+																			toHexColor(val, colorFallback) === preset.value.toLowerCase() ? 'border-foreground ring-primary scale-110 ring-1' : 'border-border/80'
+																		}`}
+																		style={{ backgroundColor: preset.value }}
+																	/>
+																))}
+															</div>
+														</div>
+													);
+												})()
 											) : propDef.type !== 'boolean' ? (
 												<div className='pt-0.5'>
 													<Input

@@ -18,10 +18,16 @@ export const DIAMOND_LAYOUT_CONFIGS: Record<'large' | 'medium' | 'small', Diamon
 	small: { maxItems: 4, columns: 3, pattern: [1, 2, 1] },
 };
 
+export type DiamondLayoutVariant = 'large' | 'medium' | 'small' | 'auto';
+
 /**
- * Determines layout configuration based on total available item count.
+ * Determines layout configuration based on total available item count or manual layout override.
  */
-export function getDiamondLayoutConfig(totalItems: number): DiamondLayoutConfig {
+export function getDiamondLayoutConfig(totalItems: number, layout: DiamondLayoutVariant = 'auto'): DiamondLayoutConfig {
+	if (layout === 'large') return DIAMOND_LAYOUT_CONFIGS.large;
+	if (layout === 'medium') return DIAMOND_LAYOUT_CONFIGS.medium;
+	if (layout === 'small') return DIAMOND_LAYOUT_CONFIGS.small;
+
 	if (totalItems >= 16) return DIAMOND_LAYOUT_CONFIGS.large;
 	if (totalItems >= 9) return DIAMOND_LAYOUT_CONFIGS.medium;
 	if (totalItems >= 4) return DIAMOND_LAYOUT_CONFIGS.small;

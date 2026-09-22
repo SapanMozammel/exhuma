@@ -33,6 +33,16 @@ export interface HorizontalScrollerProps {
 	 */
 	fadeWidth?: number;
 	/**
+	 * Custom edge gradient color for light mode (e.g. #ffffff). When empty, an alpha mask is used.
+	 * Default: '#ffffff'
+	 */
+	fadeEdgeColor?: string;
+	/**
+	 * Edge gradient color when dark mode is active (e.g. #09090b). Falls back to fadeEdgeColor if not set.
+	 * Default: '#09090b'
+	 */
+	fadeEdgeColorDark?: string;
+	/**
 	 * Mobile fallback behavior below 768px ('scroll' = native horizontal swipe with snap, 'stack' = vertical list, 'pinned' = keep pin).
 	 * Default: 'scroll'
 	 */
@@ -140,10 +150,30 @@ export interface TiltCardProps extends React.HTMLAttributes<HTMLDivElement> {
 	 */
 	perspective?: number;
 	/**
-	 * Enable dynamic specular glare reflection.
-	 * Default: true
+	 * Scale factor applied on card hover.
+	 * Default: 1.02
 	 */
-	glare?: boolean;
+	scale?: number;
+	/**
+	 * Spring damping response rate (0.05 - 0.30).
+	 * Default: 0.12
+	 */
+	speed?: number;
+	/**
+	 * Invert tilt direction (tilts towards cursor when true).
+	 * Default: false
+	 */
+	reverse?: boolean;
+	/**
+	 * Programmatically disable tilt animations and glare.
+	 * Default: false
+	 */
+	disabled?: boolean;
+	/**
+	 * Constrain tilt rotation axis ('all' = 3D, 'x' = pitch only, 'y' = yaw only).
+	 * Default: 'all'
+	 */
+	axis?: 'all' | 'x' | 'y';
 	/**
 	 * Additional CSS class for card container
 	 */
@@ -167,7 +197,7 @@ export interface SpotlightCardProps extends React.HTMLAttributes<HTMLDivElement>
 	 */
 	color?: string;
 	/**
-	 * Spotlight opacity when active.
+	 * Spotlight opacity when active (0.0 to 1.0).
 	 * Default: 0.8
 	 */
 	opacity?: number;
@@ -176,6 +206,26 @@ export interface SpotlightCardProps extends React.HTMLAttributes<HTMLDivElement>
 	 * Default: 'rgba(99, 102, 241, 0.5)'
 	 */
 	borderColor?: string;
+	/**
+	 * Radial gradient falloff softness / spread percentage (20 to 100).
+	 * Default: 80
+	 */
+	spread?: number;
+	/**
+	 * Spotlight rendering mode: 'both' | 'border' | 'background'.
+	 * Default: 'both'
+	 */
+	mode?: 'both' | 'border' | 'background';
+	/**
+	 * Kinetic exponential smoothing factor (0.05 to 1.0).
+	 * Default: 0.2
+	 */
+	smoothing?: number;
+	/**
+	 * Programmatically disable pointer tracking and spotlight illumination.
+	 * Default: false
+	 */
+	disabled?: boolean;
 	/**
 	 * Additional CSS class for card container
 	 */
@@ -189,24 +239,19 @@ export interface SpotlightCardProps extends React.HTMLAttributes<HTMLDivElement>
 export interface BorderBeamProps {
 	/**
 	 * Size/length of the beam in pixels.
-	 * Default: 250
+	 * Default: 200
 	 */
 	size?: number;
 	/**
 	 * Duration of one full loop in seconds.
-	 * Default: 12
+	 * Default: 8
 	 */
 	duration?: number;
 	/**
 	 * Width of the perimeter border beam in pixels.
-	 * Default: 1.5
+	 * Default: 2
 	 */
 	borderWidth?: number;
-	/**
-	 * Point on the beam that rides the border path, as a percentage of the beam's length (0–100).
-	 * Default: 90
-	 */
-	anchor?: number;
 	/**
 	 * Start gradient color.
 	 * Default: '#ffaa40'
@@ -218,10 +263,30 @@ export interface BorderBeamProps {
 	 */
 	colorTo?: string;
 	/**
-	 * Animation delay in seconds.
+	 * Whether to render a secondary beam on the opposite side of the perimeter, orbiting in the same direction (180° phase offset).
+	 * Default: false
+	 */
+	doubleBeam?: boolean;
+	/**
+	 * Opacity at the tail/end of the beam (0 to 1). 0 fades to fully transparent.
 	 * Default: 0
 	 */
-	delay?: number;
+	endOpacity?: number;
+	/**
+	 * Overall opacity of the border beam container (0 to 1).
+	 * Default: 1
+	 */
+	opacity?: number;
+	/**
+	 * Optional blur filter in pixels for extra laser neon glow.
+	 * Default: 0
+	 */
+	blur?: number;
+	/**
+	 * Corner radius of the perimeter path in pixels to match card borders.
+	 * Default: 16
+	 */
+	borderRadius?: number;
 	className?: string;
 	style?: CSSProperties;
 }

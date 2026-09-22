@@ -75,23 +75,52 @@ export function evaluateSwipeDecision(dx: number, velocity: number, thresholdDis
 
 /**
  * Calculates scale and translation for background cards in stack during drag progress.
+ * Uses Hermite cubic smoothstep (3t^2 - 2t^3) for zero-discontinuity layer elevation.
  */
-export function calculateStackedCardTransform(index: number, progress: number, scaleStep: number = 0.05, offsetStep: number = 12): { scale: number; translateY: number; opacity: number } {
+export function calculateStackedCardTransform(index: number, progress: number, scaleStep: number = 0.05, offsetStep: number = 14, baseOpacityStep: number = 0.15): { scale: number; translateY: number; opacity: number } {
 	// Base values at rest
-	const baseScale = Math.max(0.7, 1 - index * scaleStep);
+	const baseScale = Math.max(0.6, 1 - index * scaleStep);
 	const baseOffset = index * offsetStep;
-	const baseOpacity = Math.max(0.4, 1 - index * 0.15);
+	const baseOpacity = Math.max(0.3, 1 - index * baseOpacityStep);
 
 	// Interpolate towards the position of card (index - 1) as top card is swiped away
-	const targetScale = Math.max(0.7, 1 - (index - 1) * scaleStep);
+	const targetScale = Math.max(0.6, 1 - (index - 1) * scaleStep);
 	const targetOffset = Math.max(0, (index - 1) * offsetStep);
-	const targetOpacity = Math.max(0.4, 1 - (index - 1) * 0.15);
+	const targetOpacity = Math.max(0.3, 1 - (index - 1) * baseOpacityStep);
 
-	const clampedProgress = Math.min(1, Math.max(0, progress));
+	// Hermite cubic smoothstep: 3t^2 - 2t^3
+	const clamped = Math.min(1, Math.max(0, progress));
+	const smoothProgress = clamped * clamped * (3 - 2 * clamped);
 
 	return {
-		scale: baseScale + (targetScale - baseScale) * clampedProgress,
-		translateY: baseOffset + (targetOffset - baseOffset) * clampedProgress,
-		opacity: baseOpacity + (targetOpacity - baseOpacity) * clampedProgress,
+		scale: baseScale + (targetScale - baseScale) * smoothProgress,
+		translateY: baseOffset + (targetOffset - baseOffset) * smoothProgress,
+		opacity: baseOpacity + (targetOpacity - baseOpacity) * smoothProgress,
 	};
+}
+
+/**
+ * Calculates dynamic fling animation duration based on release velocity and remaining travel distance.
+ */
+export function calculateFlingDuration(distanceRemaining: number, velocityX: number, minDuration: number = 160, maxDuration: number = 300): number {
+	const absVel = Math.abs(velocityX);
+	if (absVel <= 150) return maxDuration;
+	const natural = (distanceRemaining / absVel) * 1000;
+	return Math.max(minDuration, Math.min(maxDuration, natural));
+}
+
+/**
+ * Applies non-linear elastic damping to a drag displacement.
+ * Used for the last card resistance: finger can feel the rubber-band but the card
+ * never travels far enough to trigger a dismiss.
+ *
+ * Formula: sign(dx) * |dx|^exponent * scale
+ * Default exponent = 0.78 gives a natural rubber-band feel.
+ * Returned value is always ≤ maxDistance.
+ */
+export function calculateElasticDamping(dx: number, maxDistance: number = 80, exponent: number = 0.78, scale: number = 2.2): number {
+	if (dx === 0) return 0;
+	const sign = dx > 0 ? 1 : -1;
+	const damped = Math.pow(Math.abs(dx), exponent) * scale;
+	return sign * Math.min(damped, maxDistance);
 }

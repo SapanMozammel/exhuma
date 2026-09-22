@@ -20,6 +20,9 @@ interface TabsContextValue {
 	activeRect: { x: number; y: number; width: number; height: number } | null;
 	baseId: string;
 	triggers: string[];
+	springStiffness?: number;
+	variant?: 'pill' | 'underline' | 'glow';
+	size?: 'sm' | 'md' | 'lg';
 }
 
 const TabsContext = createContext<TabsContextValue | null>(null);
@@ -38,9 +41,12 @@ export interface TabsRootProps {
 	value?: string;
 	onValueChange?: (val: string) => void;
 	className?: string;
+	springStiffness?: number;
+	variant?: 'pill' | 'underline' | 'glow';
+	size?: 'sm' | 'md' | 'lg';
 }
 
-export const TabsRoot: React.FC<TabsRootProps> = ({ children, defaultValue, value: controlledValue, onValueChange, className = '' }) => {
+export const TabsRoot: React.FC<TabsRootProps> = ({ children, defaultValue, value: controlledValue, onValueChange, className = '', springStiffness = 26, variant = 'pill', size = 'md' }) => {
 	const baseId = useId();
 	const [uncontrolledValue, setUncontrolledValue] = useState<string>(defaultValue || '');
 	const isControlled = controlledValue !== undefined;
@@ -89,10 +95,32 @@ export const TabsRoot: React.FC<TabsRootProps> = ({ children, defaultValue, valu
 	}, [activeValue]);
 
 	useEffect(() => {
-		measureActive();
-		window.addEventListener('resize', measureActive);
-		return () => window.removeEventListener('resize', measureActive);
-	}, [measureActive]);
+		// Run measureActive after browser layout reflow (handles dynamic size/variant switching)
+		let rafId: number | null = requestAnimationFrame(measureActive);
+
+		const handleResize = () => {
+			measureActive();
+		};
+
+		window.addEventListener('resize', handleResize);
+
+		// Observe container layout changes (e.g. font-size, padding, responsive wrap)
+		const el = triggerElements.current.get(activeValue);
+		const listEl = el?.parentElement;
+		let observer: ResizeObserver | null = null;
+		if (typeof ResizeObserver !== 'undefined' && listEl) {
+			observer = new ResizeObserver(() => {
+				measureActive();
+			});
+			observer.observe(listEl);
+		}
+
+		return () => {
+			if (rafId !== null) cancelAnimationFrame(rafId);
+			window.removeEventListener('resize', handleResize);
+			observer?.disconnect();
+		};
+	}, [measureActive, size, variant, activeValue]);
 
 	return (
 		<TabsContext.Provider
@@ -103,6 +131,9 @@ export const TabsRoot: React.FC<TabsRootProps> = ({ children, defaultValue, valu
 				activeRect,
 				baseId,
 				triggers: triggersList,
+				springStiffness,
+				variant,
+				size,
 			}}
 		>
 			<div className={`exhuma-tabs-root flex flex-col ${className}`}>{children}</div>
@@ -116,7 +147,7 @@ export interface TabsListProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 export const TabsList: React.FC<TabsListProps> = ({ children, className = '', ...props }) => {
-	const { value, onValueChange, triggers } = useTabsContext();
+	const { value, onValueChange, triggers, variant } = useTabsContext();
 
 	const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
 		if (triggers.length === 0) return;
@@ -146,14 +177,13 @@ export const TabsList: React.FC<TabsListProps> = ({ children, className = '', ..
 		}
 	};
 
+	const listVariantStyles =
+		variant === 'underline'
+			? 'border-b border-neutral-200/80 dark:border-neutral-800/80 bg-transparent rounded-none p-0 pb-1 gap-2'
+			: 'rounded-2xl border border-neutral-200/80 bg-neutral-100/80 p-1.5 backdrop-blur-md dark:border-neutral-800/80 dark:bg-neutral-900/80 shadow-sm';
+
 	return (
-		<div
-			role='tablist'
-			aria-orientation='horizontal'
-			onKeyDown={handleKeyDown}
-			className={`exhuma-tabs-list relative flex items-center gap-1 rounded-xl bg-neutral-100 p-1 dark:bg-neutral-900 ${className}`}
-			{...props}
-		>
+		<div role='tablist' aria-orientation='horizontal' onKeyDown={handleKeyDown} className={`exhuma-tabs-list relative flex items-center gap-1 ${listVariantStyles} ${className}`} {...props}>
 			{children}
 		</div>
 	);
@@ -161,14 +191,26 @@ export const TabsList: React.FC<TabsListProps> = ({ children, className = '', ..
 
 export interface TabsIndicatorProps extends HTMLAttributes<HTMLDivElement> {
 	className?: string;
+	springStiffness?: number;
+	variant?: 'pill' | 'underline' | 'glow';
 }
 
-export const TabsIndicator: React.FC<TabsIndicatorProps> = ({ className = '', style, ...props }) => {
-	const { activeRect } = useTabsContext();
+export const TabsIndicator: React.FC<TabsIndicatorProps> = ({ className = '', style, springStiffness: propSpringStiffness, variant: propVariant, ...props }) => {
+	const ctx = useTabsContext();
+	const activeRect = ctx.activeRect;
+	const variant = propVariant ?? ctx.variant ?? 'pill';
+	const omega = propSpringStiffness ?? ctx.springStiffness ?? 26;
+
 	const indicatorRef = useRef<HTMLDivElement>(null);
-	// Keep activeRect in a ref so updateSpring never needs to be recreated
+	// Keep activeRect, omega and variant in refs so updateSpring never needs to be recreated
 	const activeRectRef = useRef(activeRect);
 	activeRectRef.current = activeRect;
+
+	const omegaRef = useRef(omega);
+	omegaRef.current = omega;
+
+	const variantRef = useRef(variant);
+	variantRef.current = variant;
 
 	// Kinetic spring state
 	const currentX = useRef(0);
@@ -178,7 +220,7 @@ export const TabsIndicator: React.FC<TabsIndicatorProps> = ({ className = '', st
 	const rafIdRef = useRef<number | null>(null);
 	const lastTimeRef = useRef<number>(0);
 
-	// Stable callback — no deps, reads from refs only (issue #4 fix)
+	// Stable callback — reads from refs only, zero allocations per frame
 	const updateSpring = useCallback((timestamp: number) => {
 		const rect = activeRectRef.current;
 		if (!indicatorRef.current || !rect) return;
@@ -186,17 +228,27 @@ export const TabsIndicator: React.FC<TabsIndicatorProps> = ({ className = '', st
 		const dt = lastTimeRef.current ? (timestamp - lastTimeRef.current) / 1000 : 0.016;
 		lastTimeRef.current = timestamp;
 
-		const springX = solveCriticallyDampedSpring(currentX.current, rect.x, velX.current, dt, { omega: 26 });
-		const springW = solveCriticallyDampedSpring(currentW.current, rect.width, velW.current, dt, { omega: 26 });
+		const currentOmega = omegaRef.current;
+		const currentVariant = variantRef.current;
+
+		let targetY = rect.y;
+		let targetH = rect.height;
+		if (currentVariant === 'underline') {
+			targetY = rect.y + rect.height - 2;
+			targetH = 2;
+		}
+
+		const springX = solveCriticallyDampedSpring(currentX.current, rect.x, velX.current, dt, { omega: currentOmega });
+		const springW = solveCriticallyDampedSpring(currentW.current, rect.width, velW.current, dt, { omega: currentOmega });
 
 		currentX.current = springX.position;
 		velX.current = springX.velocity;
 		currentW.current = springW.position;
 		velW.current = springW.velocity;
 
-		indicatorRef.current.style.transform = `translate3d(${currentX.current.toFixed(2)}px, ${rect.y}px, 0)`;
+		indicatorRef.current.style.transform = `translate3d(${currentX.current.toFixed(2)}px, ${targetY.toFixed(2)}px, 0)`;
 		indicatorRef.current.style.width = `${currentW.current.toFixed(2)}px`;
-		indicatorRef.current.style.height = `${rect.height}px`;
+		indicatorRef.current.style.height = `${targetH}px`;
 
 		if (!springX.isSettled || !springW.isSettled) {
 			rafIdRef.current = requestAnimationFrame(updateSpring);
@@ -206,20 +258,33 @@ export const TabsIndicator: React.FC<TabsIndicatorProps> = ({ className = '', st
 		}
 	}, []);
 
+	// Immediate geometry synchronizer when variant or activeRect changes (resolves studio instant switch)
 	useEffect(() => {
-		if (!activeRect) return;
+		if (!indicatorRef.current || !activeRect) return;
 
-		// Snap initial positions
+		let targetY = activeRect.y;
+		let targetH = activeRect.height;
+		if (variant === 'underline') {
+			targetY = activeRect.y + activeRect.height - 2;
+			targetH = 2;
+		}
+
+		indicatorRef.current.style.height = `${targetH}px`;
+		indicatorRef.current.style.transform = `translate3d(${(currentX.current || activeRect.x).toFixed(2)}px, ${targetY.toFixed(2)}px, 0)`;
+
+		// If initial or if dimensions moved, trigger spring loop
 		if (currentW.current === 0) {
 			currentX.current = activeRect.x;
 			currentW.current = activeRect.width;
-			if (indicatorRef.current) {
-				indicatorRef.current.style.transform = `translate3d(${activeRect.x}px, ${activeRect.y}px, 0)`;
-				indicatorRef.current.style.width = `${activeRect.width}px`;
-				indicatorRef.current.style.height = `${activeRect.height}px`;
-			}
-			return;
+			indicatorRef.current.style.width = `${activeRect.width}px`;
+		} else if (rafIdRef.current === null) {
+			lastTimeRef.current = 0;
+			rafIdRef.current = requestAnimationFrame(updateSpring);
 		}
+	}, [variant, activeRect, updateSpring]);
+
+	useEffect(() => {
+		if (!activeRect) return;
 
 		if (rafIdRef.current === null) {
 			lastTimeRef.current = 0;
@@ -236,13 +301,21 @@ export const TabsIndicator: React.FC<TabsIndicatorProps> = ({ className = '', st
 
 	if (!activeRect) return null;
 
+	const variantStyles =
+		variant === 'underline'
+			? 'rounded-full bg-indigo-600 dark:bg-indigo-400 shadow-[0_0_12px_rgba(99,102,241,0.6)]'
+			: variant === 'glow'
+				? 'rounded-xl bg-white/95 border border-indigo-500/40 shadow-[0_0_20px_rgba(99,102,241,0.5),0_0_40px_rgba(168,85,247,0.3)] dark:bg-neutral-800/95 dark:border-indigo-400/50 dark:shadow-[0_0_24px_rgba(99,102,241,0.6),0_0_50px_rgba(168,85,247,0.35)]'
+				: 'rounded-xl bg-white shadow-sm border border-neutral-200/60 dark:bg-neutral-800 dark:border-neutral-700/60 dark:shadow-md';
+
 	return (
 		<div
 			ref={indicatorRef}
 			aria-hidden='true'
-			className={`exhuma-tabs-indicator pointer-events-none absolute top-0 left-0 rounded-lg bg-white shadow-sm dark:bg-neutral-800 ${className}`}
+			className={`exhuma-tabs-indicator pointer-events-none absolute top-0 left-0 ${variantStyles} ${className}`}
 			style={{
 				willChange: 'transform, width',
+				transition: 'height 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease, background-color 0.25s ease',
 				...style,
 			}}
 			{...props}
@@ -254,20 +327,34 @@ export interface TabsTriggerProps extends ButtonHTMLAttributes<HTMLButtonElement
 	value: string;
 	children: ReactNode;
 	className?: string;
+	size?: 'sm' | 'md' | 'lg';
 }
 
-export const TabsTrigger: React.FC<TabsTriggerProps> = ({ value, children, className = '', ...props }) => {
-	const { value: activeValue, onValueChange, registerTrigger, baseId } = useTabsContext();
+export const TabsTrigger: React.FC<TabsTriggerProps> = ({ value, children, className = '', size: propSize, ...props }) => {
+	const ctx = useTabsContext();
+	const activeValue = ctx.value;
 	const isSelected = activeValue === value;
 	const triggerRef = useRef<HTMLButtonElement>(null);
+	const size = propSize ?? ctx.size ?? 'md';
+	const variant = ctx.variant ?? 'pill';
 
 	useEffect(() => {
-		registerTrigger(value, triggerRef.current);
-		return () => registerTrigger(value, null);
-	}, [value, registerTrigger]);
+		ctx.registerTrigger(value, triggerRef.current);
+		return () => ctx.registerTrigger(value, null);
+	}, [value, ctx.registerTrigger]);
 
-	const id = `${baseId}-trigger-${value}`;
-	const panelId = `${baseId}-panel-${value}`;
+	const id = `${ctx.baseId}-trigger-${value}`;
+	const panelId = `${ctx.baseId}-panel-${value}`;
+
+	const sizeClasses = size === 'sm' ? 'px-3 py-1.5 text-xs' : size === 'lg' ? 'px-6 py-3 text-base' : 'px-4 py-2 text-sm';
+
+	const activeTextClasses = isSelected
+		? variant === 'underline'
+			? 'text-indigo-600 dark:text-indigo-400 font-semibold'
+			: variant === 'glow'
+				? 'text-indigo-600 dark:text-indigo-300 font-semibold'
+				: 'text-neutral-900 dark:text-white font-semibold'
+		: 'text-neutral-500 hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-200';
 
 	return (
 		<button
@@ -279,10 +366,8 @@ export const TabsTrigger: React.FC<TabsTriggerProps> = ({ value, children, class
 			aria-controls={panelId}
 			tabIndex={isSelected ? 0 : -1}
 			type='button'
-			onClick={() => onValueChange(value)}
-			className={`exhuma-tabs-trigger focus-visible:ring-primary relative z-10 inline-flex items-center justify-center rounded-lg px-3 py-1.5 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:outline-none ${
-				isSelected ? 'text-neutral-900 dark:text-white' : 'text-neutral-500 hover:text-neutral-700 dark:text-neutral-400 dark:hover:text-neutral-200'
-			} ${className}`}
+			onClick={() => ctx.onValueChange(value)}
+			className={`exhuma-tabs-trigger focus-visible:ring-primary relative z-10 inline-flex items-center justify-center rounded-xl font-medium transition-colors focus-visible:ring-2 focus-visible:outline-none ${sizeClasses} ${activeTextClasses} ${className}`}
 			{...props}
 		>
 			{children}

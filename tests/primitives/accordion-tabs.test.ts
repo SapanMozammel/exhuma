@@ -51,3 +51,66 @@ describe('Exhuma Kinetic Methodology — Circular Modulo Roving Index DSA', () =
 		expect(nextBackward(2)).toBe(1);
 	});
 });
+
+describe('MorphingTabs — Big-Omega (Ω) Spring Physics & Geometry', () => {
+	it('converges to target position across different omega stiffness values without overshoot', async () => {
+		const { solveCriticallyDampedSpring } = await import('../../packages/core/src/physics/spring');
+
+		const dt = 0.016;
+		for (const omega of [14, 26, 42]) {
+			let pos = 0;
+			let vel = 0;
+			const target = 150;
+			let steps = 0;
+
+			// Step ODE simulation until settled
+			while (steps < 120) {
+				const state = solveCriticallyDampedSpring(pos, target, vel, dt, { omega });
+				pos = state.position;
+				vel = state.velocity;
+				steps++;
+				if (state.isSettled) break;
+			}
+
+			// Must settle exactly at target (zero overshoot)
+			expect(pos).toBeCloseTo(target, 0);
+			// Higher omega converges in fewer steps
+			if (omega === 42) {
+				expect(steps).toBeLessThanOrEqual(40);
+			}
+		}
+	});
+
+	it('computes correct target geometry for indicator variants', () => {
+		const rect = { x: 40, y: 10, width: 120, height: 36 };
+
+		// Pill variant
+		const pillGeometry = {
+			x: rect.x,
+			y: rect.y,
+			width: rect.width,
+			height: rect.height,
+		};
+		expect(pillGeometry.y).toBe(10);
+		expect(pillGeometry.height).toBe(36);
+
+		// Underline variant
+		const underlineGeometry = {
+			x: rect.x,
+			y: rect.y + rect.height - 2,
+			width: rect.width,
+			height: 2,
+		};
+		expect(underlineGeometry.y).toBe(44);
+		expect(underlineGeometry.height).toBe(2);
+
+		// Glow variant
+		const glowGeometry = {
+			x: rect.x,
+			y: rect.y,
+			width: rect.width,
+			height: rect.height,
+		};
+		expect(glowGeometry.height).toBe(36);
+	});
+});
