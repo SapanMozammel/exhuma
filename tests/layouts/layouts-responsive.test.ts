@@ -1,7 +1,8 @@
 import { describe, it, expect } from 'vitest';
-import { CssMasonry, CssMasonryItem, AutoGrid, AutoGridItem } from '../../packages/layouts/src';
+import { CssMasonry, CssMasonryItem, AutoGrid, AutoGridItem, BentoGrid, BentoCard, BentoHeader, BentoContent, BentoVisual } from '../../packages/layouts/src';
 import { cssMasonryComponent } from '../../packages/registry/src/components/css-masonry';
 import { autoGridComponent } from '../../packages/registry/src/components/auto-grid';
+import { bentoGridComponent } from '../../packages/registry/src/components/bento-grid';
 
 describe('Exhuma Layouts — CssMasonry Architecture & Registry', () => {
 	it('exports CssMasonry and CssMasonryItem components', () => {
@@ -167,6 +168,77 @@ describe('Exhuma Layouts — Universal 13-Ecosystem Parity & Big-Ω Gates', () =
 		expect(code).toContain('CssMasonry');
 		expect(code).toContain('CssMasonryItem');
 		expect(code).toContain('columnCount');
+	});
+});
+
+describe('Exhuma Layouts — BentoGrid Architecture & Registry', () => {
+	it('exports BentoGrid, BentoCard, BentoHeader, BentoContent, and BentoVisual components', () => {
+		expect(BentoGrid).toBeDefined();
+		expect(['function', 'object']).toContain(typeof BentoGrid);
+		expect(BentoCard).toBeDefined();
+		expect(['function', 'object']).toContain(typeof BentoCard);
+		expect(BentoHeader).toBeDefined();
+		expect(['function', 'object']).toContain(typeof BentoHeader);
+		expect(BentoContent).toBeDefined();
+		expect(['function', 'object']).toContain(typeof BentoContent);
+		expect(BentoVisual).toBeDefined();
+		expect(['function', 'object']).toContain(typeof BentoVisual);
+		expect(BentoGrid.Card).toBe(BentoCard);
+		expect(BentoGrid.Header).toBe(BentoHeader);
+		expect(BentoGrid.Content).toBe(BentoContent);
+		expect(BentoGrid.Visual).toBe(BentoVisual);
+	});
+
+	it('validates bento-grid registry schema with numeric gap, rowHeight, and compoundParts', () => {
+		expect(bentoGridComponent.id).toBe('bento-grid');
+		expect(bentoGridComponent.defaultProps.cols).toBe(3);
+		expect(bentoGridComponent.defaultProps.gap).toBe(20);
+		expect(bentoGridComponent.defaultProps.rowHeight).toBe(180);
+
+		const colsProp = bentoGridComponent.props.find((p) => p.name === 'cols');
+		const gapProp = bentoGridComponent.props.find((p) => p.name === 'gap');
+		const rowHeightProp = bentoGridComponent.props.find((p) => p.name === 'rowHeight');
+
+		expect(colsProp?.type).toBe('number');
+		expect(colsProp?.defaultValue).toBe(3);
+		expect(colsProp?.min).toBe(1);
+		expect(colsProp?.max).toBe(6);
+
+		expect(gapProp?.type).toBe('number');
+		expect(gapProp?.defaultValue).toBe(20);
+		expect(gapProp?.min).toBe(8);
+		expect(gapProp?.max).toBe(64);
+
+		expect(rowHeightProp?.type).toBe('number');
+		expect(rowHeightProp?.defaultValue).toBe(180);
+		expect(rowHeightProp?.min).toBe(100);
+		expect(rowHeightProp?.max).toBe(320);
+	});
+
+	it('generates outer-layer clean wrappers with compound parts', () => {
+		const files = bentoGridComponent.generateCode('react', bentoGridComponent.defaultProps);
+		expect(files.length).toBeGreaterThan(0);
+		const code = files[0].code;
+		expect(code).toContain('BentoGrid');
+		expect(code).toContain('BentoCard');
+		expect(code).toContain('BentoHeader');
+		expect(code).toContain('BentoContent');
+		expect(code).toContain('BentoVisual');
+	});
+
+	it('generates zero-dependency standalone ejected engine for Bento Grid', () => {
+		const ejectedFiles = bentoGridComponent.generateCode('react', bentoGridComponent.defaultProps, { eject: true });
+		expect(ejectedFiles.length).toBeGreaterThan(0);
+		const code = ejectedFiles[0].code;
+		expect(code).not.toContain('@exhuma/core');
+		expect(code).toContain('BentoGrid');
+		expect(code).toContain('BentoCard');
+		expect(code).toContain('BentoHeader');
+		expect(code).toContain('BentoContent');
+		expect(code).toContain('BentoVisual');
+		expect(code).toContain('--bento-x');
+		expect(code).toContain('--bento-y');
+		expect(code).toContain('gridAutoRows');
 	});
 });
 

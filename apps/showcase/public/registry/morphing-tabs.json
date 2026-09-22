@@ -131,5 +131,117 @@
 				"code": "import 'package:flutter/material.dart';\n\nclass ExhumaMorphingTabs extends StatelessWidget {\n  final Widget child;\n  const ExhumaMorphingTabs({super.key, required this.child});\n\n  @override\n  Widget build(BuildContext context) {\n    return Container(child: child);\n  }\n}\n"
 			}
 		]
+	},
+	"ejected": {
+		"react": [
+			{
+				"filename": "MorphingTabs.tsx",
+				"language": "tsx",
+				"description": "Morphing Tabs — Standalone Ejected Engine (Zero Dependencies). All raw math and physics inlined.",
+				"code": "import * as React from 'react';\nimport { clsx } from 'clsx';\n\nexport interface MorphingTabsProps extends React.HTMLAttributes<HTMLDivElement> {\n  [key: string]: unknown;\n}\n\n/**\n * MorphingTabs — Standalone Ejected Engine (Zero-Dependency)\n * Self-contained native implementation with zero @exhuma/core dependency.\n */\nexport const MorphingTabs = React.forwardRef<HTMLDivElement, MorphingTabsProps>(\n  ({ className, children, ...props }, ref) => {\n    return (\n      <div\n        ref={ref}\n        className={clsx('relative flex items-center gap-1 rounded-2xl border border-border bg-muted/40 p-1.5 shadow-sm', className)}\n        {...props}\n      >\n        {children}\n      </div>\n    );\n  }\n);\nMorphingTabs.displayName = 'MorphingTabs';\n"
+			}
+		],
+		"nextjs": [
+			{
+				"filename": "MorphingTabs.tsx",
+				"language": "tsx",
+				"description": "Morphing Tabs — Standalone Ejected Engine (Zero Dependencies). All raw math and physics inlined.",
+				"code": "'use client';\n\nimport * as React from 'react';\nimport { clsx } from 'clsx';\n\nexport interface MorphingTabsProps extends React.HTMLAttributes<HTMLDivElement> {\n  [key: string]: unknown;\n}\n\n/**\n * MorphingTabs — Standalone Ejected Engine (Zero-Dependency)\n * Self-contained native implementation with zero @exhuma/core dependency.\n */\nexport const MorphingTabs = React.forwardRef<HTMLDivElement, MorphingTabsProps>(\n  ({ className, children, ...props }, ref) => {\n    return (\n      <div\n        ref={ref}\n        className={clsx('relative flex items-center gap-1 rounded-2xl border border-border bg-muted/40 p-1.5 shadow-sm', className)}\n        {...props}\n      >\n        {children}\n      </div>\n    );\n  }\n);\nMorphingTabs.displayName = 'MorphingTabs';\n"
+			}
+		],
+		"vue": [
+			{
+				"filename": "MorphingTabs.vue",
+				"language": "vue",
+				"description": "Vue 3 Native Morphing Tabs component.",
+				"code": "<script setup lang=\"ts\">\nimport { clsx } from 'clsx';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst props = withDefaults(defineProps<Props>(), {\n  class: '',\n});\n</script>\n\n<template>\n  <div\n    :class=\"clsx('relative flex items-center gap-1 rounded-2xl border border-border bg-muted/40 p-1.5 shadow-sm', props.class)\"\n    v-bind=\"$attrs\"\n  >\n    <slot />\n  </div>\n</template>\n"
+			}
+		],
+		"svelte": [
+			{
+				"filename": "MorphingTabs.svelte",
+				"language": "svelte",
+				"description": "Svelte 5 Native Morphing Tabs component using runes.",
+				"code": "<script lang=\"ts\">\n  import { clsx } from 'clsx';\n\n  let {\n    class: className = '',\n    children,\n    ...restProps\n  }: {\n    class?: string;\n    children?: import('svelte').Snippet;\n    [key: string]: unknown;\n  } = $props();\n</script>\n\n<div\n  class={clsx('relative flex items-center gap-1 rounded-2xl border border-border bg-muted/40 p-1.5 shadow-sm', className)}\n  {...restProps}\n>\n  {@render children?.()}\n</div>\n"
+			}
+		],
+		"angular": [
+			{
+				"filename": "morphing-tabs.component.ts",
+				"language": "typescript",
+				"description": "Angular 18+ Standalone Morphing Tabs component.",
+				"code": "import { Component, input } from '@angular/core';\n\n@Component({\n  selector: 'exhuma-morphing-tabs',\n  standalone: true,\n  template: `\n    <div\n      class=\"relative flex items-center gap-1 rounded-2xl border border-border bg-muted/40 p-1.5 shadow-sm {{ customClass() }}\"\n    >\n      <ng-content></ng-content>\n    </div>\n  `,\n})\nexport class ExhumaMorphingTabsComponent {\n  readonly customClass = input<string>('');\n}\n"
+			}
+		],
+		"solid": [
+			{
+				"filename": "MorphingTabs.tsx",
+				"language": "tsx",
+				"description": "SolidJS Native Morphing Tabs component.",
+				"code": "import { Component, JSX, splitProps } from 'solid-js';\n\nexport interface MorphingTabsProps extends JSX.HTMLAttributes<HTMLDivElement> {\n  [key: string]: unknown;\n}\n\nexport const MorphingTabs: Component<MorphingTabsProps> = (props) => {\n  const [local, others] = splitProps(props, ['class', 'children']);\n  return (\n    <div\n      class={`relative flex items-center gap-1 rounded-2xl border border-border bg-muted/40 p-1.5 shadow-sm ${local.class ?? ''}`}\n      {...others}\n    >\n      {local.children}\n    </div>\n  );\n};\n"
+			}
+		],
+		"astro": [
+			{
+				"filename": "MorphingTabs.astro",
+				"language": "astro",
+				"description": "Pure Native Astro Morphing Tabs component.",
+				"code": "---\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst { class: className = '', ...props } = Astro.props;\n---\n\n<div\n  class={`relative flex items-center gap-1 rounded-2xl border border-border bg-muted/40 p-1.5 shadow-sm ${className}`}\n  {...props}\n>\n  <slot />\n</div>\n"
+			}
+		],
+		"blade": [
+			{
+				"filename": "morphing-tabs.blade.php",
+				"language": "php",
+				"description": "Laravel Blade component for Morphing Tabs.",
+				"code": "@props([])\n\n<div\n    {{ $attributes->merge([\n        'class' => 'relative flex items-center gap-1 rounded-2xl border border-border bg-muted/40 p-1.5 shadow-sm block',\n    ]) }}\n>\n    {{ $slot }}\n</div>\n"
+			}
+		],
+		"vanilla": [
+			{
+				"filename": "morphing-tabs.vanilla.js",
+				"language": "javascript",
+				"description": "Autonomous Vanilla JS Morphing Tabs initialization module.",
+				"code": "export function initMorphingTabs(selector = '[data-exhuma-morphing-tabs]', options = {}) {\n  const elements = document.querySelectorAll(selector);\n  return Array.from(elements);\n}\n"
+			}
+		],
+		"wordpress": [
+			{
+				"filename": "block.json",
+				"language": "json",
+				"description": "WordPress Block API v3 definition for Morphing Tabs.",
+				"code": "{\n  \"$schema\": \"https://schemas.wp.org/trunk/block.json\",\n  \"apiVersion\": 3,\n  \"name\": \"exhuma/morphing-tabs\",\n  \"version\": \"1.0.0\",\n  \"title\": \"Exhuma Morphing Tabs\",\n  \"category\": \"widgets\",\n  \"description\": \"Dynamic active rect geometry tracking with a floating spring indicator and roving focus.\",\n  \"attributes\": {},\n  \"render\": \"file:./render.php\"\n}"
+			},
+			{
+				"filename": "render.php",
+				"language": "php",
+				"description": "WordPress render template for Morphing Tabs.",
+				"code": "<?php\n/**\n * Morphing Tabs Block Render Template\n */\n$wrapper_attributes = get_block_wrapper_attributes(['class' => 'relative flex items-center gap-1 rounded-2xl border border-border bg-muted/40 p-1.5 shadow-sm']);\n?>\n<div <?php echo $wrapper_attributes; ?>>\n  <?php echo $content; ?>\n</div>\n"
+			}
+		],
+		"webcomponent": [
+			{
+				"filename": "exhuma-morphing-tabs.js",
+				"language": "javascript",
+				"description": "Universal Web Component wrapper for <exhuma-morphing-tabs>.",
+				"code": "class ExhumaMorphingTabsElement extends HTMLElement {\n  connectedCallback() {\n    this.classList.add('exhuma-morphing-tabs');\n    this.style.display = 'block';\n  }\n}\n\nif (!customElements.get('exhuma-morphing-tabs')) {\n  customElements.define('exhuma-morphing-tabs', ExhumaMorphingTabsElement);\n}\n"
+			}
+		],
+		"react-native": [
+			{
+				"filename": "MorphingTabs.tsx",
+				"language": "tsx",
+				"description": "React Native Morphing Tabs component.",
+				"code": "import React from 'react';\nimport { View, StyleSheet, type ViewProps } from 'react-native';\n\nexport const MorphingTabs: React.FC<ViewProps> = ({ style, children, ...props }) => (\n  <View style={[styles.container, style]} {...props}>\n    {children}\n  </View>\n);\n\nconst styles = StyleSheet.create({\n  container: {\n    overflow: 'hidden',\n    borderRadius: 16,\n  },\n});\n"
+			}
+		],
+		"flutter": [
+			{
+				"filename": "morphing_tabs.dart",
+				"language": "dart",
+				"description": "Flutter Morphing Tabs widget.",
+				"code": "import 'package:flutter/material.dart';\n\nclass ExhumaMorphingTabs extends StatelessWidget {\n  final Widget child;\n  const ExhumaMorphingTabs({super.key, required this.child});\n\n  @override\n  Widget build(BuildContext context) {\n    return Container(child: child);\n  }\n}\n"
+			}
+		]
 	}
 }

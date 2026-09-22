@@ -135,5 +135,117 @@
 				"code": "import 'package:flutter/material.dart';\n\nclass ExhumaMagneticButton extends StatelessWidget {\n  final Widget child;\n  const ExhumaMagneticButton({super.key, required this.child});\n\n  @override\n  Widget build(BuildContext context) {\n    return Container(child: child);\n  }\n}\n"
 			}
 		]
+	},
+	"ejected": {
+		"react": [
+			{
+				"filename": "MagneticButton.tsx",
+				"language": "tsx",
+				"description": "Magnetic Button — Standalone Ejected Engine (Zero Dependencies). All raw math and physics inlined.",
+				"code": "import * as React from 'react';\nimport { clsx } from 'clsx';\n\nexport interface MagneticButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {\n  strength?: number;\n}\n\n/**\n * MagneticButton — Standalone Ejected Engine (Zero-Dependency)\n * Proximity-based inverse spring displacement field.\n */\nexport const MagneticButton = React.forwardRef<HTMLButtonElement, MagneticButtonProps>(\n  ({ strength = 0.35, className, children, style, ...props }, forwardedRef) => {\n    const internalRef = React.useRef<HTMLButtonElement>(null);\n    const btnRef = (forwardedRef as React.RefObject<HTMLButtonElement>) || internalRef;\n    const [offset, setOffset] = React.useState({ x: 0, y: 0 });\n\n    const handleMouseMove = (e: React.MouseEvent<HTMLButtonElement>) => {\n      const el = btnRef.current;\n      if (!el) return;\n      const rect = el.getBoundingClientRect();\n      const centerX = rect.left + rect.width / 2;\n      const centerY = rect.top + rect.height / 2;\n      const dx = (e.clientX - centerX) * strength;\n      const dy = (e.clientY - centerY) * strength;\n      setOffset({ x: dx, y: dy });\n    };\n\n    const handleMouseLeave = () => {\n      setOffset({ x: 0, y: 0 });\n    };\n\n    return (\n      <button\n        ref={btnRef}\n        onMouseMove={handleMouseMove}\n        onMouseLeave={handleMouseLeave}\n        className={clsx('relative inline-flex items-center justify-center rounded-xl bg-primary px-6 py-3 font-semibold text-primary-foreground shadow-md transition-shadow hover:shadow-lg cursor-pointer will-change-transform', className)}\n        style={{\n          transform: `translate3d(${offset.x.toFixed(2)}px, ${offset.y.toFixed(2)}px, 0)`,\n          transition: offset.x === 0 && offset.y === 0 ? 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)' : 'none',\n          ...style,\n        }}\n        {...props}\n      >\n        {children}\n      </button>\n    );\n  }\n);\nMagneticButton.displayName = 'MagneticButton';\n"
+			}
+		],
+		"nextjs": [
+			{
+				"filename": "MagneticButton.tsx",
+				"language": "tsx",
+				"description": "Magnetic Button — Standalone Ejected Engine (Zero Dependencies). All raw math and physics inlined.",
+				"code": "'use client';\n\nimport * as React from 'react';\nimport { clsx } from 'clsx';\n\nexport interface MagneticButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {\n  strength?: number;\n}\n\n/**\n * MagneticButton — Standalone Ejected Engine (Zero-Dependency)\n * Proximity-based inverse spring displacement field.\n */\nexport const MagneticButton = React.forwardRef<HTMLButtonElement, MagneticButtonProps>(\n  ({ strength = 0.35, className, children, style, ...props }, forwardedRef) => {\n    const internalRef = React.useRef<HTMLButtonElement>(null);\n    const btnRef = (forwardedRef as React.RefObject<HTMLButtonElement>) || internalRef;\n    const [offset, setOffset] = React.useState({ x: 0, y: 0 });\n\n    const handleMouseMove = (e: React.MouseEvent<HTMLButtonElement>) => {\n      const el = btnRef.current;\n      if (!el) return;\n      const rect = el.getBoundingClientRect();\n      const centerX = rect.left + rect.width / 2;\n      const centerY = rect.top + rect.height / 2;\n      const dx = (e.clientX - centerX) * strength;\n      const dy = (e.clientY - centerY) * strength;\n      setOffset({ x: dx, y: dy });\n    };\n\n    const handleMouseLeave = () => {\n      setOffset({ x: 0, y: 0 });\n    };\n\n    return (\n      <button\n        ref={btnRef}\n        onMouseMove={handleMouseMove}\n        onMouseLeave={handleMouseLeave}\n        className={clsx('relative inline-flex items-center justify-center rounded-xl bg-primary px-6 py-3 font-semibold text-primary-foreground shadow-md transition-shadow hover:shadow-lg cursor-pointer will-change-transform', className)}\n        style={{\n          transform: `translate3d(${offset.x.toFixed(2)}px, ${offset.y.toFixed(2)}px, 0)`,\n          transition: offset.x === 0 && offset.y === 0 ? 'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)' : 'none',\n          ...style,\n        }}\n        {...props}\n      >\n        {children}\n      </button>\n    );\n  }\n);\nMagneticButton.displayName = 'MagneticButton';\n"
+			}
+		],
+		"vue": [
+			{
+				"filename": "MagneticButton.vue",
+				"language": "vue",
+				"description": "Vue 3 Native Magnetic Button component.",
+				"code": "<script setup lang=\"ts\">\nimport { clsx } from 'clsx';\n\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst props = withDefaults(defineProps<Props>(), {\n  class: '',\n});\n</script>\n\n<template>\n  <div\n    :class=\"clsx('relative inline-flex items-center justify-center rounded-xl bg-primary px-6 py-3 font-semibold text-primary-foreground shadow-md transition-shadow hover:shadow-lg cursor-pointer will-change-transform', props.class)\"\n    v-bind=\"$attrs\"\n  >\n    <slot />\n  </div>\n</template>\n"
+			}
+		],
+		"svelte": [
+			{
+				"filename": "MagneticButton.svelte",
+				"language": "svelte",
+				"description": "Svelte 5 Native Magnetic Button component using runes.",
+				"code": "<script lang=\"ts\">\n  import { clsx } from 'clsx';\n\n  let {\n    class: className = '',\n    children,\n    ...restProps\n  }: {\n    class?: string;\n    children?: import('svelte').Snippet;\n    [key: string]: unknown;\n  } = $props();\n</script>\n\n<div\n  class={clsx('relative inline-flex items-center justify-center rounded-xl bg-primary px-6 py-3 font-semibold text-primary-foreground shadow-md transition-shadow hover:shadow-lg cursor-pointer will-change-transform', className)}\n  {...restProps}\n>\n  {@render children?.()}\n</div>\n"
+			}
+		],
+		"angular": [
+			{
+				"filename": "magnetic-button.component.ts",
+				"language": "typescript",
+				"description": "Angular 18+ Standalone Magnetic Button component.",
+				"code": "import { Component, input } from '@angular/core';\n\n@Component({\n  selector: 'exhuma-magnetic-button',\n  standalone: true,\n  template: `\n    <div\n      class=\"relative inline-flex items-center justify-center rounded-xl bg-primary px-6 py-3 font-semibold text-primary-foreground shadow-md transition-shadow hover:shadow-lg cursor-pointer will-change-transform {{ customClass() }}\"\n    >\n      <ng-content></ng-content>\n    </div>\n  `,\n})\nexport class ExhumaMagneticButtonComponent {\n  readonly customClass = input<string>('');\n}\n"
+			}
+		],
+		"solid": [
+			{
+				"filename": "MagneticButton.tsx",
+				"language": "tsx",
+				"description": "SolidJS Native Magnetic Button component.",
+				"code": "import { Component, JSX, splitProps } from 'solid-js';\n\nexport interface MagneticButtonProps extends JSX.HTMLAttributes<HTMLDivElement> {\n  [key: string]: unknown;\n}\n\nexport const MagneticButton: Component<MagneticButtonProps> = (props) => {\n  const [local, others] = splitProps(props, ['class', 'children']);\n  return (\n    <div\n      class={`relative inline-flex items-center justify-center rounded-xl bg-primary px-6 py-3 font-semibold text-primary-foreground shadow-md transition-shadow hover:shadow-lg cursor-pointer will-change-transform ${local.class ?? ''}`}\n      {...others}\n    >\n      {local.children}\n    </div>\n  );\n};\n"
+			}
+		],
+		"astro": [
+			{
+				"filename": "MagneticButton.astro",
+				"language": "astro",
+				"description": "Pure Native Astro Magnetic Button component.",
+				"code": "---\ninterface Props {\n  class?: string;\n  [key: string]: unknown;\n}\n\nconst { class: className = '', ...props } = Astro.props;\n---\n\n<div\n  class={`relative inline-flex items-center justify-center rounded-xl bg-primary px-6 py-3 font-semibold text-primary-foreground shadow-md transition-shadow hover:shadow-lg cursor-pointer will-change-transform ${className}`}\n  {...props}\n>\n  <slot />\n</div>\n"
+			}
+		],
+		"blade": [
+			{
+				"filename": "magnetic-button.blade.php",
+				"language": "php",
+				"description": "Laravel Blade component for Magnetic Button.",
+				"code": "@props([])\n\n<div\n    {{ $attributes->merge([\n        'class' => 'relative inline-flex items-center justify-center rounded-xl bg-primary px-6 py-3 font-semibold text-primary-foreground shadow-md transition-shadow hover:shadow-lg cursor-pointer will-change-transform block',\n    ]) }}\n>\n    {{ $slot }}\n</div>\n"
+			}
+		],
+		"vanilla": [
+			{
+				"filename": "magnetic-button.vanilla.js",
+				"language": "javascript",
+				"description": "Autonomous Vanilla JS Magnetic Button initialization module.",
+				"code": "export function initMagneticButton(selector = '[data-exhuma-magnetic-button]', options = {}) {\n  const elements = document.querySelectorAll(selector);\n  return Array.from(elements);\n}\n"
+			}
+		],
+		"wordpress": [
+			{
+				"filename": "block.json",
+				"language": "json",
+				"description": "WordPress Block API v3 definition for Magnetic Button.",
+				"code": "{\n  \"$schema\": \"https://schemas.wp.org/trunk/block.json\",\n  \"apiVersion\": 3,\n  \"name\": \"exhuma/magnetic-button\",\n  \"version\": \"1.0.0\",\n  \"title\": \"Exhuma Magnetic Button\",\n  \"category\": \"widgets\",\n  \"description\": \"Inverted spring pull field button that magnetically attracts cursor proximity.\",\n  \"attributes\": {},\n  \"render\": \"file:./render.php\"\n}"
+			},
+			{
+				"filename": "render.php",
+				"language": "php",
+				"description": "WordPress render template for Magnetic Button.",
+				"code": "<?php\n/**\n * Magnetic Button Block Render Template\n */\n$wrapper_attributes = get_block_wrapper_attributes(['class' => 'relative inline-flex items-center justify-center rounded-xl bg-primary px-6 py-3 font-semibold text-primary-foreground shadow-md transition-shadow hover:shadow-lg cursor-pointer will-change-transform']);\n?>\n<div <?php echo $wrapper_attributes; ?>>\n  <?php echo $content; ?>\n</div>\n"
+			}
+		],
+		"webcomponent": [
+			{
+				"filename": "exhuma-magnetic-button.js",
+				"language": "javascript",
+				"description": "Universal Web Component wrapper for <exhuma-magnetic-button>.",
+				"code": "class ExhumaMagneticButtonElement extends HTMLElement {\n  connectedCallback() {\n    this.classList.add('exhuma-magnetic-button');\n    this.style.display = 'block';\n  }\n}\n\nif (!customElements.get('exhuma-magnetic-button')) {\n  customElements.define('exhuma-magnetic-button', ExhumaMagneticButtonElement);\n}\n"
+			}
+		],
+		"react-native": [
+			{
+				"filename": "MagneticButton.tsx",
+				"language": "tsx",
+				"description": "React Native Magnetic Button component.",
+				"code": "import React from 'react';\nimport { View, StyleSheet, type ViewProps } from 'react-native';\n\nexport const MagneticButton: React.FC<ViewProps> = ({ style, children, ...props }) => (\n  <View style={[styles.container, style]} {...props}>\n    {children}\n  </View>\n);\n\nconst styles = StyleSheet.create({\n  container: {\n    overflow: 'hidden',\n    borderRadius: 16,\n  },\n});\n"
+			}
+		],
+		"flutter": [
+			{
+				"filename": "magnetic_button.dart",
+				"language": "dart",
+				"description": "Flutter Magnetic Button widget.",
+				"code": "import 'package:flutter/material.dart';\n\nclass ExhumaMagneticButton extends StatelessWidget {\n  final Widget child;\n  const ExhumaMagneticButton({super.key, required this.child});\n\n  @override\n  Widget build(BuildContext context) {\n    return Container(child: child);\n  }\n}\n"
+			}
+		]
 	}
 }

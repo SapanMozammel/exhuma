@@ -18,9 +18,22 @@ export interface RegistryComponentResponse {
 	files: ComponentFilePayload[];
 }
 
-export async function fetchComponentFromRegistry(slug: string, flavor: EcosystemFlavor, baseUrl: string = REGISTRY_BASE_URL): Promise<ComponentFilePayload[]> {
+export interface FetchRegistryOptions {
+	baseUrl?: string;
+	eject?: boolean;
+}
+
+export async function fetchComponentFromRegistry(
+	slug: string,
+	flavor: EcosystemFlavor,
+	options?: FetchRegistryOptions | string
+): Promise<ComponentFilePayload[]> {
+	const opts: FetchRegistryOptions = typeof options === 'string' ? { baseUrl: options } : options || {};
+	const baseUrl = opts.baseUrl || REGISTRY_BASE_URL;
+	const isEjected = opts.eject === true;
+
 	try {
-		const url = `${baseUrl}/${slug}?flavor=${flavor}`;
+		const url = `${baseUrl}/${slug}?flavor=${flavor}${isEjected ? '&eject=true' : ''}`;
 		const res = await fetch(url, {
 			headers: {
 				'User-Agent': 'exhuma-cli/0.1.1',
@@ -38,12 +51,13 @@ export async function fetchComponentFromRegistry(slug: string, flavor: Ecosystem
 	}
 
 	// Fallback to embedded canonical registry (100% offline & out-of-the-box safe)
-	return getFallbackFiles(slug, flavor);
+	return getFallbackFiles(slug, flavor, isEjected);
 }
 
-function getFallbackFiles(slug: string, flavor: EcosystemFlavor): ComponentFilePayload[] {
+function getFallbackFiles(slug: string, flavor: EcosystemFlavor, isEjected: boolean = false): ComponentFilePayload[] {
 	const registry = canonicalRegistry as Record<string, Record<EcosystemFlavor, ComponentFilePayload[]>>;
-	const compFlavors = registry[slug];
+	const key = isEjected ? `${slug}:ejected` : slug;
+	const compFlavors = registry[key] || registry[slug];
 	if (compFlavors && compFlavors[flavor]) {
 		return compFlavors[flavor];
 	}

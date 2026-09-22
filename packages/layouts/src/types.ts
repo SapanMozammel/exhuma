@@ -176,10 +176,15 @@ export interface BentoGridProps {
 	 */
 	cols?: number | { sm?: number; md?: number; lg?: number };
 	/**
-	 * Spacing between bento tiles.
+	 * Spacing between bento tiles in px or rem.
 	 * Default: '1.5rem'
 	 */
 	gap?: string | number;
+	/**
+	 * Base auto-rows track height in px or CSS string for asymmetric vertical spans.
+	 * Default: undefined
+	 */
+	rowHeight?: string | number;
 	className?: string;
 	style?: CSSProperties;
 }
@@ -196,6 +201,16 @@ export interface BentoCardProps {
 	 * Default: 1
 	 */
 	rowSpan?: number;
+	/**
+	 * Enable subtle kinetic pointer hover glow.
+	 * Default: true
+	 */
+	enableGlow?: boolean;
+	/**
+	 * Custom radial glow color on hover (e.g. 'rgba(99, 102, 241, 0.08)').
+	 * Default: 'rgba(99, 102, 241, 0.08)'
+	 */
+	glowColor?: string;
 	className?: string;
 	style?: CSSProperties;
 }

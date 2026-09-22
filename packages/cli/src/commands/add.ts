@@ -18,7 +18,8 @@ export interface AddCommandOptions {
 	vendor?: boolean;
 }
 
-export function requiresCoreDependency(flavor: EcosystemFlavor): boolean {
+export function requiresCoreDependency(flavor: EcosystemFlavor, isEjected: boolean = false): boolean {
+	if (isEjected) return false;
 	return flavor === 'react' || flavor === 'nextjs';
 }
 
@@ -27,6 +28,7 @@ export async function addCommand(components: string[], options: AddCommandOption
 
 	const config = getConfig();
 	const flavor: EcosystemFlavor = options.flavor && SUPPORTED_ECOSYSTEMS.includes(options.flavor as EcosystemFlavor) ? (options.flavor as EcosystemFlavor) : config?.flavor || detectEcosystem();
+	const isEjected = Boolean(options.eject);
 
 	const targetDir = options.path || config?.path || DEFAULT_PATHS[flavor];
 
@@ -53,8 +55,8 @@ export async function addCommand(components: string[], options: AddCommandOption
 		selectedSlugs = response.selected;
 	}
 
-	// Ensure core packages for React/Next.js frameworks
-	if (requiresCoreDependency(flavor)) {
+	// Ensure core packages for React/Next.js frameworks (skipped if standalone --eject is requested)
+	if (requiresCoreDependency(flavor, isEjected)) {
 		ensureCoreDependency(process.cwd());
 	}
 
@@ -80,7 +82,7 @@ export async function addCommand(components: string[], options: AddCommandOption
 		const spinner = ora(`Installing ${pc.bold(compName)} for ${pc.cyan(flavor)}...`).start();
 
 		try {
-			const files = await fetchComponentFromRegistry(slug, flavor);
+			const files = await fetchComponentFromRegistry(slug, flavor, { eject: isEjected });
 
 			if (!files || files.length === 0) {
 				spinner.fail(pc.red(`Component '${slug}' not found in registry.`));

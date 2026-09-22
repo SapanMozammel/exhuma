@@ -46,6 +46,7 @@ export async function buildRegistry(rootDir: string = process.cwd()): Promise<vo
 
 	for (const comp of ALL_COMPONENTS) {
 		canonicalDictionary[comp.slug] = {} as Record<EcosystemFlavor, ComponentFilePayload[]>;
+		canonicalDictionary[`${comp.slug}:ejected`] = {} as Record<EcosystemFlavor, ComponentFilePayload[]>;
 
 		const componentPayload = {
 			name: comp.name,
@@ -56,12 +57,16 @@ export async function buildRegistry(rootDir: string = process.cwd()): Promise<vo
 			props: comp.props,
 			dependencies: comp.dependencies,
 			flavors: {} as Record<EcosystemFlavor, ComponentFilePayload[]>,
+			ejected: {} as Record<EcosystemFlavor, ComponentFilePayload[]>,
 		};
 
 		for (const flavor of FLAVORS) {
 			const files = comp.generateCode(flavor, comp.defaultProps);
+			const ejectedFiles = comp.generateCode(flavor, comp.defaultProps, { eject: true });
 			componentPayload.flavors[flavor] = files;
+			componentPayload.ejected[flavor] = ejectedFiles;
 			canonicalDictionary[comp.slug][flavor] = files;
+			canonicalDictionary[`${comp.slug}:ejected`][flavor] = ejectedFiles;
 		}
 
 		// Write individual public registry endpoint for Vercel

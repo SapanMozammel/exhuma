@@ -6,6 +6,7 @@ import { getAutoGridOuterFiles } from './generators/auto-grid-generator';
 import { getCssMasonryOuterFiles } from './generators/css-masonry-generator';
 import { getInfiniteMarqueeOuterFiles } from './generators/infinite-marquee-generator';
 import { getHorizontalScrollerOuterFiles } from './generators/horizontal-scroller-generator';
+import { getBentoGridOuterFiles } from './generators/bento-grid-generator';
 
 export interface CompoundPart {
 	name: string;
@@ -71,6 +72,11 @@ export function generateOuterLayerFiles(spec: ComponentOuterSpec, flavor: Ecosys
 
 	if (slug === 'horizontal-scroller') {
 		const files = getHorizontalScrollerOuterFiles(flavor, props, isEjected);
+		if (files) return files;
+	}
+
+	if (slug === 'bento-grid') {
+		const files = getBentoGridOuterFiles(flavor, props, isEjected);
 		if (files) return files;
 	}
 
@@ -9039,6 +9045,149 @@ export const CssMasonry = React.forwardRef<HTMLDivElement, CssMasonryProps>(
   }
 );
 CssMasonry.displayName = 'CssMasonry';
+`;
+		}
+
+		case 'bento-grid': {
+			const cols = Number(props.cols ?? 3);
+			const gap = Number(props.gap ?? 20);
+			const rowHeight = Number(props.rowHeight ?? 180);
+
+			return `${header}export interface BentoGridProps extends React.HTMLAttributes<HTMLDivElement> {
+  cols?: number;
+  gap?: number | string;
+  rowHeight?: number | string;
+}
+
+export interface BentoCardProps extends React.HTMLAttributes<HTMLDivElement> {
+  colSpan?: number;
+  rowSpan?: number;
+  enableGlow?: boolean;
+  glowColor?: string;
+}
+
+/**
+ * BentoGrid — Standalone Ejected Engine (Zero-Dependency)
+ * Big-Omega Invariants:
+ * - Constant-time Ω(1) auto-flow packing.
+ * - Zero forced reflows during active pointer tracking via cached bounding rect.
+ */
+export const BentoGrid = React.forwardRef<HTMLDivElement, BentoGridProps>(
+  ({ children, cols = ${cols}, gap = ${gap}, rowHeight = ${rowHeight}, className, style, ...props }, ref) => {
+    const gapVal = typeof gap === 'number' ? \`\${gap}px\` : gap;
+    const autoRowsVal = rowHeight ? (typeof rowHeight === 'number' ? \`minmax(\${rowHeight}px, auto)\` : rowHeight) : undefined;
+
+    return (
+      <div
+        ref={ref}
+        className={clsx('exhuma-bento-grid grid w-full grid-flow-dense', className)}
+        style={{
+          gridTemplateColumns: \`repeat(\${cols}, minmax(0, 1fr))\`,
+          gap: gapVal,
+          ...(autoRowsVal ? { gridAutoRows: autoRowsVal } : {}),
+          ...style,
+        }}
+        {...props}
+      >
+        {children}
+      </div>
+    );
+  }
+);
+BentoGrid.displayName = 'BentoGrid';
+
+export const BentoCard = React.forwardRef<HTMLDivElement, BentoCardProps>(
+  ({ children, colSpan = 1, rowSpan = 1, enableGlow = true, glowColor = 'rgba(99, 102, 241, 0.08)', className, style, ...props }, forwardedRef) => {
+    const internalRef = React.useRef<HTMLDivElement>(null);
+    const cardRef = (forwardedRef as React.RefObject<HTMLDivElement>) || internalRef;
+    const rectRef = React.useRef<{ left: number; top: number } | null>(null);
+
+    const handlePointerEnter = React.useCallback(() => {
+      const el = cardRef.current;
+      if (!el) return;
+      const rect = el.getBoundingClientRect();
+      rectRef.current = { left: rect.left, top: rect.top };
+    }, [cardRef]);
+
+    const handlePointerMove = React.useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+      const el = cardRef.current;
+      if (!el) return;
+      if (!rectRef.current) {
+        const rect = el.getBoundingClientRect();
+        rectRef.current = { left: rect.left, top: rect.top };
+      }
+      const x = e.clientX - rectRef.current.left;
+      const y = e.clientY - rectRef.current.top;
+      el.style.setProperty('--bento-x', \`\${x.toFixed(1)}px\`);
+      el.style.setProperty('--bento-y', \`\${y.toFixed(1)}px\`);
+    }, [cardRef]);
+
+    const handlePointerLeave = React.useCallback(() => {
+      rectRef.current = null;
+      const el = cardRef.current;
+      if (!el) return;
+      el.style.setProperty('--bento-x', '-999px');
+      el.style.setProperty('--bento-y', '-999px');
+    }, [cardRef]);
+
+    return (
+      <div
+        ref={cardRef}
+        onPointerEnter={handlePointerEnter}
+        onPointerMove={handlePointerMove}
+        onPointerLeave={handlePointerLeave}
+        className={clsx(
+          'exhuma-bento-card group relative overflow-hidden rounded-2xl border border-border bg-card/60 p-6 backdrop-blur-md transition-all duration-300 hover:border-primary/40 hover:shadow-xl',
+          className
+        )}
+        style={{
+          gridColumn: \`span \${colSpan}\`,
+          gridRow: \`span \${rowSpan}\`,
+          ...style,
+        }}
+        {...props}
+      >
+        {enableGlow && (
+          <div
+            className="pointer-events-none absolute -inset-px opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+            style={{
+              background: \`radial-gradient(400px circle at var(--bento-x, -999px) var(--bento-y, -999px), \${glowColor}, transparent 80%)\`,
+            }}
+          />
+        )}
+        <div className="relative z-10 flex h-full flex-col justify-between">{children}</div>
+      </div>
+    );
+  }
+);
+BentoCard.displayName = 'BentoCard';
+
+export const BentoHeader = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ children, className, ...props }, ref) => (
+    <div ref={ref} className={clsx('exhuma-bento-header space-y-2', className)} {...props}>
+      {children}
+    </div>
+  )
+);
+BentoHeader.displayName = 'BentoHeader';
+
+export const BentoContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ children, className, ...props }, ref) => (
+    <div ref={ref} className={clsx('exhuma-bento-content text-sm text-muted-foreground', className)} {...props}>
+      {children}
+    </div>
+  )
+);
+BentoContent.displayName = 'BentoContent';
+
+export const BentoVisual = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ children, className, ...props }, ref) => (
+    <div ref={ref} className={clsx('exhuma-bento-visual my-auto flex items-center justify-center overflow-hidden py-4', className)} {...props}>
+      {children}
+    </div>
+  )
+);
+BentoVisual.displayName = 'BentoVisual';
 `;
 		}
 
