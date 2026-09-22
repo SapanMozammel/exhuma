@@ -8,6 +8,7 @@ import { getInfiniteMarqueeOuterFiles } from './generators/infinite-marquee-gene
 import { getHorizontalScrollerOuterFiles } from './generators/horizontal-scroller-generator';
 import { getBentoGridOuterFiles } from './generators/bento-grid-generator';
 import { getDiamondGridOuterFiles } from './generators/diamond-grid-generator';
+import { getMorphingTabsOuterFiles } from './generators/morphing-tabs-generator';
 
 export interface CompoundPart {
 	name: string;
@@ -83,6 +84,11 @@ export function generateOuterLayerFiles(spec: ComponentOuterSpec, flavor: Ecosys
 
 	if (slug === 'diamond-grid') {
 		const files = getDiamondGridOuterFiles(flavor, props, isEjected);
+		if (files) return files;
+	}
+
+	if (slug === 'morphing-tabs') {
+		const files = getMorphingTabsOuterFiles(flavor, props, isEjected);
 		if (files) return files;
 	}
 

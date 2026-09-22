@@ -116,9 +116,11 @@ const COMPONENT_PRESETS: Record<string, Record<string, Record<string, unknown>>>
 		BorderOnly: { radius: 300, opacity: 0.85, color: '#6366f1', borderColor: '#a855f7', spread: 80, mode: 'border', smoothing: 0.2, disabled: false },
 	},
 	'morphing-tabs': {
-		Default: { springStiffness: 26 },
-		Snappy: { springStiffness: 40 },
-		Gentle: { springStiffness: 16 },
+		Default: { springStiffness: 26, variant: 'pill', size: 'md' },
+		'Snappy Kinetic': { springStiffness: 42, variant: 'pill', size: 'md' },
+		'Gentle Fluid': { springStiffness: 14, variant: 'pill', size: 'lg' },
+		'Minimal Underline': { springStiffness: 30, variant: 'underline', size: 'md' },
+		'Neon Glow': { springStiffness: 32, variant: 'glow', size: 'md' },
 	},
 	accordion: {
 		Default: { mode: 'single', duration: 300 },
@@ -922,18 +924,22 @@ export function StudioWorkbench({ initialSlug = 'stacking-cards' }: { initialSlu
 		}
 
 		if (selectedSlug === 'morphing-tabs') {
+			const springStiffness = typeof propValues.springStiffness === 'number' ? propValues.springStiffness : 26;
+			const variant = (propValues.variant as 'pill' | 'underline' | 'glow') || 'pill';
+			const size = (propValues.size as 'sm' | 'md' | 'lg') || 'md';
+
 			return (
-				<div className='mx-auto w-full max-w-md p-4'>
-					<MorphingTabs.Root defaultValue='dashboard'>
+				<div className='mx-auto w-full max-w-lg p-4'>
+					<MorphingTabs.Root defaultValue='dashboard' springStiffness={springStiffness} variant={variant} size={size}>
 						<MorphingTabs.List className='w-full justify-between'>
-							<MorphingTabs.Indicator />
-							<MorphingTabs.Trigger value='dashboard' className='flex-1'>
+							<MorphingTabs.Indicator springStiffness={springStiffness} variant={variant} />
+							<MorphingTabs.Trigger value='dashboard' size={size} className='flex-1'>
 								Dashboard
 							</MorphingTabs.Trigger>
-							<MorphingTabs.Trigger value='analytics' className='flex-1'>
+							<MorphingTabs.Trigger value='analytics' size={size} className='flex-1'>
 								Analytics
 							</MorphingTabs.Trigger>
-							<MorphingTabs.Trigger value='settings' className='flex-1'>
+							<MorphingTabs.Trigger value='settings' size={size} className='flex-1'>
 								Settings
 							</MorphingTabs.Trigger>
 						</MorphingTabs.List>

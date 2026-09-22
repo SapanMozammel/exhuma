@@ -139,6 +139,33 @@ describe('Exhuma CLI Suite — Automated End-to-End Test Gate', () => {
     expect(code).toContain('partitionDiamondItems');
   });
 
+  it('installs real Morphing Tabs component via exhuma add (clean mode)', () => {
+    execSync(`node "${CLI_BIN}" add morphing-tabs --flavor=react --yes`, { cwd: TEST_DIR });
+    const componentPath = resolve(TEST_DIR, 'src/lib/components/MorphingTabs.tsx');
+    expect(existsSync(componentPath)).toBe(true);
+
+    const code = readFileSync(componentPath, 'utf8');
+    expect(code).toContain('MorphingTabs');
+    expect(code).toContain('TabsRoot');
+    expect(code).toContain('TabsList');
+    expect(code).toContain('TabsIndicator');
+    expect(code).toContain('TabsTrigger');
+    expect(code).toContain('TabsContent');
+    expect(code).toContain('@exhuma/core');
+  });
+
+  it('installs real Morphing Tabs component via exhuma add with ejected mode', () => {
+    execSync(`node "${CLI_BIN}" add morphing-tabs --flavor=react --eject --yes --overwrite`, { cwd: TEST_DIR });
+    const componentPath = resolve(TEST_DIR, 'src/lib/components/MorphingTabs.tsx');
+    expect(existsSync(componentPath)).toBe(true);
+
+    const code = readFileSync(componentPath, 'utf8');
+    expect(code).toContain('MorphingTabs');
+    expect(code).toContain('solveCriticallyDampedSpring');
+    expect(code).toContain('translate3d');
+    expect(code).toContain('TabsRoot');
+  });
+
   it('executes exhuma build to generate static registry JSON', () => {
     const buildOut = resolve(TEST_DIR, 'dist-registry');
     execSync(`node "${CLI_BIN}" build --output="${buildOut}"`, { cwd: TEST_DIR });
