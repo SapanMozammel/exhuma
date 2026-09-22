@@ -1,8 +1,9 @@
 import { describe, it, expect } from 'vitest';
-import { CssMasonry, CssMasonryItem, AutoGrid, AutoGridItem, BentoGrid, BentoCard, BentoHeader, BentoContent, BentoVisual } from '../../packages/layouts/src';
+import { CssMasonry, CssMasonryItem, AutoGrid, AutoGridItem, BentoGrid, BentoCard, BentoHeader, BentoContent, BentoVisual, DiamondGrid, DiamondColumn, DiamondItem } from '../../packages/layouts/src';
 import { cssMasonryComponent } from '../../packages/registry/src/components/css-masonry';
 import { autoGridComponent } from '../../packages/registry/src/components/auto-grid';
 import { bentoGridComponent } from '../../packages/registry/src/components/bento-grid';
+import { diamondGridComponent } from '../../packages/registry/src/components/diamond-grid';
 
 describe('Exhuma Layouts — CssMasonry Architecture & Registry', () => {
 	it('exports CssMasonry and CssMasonryItem components', () => {
@@ -240,5 +241,92 @@ describe('Exhuma Layouts — BentoGrid Architecture & Registry', () => {
 		expect(code).toContain('--bento-y');
 		expect(code).toContain('gridAutoRows');
 	});
+});
+
+describe('Exhuma Layouts — DiamondGrid Architecture & Registry', () => {
+	it('exports DiamondGrid, DiamondColumn, and DiamondItem components', () => {
+		expect(DiamondGrid).toBeDefined();
+		expect(['function', 'object']).toContain(typeof DiamondGrid);
+		expect(DiamondColumn).toBeDefined();
+		expect(['function', 'object']).toContain(typeof DiamondColumn);
+		expect(DiamondItem).toBeDefined();
+		expect(['function', 'object']).toContain(typeof DiamondItem);
+		expect(DiamondGrid.Column).toBe(DiamondColumn);
+		expect(DiamondGrid.Item).toBe(DiamondItem);
+	});
+
+	it('validates diamond-grid registry schema with numeric gap, layout variant, mode, and compoundParts', () => {
+		expect(diamondGridComponent.id).toBe('diamond-grid');
+		expect(diamondGridComponent.defaultProps.gap).toBe(16);
+		expect(diamondGridComponent.defaultProps.layout).toBe('auto');
+		expect(diamondGridComponent.defaultProps.mode).toBe('rhombic');
+		expect(diamondGridComponent.defaultProps.responsive).toBe(false);
+
+		const modeProp = diamondGridComponent.props.find((p) => p.name === 'mode');
+		const gapProp = diamondGridComponent.props.find((p) => p.name === 'gap');
+		const layoutProp = diamondGridComponent.props.find((p) => p.name === 'layout');
+		const responsiveProp = diamondGridComponent.props.find((p) => p.name === 'responsive');
+
+		expect(modeProp?.type).toBe('select');
+		expect(modeProp?.defaultValue).toBe('rhombic');
+
+		expect(gapProp?.type).toBe('number');
+		expect(gapProp?.defaultValue).toBe(16);
+		expect(gapProp?.min).toBe(4);
+		expect(gapProp?.max).toBe(48);
+
+		expect(layoutProp?.type).toBe('select');
+		expect(layoutProp?.defaultValue).toBe('auto');
+
+		expect(responsiveProp?.type).toBe('boolean');
+		expect(responsiveProp?.defaultValue).toBe(false);
+	});
+
+	it('generates outer-layer clean wrappers with compound parts', () => {
+		const files = diamondGridComponent.generateCode('react', diamondGridComponent.defaultProps);
+		expect(files.length).toBeGreaterThan(0);
+		const code = files[0].code;
+		expect(code).toContain('DiamondGrid');
+		expect(code).toContain('DiamondColumn');
+		expect(code).toContain('DiamondItem');
+	});
+
+	it('generates zero-dependency standalone ejected engine for Diamond Grid with mode support', () => {
+		const ejectedFiles = diamondGridComponent.generateCode('react', diamondGridComponent.defaultProps, { eject: true });
+		expect(ejectedFiles.length).toBeGreaterThan(0);
+		const code = ejectedFiles[0].code;
+		expect(code).not.toContain('@exhuma/core');
+		expect(code).toContain('DiamondGrid');
+		expect(code).toContain('DiamondColumn');
+		expect(code).toContain('DiamondItem');
+		expect(code).toContain('DiamondGridMode');
+		expect(code).toContain('getDiamondLayoutConfig');
+		expect(code).toContain('partitionDiamondItems');
+		expect(code).toContain('container-type');
+	});
+
+	const ecosystems = [
+		'react',
+		'nextjs',
+		'vue',
+		'svelte',
+		'angular',
+		'solid',
+		'astro',
+		'blade',
+		'vanilla',
+		'wordpress',
+		'webcomponent',
+		'react-native',
+		'flutter',
+	] as const;
+
+	for (const flavor of ecosystems) {
+		it(`generates non-empty component source for Diamond Grid on ${flavor}`, () => {
+			const files = diamondGridComponent.generateCode(flavor, diamondGridComponent.defaultProps);
+			expect(files.length).toBeGreaterThan(0);
+			expect(files[0].code.length).toBeGreaterThan(50);
+		});
+	}
 });
 

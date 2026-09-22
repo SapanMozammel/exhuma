@@ -7,6 +7,7 @@ import { getCssMasonryOuterFiles } from './generators/css-masonry-generator';
 import { getInfiniteMarqueeOuterFiles } from './generators/infinite-marquee-generator';
 import { getHorizontalScrollerOuterFiles } from './generators/horizontal-scroller-generator';
 import { getBentoGridOuterFiles } from './generators/bento-grid-generator';
+import { getDiamondGridOuterFiles } from './generators/diamond-grid-generator';
 
 export interface CompoundPart {
 	name: string;
@@ -77,6 +78,11 @@ export function generateOuterLayerFiles(spec: ComponentOuterSpec, flavor: Ecosys
 
 	if (slug === 'bento-grid') {
 		const files = getBentoGridOuterFiles(flavor, props, isEjected);
+		if (files) return files;
+	}
+
+	if (slug === 'diamond-grid') {
+		const files = getDiamondGridOuterFiles(flavor, props, isEjected);
 		if (files) return files;
 	}
 

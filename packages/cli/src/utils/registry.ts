@@ -23,11 +23,7 @@ export interface FetchRegistryOptions {
 	eject?: boolean;
 }
 
-export async function fetchComponentFromRegistry(
-	slug: string,
-	flavor: EcosystemFlavor,
-	options?: FetchRegistryOptions | string
-): Promise<ComponentFilePayload[]> {
+export async function fetchComponentFromRegistry(slug: string, flavor: EcosystemFlavor, options?: FetchRegistryOptions | string): Promise<ComponentFilePayload[]> {
 	const opts: FetchRegistryOptions = typeof options === 'string' ? { baseUrl: options } : options || {};
 	const baseUrl = opts.baseUrl || REGISTRY_BASE_URL;
 	const isEjected = opts.eject === true;

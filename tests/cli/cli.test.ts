@@ -126,6 +126,19 @@ describe('Exhuma CLI Suite — Automated End-to-End Test Gate', () => {
     expect(code).toContain('ExpandableCard');
   });
 
+  it('installs real Diamond Grid component via exhuma add with ejected mode', () => {
+    execSync(`node "${CLI_BIN}" add diamond-grid --flavor=react --eject --yes`, { cwd: TEST_DIR });
+    const componentPath = resolve(TEST_DIR, 'src/lib/components/DiamondGrid.tsx');
+    expect(existsSync(componentPath)).toBe(true);
+
+    const code = readFileSync(componentPath, 'utf8');
+    expect(code).toContain('DiamondGrid');
+    expect(code).toContain('DiamondColumn');
+    expect(code).toContain('DiamondItem');
+    expect(code).toContain('getDiamondLayoutConfig');
+    expect(code).toContain('partitionDiamondItems');
+  });
+
   it('executes exhuma build to generate static registry JSON', () => {
     const buildOut = resolve(TEST_DIR, 'dist-registry');
     execSync(`node "${CLI_BIN}" build --output="${buildOut}"`, { cwd: TEST_DIR });

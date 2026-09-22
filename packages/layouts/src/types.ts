@@ -215,15 +215,63 @@ export interface BentoCardProps {
 	style?: CSSProperties;
 }
 
-export interface DiamondGridProps {
-	children: ReactNode;
+export type DiamondLayoutVariant = 'large' | 'medium' | 'small' | 'auto';
+export type DiamondGridMode = 'rhombic' | 'isometric';
+
+export interface DiamondGridProps extends React.HTMLAttributes<HTMLDivElement> {
+	children?: ReactNode;
 	/**
 	 * Spacing between diamond columns and elements.
-	 * Default: '0.75vw'
+	 * Can be a number (px) or string (e.g. '16px', '1rem', '0.75vw').
+	 * Default: 16
 	 */
 	gap?: string | number;
-	className?: string;
-	style?: CSSProperties;
+	/**
+	 * Diamond layout topology:
+	 * - 'large': 7 columns [1, 2, 3, 4, 3, 2, 1] (Apex: 4)
+	 * - 'medium': 5 columns [1, 2, 3, 2, 1] (Apex: 3)
+	 * - 'small': 3 columns [1, 2, 1] (Apex: 2)
+	 * - 'auto': Derived dynamically from children count
+	 * Default: 'auto'
+	 */
+	layout?: DiamondLayoutVariant;
+	/**
+	 * Visual rendering mode:
+	 * - 'rhombic': Classic signature layout from sapan.dev — upright cards arranged in a symmetrical rhombic column silhouette [1, 2, 3, 4, 3, 2, 1].
+	 * - 'isometric': 45-degree diamond-tilted cards (rotate-45) with upright counter-rotated content.
+	 * Default: 'rhombic'
+	 */
+	mode?: DiamondGridMode;
+	/**
+	 * Automatically apply 45-degree diamond card styling to items with counter-rotated upright content.
+	 * Default: false
+	 */
+	diamondItems?: boolean;
+	/**
+	 * Enable responsive collapse to a compact grid on narrow mobile screens (< 420px).
+	 * When false, preserves the authentic rhombic diamond column structure across all viewport widths.
+	 * Default: false
+	 */
+	responsive?: boolean;
+}
+
+export interface DiamondColumnProps extends React.HTMLAttributes<HTMLDivElement> {
+	columnIndex: number;
+	gap?: string | number;
+}
+
+export interface DiamondItemProps extends React.HTMLAttributes<HTMLDivElement> {
+	/**
+	 * Visual rendering mode for the diamond item.
+	 * Default: 'rhombic'
+	 */
+	mode?: DiamondGridMode;
+	/**
+	 * Automatically apply 45-degree diamond rotation styling to the card container
+	 * and counter-rotate child content so it remains upright.
+	 * Default: false
+	 */
+	diamond?: boolean;
 }
 
 export interface ScrollTimelineItemData {

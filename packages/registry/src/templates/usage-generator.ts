@@ -3,6 +3,7 @@ import { getAutoGridUsage } from './generators/auto-grid-generator';
 import { getCssMasonryUsage } from './generators/css-masonry-generator';
 import { getInfiniteMarqueeUsage } from './generators/infinite-marquee-generator';
 import { getBentoGridUsage } from './generators/bento-grid-generator';
+import { getDiamondGridUsage } from './generators/diamond-grid-generator';
 
 /**
  * Generates a complete, production-ready usage example for a component across all 13 supported ecosystems.
@@ -57,6 +58,10 @@ export function generateComponentUsage(component: UniversalComponent, flavor: Ec
 
 	if (slug === 'bento-grid') {
 		return getBentoGridUsage(flavor, props);
+	}
+
+	if (slug === 'diamond-grid') {
+		return getDiamondGridUsage(flavor, props);
 	}
 
 	return getGenericComponentUsage(component, flavor, props);
